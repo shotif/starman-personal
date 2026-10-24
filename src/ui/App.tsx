@@ -7,7 +7,7 @@ import type { SaveData } from '../game/game.ts';
 import { checkLooks, defaultLooks, type Looks, type Manifest } from '../game/looks.ts';
 import { Creator } from './Creator.tsx';
 import { GameView } from './GameView.tsx';
-import { DIFFICULTY_KEY, HERO_KEY, load, SAVE_KEY, save, startingTier } from './settings.ts';
+import { DIFFICULTY_KEY, HERO_KEY, load, PICTURES, SAVE_KEY, save, startingTier } from './settings.ts';
 
 /** One sound system for the whole visit: the title's music runs on into the game's. */
 const audio = createAudio();
@@ -121,9 +121,10 @@ export function App() {
     };
     return (
       <main class="title">
-        <div class="title__sky" aria-hidden="true">
-          <div class="title__star" />
-        </div>
+        <picture class="title__art">
+          <source media="(orientation: portrait)" srcset={`${PICTURES}keyart-tall.webp`} />
+          <img src={`${PICTURES}keyart-wide.webp`} alt="" />
+        </picture>
         <div class="title__panel">
           <p class="title__kicker">Starman</p>
           <h1 class="title__name">Lightkeeper</h1>

@@ -1,6 +1,8 @@
 // The playable slice (docs/design/SLICE.md): Last light at Ross 128. Fiction, all of it, but the
 // star and its planet. The main flow, `slice`, drives the game with `>>>` commands (src/game/director.ts);
-// conversations are the knots below it, run in a flow of their own. Every spoken line carries its
+// conversations are the knots below it, run in a flow of their own; a thing the hero can look at
+// (`>>> look`) runs a knot of remarks, said in the world. A line's `#codex:` tag opens that entry of
+// the codex (src/game/codex.ts) when it is said. Every spoken line carries its
 // speaker and an id for its voice (D-23); every choice its manner (D-12). People call the hero
 // "Officer" and never by name, so every line can be voiced.
 
@@ -21,6 +23,10 @@ VAR took_mast = false
 VAR merrow_warned = false
 VAR ilya_lost = false
 VAR first_lead = ""
+VAR saw_curve = false
+VAR read_board = false
+VAR ilya_brings_curve = false
+VAR have_curve = false
 
 -> slice.night_shift
 
@@ -53,6 +59,10 @@ VAR first_lead = ""
 >>> talk dena dena_night
 >>> talk sorrel sorrel_night
 >>> talk ilya ilya_night
+>>> look star window look_star Look at the star
+>>> look curve curve look_curve Look at the readings on the table
+>>> look board board look_board Read the supply board
+>>> look locker locker look_locker Open your locker
 >>> wait talked:ren_night
 >>> talk ren
 >>> follow ren
@@ -96,9 +106,13 @@ That's the chief. #speaker: Ren #line: ren_drill_03
 >>> close concourse_door
 >>> objective Get to Control
 >>> marker control
+>>> forget curve
+>>> forget board
+>>> forget locker
+>>> look star window look_star_dark Look at the star
 >>> talk dena dena_dark
->>> talk sorrel
->>> talk ilya
+>>> talk sorrel sorrel_dark
+>>> talk ilya ilya_dark
 >>> wait enter:spine
 Look at the star. #speaker: Ren #line: ren_spine_01
 Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
@@ -118,11 +132,15 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> show pell
 >>> place pell pell
 >>> scene hale hale_control
+>>> forget star
+>>> look screen screen look_screen Look at the main screen
 >>> place dena clinic_dena
 >>> place sorrel clinic_sorrel
 >>> place ilya clinic_ilya
 >>> talk dena
 >>> walk pell booth
+>>> talk sorrel
+>>> talk ilya
 >>> open concourse_door
 >>> objective Get through the concourse
 >>> marker concourse
@@ -143,6 +161,7 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> place ilya clinic_ilya
 >>> open concourse_door
 >>> wait enter:concourse
+>>> forget screen
 Contacts! High, by the vents! #speaker: Ren #line: ren_concourse_01
 >>> hint powers
 >>> encounter concourse_1
@@ -294,12 +313,30 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 >>> place jo bridge_jo
 >>> stay ren
 >>> stay jo
+>>> place dena hold_dena
+>>> place sorrel hold_sorrel
+>>> place pell hold_pell
+{ ilya_lost:
+    >>> hide ilya
+- else:
+    >>> place ilya hold_ilya
+}
 >>> marker none
 { merrow_warned:
     Calder, this is the Merrow. We see it. We've turned back. Whoever turned that relay: thank you. #speaker: Merrow #line: merrow_01
 - else:
     Nothing on the band from the Merrow. Nothing at all. #speaker: Jo #line: jo_merrow_silent
 }
+Captain. They're all in the hold. See them first; the rest can wait a minute. #speaker: Ren #line: ren_bridge_hold
+>>> objective See to the survivors in the hold
+>>> marker hold_dena
+>>> talk dena dena_ship
+>>> talk sorrel sorrel_ship
+>>> talk pell pell_ship
+{ not ilya_lost:
+    >>> talk ilya ilya_ship
+}
+>>> wait talked:dena_ship
 >>> objective Talk to your crew
 >>> marker ren
 >>> talk ren ren_bridge
@@ -315,10 +352,10 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 You keep looking at that star as if it owes you money. #speaker: Ren #line: ren_night_01
 * [Does it? #manner: ask]
     Does it? #speaker: hero #line: hero_ren_night_02a
-    Six per cent, on the chief's numbers. It's dimmer than the charts by six per cent. Stars that size don't do that. #speaker: Ren #line: ren_night_03a
+    Six per cent, on the chief's numbers. It's dimmer than the charts by six per cent. Stars that size don't do that. #speaker: Ren #line: ren_night_03a #codex: ross128
 * [Just checking it's still there. #manner: plain]
     Just checking it's still there. #speaker: hero #line: hero_ren_night_02b
-    It's there. Less of it than the charts say. Six per cent less, on the chief's numbers. #speaker: Ren #line: ren_night_03b
+    It's there. Less of it than the charts say. Six per cent less, on the chief's numbers. #speaker: Ren #line: ren_night_03b #codex: ross128
 - -> origin
 
 = origin
@@ -345,7 +382,7 @@ You keep looking at that star as if it owes you money. #speaker: Ren #line: ren_
 * [Six per cent is a rounding error. #manner: resolve]
     Six per cent is a rounding error. #speaker: hero #line: hero_ren_night_04b
     Not for a red dwarf. They burn steady for a trillion years. This one's found somewhere to be. #speaker: Ren #line: ren_night_05b
-- I reported it a year ago. Through channels. I was told to stop wasting the Authority's bandwidth. #speaker: Ren #line: ren_night_06
+- I reported it a year ago. Through channels. I was told to stop wasting the Authority's bandwidth. #speaker: Ren #line: ren_night_06 #codex: authority
 * [Then we'll make them listen. #manner: resolve]
     Then we'll make them listen. #speaker: hero #line: hero_ren_night_07a
     ~ ren_approval += 1
@@ -386,7 +423,7 @@ Kettle's on, if you're staying up with the rest of us owls. #speaker: Dena #line
 * [I'll take a cup. #manner: mercy]
     I'll take a cup. #speaker: hero #line: hero_dena_night_02b
     Good. People who drink tea at three in the morning are people I can trust. #speaker: Dena #line: dena_night_03b
-- Twelve years I've cooked here. Supply runs every forty days. The next is the Merrow, on Thursday. #speaker: Dena #line: dena_night_04
+- Twelve years I've cooked here. Supply runs every forty days. The next is the Merrow, on Thursday. #speaker: Dena #line: dena_night_04 #codex: calder
 -> DONE
 
 === sorrel_night ===
@@ -398,7 +435,7 @@ Officer. Can't sleep either, or are you working? #speaker: Sorrel #line: sorrel_
 * [Neither. Just walking. #manner: plain]
     Neither. Just walking. #speaker: hero #line: hero_sorrel_night_02b
     Walking's good. Station's small enough you can walk all of it twice before breakfast. #speaker: Sorrel #line: sorrel_night_03b
-- I was on the Antares run when I was young. Before it went dark. #speaker: Sorrel #line: sorrel_night_04
+- I was on the Antares run when I was young. Before it went dark. #speaker: Sorrel #line: sorrel_night_04 #codex: antares
 * [What was it like, before? #manner: ask]
     What was it like, before? #speaker: hero #line: hero_sorrel_night_05a
     Red, and huge, and you felt it on your face through the glass. Then one year it was a smudge. Then nothing. #speaker: Sorrel #line: sorrel_night_06a
@@ -438,12 +475,12 @@ Officer, what's happening? The lights, and the star, it's got a ring round it! #
 
 === hale_control ===
 Officer. Lane officer. Good. Look at the main screen. #speaker: Hale #line: hale_control_01
-That's the star, and that's the ring round it. Machines. Thousands. The sensors started counting and gave up. #speaker: Hale #line: hale_control_02
+That's the star, and that's the ring round it. Machines. Thousands. The sensors started counting and gave up. #speaker: Hale #line: hale_control_02 #codex: swarm
 And these came out of it ten minutes ago, and they're not slowing down. #speaker: Hale #line: hale_control_03
 * [You've seen this before. #manner: ask]
     You've seen this before. #speaker: hero #line: hero_hale_control_04a
     ~ asked_files = true
-    In a file. Sealed, Lightkeeper's eyes only. Antares, thirty years ago, before it went dark. #speaker: Hale #line: hale_control_05a
+    In a file. Sealed, Lightkeeper's eyes only. Antares, thirty years ago, before it went dark. #speaker: Hale #line: hale_control_05a #codex: antares
     I was an aide then. I wasn't meant to read it. I've wished every day since that I hadn't. #speaker: Hale #line: hale_control_06a
 * [What do you need from us? #manner: resolve]
     What do you need from us? #speaker: hero #line: hero_hale_control_04b
@@ -473,7 +510,7 @@ Can't send the night shift on their own, though. Somebody has to bring them thro
 = ask
 * [How many on the Merrow? #manner: ask]
     How many on the Merrow? #speaker: hero #line: hero_pell_gate_05a
-    Crew of nine. And she'd be carrying forty days' supplies for the settlement. #speaker: Pell #line: pell_gate_06a
+    Crew of nine. And she'd be carrying forty days' supplies for the settlement. #speaker: Pell #line: pell_gate_06a #codex: merrow
     -> ask
 * [What do you think, Ren? #manner: ask]
     What do you think, Ren? #speaker: hero #line: hero_pell_gate_05b
@@ -518,7 +555,7 @@ Officer! Thank the stars. Pell said you'd come. #speaker: Dena #line: dena_escor
 
 === jo_meet ===
 You're the cavalry? You're late, and there's two of you. #speaker: Jo #line: jo_meet_01
-Jo Rook. Engineer, this thing. She's sound, she's fuelled, and she's got a gun on her back that somebody bolted on in a hurry. #speaker: Jo #line: jo_meet_02
+Jo Rook. Engineer, this thing. She's sound, she's fuelled, and she's got a gun on her back that somebody bolted on in a hurry. #speaker: Jo #line: jo_meet_02 #codex: surveyor
 * [Where's your captain? #manner: ask]
     Where's your captain? #speaker: hero #line: hero_jo_meet_03a
     In the settlement. The settlement went dark an hour ago. So: nowhere. #speaker: Jo #line: jo_meet_04a
@@ -556,7 +593,7 @@ She needs a captain and a name. Ren says you're the captain. So. #speaker: Jo #l
 - else:
     The chief pressed this into my hand at the door. Sealed. One name on the header. #speaker: Ren #line: ren_bridge_01b
 }
-Lightkeeper A. Varro. #speaker: Ren #line: ren_bridge_02
+Lightkeeper A. Varro. #speaker: Ren #line: ren_bridge_02 #codex: lightkeeper
 * [Who's Varro? #manner: ask]
     Who's Varro? #speaker: hero #line: hero_ren_bridge_03a
     The youngest Lightkeeper the Authority ever made. She kept the lanes lit through the Lapse. Then she resigned, and nobody would say why. #speaker: Ren #line: ren_bridge_04a
@@ -568,6 +605,9 @@ Lightkeeper A. Varro. #speaker: Ren #line: ren_bridge_02
 = after
 { ilya_lost:
     And Ilya. I'll write to his people. Somebody should, who saw him do it. #speaker: Ren #line: ren_bridge_05a
+}
+{ have_curve:
+    And we have his curve. Steps, not a slope. Someone who isn't us can read that. #speaker: Ren #line: ren_bridge_curve
 }
 Whatever's eating that star has done this before. Someone with a Lightkeeper's seal knew, and buried it. I want to know why. #speaker: Ren #line: ren_bridge_06
 * [So do I. We'll find out. #manner: resolve]
@@ -595,3 +635,145 @@ The files point three ways, if Ren's reading them right. #speaker: Jo #line: jo_
     Four legs and a lot of patience. Better company than the Wake. #speaker: Jo #line: jo_bridge_04c
 - Course laid in. Lantern's yours, Captain. Try to bring her back in one piece. #speaker: Jo #line: jo_bridge_05
 -> DONE
+
+// ─── The night shift in the dark ────────────────────────────────────────────
+
+=== sorrel_dark ===
+That ring. Officer, I've seen that ring before. #speaker: Sorrel #line: sorrel_dark_01
+Antares, the last year of the run. We called it the halo. A year after it came, there was nothing left to call anything. #speaker: Sorrel #line: sorrel_dark_02 #codex: antares
+* [What happened to the crews? #manner: ask]
+    What happened to the crews? #speaker: hero #line: hero_sorrel_dark_03a
+    An Authority ship came for our logs. Took every one. Paid us well to remember it was natural. #speaker: Sorrel #line: sorrel_dark_04a
+* [It isn't Antares. Not yet. #manner: resolve]
+    It isn't Antares. Not yet. #speaker: hero #line: hero_sorrel_dark_03b
+    No. Not yet. You go and make sure of that, Officer. #speaker: Sorrel #line: sorrel_dark_04b
+- -> DONE
+
+=== ilya_dark ===
+{ met_ilya:
+    It's not in front of the star. It's round it. Every step on my curve was more of that ring, closing. #speaker: Ilya #line: ilya_dark_01a
+- else:
+    Officer, the ring. I've measured the star for a month, and it goes down in steps. Every step was more of that, closing. #speaker: Ilya #line: ilya_dark_01b
+}
+I should have said. I should have gone to the chief the first night. #speaker: Ilya #line: ilya_dark_02
+* [You're saying it now. Bring your readings. #manner: resolve]
+    You're saying it now. Bring your readings. #speaker: hero #line: hero_ilya_dark_03a
+    ~ ilya_brings_curve = true
+    My readings. Yes. They're all on here. #speaker: Ilya #line: ilya_dark_04a
+* [Nobody would have listened. Ren tried. #manner: mercy]
+    Nobody would have listened. Ren tried, a year ago. #speaker: hero #line: hero_ilya_dark_03b
+    A year ago? Then it started long before my curve did. #speaker: Ilya #line: ilya_dark_04b
+- -> DONE
+
+// ─── Things to look at: the hero's remarks ──────────────────────────────────
+
+=== look_star ===
+Ross 128. Old, small and steady. The kind of star you build next to because nothing will ever happen. #speaker: hero #line: hero_look_star_01 #codex: ross128
+Out there it's rock, frost in the shadows, and the settlement's lights past the ridge. #speaker: hero #line: hero_look_star_02 #codex: ross128b
+-> DONE
+
+=== look_star_dark ===
+The ring's brighter than the star now. And it's turning. #speaker: hero #line: hero_look_dark_01
+-> DONE
+
+=== look_curve ===
+~ saw_curve = true
+{ met_ilya:
+    Ilya's readings. Thirty-one nights. It doesn't slope. It drops, holds, and drops again. #speaker: hero #line: hero_look_curve_01a
+- else:
+    Someone's readings of the star. Thirty-one nights. It doesn't slope. It drops, holds, and drops again. #speaker: hero #line: hero_look_curve_01b
+}
+Like a door being closed in steps. #speaker: hero #line: hero_look_curve_02
+-> DONE
+
+=== look_board ===
+~ read_board = true
+Supply board. The Merrow, Thursday: forty days of stores for the station and the settlement. #speaker: hero #line: hero_look_board_01 #codex: merrow
+And underneath, in pencil: "Bring cardamom. I am begging you. Dena." #speaker: hero #line: hero_look_board_02
+-> DONE
+
+=== look_locker ===
+{ hero_moment:
+- "survivor":
+    The crew tag from my first posting. I'm the only one who still has theirs to keep. #speaker: hero #line: hero_locker_survivor
+- "hero-of-the-line":
+    The commendation. I keep it face down. The ones who held the line with me got a wall with their names on it. #speaker: hero #line: hero_locker_line
+- "hard-call":
+    A list of names: the ones my order cost. I read it whenever I think I'm getting used to command. #speaker: hero #line: hero_locker_call
+- else:
+    Their last message. Eleven seconds long. I've never once played it to the end. #speaker: hero #line: hero_locker_lost
+}
+-> DONE
+
+=== look_screen ===
+The count in the corner is still going up. Nobody's watching it any more. #speaker: hero #line: hero_look_screen_01
+-> DONE
+
+// ─── Aboard Lantern: the survivors in the hold ──────────────────────────────
+
+=== dena_ship ===
+{ ilya_lost:
+    Tea's on. I keep making one cup too many. My hands haven't heard yet. #speaker: Dena #line: dena_ship_01a
+    { ilya_brings_curve:
+        He had his readings in his pocket. All thirty-one nights. I think he'd want them with you. #speaker: Dena #line: dena_ship_02a
+        ~ have_curve = true
+    }
+- else:
+    Tea's on. Everyone's got a cup, Captain. I counted twice. Everyone. #speaker: Dena #line: dena_ship_01b
+}
+{ merrow_warned:
+    And the Merrow turned back. With my cardamom. Worth it. #speaker: Dena #line: dena_ship_03a
+- else:
+    The Merrow never answered. Nine of them. I used to save them the end of the pie when they docked. #speaker: Dena #line: dena_ship_03b
+}
+* [How are you holding up? #manner: mercy]
+    How are you holding up? #speaker: hero #line: hero_dena_ship_04a
+    I'm cooking. That's how I hold up. Ask me again when there's nothing left to cook. #speaker: Dena #line: dena_ship_05a
+* [We'll find somewhere safe for everyone. #manner: resolve]
+    We'll find somewhere safe for everyone. I promise you that. #speaker: hero #line: hero_dena_ship_04b
+    Don't promise. Just do it. I'll have the tea ready when you have. #speaker: Dena #line: dena_ship_05b
+- -> DONE
+
+=== sorrel_ship ===
+Thirty years I kept that regulator ready, for a beacon nobody used. Turns out I was keeping it for a ship. #speaker: Sorrel #line: sorrel_ship_01
+Your engineer's already found it a home. She says it's the best-kept part on board. #speaker: Sorrel #line: sorrel_ship_02
+* [What will you do now? #manner: ask]
+    What will you do now? #speaker: hero #line: hero_sorrel_ship_03a
+    What I did after Antares. Keep something ready. Only this time, I'll tell people what I saw. #speaker: Sorrel #line: sorrel_ship_04a
+* [Thank you, Sorrel. #manner: mercy]
+    Thank you, Sorrel. For keeping it ready. #speaker: hero #line: hero_sorrel_ship_03b
+    Thank me when the lights stay on. #speaker: Sorrel #line: sorrel_ship_04b
+- -> DONE
+
+=== pell_ship ===
+{ merrow_warned:
+    I keep playing their answer back. Nine people turned round because you climbed out to a mast. #speaker: Pell #line: pell_ship_01a
+    { ilya_lost:
+        And Ilya didn't make it. I know that's not a sum. I keep doing it anyway. #speaker: Pell #line: pell_ship_02a
+    }
+- else:
+    I tried every band, Captain. Every one. If they heard anything, it was static. #speaker: Pell #line: pell_ship_01b
+}
+* [You did what you could. #manner: mercy]
+    You did what you could, Pell. #speaker: hero #line: hero_pell_ship_03a
+    I did what I was told. It's not quite the same thing. But thank you. #speaker: Pell #line: pell_ship_04a
+* [Then keep listening. #manner: resolve]
+    Then keep listening. This ship will need ears like yours. #speaker: hero #line: hero_pell_ship_03b
+    Ears I've got. Point me at a console. #speaker: Pell #line: pell_ship_04b
+- -> DONE
+
+=== ilya_ship ===
+{ ilya_brings_curve:
+    I brought my readings. Thirty-one nights, and the last hour, which nobody is going to believe. #speaker: Ilya #line: ilya_ship_01a
+    ~ have_curve = true
+- else:
+    I left my readings on the lounge table. Thirty-one nights of work, on a table in the dark. #speaker: Ilya #line: ilya_ship_01b
+}
+If this has happened to other stars, the steps will be in their light too. Somebody's telescope will have caught them. #speaker: Ilya #line: ilya_ship_02
+* [Where would you look? #manner: ask]
+    Where would you look first? #speaker: hero #line: hero_ilya_ship_03a
+    Pyre Remnant. The Cooperative's observatory there has a century of dying stars on file. #speaker: Ilya #line: ilya_ship_04a
+* [You did well tonight. #manner: mercy]
+    You did well tonight, Ilya. You saw it first. #speaker: hero #line: hero_ilya_ship_03b
+    I saw it. I just didn't say it. Next time I'll say it. #speaker: Ilya #line: ilya_ship_04b
+- -> DONE

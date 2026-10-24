@@ -39,7 +39,8 @@ export const AREAS: AreaData[] = [
   { id: 'mast', x: [92, 100], z: [26, 36], y: [2, 8] },
   { id: 'hangar', x: [10, 50], z: [48, 92] },
   { id: 'ramp', x: [27.5, 32.5], z: [66.5, 70.6] },
-  { id: 'bridge', x: [-6, 6], z: [BRIDGE_Z - 6, BRIDGE_Z + 6] },
+  { id: 'bridge', x: [-6, 6], z: [BRIDGE_Z - 6, BRIDGE_Z + 5] },
+  { id: 'hold', x: [-6, 6], z: [BRIDGE_Z + 5, BRIDGE_Z + 15] },
 ];
 
 export const MARKS: Record<string, MarkData> = {
@@ -69,6 +70,16 @@ export const MARKS: Record<string, MarkData> = {
   bridge_hero: { x: 1.5, z: BRIDGE_Z + 0.5, yaw: -90 * DEG },
   bridge_ren: { x: -2.5, z: BRIDGE_Z + 3, yaw: -90 * DEG },
   bridge_jo: { x: -2.5, z: BRIDGE_Z - 2.5, yaw: -90 * DEG },
+  hold_dena: { x: -1.8, z: BRIDGE_Z + 12.8, yaw: 160 * DEG },
+  hold_sorrel: { x: 2.4, z: BRIDGE_Z + 11.4, yaw: -90 * DEG },
+  hold_pell: { x: 3.2, z: BRIDGE_Z + 8.6, yaw: -120 * DEG },
+  hold_ilya: { x: -3.4, z: BRIDGE_Z + 9, yaw: 90 * DEG },
+  // Things to look at: where each stands, for the prompt.
+  window: { x: -3.3, z: 11, yaw: -90 * DEG },
+  curve: { x: 4.4, z: 7.15 },
+  board: { x: 4.5, z: 13.3 },
+  locker: { x: -10.9, z: 4.1 },
+  screen: { x: 29, z: 14.6 },
 };
 
 /** Where each fight's machines come in. */

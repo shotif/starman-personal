@@ -15,12 +15,14 @@ export interface QualitySettings {
   antialias: boolean;
   /** How many lights each material takes into account. */
   maxLights: number;
+  /** Materials carry their normal and roughness maps; without, colour only (a third of the memory). */
+  detailMaps: boolean;
 }
 
 export const QUALITY: Record<QualityTier, QualitySettings> = {
-  low: { maxPixelRatio: 1, shadowMapSize: 0, antialias: false, maxLights: 4 },
-  medium: { maxPixelRatio: 1.5, shadowMapSize: 1024, antialias: true, maxLights: 6 },
-  high: { maxPixelRatio: 2, shadowMapSize: 2048, antialias: true, maxLights: 8 },
+  low: { maxPixelRatio: 1, shadowMapSize: 0, antialias: false, maxLights: 4, detailMaps: false },
+  medium: { maxPixelRatio: 1.5, shadowMapSize: 1024, antialias: true, maxLights: 6, detailMaps: true },
+  high: { maxPixelRatio: 2, shadowMapSize: 2048, antialias: true, maxLights: 8, detailMaps: true },
 };
 
 export interface DeviceHints {

@@ -12,6 +12,8 @@ export interface Line {
   text: string;
   /** The line's id, for its voice (D-23). */
   id: string | null;
+  /** A codex entry the line opens when it is said (src/game/codex.ts). */
+  codex?: string;
 }
 
 export type Beat =
@@ -107,7 +109,7 @@ export class Conversation {
       const text = (this.story.Continue() ?? '').trim();
       if (!text) continue;
       const tags = parseTags(this.story.currentTags);
-      return { kind: 'line', speaker: tags.speaker ?? 'narrator', text, id: tags.line ?? null };
+      return { kind: 'line', speaker: tags.speaker ?? 'narrator', text, id: tags.line ?? null, codex: tags.codex };
     }
     const choices = this.story.currentChoices;
     if (choices.length > 0) {

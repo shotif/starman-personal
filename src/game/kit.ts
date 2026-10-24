@@ -11,6 +11,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
+import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { PhysicsMotionType, PhysicsShapeType } from '@babylonjs/core/Physics/v2/IPhysicsEnginePlugin';
@@ -143,16 +144,21 @@ export function boxProjectUVs(mesh: Mesh, tile: number): void {
 
 export function buildKit(scene: Scene, q: QualitySettings) {
   const base = `${import.meta.env.BASE_URL}assets/materials`;
-  /** A Poly Haven material: colour, OpenGL normal map, and AO/roughness/metal packed in one texture. */
-  const textured = (id: string, tile: number, tint: Color3): Surface => {
-    const m = material(scene, id, tint, 1, 1, q.maxLights);
+  /**
+   * A Poly Haven material: colour, OpenGL normal map, and AO/roughness/metal packed in one texture;
+   * on the low tier colour only, with a fixed sheen (`metal`, `rough`), to spare a phone's memory.
+   */
+  const textured = (id: string, tile: number, tint: Color3, name = id, metal = 0.3, rough = 0.7): Surface => {
+    const m = material(scene, name, tint, q.detailMaps ? 1 : metal, q.detailMaps ? 1 : rough, q.maxLights);
     m.albedoTexture = new Texture(`${base}/${id}/albedo.jpg`, scene);
-    m.bumpTexture = new Texture(`${base}/${id}/normal.jpg`, scene);
-    m.invertNormalMapX = true;
-    m.metallicTexture = new Texture(`${base}/${id}/arm.jpg`, scene);
-    m.useAmbientOcclusionFromMetallicTextureRed = true;
-    m.useRoughnessFromMetallicTextureGreen = true;
-    m.useMetallnessFromMetallicTextureBlue = true;
+    if (q.detailMaps) {
+      m.bumpTexture = new Texture(`${base}/${id}/normal.jpg`, scene);
+      m.invertNormalMapX = true;
+      m.metallicTexture = new Texture(`${base}/${id}/arm.jpg`, scene);
+      m.useAmbientOcclusionFromMetallicTextureRed = true;
+      m.useRoughnessFromMetallicTextureGreen = true;
+      m.useMetallnessFromMetallicTextureBlue = true;
+    }
     return { material: m, tile };
   };
   const plain = (name: string, colour: Color3, metallic: number, roughness: number): Surface => ({
@@ -173,26 +179,33 @@ export function buildKit(scene: Scene, q: QualitySettings) {
   })();
 
   const surfaces = {
-    floor: textured('metal_plate', 1.5, new Color3(0.8, 0.82, 0.85)),
-    deck: textured('metal_plate', 1.5, new Color3(0.55, 0.6, 0.66)),
-    wall: textured('metal_plate_02', 2, new Color3(0.9, 0.92, 0.95)),
-    panel: textured('metal_plate_02', 2.5, new Color3(0.62, 0.72, 0.78)),
-    warm: textured('metal_plate_02', 2.5, new Color3(0.95, 0.82, 0.68)),
-    trim: textured('rusty_metal_02', 1, new Color3(0.45, 0.47, 0.5)),
-    rust: textured('rusty_metal_02', 2, new Color3(0.8, 0.7, 0.62)),
-    crate: textured('container_side', 1.2, new Color3(1, 1, 1)),
-    crateBlue: textured('container_side', 1.2, new Color3(0.45, 0.65, 0.95)),
-    crateOrange: textured('container_side', 1.2, new Color3(1, 0.62, 0.35)),
+    floor: textured('metal_plate', 1.5, new Color3(0.8, 0.82, 0.85), 'floor', 0.5, 0.5),
+    deck: textured('rubber_tiles', 1.2, new Color3(0.75, 0.78, 0.8), 'deck', 0, 0.85),
+    wall: textured('metal_plate_02', 2, new Color3(0.9, 0.92, 0.95), 'wall', 0.5, 0.55),
+    panel: textured('blue_metal_plate', 2.5, new Color3(0.85, 0.9, 0.95), 'panel', 0.4, 0.55),
+    warm: textured('metal_plate_02', 2.5, new Color3(0.95, 0.82, 0.68), 'warm', 0.5, 0.55),
+    trim: textured('rusty_metal_02', 1, new Color3(0.45, 0.47, 0.5), 'trim', 0.6, 0.6),
+    rust: textured('corrugated_iron_02', 2.4, new Color3(0.8, 0.74, 0.68), 'rust', 0.6, 0.6),
+    crate: textured('container_side', 1.2, new Color3(1, 1, 1), 'crate', 0.5, 0.6),
+    crateBlue: textured('container_side', 1.2, new Color3(0.45, 0.65, 0.95), 'crate-blue', 0.5, 0.6),
+    crateOrange: textured('container_side', 1.2, new Color3(1, 0.62, 0.35), 'crate-orange', 0.5, 0.6),
+    /** The clinic's floor, its tiles square to the walls. */
+    tiles: textured('interior_tiles', 1.4, new Color3(0.9, 0.92, 0.92), 'tiles', 0, 0.4),
+    /** The catwalk and the mast's platform, out in the open: a grated plate, rust toned down. */
+    grate: textured('metal_grate_rusty', 1.2, new Color3(0.62, 0.6, 0.6), 'grate', 0.6, 0.6),
+    /** The hangar's floor. */
+    concrete: textured('concrete_floor_worn_001', 3, new Color3(0.75, 0.75, 0.75), 'concrete', 0, 0.8),
     dark: plain('dark', new Color3(0.07, 0.08, 0.09), 0.6, 0.45),
     hull: plain('hull', new Color3(0.5, 0.54, 0.58), 0.7, 0.42),
     hullDark: plain('hull-dark', new Color3(0.2, 0.22, 0.25), 0.7, 0.4),
     stripe: plain('stripe', new Color3(0.85, 0.55, 0.12), 0.2, 0.5),
-    fabric: plain('fabric', new Color3(0.22, 0.3, 0.38), 0, 0.9),
+    fabric: textured('fabric_leather_02', 0.8, new Color3(0.45, 0.55, 0.65), 'fabric', 0, 0.8),
     wood: plain('wood', new Color3(0.42, 0.3, 0.2), 0, 0.7),
+    paper: plain('paper', new Color3(0.82, 0.8, 0.72), 0, 0.95),
     plant: plain('plant', new Color3(0.18, 0.42, 0.2), 0, 0.8),
     soil: plain('soil', new Color3(0.2, 0.14, 0.1), 0, 1),
-    ground: plain('ground', new Color3(0.36, 0.24, 0.18), 0, 0.95),
-    rock: plain('rock', new Color3(0.27, 0.19, 0.15), 0, 0.9),
+    ground: textured('cracked_red_ground', 4, new Color3(0.8, 0.66, 0.58), 'ground', 0, 0.95),
+    rock: textured('cracked_red_ground', 6, new Color3(0.55, 0.44, 0.4), 'rock', 0, 0.9),
     glow: glowing('glow', new Color3(0.75, 0.88, 1)),
     screen: glowing('screen', new Color3(0.2, 0.5, 0.7), 0.75),
     screenWarm: glowing('screen-warm', new Color3(0.8, 0.48, 0.2), 0.75),
@@ -240,6 +253,39 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     keep(mesh, look);
     new PhysicsAggregate(mesh, PhysicsShapeType.BOX, { mass: 0, friction: 0.8 }, scene);
     if (opts.nav !== false) navigationMeshes.push(mesh);
+    return mesh;
+  };
+
+  const pictures = `${import.meta.env.BASE_URL}assets/textures`;
+  const pictureLooks = new Map<string, Surface>();
+  /** One of the 2D pictures (IMAGES.md): screens glow by themselves; signs and posters take the light. */
+  const pictureLook = (id: string, glows: boolean): Surface => {
+    const known = pictureLooks.get(id);
+    if (known) return known;
+    const m = material(scene, `picture-${id}`, glows ? new Color3(0, 0, 0) : new Color3(1, 1, 1), 0, 0.6, q.maxLights);
+    const texture = new Texture(`${pictures}/${id}.webp`, scene);
+    texture.anisotropicFilteringLevel = 4;
+    if (glows) {
+      m.emissiveTexture = texture;
+      m.emissiveColor = new Color3(1, 1, 1);
+      m.emissiveIntensity = 0.85;
+    } else {
+      m.albedoTexture = texture;
+    }
+    const look = { material: m, tile: 0 };
+    pictureLooks.set(id, look);
+    return look;
+  };
+  /**
+   * A picture, `size` wide and high, facing `yaw` (0 north). `tilt` lays it back: π/2 lies flat,
+   * face up, its top away from `yaw`. Screens (ids `screen-…`) glow; the rest take the light.
+   */
+  const picture = (id: string, size: [number, number], at: [number, number, number], yaw: number, tilt = 0): Mesh => {
+    const mesh = CreatePlane(`picture-${count++}`, { width: size[0], height: size[1] }, scene);
+    mesh.position.set(at[0], at[1], at[2]);
+    mesh.rotation.set(tilt, yaw + Math.PI, 0);
+    mesh.isPickable = false;
+    keep(mesh, pictureLook(id, id.startsWith('screen-')));
     return mesh;
   };
 
@@ -562,6 +608,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     enter,
     solid,
     deco,
+    picture,
     column,
     room,
     light,

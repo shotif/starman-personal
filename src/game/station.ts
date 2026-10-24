@@ -1,13 +1,15 @@
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
-import type { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { PhysicsShapeType } from '@babylonjs/core/Physics/v2/IPhysicsEnginePlugin';
 import { PhysicsAggregate } from '@babylonjs/core/Physics/v2/physicsAggregate';
@@ -149,17 +151,33 @@ function outside(kit: Kit) {
     const size = 2 + random() * 6;
     const x = 30 + Math.cos(angle) * distance;
     const z = 30 + Math.sin(angle) * distance;
-    kit.deco([size * 1.6, size, size * 1.2], [x, -0.4 + size / 2 - 0.5, z], s.rock, random() * Math.PI);
+    // Tipped and half sunk, so no two read as boxes.
+    const rock = kit.deco([size * 1.6, size, size * 1.2], [x, -0.4 + size * 0.3 - 0.5, z], s.rock, random() * Math.PI);
+    rock.rotation.x = (random() - 0.5) * 0.9;
+    rock.rotation.z = (random() - 0.5) * 0.9;
   }
-  for (let i = 0; i < 26; i++) {
-    const angle = (i / 26) * Math.PI * 2 + random() * 0.2;
-    const distance = 260 + random() * 60;
-    const height = 18 + random() * 40;
-    const width = 60 + random() * 80;
-    const x = 30 + Math.cos(angle) * distance;
-    const z = 30 + Math.sin(angle) * distance;
-    kit.deco([width, height, 30], [x, height / 2 - 6, z], s.rock, -angle + Math.PI / 2);
-  }
+  // The far ridges: the painted skyline (IMAGES.md) on a ring round the station, past the haze, dark
+  // as the night side of hills. Unlit and unfogged; its alpha cuts the skyline.
+  const ridge = CreateCylinder(
+    'ridge',
+    { diameter: 760, height: 70, tessellation: 64, cap: Mesh.NO_CAP, sideOrientation: Mesh.BACKSIDE },
+    kit.scene,
+  );
+  ridge.position.set(30, 22, 30);
+  const skyline = new StandardMaterial('ridge', kit.scene);
+  const painted = new Texture(`${import.meta.env.BASE_URL}assets/textures/ridge-horizon.webp`, kit.scene);
+  painted.hasAlpha = true;
+  painted.uScale = 4;
+  painted.wrapU = Texture.WRAP_ADDRESSMODE;
+  skyline.diffuseTexture = painted;
+  skyline.useAlphaFromDiffuseTexture = true;
+  skyline.disableLighting = true;
+  skyline.emissiveColor = new Color3(0.32, 0.22, 0.2);
+  skyline.fogEnabled = false;
+  skyline.backFaceCulling = false;
+  ridge.material = skyline;
+  ridge.isPickable = false;
+  ridge.applyFog = false;
   // Landing-field lamps east of control, dim and orange.
   for (let i = 0; i < 6; i++) kit.deco([0.3, 0.3, 0.3], [42 + i * 6, -0.1, 4], s.screenWarm);
 }
@@ -191,7 +209,13 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
       box([0.08, 2.2, 1], [-1.05, 1.1, 0], s.trim);
     });
   }
-  for (let i = 0; i < 4; i++) kit.solid([0.7, 2, 0.55], [-11.6, 1, 3 + i * 0.75], s.panel, { nav: true });
+  // Lockers against the west wall, the hero's in the middle; a helmet on the one by the door.
+  for (const z of [2.9, 4.1, 5.3]) {
+    kit.prop('locker', [-11.45, 0, z], Math.PI / 2, [0.97, 1.25, 0.78], (box) =>
+      box([0.97, 1.25, 0.78], [0, 0.625, 0], s.panel),
+    );
+  }
+  kit.prop('helmet', [-11.45, 1.25, 5.3], Math.PI / 2 + 0.4, [0.32, 0.32, 0.32], () => {}, { solid: false });
   kit.light([-8, 2.85, 4], new Color3(1, 0.86, 0.72), 6, 9);
   kit.emergency([-8, 2.85, 6.5]);
 
@@ -236,6 +260,22 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
     box([3, 0.7, 0.25], [0, 0.6, -0.5], s.fabric);
   });
   kit.solid([1.2, 0.4, 0.8], [1.2, 0.2, 4.4], s.wood);
+  // Ilya's readings on the mess table, the supply board on the north wall, the station's map by the
+  // east door, and a Cooperative poster: the station is a joint posting.
+  kit.deco([0.56, 0.02, 0.32], [4.4, 0.895, 7.15], s.dark);
+  kit.picture('screen-light-curve', [0.5, 0.25], [4.4, 0.91, 7.15], Math.PI, Math.PI / 2);
+  kit.deco([1.6, 1, 0.04], [4.5, 1.6, 13.88], s.dark);
+  for (const [x, y, w, h] of [
+    [3.95, 1.82, 0.36, 0.46],
+    [4.4, 1.86, 0.3, 0.3],
+    [4.85, 1.78, 0.4, 0.5],
+    [4.2, 1.38, 0.5, 0.34],
+    [4.95, 1.34, 0.32, 0.4],
+  ] as const) {
+    kit.deco([w, h, 0.01], [x, y, 13.855], s.paper);
+  }
+  kit.picture('screen-station-map', [1.8, 0.9], [11.88, 1.7, 10.6], -Math.PI / 2);
+  kit.picture('poster-cooperative', [0.8, 1.2], [-2.2, 1.6, 13.88], Math.PI);
   // A vending machine by the galley, and a rack of cylinders by the bunk room's door.
   kit.prop('vending', [11.4, 0, 2], -Math.PI / 2, [1.1, 2, 0.8], (box) => {
     box([1.1, 2, 0.8], [0, 1, 0], s.panel);
@@ -280,6 +320,8 @@ function range(kit: Kit) {
     wall: s.wall,
     gaps: [{ side: 's', from: 0, to: 2 }],
   });
+  // The range's panel, by the door, where Ren runs the drill from.
+  kit.prop('terminal', [3.2, 0.75, 20.28], 0, [0.47, 0.8, 0.35], () => {}, { solid: false });
   // Low cover (1 m) and high cover (1.6 m).
   const crates: [number, number, number, number][] = [
     [-3, 22.8, 1.6, 1],
@@ -326,6 +368,7 @@ function spine(kit: Kit) {
     open: ['w', 'e'],
     gaps: [{ side: 's', from: 13, to: 21, bottom: 0.9, top: 2.6, glass: true }],
   });
+  kit.picture('sign-calder-station', [0.9, 0.9], [17, 1.7, 8.88], Math.PI);
   kit.light([15, 2.85, 7]);
   kit.light([19.5, 2.85, 7]);
   kit.emergency([17, 2.85, 8.4]);
@@ -358,12 +401,17 @@ function control(kit: Kit, addDoor: (d: Door) => void) {
     });
   }
   kit.solid([3.4, 0.95, 2], [28.4, 0.475, 9.5], s.hullDark);
-  kit.deco([3, 0.04, 1.6], [28.4, 0.97, 9.5], s.screen);
+  kit.deco([3, 0.04, 1.6], [28.4, 0.97, 9.5], s.dark);
+  kit.picture('screen-light-curve', [2.8, 1.4], [28.4, 1.002, 9.5], Math.PI / 2, Math.PI / 2);
   kit.prop('console', [33.4, 0, 2.4], 0, [2.2, 1.4, 0.8], (box) => {
     box([2.2, 1, 0.8], [0, 0.5, 0], s.hull);
     box([2.2, 0.8, 0.05], [0, 1.5, -0.35], s.screenWarm);
   });
-  kit.deco([6, 2.4, 0.06], [29, 2.3, 15.85], s.screen);
+  // The main screen: the sweep round the star. Beside the door, the power and the doors after the failure.
+  kit.deco([6, 2.6, 0.06], [29, 2.3, 15.85], s.dark);
+  kit.picture('screen-sensor-sweep', [5.2, 2.6], [29, 2.3, 15.8], Math.PI);
+  kit.picture('screen-power-doors', [1.6, 0.8], [26, 1.7, 0.12], 0);
+  kit.picture('poster-authority', [0.8, 1.2], [22.12, 1.6, 12.4], Math.PI / 2);
   for (const [x, z] of [
     [25, 4],
     [31, 4],
@@ -471,14 +519,18 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
     box([2, 1, 0.7], [0, 0.5, 0], s.hullDark);
     box([2, 0.7, 0.05], [0, 1.4, -0.4], s.screen);
   });
+  // Pell's booth: the comms, searching for a carrier that is not there.
+  kit.picture('screen-comms-static', [1.6, 0.8], [41.8, 2.2, 47.88], Math.PI);
   // A gallery round the hall's upper level, seen, not walked.
   kit.deco([28, 0.3, 2], [30, 4, 47], s.hullDark);
   kit.deco([2, 0.3, 26], [17, 4, 35], s.hullDark);
   kit.deco([2, 0.3, 26], [43, 4, 35], s.hullDark);
   kit.deco([28, 0.05, 0.05], [30, 5, 46], s.stripe);
-  // Signs.
-  kit.deco([3, 0.6, 0.05], [30, 3.2, 47.85], s.screenWarm);
-  kit.deco([0.05, 0.6, 2.2], [43.85, 3, 31], s.screen);
+  // Signs, and the Authority's poster.
+  kit.picture('sign-concourse-hangar', [2.4, 0.6], [30, 3.2, 47.88], Math.PI);
+  kit.picture('sign-airlock', [2.4, 0.6], [43.88, 3, 31], -Math.PI / 2);
+  kit.picture('sign-clinic', [1.6, 0.4], [16.12, 2.85, 38], Math.PI / 2);
+  kit.picture('poster-authority', [0.9, 1.35], [16.12, 1.7, 27], Math.PI / 2);
   for (const [x, z] of [
     [22, 25],
     [30, 25],
@@ -495,7 +547,7 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
 
   // The clinic, off the hall's west side: the shelter.
   kit.enter('clinic');
-  kit.room({ name: 'clinic', x: [8, 16], z: [34, 44], height: 3.2, floor: s.deck, wall: s.warm, open: ['e'] });
+  kit.room({ name: 'clinic', x: [8, 16], z: [34, 44], height: 3.2, floor: s.tiles, wall: s.warm, open: ['e'] });
   addDoor(kit.door('clinic_door', [16, 0, 38], 2, false, true));
   for (const z of [35.4, 38, 40.6]) {
     kit.prop('medbed', [9.4, 0, z], 0, [2, 1.1, 0.9], (box) => {
@@ -525,13 +577,15 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
   });
   addDoor(kit.door('airlock', [54, 0, 31], 2, false));
   for (let i = 0; i < 3; i++) kit.deco([0.15, 0.15, 3.6], [45.5 + i * 3, 2.7, 31], s.trim);
+  // The airlock's panel on the wall beside it.
+  kit.prop('terminal', [52.6, 0.75, 32.72], Math.PI, [0.47, 0.8, 0.35], () => {}, { solid: false });
   kit.light([47, 2.85, 31], new Color3(1, 0.8, 0.6), 6, 8);
   kit.light([51.5, 2.85, 31], new Color3(1, 0.8, 0.6), 6, 8);
   kit.emergency([49, 2.85, 32.6]);
 
   // Outside: the catwalk on its footings, a ramp, and the relay mast's platform.
   kit.enter('catwalk');
-  kit.solid([28, 0.3, 4], [68, -0.15, 31], s.deck, { name: 'catwalk-floor' });
+  kit.solid([28, 0.3, 4], [68, -0.15, 31], s.grate, { name: 'catwalk-floor' });
   for (const z of [29.05, 32.95]) {
     kit.solid([28, 1.05, 0.1], [68, 0.525, z], s.trim);
     kit.deco([28, 0.08, 0.14], [68, 1.08, z], s.stripe);
@@ -548,14 +602,14 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
   const run = 10;
   const slope = Math.atan2(rise, run);
   // Rolled about z so that its east end, towards the platform, is the high one.
-  kit.solid([Math.hypot(run, rise), 0.3, 4], [87, rise / 2 - 0.15, 31], s.deck, {
+  kit.solid([Math.hypot(run, rise), 0.3, 4], [87, rise / 2 - 0.15, 31], s.grate, {
     name: 'mast-ramp',
     rot: [0, 0, slope],
   });
   for (const z of [29.05, 32.95]) {
     kit.solid([Math.hypot(run, rise), 1.05, 0.1], [87, rise / 2 + 0.525, z], s.trim, { rot: [0, 0, slope] });
   }
-  kit.solid([10, 0.3, 10], [96, rise - 0.15, 31], s.deck, { name: 'mast-platform' });
+  kit.solid([10, 0.3, 10], [96, rise - 0.15, 31], s.grate, { name: 'mast-platform' });
   for (const [x, z, w, d] of [
     [96, 26.05, 10, 0.1],
     [96, 35.95, 10, 0.1],
@@ -616,7 +670,7 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
     x: [10, 50],
     z: [52, 92],
     height: 16,
-    floor: s.deck,
+    floor: s.concrete,
     wall: s.rust,
     ceiling: null,
     gaps: [{ side: 's', from: 28, to: 32, top: 3.6 }],
@@ -649,14 +703,17 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
   ] as const) {
     kit.prop('crate', [x, 0, z], 0, [w, 1, 1.2], (box) => box([w, 1, 1.2], [0, 0.5, 0], s.crate), { fit: 'box' });
   }
+  // The gate's panel, on the hangar's side.
+  kit.prop('terminal', [34, 0.75, 52.28], 0, [0.47, 0.8, 0.35], () => {}, { solid: false });
   // Carts and gas cylinders by the walls.
   for (const [x, z, yaw] of [
     [35, 66, 0.3],
     [21, 79, -0.4],
   ] as const) {
-    kit.prop('cart', [x, 0, z], yaw, [2.4, 1.1, 1.3], (box) => {
-      box([2.4, 0.5, 1.3], [0, 0.55, 0], s.hullDark);
-      box([2.2, 0.3, 1.1], [0, 0.95, 0], s.crateOrange);
+    // The cart's model runs along its own z, its driver's end to the front.
+    kit.prop('cart', [x, 0, z], yaw + Math.PI / 2, [1.3, 1.1, 2.4], (box) => {
+      box([1.3, 0.5, 2.4], [0, 0.55, 0], s.hullDark);
+      box([1.1, 0.3, 2.2], [0, 0.95, 0], s.crateOrange);
     });
   }
   for (const [x, z, yaw] of [
@@ -777,7 +834,10 @@ function bridge(kit: Kit) {
     height: 3.4,
     floor: s.deck,
     wall: s.hullDark,
-    gaps: [{ side: 'w', from: z0 - 4, to: z0 + 4, bottom: 0.7, top: 3, glass: true }],
+    gaps: [
+      { side: 'w', from: z0 - 4, to: z0 + 4, bottom: 0.7, top: 3, glass: true },
+      { side: 'n', from: -1, to: 1 },
+    ],
   });
   // The captain's chair faces the window; the stations face their screens.
   kit.prop('chair', [0.6, 0, z0 + 0.5], -Math.PI / 2, [0.9, 1.3, 0.9], (box) => {
@@ -795,9 +855,47 @@ function bridge(kit: Kit) {
       box([1.4, 0.04, 0.7], [0, 0.97, 0], look);
     });
   }
-  kit.deco([0.06, 1.2, 6], [5.85, 1.8, z0], s.screen);
+  kit.deco([0.06, 1.4, 3], [5.85, 1.8, z0], s.dark);
+  kit.picture('screen-navigation', [2.6, 1.3], [5.79, 1.8, z0], -Math.PI / 2);
   kit.light([0, 3.25, z0 - 2], new Color3(0.8, 0.88, 1), 5, 9);
   kit.light([0, 3.25, z0 + 2], new Color3(0.8, 0.88, 1), 5, 9);
+
+  // The hold behind the bridge, through the door in its north wall: where the survivors sit.
+  kit.room({
+    name: 'hold',
+    x: [-6, 6],
+    z: [z0 + 5, z0 + 15],
+    height: 3,
+    floor: s.deck,
+    wall: s.hull,
+    open: ['s'],
+  });
+  for (const [x, z, yaw] of [
+    [-5.2, z0 + 9, Math.PI / 2],
+    [-5.2, z0 + 12.4, Math.PI / 2],
+    [5.2, z0 + 13.6, -Math.PI / 2],
+  ] as const) {
+    kit.prop('bunk', [x, 0, z], yaw, [2.1, 2.1, 1], (box) => {
+      box([2.1, 0.5, 1], [0, 0.25, 0], s.hullDark);
+      box([2, 0.15, 0.9], [0, 0.58, 0], s.fabric);
+      box([2.1, 0.08, 1], [0, 1.7, 0], s.hullDark);
+      box([2, 0.15, 0.9], [0, 1.82, 0], s.fabric);
+    });
+  }
+  kit.prop('table', [0, 0, z0 + 11], 0, [2.8, 0.8, 2.6], (box) => {
+    box([2.8, 0.75, 1.2], [0, 0.375, 0], s.wood);
+    box([2.8, 0.45, 0.5], [0, 0.225, -1.1], s.hullDark);
+    box([2.8, 0.45, 0.5], [0, 0.225, 1.1], s.hullDark);
+  });
+  for (const [x, z] of [
+    [4.6, z0 + 7],
+    [4.6, z0 + 8.4],
+    [3.4, z0 + 7],
+  ] as const) {
+    kit.prop('crate', [x, 0, z], 0, [1.1, 1, 1.1], (box) => box([1.1, 1, 1.1], [0, 0.5, 0], s.crate), { fit: 'box' });
+  }
+  kit.light([0, 2.85, z0 + 8], new Color3(1, 0.85, 0.7), 5, 8);
+  kit.light([0, 2.85, z0 + 13], new Color3(1, 0.85, 0.7), 5, 8);
   // Ross 128 b below, its night side turning under the ship.
   const planet = CreateSphere('ross-128-b', { diameter: 3000, segments: 48 }, kit.scene);
   planet.position.set(-400, -1700, z0);

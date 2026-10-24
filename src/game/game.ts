@@ -27,7 +27,7 @@ import type { GameAudio, Playing, Voice } from './audio.ts';
 import { type Character, loadCharacterTemplate } from './characters.ts';
 import { buildRange } from './combat.ts';
 import { type Companion, spawnCompanion } from './companion.ts';
-import { type Conversation, StoryRunner } from './conversation.ts';
+import { type Conversation, type Line, StoryRunner } from './conversation.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
 import {
   DAMAGE,
@@ -137,7 +137,7 @@ export interface Game {
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
   /** A conversation's line is on screen: its voice plays, the speaker's mouth moves. Seconds long, or null. */
-  speak(line: { speaker: string; id: string | null }): number | null;
+  speak(line: { speaker: string; id: string | null; codex?: string }): number | null;
   /** Stops the voice now speaking (a line skipped). */
   hush(): void;
   /** The companions with the hero now. */
@@ -181,6 +181,8 @@ export interface GameOptions {
   onFade(black: boolean): void;
   onSave(save: SaveData): void;
   onEnd(ending: Ending): void;
+  /** The story opened an entry of the codex (src/game/codex.ts). */
+  onCodex(id: string): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
@@ -373,7 +375,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   }
   const navMilliseconds = Math.round(performance.now() - navStarted);
   const world = { range, cast: (a: Vector3, b: Vector3) => cast(a, b), groundUnder };
-  const say = (name: string) => (line: string) => options.onSay(name, line, null);
+  const sayAs = (name: string) => (line: string) => options.onSay(name, line, null);
   const ren = spawnCompanion(
     scene,
     'Ren',
@@ -381,9 +383,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     characters.ren ?? hero,
     place.marks.ren?.at ?? Vector3.Zero(),
     world,
-    say('Ren'),
+    sayAs('Ren'),
   );
-  const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, say('Jo'));
+  const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, sayAs('Jo'));
   jo.show(false);
   const companionsById: Record<string, Companion> = { ren, jo };
   /** Companions with the hero: Ren from the start, Jo once she joins. */
@@ -431,8 +433,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   });
   /** Conversations people offer, by person. */
   const talkKnots: Record<string, string | null> = {};
-  /** Things that can be used, by id. */
-  const usable = new Map<string, { at: Vector3; label: string }>();
+  /** Things that can be used, by id; a thing to look at has the knot of the hero's remark. */
+  const usable = new Map<string, { at: Vector3; label: string; knot?: string }>();
+  /** Remarks to say, one after another, and the seconds before the next. */
+  const remarks: Line[] = [];
+  let remarkWait = 0;
   let markerTarget: string | null = null;
   let drillFrom: number | null = null;
   let fight: Fight | null = null;
@@ -607,7 +612,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   });
 
   /** Plays a line's voice, the speaker's mouth moving with it; its length in seconds, or null. */
-  const speakLine = (line: { speaker: string; id: string | null }): number | null => {
+  const speakLine = (line: { speaker: string; id: string | null; codex?: string }): number | null => {
+    if (line.codex) options.onCodex(line.codex);
     voiceNow?.voice.stop();
     voiceNow?.who?.speak(0);
     voiceNow = null;
@@ -617,6 +623,25 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const id = SPEAKERS[line.speaker];
     voiceNow = { voice, who: id ? (characterOf(id) ?? null) : null };
     return voice.seconds;
+  };
+
+  /** Says a line in the world: the caption, the voice and the mouth; how long it takes, in seconds. */
+  const say = (line: Line): number => {
+    options.onSay(line.speaker === 'hero' ? options.looks.name || 'You' : line.speaker, line.text, line.id);
+    const voiced = speakLine(line);
+    // A line without a voice yet is given the time it takes to read.
+    return (voiced ?? 1 + line.text.split(/\s+/).length * 0.3) + 0.35;
+  };
+
+  /** The hero's remark on something looked at: the knot's lines, said in turn. */
+  const remark = (knot: string) => {
+    const conversation = runner.converse(knot);
+    for (let beat = conversation.next(); beat.kind !== 'end'; beat = conversation.next()) {
+      if (beat.kind === 'line')
+        remarks.push({ speaker: beat.speaker, text: beat.text, id: beat.id, codex: beat.codex });
+      else conversation.choose(beat.choices[0]?.index ?? 0);
+    }
+    remarkWait = 0;
   };
 
   const run = (c: Command) => {
@@ -715,6 +740,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' ') });
         break;
       }
+      case 'look': {
+        const m = markOf(b);
+        if (m && c.args[2]) usable.set(a, { at: m.at, label: c.args.slice(3).join(' '), knot: c.args[2] });
+        break;
+      }
+      case 'forget':
+        usable.delete(a);
+        break;
+      case 'codex':
+        options.onCodex(a);
+        break;
       case 'down':
         people[a]?.fall();
         break;
@@ -734,8 +770,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const director = new Director(runner, {
     command: run,
     bark: (line) => {
-      options.onSay(line.speaker === 'hero' ? options.looks.name || 'You' : line.speaker, line.text, line.id);
-      speakLine(line);
+      // The story's own lines come first.
+      remarks.length = 0;
+      return say(line);
     },
     checkpoint: (name, state) => {
       options.onSave({ version: 1, looks: options.looks, story: state, checkpoint: name, difficulty, at: Date.now() });
@@ -1204,27 +1241,43 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (area && director.waiting?.includes(`enter:${area}`)) director.event(`enter:${area}`);
     director.update(dt);
     resuming = false;
+    // Remarks wait for a conversation to end, and each for the one before it.
+    remarkWait -= dt;
+    if (remarks.length > 0 && !talking && remarkWait <= 0) {
+      const line = remarks.shift();
+      if (line) remarkWait = say(line);
+    }
 
     // What the hero can talk to or use where they stand.
     let next: typeof promptTarget = null;
     let label = '';
     if (!held && !fight) {
+      // Of what is in reach, the nearest, counting what the player faces as nearer.
+      const facing = { x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) };
+      const score = (at: Vector3, d: number) => {
+        const dx = at.x - feet.x;
+        const dz = at.z - feet.z;
+        const cos = d > 0.01 ? (dx * facing.x + dz * facing.z) / Math.hypot(dx, dz) : 1;
+        return d + 1.2 * (1 - cos);
+      };
       let best = Number.POSITIVE_INFINITY;
       for (const [id, knot] of Object.entries(talkKnots)) {
         if (!knot) continue;
         const c = characterOf(id);
         if (!c?.root.isEnabled()) continue;
         const d = Vector3.Distance(c.root.position, feet);
-        if (d < TALK_REACH && d < best) {
-          best = d;
+        const s = score(c.root.position, d);
+        if (d < TALK_REACH && s < best) {
+          best = s;
           next = { kind: 'talk', id };
           label = `Talk to ${nameOf(id)}`;
         }
       }
       for (const [id, thing] of usable) {
         const d = Vector3.Distance(new Vector3(thing.at.x, feet.y, thing.at.z), feet);
-        if (d < USE_REACH && d < best + 0.5) {
-          best = d;
+        const s = score(thing.at, d);
+        if (d < USE_REACH && s < best) {
+          best = s;
           next = { kind: 'use', id };
           label = thing.label;
         }
@@ -1506,8 +1559,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (knot) startConversation(promptTarget.id, knot);
       } else {
         const id = promptTarget.id;
+        const knot = usable.get(id)?.knot;
         usable.delete(id);
-        audio.play(id === 'relay' ? 'relay' : 'ui_click', { at: hero.root.position });
+        if (knot) remark(knot);
+        else audio.play(id === 'relay' ? 'relay' : 'ui_click', { at: hero.root.position });
         director.event(`used:${id}`);
       }
     },

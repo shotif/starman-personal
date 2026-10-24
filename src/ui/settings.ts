@@ -6,6 +6,23 @@ export const HERO_KEY = 'lightkeeper.hero';
 export const SAVE_KEY = 'lightkeeper.save';
 export const DIFFICULTY_KEY = 'lightkeeper.difficulty';
 
+/** The 2D pictures (docs/assets/IMAGES.md). */
+export const PICTURES = `${import.meta.env.BASE_URL}assets/textures/`;
+
+/** The painting shown while a chapter loads, by its checkpoint. */
+export const LOADING_PICTURE: Record<string, string> = {
+  night_shift: 'loading-lounge',
+  range: 'loading-lounge',
+  to_control: 'loading-lounge',
+  control: 'loading-concourse',
+  concourse: 'loading-concourse',
+  escort: 'loading-concourse',
+  gate: 'loading-concourse',
+  mast: 'loading-mast',
+  hangar: 'loading-hangar',
+  bridge: 'loading-hangar',
+};
+
 /** A touch screen is the main input. */
 export function isTouch(): boolean {
   return matchMedia('(pointer: coarse)').matches;

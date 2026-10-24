@@ -1216,66 +1216,38 @@ body {
   overflow: hidden;
 }
 
-.title__sky {
+/* The key art fills the title; its calm side (left, or the top on a phone held upright) holds the words. */
+.title__art img {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 40% at 72% 78%, rgb(150 45 18 / 0.45), transparent 70%),
-    linear-gradient(to bottom, #04040a 0%, #0c0812 55%, #2a1110 78%, #08060a 79%, #050406 100%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% center;
 }
 
-.title__sky::after {
+.title__art::after {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 12% 18%, #cfd6ff, transparent),
-    radial-gradient(1px 1px at 28% 32%, #dfe4ff, transparent),
-    radial-gradient(1.5px 1.5px at 44% 12%, #fff, transparent),
-    radial-gradient(1px 1px at 63% 26%, #cdd4ff, transparent),
-    radial-gradient(1px 1px at 82% 14%, #e6e9ff, transparent),
-    radial-gradient(1px 1px at 90% 40%, #cdd4ff, transparent),
-    radial-gradient(1px 1px at 18% 52%, #dfe4ff, transparent),
-    radial-gradient(1.5px 1.5px at 55% 46%, #fff, transparent);
-  opacity: 0.8;
+  background: linear-gradient(to right, rgb(3 3 6 / 0.82) 0%, rgb(3 3 6 / 0.45) 38%, transparent 62%);
 }
 
-.title__star {
-  position: absolute;
-  left: 72%;
-  top: 74%;
-  width: 92px;
-  height: 92px;
-  margin: -46px 0 0 -46px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #ff8a4a 0%, #ff5a26 45%, #b0300f 70%, transparent 72%);
-  box-shadow:
-    0 0 60px 20px rgb(255 80 30 / 0.35),
-    0 0 160px 60px rgb(255 60 20 / 0.15);
-  animation: dim 9s ease-in-out infinite alternate;
-}
-
-.title__star::after {
-  content: "";
-  position: absolute;
-  inset: -40px;
-  border-radius: 50%;
-  border: 1px dotted rgb(255 190 140 / 0.55);
-  animation: ring 60s linear infinite;
-}
-
-@keyframes dim {
-  from {
-    filter: brightness(1);
+@media (orientation: portrait) {
+  .title {
+    align-items: flex-start;
   }
-  to {
-    filter: brightness(0.72);
-  }
-}
 
-@keyframes ring {
-  to {
-    transform: rotate(360deg);
+  .title__art img {
+    object-position: center bottom;
+  }
+
+  .title__art::after {
+    background: linear-gradient(to bottom, rgb(3 3 6 / 0.85) 0%, rgb(3 3 6 / 0.5) 45%, transparent 70%);
+  }
+
+  .title__panel {
+    margin-top: calc(var(--safe-top) + 4vh);
   }
 }
 
@@ -1485,5 +1457,144 @@ body {
   .hint {
     top: auto;
     bottom: calc(var(--safe-bottom) + 86px);
+  }
+}
+
+/* The codex, over the pause menu: a list of entries and the one being read. */
+.codex {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: calc(var(--safe-top) + 20px) 16px calc(var(--safe-bottom, 0px) + 20px);
+  background: rgb(4 6 10 / 0.94);
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.codex__body {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  gap: 18px;
+  width: min(880px, 100%);
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.codex__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.codex__item {
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  background: rgb(127 212 255 / 0.06);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.codex__item--on {
+  background: rgb(127 212 255 / 0.2);
+}
+
+.codex__entry {
+  max-width: 62ch;
+  line-height: 1.55;
+}
+
+.codex__title {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.codex__label {
+  margin: 14px 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7fd4ff;
+}
+
+.codex__label--fiction {
+  color: #ffb36b;
+}
+
+.codex__text {
+  margin: 0;
+}
+
+.codex__empty {
+  opacity: 0.7;
+}
+
+.codex__close {
+  align-self: center;
+  width: min(320px, 100%);
+  min-height: 48px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(127 212 255 / 0.08);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .codex__body {
+    grid-template-columns: 1fr;
+  }
+
+  .codex__list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* While a chapter loads: its painting, darkened at the foot, and the words over it. */
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px 16px calc(var(--safe-bottom, 0px) + 40px);
+  background-color: #030306;
+  background-size: cover;
+  background-position: center;
+  z-index: 8;
+}
+
+.loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(3 3 6 / 0.85) 0%, transparent 40%);
+}
+
+.loading__text {
+  position: relative;
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  animation: loading-pulse 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes loading-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.55;
   }
 }

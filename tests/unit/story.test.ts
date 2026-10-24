@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Compiler } from 'inkjs/full';
 import { describe, expect, it } from 'vitest';
+import { CODEX } from '../../src/game/codex.ts';
 import { type Beat, type HeroFacts, parseTags, StoryRunner } from '../../src/game/conversation.ts';
 import { type Command, Director, parseCommand } from '../../src/game/director.ts';
 import { ENCOUNTERS } from '../../src/game/encounters.ts';
@@ -19,8 +20,11 @@ const compile = () => {
 };
 const JSON_STORY = compile();
 
-/** Every conversation knot the script opens with `talk` or `scene`. */
-const KNOTS = [...SOURCE.matchAll(/^>>> (?:talk|scene) \w+ (\w+)/gm)].map((m) => m[1] as string);
+/** Every conversation knot the script opens with `talk` or `scene`, and every remark a `look` runs. */
+const KNOTS = [
+  ...[...SOURCE.matchAll(/^>>> (?:talk|scene) \w+ (\w+)/gm)].map((m) => m[1] as string),
+  ...[...SOURCE.matchAll(/^>>> look \w+ \w+ (\w+)/gm)].map((m) => m[1] as string),
+];
 const facts = (origin: string, heroClass: string): HeroFacts => ({
   name: 'Ada',
   heroClass,
@@ -79,6 +83,9 @@ const VERBS = new Set([
   'join',
   'encounter',
   'use',
+  'look',
+  'forget',
+  'codex',
   'down',
   'liftoff',
   'end',
@@ -123,6 +130,15 @@ describe('the slice script', () => {
       if (['open', 'close', 'lock', 'unlock'].includes(c.verb)) expect(doors.has(a), `unknown door: ${a}`).toBe(true);
       if (c.verb === 'marker') expect(marks.has(a), `unknown mark: ${a}`).toBe(true);
       if (c.verb === 'use') expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
+      if (c.verb === 'look') {
+        expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
+        expect(knots.has(c.args[2] ?? ''), `unknown remark: ${c.args[2]}`).toBe(true);
+      }
+      if (c.verb === 'codex')
+        expect(
+          CODEX.some((e) => e.id === a),
+          `unknown codex entry: ${a}`,
+        ).toBe(true);
       if (c.verb === 'encounter') expect(ENCOUNTERS[a], `unknown fight: ${a}`).toBeDefined();
       if (c.verb === 'wait' && !Number.isFinite(Number(a))) {
         for (const event of c.rest.split('|').map((e) => e.trim())) {
@@ -144,8 +160,8 @@ describe('the slice script', () => {
       }
       // And with what the story may have set by then.
       for (const flags of [
-        { met_ilya: true, asked_files: true, ilya_lost: true },
-        { met_ilya: false, asked_files: false, ilya_lost: false },
+        { met_ilya: true, asked_files: true, ilya_lost: true, merrow_warned: true, ilya_brings_curve: true },
+        { met_ilya: false, asked_files: false, ilya_lost: false, merrow_warned: false, ilya_brings_curve: false },
       ]) {
         const runner = () => {
           const r = new StoryRunner(JSON_STORY, facts('ringborn', 'warden'));
@@ -214,6 +230,46 @@ describe('the slice script', () => {
       expect(run.commands.at(-1)?.verb).toBe('end');
       expect(run.runner.variable('first_lead')).not.toBe('');
     }
+  });
+
+  it('opens only codex entries that exist', () => {
+    const tagged = [...SOURCE.matchAll(/#codex: (\S+)/g)].map((m) => m[1] as string);
+    expect(tagged.length).toBeGreaterThan(8);
+    for (const id of tagged)
+      expect(
+        CODEX.some((e) => e.id === id),
+        `unknown codex entry: ${id}`,
+      ).toBe(true);
+    // Every entry can be found somewhere in the slice.
+    for (const e of CODEX) expect(tagged, e.id).toContain(e.id);
+  });
+
+  it('waits while a line is said, and remembers what happened before it waited', () => {
+    const runner = new StoryRunner(JSON_STORY, facts('steader', 'rigger'));
+    runner.story.ChoosePathString('slice.bridge');
+    const said: string[] = [];
+    const director = new Director(runner, {
+      command: () => {},
+      bark: (line) => {
+        said.push(line.id ?? '');
+        return 2;
+      },
+      checkpoint: () => {},
+    });
+    director.step();
+    // The first line of the bridge is said, and the story waits for it.
+    expect(said).toHaveLength(1);
+    expect(director.waiting).toEqual(['time']);
+    director.update(2.1);
+    expect(said).toHaveLength(2);
+    director.update(2.1);
+    expect(director.waiting).toEqual(['talked:dena_ship']);
+    director.event('talked:dena_ship');
+    // Jo before Ren: the story waits for Ren first, and still knows Jo was talked to.
+    director.event('talked:jo_bridge');
+    expect(director.waiting).toEqual(['talked:ren_bridge']);
+    director.event('talked:ren_bridge');
+    expect(director.ended).toBe(true);
   });
 
   it('reads tags as keys and values', () => {

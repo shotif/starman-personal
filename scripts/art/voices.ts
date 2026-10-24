@@ -93,6 +93,12 @@ const SCENE: Record<string, string> = {
   jo_name: '[wry, tired]',
   ren_bridge: '[quiet, tired]',
   jo_bridge: '[wry, relaxed]',
+  sorrel_dark: '[low, haunted]',
+  ilya_dark: '[anxious, quick]',
+  dena_ship: '[tired, warm]',
+  sorrel_ship: '[soft, slow]',
+  pell_ship: '[quiet, rueful]',
+  ilya_ship: '[earnest, tired]',
 };
 const LINE: Record<string, string> = {
   ren_drill_01: '[calm, instructing]',
@@ -148,6 +154,17 @@ const LINE: Record<string, string> = {
   ren_bridge_06: '[quiet, determined]',
   ren_bridge_08: '[warm, dry]',
   jo_bridge_05: '[wry, warm]',
+  ren_bridge_hold: '[quiet, firm]',
+  ren_bridge_curve: '[quiet, resolved]',
+  sorrel_dark_04b: '[quiet, firm]',
+  ilya_dark_02: '[ashamed, quick]',
+  ilya_dark_04a: '[relieved, eager]',
+  dena_ship_02a: '[gentle, sad]',
+  dena_ship_03a: '[wry, warm]',
+  dena_ship_03b: '[sad, quiet]',
+  pell_ship_02a: '[quiet, troubled]',
+  pell_ship_04b: '[wry, steadier]',
+  ilya_ship_04b: '[quiet, determined]',
 };
 const MANNER: Record<string, string> = {
   ask: '[curious]',
@@ -301,7 +318,12 @@ function stitching(lines: Line[]): Map<string, { previous?: string; next?: strin
 }
 
 function directionOf(line: Line): string {
-  if (line.speaker === 'hero') return MANNER[line.manner ?? ''] ?? '[calm, capable]';
+  // The hero's remarks on what they look at are said half to themselves.
+  if (line.speaker === 'hero') {
+    return (
+      MANNER[line.manner ?? ''] ?? (line.knot.startsWith('look_') ? '[quietly, thinking aloud]' : '[calm, capable]')
+    );
+  }
   return LINE[line.id] ?? SCENE[line.knot] ?? '';
 }
 

@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { GameAudio } from '../game/audio.ts';
+import { CODEX } from '../game/codex.ts';
 import type { Conversation } from '../game/conversation.ts';
 import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
 import type { Renderer } from '../game/engine.ts';
 import type { Ending, Game, GameStats, OrderKind, Prompt, SaveData, Vitals } from '../game/game.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
+import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
-import { DIFFICULTY_KEY, isTouch, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
+import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
@@ -92,7 +94,10 @@ export function GameView({
   const [ending, setEnding] = useState<Ending | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [note, setNote] = useState<{ text: string; id: number } | null>(null);
+  const [codex, setCodex] = useState<string[]>(readCodex);
+  const [reading, setReading] = useState(false);
   const touch = isTouch();
+  const chapterAtStart = saved?.checkpoint ?? new URLSearchParams(location.search).get('chapter') ?? 'night_shift';
   const debug = new URLSearchParams(location.search).has('debug');
 
   useEffect(() => {
@@ -153,6 +158,16 @@ export function GameView({
             save(SAVE_KEY, JSON.stringify(data));
             setSavedAt(performance.now());
             document.body.dataset.checkpoint = data.checkpoint;
+          },
+          onCodex: (id) => {
+            setCodex((open) => {
+              if (open.includes(id)) return open;
+              const next = [...open, id];
+              keepCodex(next);
+              const title = CODEX.find((e) => e.id === id)?.title ?? id;
+              setNote({ text: `Codex: ${title}`, id: performance.now() });
+              return next;
+            });
           },
           onEnd: (e) => {
             setEnding(e);
@@ -226,6 +241,7 @@ export function GameView({
     setConversation(null);
   };
   const pause = (on: boolean) => {
+    if (!on) setReading(false);
     pausedNow.current = on;
     setPaused(on);
     game?.setPaused(on);
@@ -323,7 +339,14 @@ export function GameView({
           ❚❚
         </button>
       )}
-      {status.kind === 'loading' && <p class="notice">Loading Calder Station…</p>}
+      {status.kind === 'loading' && (
+        <div
+          class="loading"
+          style={{ backgroundImage: `url(${PICTURES}${LOADING_PICTURE[chapterAtStart] ?? 'loading-lounge'}.webp)` }}
+        >
+          <p class="loading__text">Loading Calder Station…</p>
+        </div>
+      )}
       {status.kind === 'error' && (
         <div class="notice notice--error" role="alert">
           <p>The game could not start.</p>
@@ -445,6 +468,9 @@ export function GameView({
           <button type="button" onClick={() => pause(false)}>
             Resume
           </button>
+          <button type="button" onClick={() => setReading(true)}>
+            Codex ({codex.length})
+          </button>
           <button type="button" onClick={changeDifficulty}>
             Difficulty: {DIFFICULTY[difficulty].name}
           </button>
@@ -457,6 +483,7 @@ export function GameView({
           <p class="pause__note">The game saves at every checkpoint.</p>
         </div>
       )}
+      {paused && reading && <Codex open={codex} onClose={() => setReading(false)} />}
       {black && <div class="fade" aria-hidden="true" />}
       {ending && (
         <div class="ending" role="dialog" aria-label="The end of the prologue">

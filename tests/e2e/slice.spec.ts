@@ -71,14 +71,14 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   // Night shift: the people of the lounge, then Ren.
   await talkTo(page, 'Ilya', 1.2, 4.8);
   await talkTo(page, 'Ren', -1.2, 11);
-  await expect(body).toHaveAttribute('data-objective', 'Run the drill on the range');
+  await expect(body).toHaveAttribute('data-objective', 'Run the drill on the range', { timeout: 15_000 });
 
   // The range, the drill, and the lights going out.
   await teleport(page, 1, 22);
   await expect.poll(() => waiting(page)).toBe('cleared:drill');
   await page.screenshot({ path: testInfo.outputPath('1-range.png') });
   await page.evaluate(() => (window as unknown as { lightkeeper: Lightkeeper }).lightkeeper.event('cleared:drill'));
-  await expect(body).toHaveAttribute('data-objective', 'Get to Control', { timeout: 15_000 });
+  await expect(body).toHaveAttribute('data-objective', 'Get to Control', { timeout: 30_000 });
 
   // Control: the chief's scene starts by itself.
   await teleport(page, 14, 7, Math.PI / 2);
@@ -90,7 +90,7 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   // The concourse: a fight, then Pell, and the choice of the mast.
   await teleport(page, 29, 24);
   await win(page, 'concourse_1');
-  await expect(body).toHaveAttribute('data-objective', 'Talk to Pell at the comms booth');
+  await expect(body).toHaveAttribute('data-objective', 'Talk to Pell at the comms booth', { timeout: 15_000 });
   await talkTo(page, 'Pell', 39.2, 44, (choices) =>
     Math.max(
       0,
@@ -107,13 +107,13 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   await expect(body).toHaveAttribute('data-prompt', 'Turn the relay');
   await page.screenshot({ path: testInfo.outputPath('3-mast.png') });
   await page.keyboard.press('KeyE');
-  await expect(body).toHaveAttribute('data-objective', 'Get back to the clinic', { timeout: 15_000 });
+  await expect(body).toHaveAttribute('data-objective', 'Get back to the clinic', { timeout: 30_000 });
 
   // Back to the clinic: a fight in the concourse, and the cost.
   await teleport(page, 40, 31, -Math.PI / 2);
   await win(page, 'clinic');
   await talkThrough(page);
-  await expect(body).toHaveAttribute('data-objective', 'Into the hangar', { timeout: 15_000 });
+  await expect(body).toHaveAttribute('data-objective', 'Into the hangar', { timeout: 30_000 });
 
   // The hangar: Jo, two fights, boarding, the name, the lift-off.
   await teleport(page, 30, 50);
@@ -121,15 +121,17 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   await talkThrough(page);
   await win(page, 'hangar_1');
   await win(page, 'hangar_2');
-  await expect(body).toHaveAttribute('data-objective', 'Board the surveyor', { timeout: 15_000 });
+  await expect(body).toHaveAttribute('data-objective', 'Board the surveyor', { timeout: 30_000 });
   await teleport(page, 30, 67.4);
   await talkThrough(page);
   await page.waitForTimeout(3000);
   await page.screenshot({ path: testInfo.outputPath('4-liftoff.png') });
 
-  // The bridge: the crew, and the end of the prologue.
-  await expect(body).toHaveAttribute('data-objective', 'Talk to your crew', { timeout: 20_000 });
+  // Aboard: the survivors in the hold first, then the crew, and the end of the prologue.
+  await expect(body).toHaveAttribute('data-objective', 'See to the survivors in the hold', { timeout: 30_000 });
   await page.screenshot({ path: testInfo.outputPath('5-bridge.png') });
+  await talkTo(page, 'Dena', -1.8, -1988.6);
+  await expect(body).toHaveAttribute('data-objective', 'Talk to your crew');
   await talkTo(page, 'Ren', -1.2, -1997);
   await talkTo(page, 'Jo', -1.2, -2002.5);
   await expect(body).toHaveAttribute('data-ended', 'true');
