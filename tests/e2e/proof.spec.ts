@@ -102,3 +102,42 @@ test('walking into the corridor crate takes cover', async ({ page }, testInfo) =
   await page.waitForTimeout(800);
   await page.screenshot({ path: testInfo.outputPath('cover.png') });
 });
+
+const said = (page: import('@playwright/test').Page) => page.locator('body').getAttribute('data-said');
+
+test('orders: the command view opens, and Ren answers each order', async ({ page }, testInfo) => {
+  await page.goto('./');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  const dialog = page.getByRole('dialog', { name: 'Orders for Ren' });
+  if (testInfo.project.name === 'phone') {
+    await page.getByRole('button', { name: 'Orders' }).tap();
+    await expect(dialog).toBeVisible();
+    await page.getByRole('button', { name: /Follow me/ }).tap();
+  } else {
+    await page.keyboard.press('KeyQ');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Digit3');
+  }
+  await expect(dialog).toBeHidden();
+  await expect.poll(() => said(page)).toBe('With you.');
+  await expect(page.getByRole('status')).toContainText('Ren:');
+});
+
+test('orders: Ren attacks a drone until it is down', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
+  await page.setViewportSize({ width: 800, height: 500 });
+  await page.goto('./?debug&quality=low');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  // Stand in the room looking level at the middle drone.
+  await page.evaluate(() =>
+    (
+      window as unknown as { lightkeeper: { teleport(x: number, z: number, yaw: number, beta: number): void } }
+    ).lightkeeper.teleport(0.8, 29, 0, 1.6),
+  );
+  await page.waitForTimeout(1000);
+  await page.keyboard.press('KeyQ');
+  await page.keyboard.press('Digit2');
+  await expect.poll(() => said(page)).toBe('On it.');
+  await expect.poll(() => said(page), { timeout: 60_000 }).toBe('Target down.');
+  await page.screenshot({ path: testInfo.outputPath('attack.png') });
+});

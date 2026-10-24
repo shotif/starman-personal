@@ -21,6 +21,9 @@
     "key:meshy": "bash scripts/set-meshy-key.sh",
     "art:materials": "node scripts/art/materials.ts",
     "art:trellis": "node scripts/art/trellis.ts",
+    "art:concepts": "node scripts/art/concepts.ts",
+    "art:meshy": "node scripts/art/meshy.ts",
+    "art:props": "node scripts/art/props.ts",
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
@@ -37,8 +40,13 @@
   "devDependencies": {
     "@biomejs/biome": "2.6.2",
     "@gltf-transform/cli": "4.5.1",
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
     "@playwright/test": "1.56.1",
     "@types/node": "24.19.2",
+    "meshoptimizer": "1.2.0",
+    "sharp": "0.35.5",
     "typescript": "7.0.2",
     "vite": "8.3.5",
     "vitest": "5.0.5"

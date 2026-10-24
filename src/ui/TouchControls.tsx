@@ -11,7 +11,16 @@ const LOOK_SCALE = 1.5;
  * Phone controls (D-02, D-17): a stick that appears under the left thumb, a look area for the
  * right thumb, and a run toggle. Each area follows its own finger, so both work at once.
  */
-export function TouchControls({ input }: { input: Input }) {
+export function TouchControls({
+  input,
+  commanding,
+  onOrders,
+}: {
+  input: Input;
+  /** In the command view only the look area stays, to point the crosshair. */
+  commanding: boolean;
+  onOrders: () => void;
+}) {
   const stickFinger = useRef<number | null>(null);
   const stickOrigin = useRef({ x: 0, y: 0 });
   const lookFinger = useRef<number | null>(null);
@@ -103,14 +112,16 @@ export function TouchControls({ input }: { input: Input }) {
 
   return (
     <div class="touch">
-      <div
-        class="touch__move"
-        data-testid="touch-move"
-        onPointerDown={stickDown}
-        onPointerMove={stickMove}
-        onPointerUp={stickUp}
-        onPointerCancel={stickUp}
-      />
+      {!commanding && (
+        <div
+          class="touch__move"
+          data-testid="touch-move"
+          onPointerDown={stickDown}
+          onPointerMove={stickMove}
+          onPointerUp={stickUp}
+          onPointerCancel={stickUp}
+        />
+      )}
       <div
         class="touch__look"
         data-testid="touch-look"
@@ -119,38 +130,52 @@ export function TouchControls({ input }: { input: Input }) {
         onPointerUp={lookUp}
         onPointerCancel={lookUp}
       />
-      {stick && (
-        <div class="stick" style={{ left: `${stick.x}px`, top: `${stick.y}px` }} aria-hidden="true">
-          <div class="stick__knob" style={{ transform: `translate(${stick.dx}px, ${stick.dy}px)` }} />
-        </div>
+      {!commanding && (
+        <>
+          {stick && (
+            <div class="stick" style={{ left: `${stick.x}px`, top: `${stick.y}px` }} aria-hidden="true">
+              <div class="stick__knob" style={{ transform: `translate(${stick.dx}px, ${stick.dy}px)` }} />
+            </div>
+          )}
+          <button
+            type="button"
+            class={`touch__run${running ? ' touch__run--on' : ''}`}
+            aria-pressed={running}
+            onPointerDown={runDown}
+            onClick={runClick}
+          >
+            Run
+          </button>
+          <button
+            type="button"
+            class="touch__orders"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              onOrders();
+            }}
+          >
+            Orders
+          </button>
+          <button
+            type="button"
+            class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}
+            aria-pressed={aiming}
+            onPointerDown={aimDown}
+            onClick={aimClick}
+          >
+            Aim
+          </button>
+          <button
+            type="button"
+            class={`touch__fire${firing ? ' touch__fire--on' : ''}`}
+            onPointerDown={fireDown}
+            onPointerUp={fireUp}
+            onPointerCancel={fireUp}
+          >
+            Fire
+          </button>
+        </>
       )}
-      <button
-        type="button"
-        class={`touch__run${running ? ' touch__run--on' : ''}`}
-        aria-pressed={running}
-        onPointerDown={runDown}
-        onClick={runClick}
-      >
-        Run
-      </button>
-      <button
-        type="button"
-        class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}
-        aria-pressed={aiming}
-        onPointerDown={aimDown}
-        onClick={aimClick}
-      >
-        Aim
-      </button>
-      <button
-        type="button"
-        class={`touch__fire${firing ? ' touch__fire--on' : ''}`}
-        onPointerDown={fireDown}
-        onPointerUp={fireUp}
-        onPointerCancel={fireUp}
-      >
-        Fire
-      </button>
     </div>
   );
 }

@@ -1,0 +1,44 @@
+{
+  "props": [
+    {
+      "subject": "sidearm",
+      "tool": "trellis",
+      "label": "trellis.cpp (open source)",
+      "file": "sidearm-trellis.glb",
+      "size": 0.24,
+      "triangles": 18198
+    },
+    {
+      "subject": "sidearm",
+      "tool": "meshy",
+      "label": "Meshy (paid)",
+      "file": "sidearm-meshy.glb",
+      "size": 0.24,
+      "triangles": 14266
+    },
+    {
+      "subject": "helmet",
+      "tool": "meshy",
+      "label": "Meshy (paid)",
+      "file": "helmet-meshy.glb",
+      "size": 0.36,
+      "triangles": 14999
+    },
+    {
+      "subject": "locker",
+      "tool": "meshy",
+      "label": "Meshy (paid)",
+      "file": "locker-meshy.glb",
+      "size": 1.25,
+      "triangles": 13566
+    },
+    {
+      "subject": "terminal",
+      "tool": "meshy",
+      "label": "Meshy (paid)",
+      "file": "terminal-meshy.glb",
+      "size": 0.62,
+      "triangles": 14792
+    }
+  ]
+}

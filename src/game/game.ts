@@ -1,6 +1,5 @@
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
-import { CreateNavigationPluginAsync } from '@babylonjs/addons/navigation';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import type { AbstractEngine } from '@babylonjs/core/Engines/abstractEngine';
 import { Engine } from '@babylonjs/core/Engines/engine';
@@ -17,12 +16,12 @@ import { HavokPlugin } from '@babylonjs/core/Physics/v2/Plugins/havokPlugin';
 import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
-import * as RecastCore from '@recast-navigation/core';
-import * as RecastGenerators from '@recast-navigation/generators';
-import { pickAssistTarget } from './aim.ts';
+import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { type Character, loadCharacterTemplate, spawnCharacter } from './characters.ts';
 import { buildRange } from './combat.ts';
+import { spawnCompanion } from './companion.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
+import { buildGallery } from './gallery.ts';
 import { Input } from './input.ts';
 import { buildLevel } from './level.ts';
 import {
@@ -52,8 +51,15 @@ export interface GameStats {
   dronesDown: number;
 }
 
+/** The orders of the command view (ORDERS.md). */
+export type OrderKind = 'go' | 'attack' | 'follow';
+
 export interface Game {
   input: Input;
+  /** Opens or closes the command view, where time nearly stops. */
+  setCommandView(open: boolean): void;
+  /** Gives the companion an order about what the crosshair points at, and closes the command view. */
+  order(kind: OrderKind): void;
   dispose(): void;
 }
 
@@ -69,6 +75,8 @@ export interface GameOptions {
   onReady(): void;
   /** Called when the hero starts or stops aiming, to show the crosshair. */
   onAim(aiming: boolean): void;
+  /** A companion says something (ORDERS.md). */
+  onSay(name: string, line: string): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
@@ -81,8 +89,10 @@ const CAMERA = { minDistance: 0.9, eye: 1.55, coverEye: 1.05, minBeta: 0.55, max
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
-const DRONES = [new Vector3(-4.5, 1.6, 36.5), new Vector3(0, 1.9, 37), new Vector3(4.8, 1.4, 31.5)];
+const DRONES = [new Vector3(-2.6, 1.7, 37.2), new Vector3(0.8, 1.9, 37), new Vector3(4.8, 1.4, 31.5)];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+/** How fast time runs in the command view. */
+const COMMAND_TIME = 0.05;
 
 async function createEngine(canvas: HTMLCanvasElement, options: GameOptions): Promise<AbstractEngine> {
   const q = QUALITY[options.tier];
@@ -123,7 +133,6 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
     scene,
   );
-  const follow = await companionFollower(scene, level.navigationMeshes, companion, level.companionStart);
 
   const camera = new ArcRotateCamera('camera', -Math.PI / 2, 1.2, 3.4, level.heroStart.clone(), scene);
   camera.inputs.clear();
@@ -131,6 +140,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   camera.fov = CAMERA.fov;
 
   const range = buildRange(scene, DRONES, q.maxLights);
+  // The style test's props; the scene starts without waiting for them.
+  buildGallery(scene, q.maxLights).catch((error: unknown) => console.warn('The gallery could not load.', error));
   const input = new Input(canvas);
   const ray = new PhysicsRaycastResult();
   let heroYaw = 0;
@@ -155,6 +166,52 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           body: ray.body,
         }
       : null;
+  };
+
+  const ren = await spawnCompanion(
+    scene,
+    level.navigationMeshes,
+    companion,
+    level.companionStart,
+    { range, cast },
+    (line) => options.onSay('Ren', line),
+  );
+  let commanding = false;
+
+  /** The camera's view: where it is and where it looks. */
+  const view = () => {
+    const from = camera.globalPosition.clone();
+    return { from, dir: camera.getTarget().subtract(from).normalize() };
+  };
+
+  /** An order about what the crosshair points at (ORDERS.md). */
+  const order = (kind: OrderKind) => {
+    const { from, dir } = view();
+    if (kind === 'follow') {
+      ren.order({ kind: 'follow' });
+    } else if (kind === 'attack') {
+      const id = pickAssistTarget(range.candidates(from), dir, ASSIST_CONE * 1.5);
+      if (id === null) options.onSay('Ren', 'No target there.');
+      else ren.order({ kind: 'attack', target: id });
+    } else {
+      const struck = cast(from.add(dir.scale(0.3)), from.add(dir.scale(SHOT_RANGE)));
+      const drone = range.droneOf(struck?.body);
+      if (!struck) options.onSay('Ren', "I can't reach that.");
+      else if (drone !== null) ren.order({ kind: 'attack', target: drone });
+      else {
+        // On the floor, that spot; against a wall or a crate, just in front of it.
+        const at = struck.normal.y > 0.6 ? struck.point : struck.point.add(struck.normal.scale(0.7));
+        ren.order({ kind: 'hold', at: { x: at.x, y: hero.root.position.y, z: at.z } });
+      }
+    }
+    setCommandView(false);
+  };
+
+  const setCommandView = (open: boolean) => {
+    commanding = open;
+    const factor = open ? COMMAND_TIME : 1;
+    scene.animationTimeScale = factor;
+    ren.setTimeFactor(factor);
   };
 
   /** The two cover rays from the hero's feet along a ground direction (COVER_AND_AIM.md). */
@@ -199,8 +256,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
 
   scene.onBeforeRenderObservable.add(() => {
-    const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
-    const aiming = input.aiming || input.firing;
+    // In the command view time nearly stops: the game's rules run slow, the camera does not.
+    const dt = Math.min(engine.getDeltaTime() / 1000, 0.1) * (commanding ? COMMAND_TIME : 1);
+    const aiming = !commanding && (input.aiming || input.firing);
     if (aiming !== wasAiming) {
       wasAiming = aiming;
       options.onAim(aiming);
@@ -214,7 +272,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // Move: relative to where the camera looks.
     const forward: Vec3Like = { x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) };
-    const move = input.move();
+    const move = commanding ? { x: 0, y: 0 } : input.move();
     const push = Math.min(1, Math.hypot(move.x, move.y));
     const direction = cameraRelative(move, forward);
     const length = Math.hypot(direction.x, direction.z);
@@ -275,17 +333,18 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // Shoot: where the crosshair points, or at the nearest drone near it with aim assist.
     fireCooldown -= dt;
     shotPose -= dt;
-    if (input.firing && fireCooldown <= 0) {
+    if (!commanding && input.firing && fireCooldown <= 0) {
       fireCooldown = FIRE_INTERVAL;
       shoot();
     }
     range.update(dt);
-    follow.update(dt, hero.root.position, heroForward);
+    ren.update(dt, hero.root.position, heroForward);
 
-    // Camera: over the right shoulder, closer while aiming and lower in cover, pulled in when a
-    // wall is in the way. On a portrait phone the view is narrow, so it stands further back.
-    aimBlend = lerp(aimBlend, aiming ? 1 : 0, Math.min(1, dt * 9));
-    coverBlend = lerp(coverBlend, cover.inCover && !aiming ? 1 : 0, Math.min(1, dt * 6));
+    // Camera: over the right shoulder, closer while aiming or giving orders and lower in cover,
+    // pulled in when a wall is in the way. On a portrait phone it stands further back.
+    const real = Math.min(engine.getDeltaTime() / 1000, 0.1);
+    aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
+    coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
     const shoulder = lerp(framing.shoulder, Math.max(framing.shoulder, 0.6), aimBlend);
@@ -323,8 +382,24 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const facing = () => ({ x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) });
     Object.assign(window, {
       lightkeeper: {
-        state: () => ({ feet: hero.root.position.asArray(), cover, aiming: input.aiming, shots }),
+        state: () => ({
+          feet: hero.root.position.asArray(),
+          cover,
+          aiming: input.aiming,
+          shots,
+          commanding,
+          companion: { objective: ren.objective, feet: companion.root.position.asArray() },
+        }),
         probe: () => probeCover(hero.root.position, facing()),
+        /**
+         * Moves the hero (feet at x, z) and turns the camera to look along yaw (radians, 0 = +z),
+         * pitched by beta (the camera's polar angle; about 1.55 looks level).
+         */
+        teleport: (x: number, z: number, yaw = 0, beta = camera.beta) => {
+          controller.setPosition(new Vector3(x, CAPSULE_HEIGHT / 2 + 0.05, z));
+          camera.alpha = -Math.PI / 2 - yaw;
+          camera.beta = beta;
+        },
       },
     });
   }
@@ -346,7 +421,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         tier: options.tier,
         activeMeshes: scene.getActiveMeshes().length,
         speed: Math.hypot(controller.getVelocity().x, controller.getVelocity().z),
-        companionNavigation: follow.navigated,
+        companionNavigation: ren.navigated,
         inCover: cover.inCover,
         shots,
         dronesDown: range.down,
@@ -362,6 +437,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   return {
     input,
+    setCommandView,
+    order,
     dispose() {
       window.removeEventListener('resize', onResize);
       input.dispose();
@@ -433,101 +510,4 @@ function characterVelocity(
   output.addInPlace(UP.scale(-output.dot(UP)));
   output.addInPlace(UP.scale(current.dot(UP)));
   return output.addInPlace(GRAVITY.scale(dt));
-}
-
-interface Follower {
-  /** Whether the companion walks the navigation mesh (false: the simple fallback). */
-  navigated: boolean;
-  update(dt: number, heroFeet: Vector3, heroForward: Vector3): void;
-}
-
-/**
- * For the proof the companion has one standing objective, "stay with me": keep a couple of metres
- * behind the hero on the navigation mesh. Real objectives (D-16) build on this.
- */
-async function companionFollower(
-  scene: Scene,
-  meshes: Mesh[],
-  companion: Character,
-  start: Vector3,
-): Promise<Follower> {
-  companion.root.position.copyFrom(start);
-  let yaw = 0;
-  let sinceGoal = 1;
-  try {
-    await RecastCore.init();
-    const navigation = await CreateNavigationPluginAsync({ instance: { ...RecastCore, ...RecastGenerators } });
-    navigation.createNavMesh(meshes, {
-      cs: 0.15,
-      ch: 0.1,
-      walkableSlopeAngle: 40,
-      walkableHeight: 18,
-      walkableClimb: 3,
-      walkableRadius: 3,
-      maxEdgeLen: 40,
-      maxSimplificationError: 1.3,
-      minRegionArea: 8,
-      mergeRegionArea: 20,
-      maxVertsPerPoly: 6,
-      detailSampleDist: 6,
-      detailSampleMaxError: 1,
-    });
-    const crowd = navigation.createCrowd(4, 0.5, scene);
-    const agent = crowd.addAgent(
-      navigation.getClosestPoint(start),
-      {
-        radius: 0.35,
-        height: 1.8,
-        maxAcceleration: 14,
-        maxSpeed: 6.8,
-        collisionQueryRange: 2,
-        pathOptimizationRange: 4,
-        separationWeight: 1,
-      },
-      companion.root,
-    );
-    return {
-      navigated: true,
-      update(dt, heroFeet, heroForward) {
-        sinceGoal += dt;
-        const here = crowd.getAgentPosition(agent);
-        const distance = Vector3.Distance(here, heroFeet);
-        if (sinceGoal > 0.3) {
-          sinceGoal = 0;
-          if (distance > 2.6) {
-            const goal = heroFeet
-              .subtract(heroForward.scale(1.6))
-              .add(new Vector3(-heroForward.z, 0, heroForward.x).scale(0.9));
-            crowd.agentGoto(agent, navigation.getClosestPoint(goal));
-          } else if (distance < 1.6) {
-            crowd.agentGoto(agent, here);
-          }
-        }
-        const velocity = crowd.getAgentVelocity(agent);
-        const speed = Math.hypot(velocity.x, velocity.z);
-        if (speed > 0.2) yaw = turnTowards(yaw, yawOf(velocity), 8 * dt);
-        companion.root.rotation.y = yaw;
-        companion.setPose(poseWeights({ mode: 'move', speed }), dt);
-      },
-    };
-  } catch (error) {
-    console.warn('Navigation could not start; the companion follows directly.', error);
-    return {
-      navigated: false,
-      update(dt, heroFeet, heroForward) {
-        const goal = heroFeet.subtract(heroForward.scale(1.8));
-        const offset = goal.subtract(companion.root.position);
-        offset.y = 0;
-        const distance = offset.length();
-        const speed = distance > 0.4 ? Math.min(6.5, distance * 2.5) : 0;
-        if (speed > 0) {
-          companion.root.position.addInPlace(offset.normalize().scale(speed * dt));
-          yaw = turnTowards(yaw, yawOf(offset), 8 * dt);
-        }
-        companion.root.position.y = heroFeet.y;
-        companion.root.rotation.y = yaw;
-        companion.setPose(poseWeights({ mode: 'move', speed }), dt);
-      },
-    };
-  }
 }

@@ -1,0 +1,215 @@
+{
+  "about": "The style test's props (docs/design/STYLE_TEST.md): where each file in public/assets/props/ came from. Concepts are Gemini pictures (the owner's to use under Google's terms); trellis.cpp models are made locally from them (TRELLIS.2, MIT); Meshy models are made with the owner's paid plan, which leaves them the owner's.",
+  "props": [
+    {
+      "output": "public/assets/props/sidearm-trellis.glb",
+      "bytes": 765712,
+      "sha256": "afc13aca76c558e9e81da60723fad5bd55afc8b7da545c2f4970623b8ff23e5b",
+      "triangles": {
+        "made": 146226,
+        "shipped": 18198
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/sidearm.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "name": "sidearm-trellis",
+        "made": "2026-10-24T16:15:07.446Z",
+        "seconds": 438,
+        "input": {
+          "file": "sidearm.jpg",
+          "bytes": 2088194,
+          "sha256": "ed301924782f1bd134e664af15c61c985b7d5185d4721f4b303faaa7146888cd"
+        },
+        "output": {
+          "file": "art/out/sidearm-trellis.glb",
+          "bytes": 5481620,
+          "sha256": "81279446641020f17529dc8c1967623cf465f201f42b83b21498bbcb6cd8ea6a"
+        },
+        "settings": {
+          "res": 512,
+          "seed": 42,
+          "network": "denied"
+        },
+        "tool": {
+          "name": "trellis.cpp",
+          "version": "v0.8.1",
+          "commit": "c0bed38c1578f7e36e3e50c8ff1e38fa0d47583f"
+        },
+        "weights": {
+          "repository": "ilintar/trellis2-gguf",
+          "revision": "a57397bd3d351599d9729fc144b3f87c3f87d65b"
+        },
+        "licences": [
+          "TRELLIS.2 (Microsoft): MIT",
+          "trellis.cpp: MIT",
+          "DINOv3 image encoder (Meta): DINOv3 Licence; no claim over outputs",
+          "BiRefNet background removal: MIT"
+        ]
+      }
+    },
+    {
+      "output": "public/assets/props/sidearm-meshy.glb",
+      "bytes": 786820,
+      "sha256": "efd0996197f7610d10d43eb7adfc063911010a6d53167881deb7aea1103adc60",
+      "triangles": {
+        "made": 14266,
+        "shipped": 14266
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/sidearm.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "id": "sidearm-meshy",
+        "service": "Meshy image-to-3D",
+        "task": "01a16eab-2c4f-751f-8948-97737fc0577f",
+        "settings": {
+          "ai_model": "latest",
+          "should_remesh": true,
+          "topology": "triangle",
+          "target_polycount": 15000,
+          "should_texture": true,
+          "enable_pbr": true,
+          "texture_resolution": "2k",
+          "target_formats": [
+            "glb"
+          ],
+          "origin_at": "bottom"
+        },
+        "credits": 30,
+        "seconds": 119,
+        "made": "2026-10-24T16:09:52.487Z",
+        "input": {
+          "file": "art/out/concepts/sidearm.jpg",
+          "sha256": "ed301924782f1bd134e664af15c61c985b7d5185d4721f4b303faaa7146888cd"
+        },
+        "output": {
+          "bytes": 10438104,
+          "sha256": "cafe90a673aebc99abe9bb022f4720be2f272e880478b0a40e2739287651dd0e"
+        },
+        "licence": "Meshy paid plan: private, the owner's to use commercially"
+      }
+    },
+    {
+      "output": "public/assets/props/helmet-meshy.glb",
+      "bytes": 1003020,
+      "sha256": "d65d555800844771ab064a6dbb6d0b9b24e0697752f436ecc51a7c4ed724f2ec",
+      "triangles": {
+        "made": 15059,
+        "shipped": 14999
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/helmet.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "id": "helmet-meshy",
+        "service": "Meshy image-to-3D",
+        "task": "01a16eab-2c4d-757c-91ce-661db2f5c3d7",
+        "settings": {
+          "ai_model": "latest",
+          "should_remesh": true,
+          "topology": "triangle",
+          "target_polycount": 15000,
+          "should_texture": true,
+          "enable_pbr": true,
+          "texture_resolution": "2k",
+          "target_formats": [
+            "glb"
+          ],
+          "origin_at": "bottom"
+        },
+        "credits": 30,
+        "seconds": 151,
+        "made": "2026-10-24T16:10:24.264Z",
+        "input": {
+          "file": "art/out/concepts/helmet.jpg",
+          "sha256": "7eb94d30c38f4035aef420560fb1fd38bd5ecc9b96b49d3c61305d7fa8b25918"
+        },
+        "output": {
+          "bytes": 12675972,
+          "sha256": "88a1d6a41c1154934292bf77627b0fa2ab9ebba84938aa25dd47777335b97b4c"
+        },
+        "licence": "Meshy paid plan: private, the owner's to use commercially"
+      }
+    },
+    {
+      "output": "public/assets/props/locker-meshy.glb",
+      "bytes": 759656,
+      "sha256": "b96a95edabea4c04086b01cc558abea2b2bfa122102511c2ed7871e897dabcd4",
+      "triangles": {
+        "made": 13566,
+        "shipped": 13566
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/locker.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "id": "locker-meshy",
+        "service": "Meshy image-to-3D",
+        "task": "01a16eab-2c4f-7520-a4d0-a4034f6fc1ac",
+        "settings": {
+          "ai_model": "latest",
+          "should_remesh": true,
+          "topology": "triangle",
+          "target_polycount": 15000,
+          "should_texture": true,
+          "enable_pbr": true,
+          "texture_resolution": "2k",
+          "target_formats": [
+            "glb"
+          ],
+          "origin_at": "bottom"
+        },
+        "credits": 30,
+        "seconds": 172,
+        "made": "2026-10-24T16:10:45.218Z",
+        "input": {
+          "file": "art/out/concepts/locker.jpg",
+          "sha256": "7942af05494e621cfab43ccbc9c7a327c19c91b74016aec17b058687dcb4d192"
+        },
+        "output": {
+          "bytes": 9004120,
+          "sha256": "7d27e1f88d04b3d51891b76e2c60885dc61ee8216371cf7b0392854392f88734"
+        },
+        "licence": "Meshy paid plan: private, the owner's to use commercially"
+      }
+    },
+    {
+      "output": "public/assets/props/terminal-meshy.glb",
+      "bytes": 933428,
+      "sha256": "dea6f6f1b5eea34ded5f4b5df8358b2f0352960a7ab7494ee50d1007afeaa149",
+      "triangles": {
+        "made": 14792,
+        "shipped": 14792
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/terminal.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "id": "terminal-meshy",
+        "service": "Meshy image-to-3D",
+        "task": "01a16eab-2c4f-717b-beab-6894cc1c718f",
+        "settings": {
+          "ai_model": "latest",
+          "should_remesh": true,
+          "topology": "triangle",
+          "target_polycount": 15000,
+          "should_texture": true,
+          "enable_pbr": true,
+          "texture_resolution": "2k",
+          "target_formats": [
+            "glb"
+          ],
+          "origin_at": "bottom"
+        },
+        "credits": 30,
+        "seconds": 151,
+        "made": "2026-10-24T16:10:24.295Z",
+        "input": {
+          "file": "art/out/concepts/terminal.jpg",
+          "sha256": "a032efcdace74ecf59e2f34ca1c30ed6daa05f195cc205c37640a8771b5bd021"
+        },
+        "output": {
+          "bytes": 11703924,
+          "sha256": "ec16f01063a853bcbc5d8e077bf0a9a79eba2ea10a12cff62476a19249d19909"
+        },
+        "licence": "Meshy paid plan: private, the owner's to use commercially"
+      }
+    }
+  ]
+}

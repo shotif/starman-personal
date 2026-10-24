@@ -274,3 +274,96 @@ body {
   border-radius: 50%;
   background: rgb(232 237 242 / 0.95);
 }
+
+.touch__orders {
+  position: absolute;
+  right: calc(var(--safe-right) + 18px);
+  top: calc(var(--safe-top) + 14px);
+  padding: 10px 14px;
+  min-height: 44px;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel);
+  border: 2px solid var(--panel-edge);
+  touch-action: none;
+}
+
+.said {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--safe-top) + 120px);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 8px 14px;
+  max-width: calc(100vw - 32px);
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.said__name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.orders {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 24px);
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 32px));
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  z-index: 4;
+}
+
+.orders__title {
+  margin: 0 0 10px;
+  color: var(--ink-dim);
+  font-size: 13px;
+  text-align: center;
+}
+
+.orders__buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.orders__buttons button {
+  min-height: 52px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(127 212 255 / 0.12);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.orders__buttons .orders__back {
+  background: transparent;
+}
+
+.orders kbd {
+  margin-left: 6px;
+  padding: 1px 6px;
+  font:
+    12px ui-monospace,
+    monospace;
+  color: var(--ink-dim);
+  border: 1px solid var(--panel-edge);
+  border-radius: 4px;
+}
+
+@media (min-width: 700px) {
+  .orders__buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

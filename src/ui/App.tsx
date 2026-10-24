@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import type { Game, GameStats } from '../game/game.ts';
+import type { Game, GameStats, OrderKind } from '../game/game.ts';
 import { chooseQuality, isQualityTier, nextTier, type QualityTier } from '../game/quality.ts';
 import { TouchControls } from './TouchControls.tsx';
 
@@ -34,6 +34,10 @@ export function App() {
   const [stats, setStats] = useState<GameStats | null>(null);
   const [tier] = useState(startingTier);
   const [aiming, setAiming] = useState(false);
+  const [commanding, setCommanding] = useState(false);
+  /** The command view's state for the key handler, which may run before the screen re-renders. */
+  const commandingNow = useRef(false);
+  const [line, setLine] = useState<{ name: string; text: string; id: number } | null>(null);
   const touch = isTouch();
 
   useEffect(() => {
@@ -52,6 +56,11 @@ export function App() {
           hero,
           assist: isTouch(),
           onAim: setAiming,
+          onSay: (name, text) => {
+            setLine({ name, text, id: performance.now() });
+            // For the browser journeys: the last thing the companion said.
+            document.body.dataset.said = text;
+          },
           onStats: (s) => {
             setStats(s);
             // For the browser journeys: how many shots, and how many drones are down.
@@ -80,6 +89,42 @@ export function App() {
       started?.dispose();
     };
   }, [tier]);
+
+  // A companion's line stays for a few seconds.
+  useEffect(() => {
+    if (!line) return;
+    const timer = setTimeout(() => setLine(null), 2800);
+    return () => clearTimeout(timer);
+  }, [line]);
+
+  const openCommand = (open: boolean) => {
+    game?.setCommandView(open);
+    commandingNow.current = open;
+    setCommanding(open);
+  };
+  const give = (kind: OrderKind) => {
+    game?.order(kind);
+    commandingNow.current = false;
+    setCommanding(false);
+  };
+
+  // On a desktop: Q (or Tab) opens and closes the command view; 1, 2 and 3 give the orders.
+  useEffect(() => {
+    if (!game) return;
+    const keys = (e: KeyboardEvent) => {
+      if (e.code === 'KeyQ' || e.code === 'Tab') {
+        e.preventDefault();
+        openCommand(!commandingNow.current);
+      } else if (commandingNow.current) {
+        if (e.code === 'Digit1') give('go');
+        else if (e.code === 'Digit2') give('attack');
+        else if (e.code === 'Digit3') give('follow');
+        else if (e.code === 'Escape') openCommand(false);
+      }
+    };
+    window.addEventListener('keydown', keys);
+    return () => window.removeEventListener('keydown', keys);
+  });
 
   const changeQuality = () => {
     try {
@@ -122,12 +167,36 @@ export function App() {
       {status.kind === 'ready' && (
         <p class="hint">
           {touch
-            ? 'Left thumb moves · right thumb looks · walk into a crate for cover · Aim, then Fire'
-            : 'Click to look around · WASD to move · Shift to run · walk into a crate for cover · right mouse aims, left fires'}
+            ? 'Left thumb moves · right thumb looks · walk into a crate for cover · Aim, then Fire · Orders for Ren'
+            : 'Click to look · WASD to move · Shift to run · walk into a crate for cover · right mouse aims, left fires · Q gives Ren orders'}
         </p>
       )}
-      {aiming && <div class="crosshair" aria-hidden="true" />}
-      {touch && game && <TouchControls input={game.input} />}
+      {(aiming || commanding) && <div class="crosshair" aria-hidden="true" />}
+      {line && (
+        <p class="said" key={line.id} role="status">
+          <span class="said__name">{line.name}:</span> {line.text}
+        </p>
+      )}
+      {commanding && (
+        <div class="orders" role="dialog" aria-label="Orders for Ren">
+          <p class="orders__title">Orders for Ren · point the crosshair, then choose</p>
+          <div class="orders__buttons">
+            <button type="button" onClick={() => give('go')}>
+              Go there {!touch && <kbd>1</kbd>}
+            </button>
+            <button type="button" onClick={() => give('attack')}>
+              Attack {!touch && <kbd>2</kbd>}
+            </button>
+            <button type="button" onClick={() => give('follow')}>
+              Follow me {!touch && <kbd>3</kbd>}
+            </button>
+            <button type="button" class="orders__back" onClick={() => openCommand(false)}>
+              Back {!touch && <kbd>Q</kbd>}
+            </button>
+          </div>
+        </div>
+      )}
+      {touch && game && <TouchControls input={game.input} commanding={commanding} onOrders={() => openCommand(true)} />}
     </main>
   );
 }

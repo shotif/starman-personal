@@ -20,10 +20,19 @@ export interface Range {
   candidates(from: Vector3): AimCandidate[];
   /** A drone's centre. */
   centre(id: number): Vector3;
+  /** Whether a drone is flying (not down). */
+  alive(id: number): boolean;
+  /** Whether a physics body is that drone's. */
+  isDrone(id: number, body: PhysicsBody | null | undefined): boolean;
+  /** The live drone a physics body belongs to, or null. */
+  droneOf(body: PhysicsBody | null | undefined): number | null;
   /** Applies a hit to whatever body a shot struck; true if it was a drone. */
   hit(body: PhysicsBody | null | undefined): boolean;
-  /** Shows a shot from the muzzle to where it struck (or where it ended). */
-  shot(from: Vector3, to: Vector3, struck: boolean): void;
+  /**
+   * Shows a shot from the muzzle to where it struck (or where it ended). `shooter` keeps the hero's
+   * and the companion's shots apart (0 and 1).
+   */
+  shot(from: Vector3, to: Vector3, struck: boolean, shooter?: number): void;
   update(dt: number): void;
   /** How many drones are down right now. */
   readonly down: number;
@@ -81,19 +90,22 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
     return { id, body, ring, eye, home: home.clone(), aggregate, hp: HITS, respawnIn: 0, flashFor: 0 };
   });
 
-  const tracer = CreateBox('tracer', { width: 0.025, height: 0.025, depth: 1 }, scene);
-  tracer.material = glow(scene, 'tracer-glow', new Color3(1, 0.85, 0.5));
-  tracer.isPickable = false;
-  tracer.setEnabled(false);
-  const flash = CreateSphere('muzzle-flash', { diameter: 0.14, segments: 6 }, scene);
-  flash.material = tracer.material;
-  flash.isPickable = false;
-  flash.setEnabled(false);
-  const spark = CreateSphere('spark', { diameter: 0.12, segments: 6 }, scene);
-  spark.material = glow(scene, 'spark-glow', new Color3(1, 0.5, 0.2));
-  spark.isPickable = false;
-  spark.setEnabled(false);
-  let effectFor = 0;
+  const tracerGlow = glow(scene, 'tracer-glow', new Color3(1, 0.85, 0.5));
+  const sparkGlow = glow(scene, 'spark-glow', new Color3(1, 0.5, 0.2));
+  /** One set of shot effects per shooter, so two shots in the same moment both show. */
+  const effects = [0, 1].map((i) => {
+    const tracer = CreateBox(`tracer-${i}`, { width: 0.025, height: 0.025, depth: 1 }, scene);
+    const flash = CreateSphere(`muzzle-flash-${i}`, { diameter: 0.14, segments: 6 }, scene);
+    const spark = CreateSphere(`spark-${i}`, { diameter: 0.12, segments: 6 }, scene);
+    tracer.material = tracerGlow;
+    flash.material = tracerGlow;
+    spark.material = sparkGlow;
+    for (const mesh of [tracer, flash, spark]) {
+      mesh.isPickable = false;
+      mesh.setEnabled(false);
+    }
+    return { tracer, flash, spark, time: 0 };
+  });
 
   const alive = (d: Drone) => d.respawnIn <= 0;
 
@@ -106,6 +118,17 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
     },
     centre(id) {
       return drones[id]?.body.position.clone() ?? Vector3.Zero();
+    },
+    alive(id) {
+      const d = drones[id];
+      return !!d && alive(d);
+    },
+    isDrone(id, body) {
+      const d = drones[id];
+      return !!d && !!body && d.aggregate.body === body;
+    },
+    droneOf(body) {
+      return drones.find((d) => alive(d) && !!body && d.aggregate.body === body)?.id ?? null;
     },
     hit(struck) {
       const drone = drones.find((d) => alive(d) && d.aggregate.body === struck);
@@ -128,25 +151,27 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
       }
       return true;
     },
-    shot(from, to, struck) {
-      const length = Vector3.Distance(from, to);
-      tracer.position = Vector3.Lerp(from, to, 0.5);
-      tracer.scaling.z = length;
-      tracer.lookAt(to);
-      tracer.setEnabled(true);
-      flash.position.copyFrom(from);
-      flash.setEnabled(true);
-      spark.position.copyFrom(to);
-      spark.setEnabled(struck);
-      effectFor = 0.06;
+    shot(from, to, struck, shooter = 0) {
+      const fx = effects[shooter] ?? effects[0];
+      if (!fx) return;
+      fx.tracer.position = Vector3.Lerp(from, to, 0.5);
+      fx.tracer.scaling.z = Vector3.Distance(from, to);
+      fx.tracer.lookAt(to);
+      fx.tracer.setEnabled(true);
+      fx.flash.position.copyFrom(from);
+      fx.flash.setEnabled(true);
+      fx.spark.position.copyFrom(to);
+      fx.spark.setEnabled(struck);
+      fx.time = 0.06;
     },
     update(dt) {
-      if (effectFor > 0) {
-        effectFor -= dt;
-        if (effectFor <= 0) {
-          tracer.setEnabled(false);
-          flash.setEnabled(false);
-          spark.setEnabled(false);
+      for (const fx of effects) {
+        if (fx.time <= 0) continue;
+        fx.time -= dt;
+        if (fx.time <= 0) {
+          fx.tracer.setEnabled(false);
+          fx.flash.setEnabled(false);
+          fx.spark.setEnabled(false);
         }
       }
       for (const d of drones) {
