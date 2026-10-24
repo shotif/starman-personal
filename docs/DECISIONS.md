@@ -44,9 +44,9 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-30 | Which skins, hair and faces the character creator offers | Decided 2026-10-24 | **As recommended**: six skin tones, six to eight hair styles and five eye colours per body, with the 19 sliders |
 | D-31 | Lip sync for the voiced lines | Decided 2026-10-24 | **As recommended**: MakeHuman's CC0 mouth shapes, timed from each voiced line |
 | D-32 | The heroes' new look: uniform, colour, boots, proportions | Decided 2026-10-24 (owner's choice) | **Approved for now** |
-| D-33 | The six classes and their powers | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
-| D-34 | Where you are from: the origins | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
-| D-35 | The moment that made you | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
+| D-33 | The six classes and their powers | Decided 2026-10-24 | **As recommended**: Breacher, Rigger, Fieldwright, Shade, Striker, Warden ([CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md)) |
+| D-34 | Where you are from: the origins | Decided 2026-10-24 | **As recommended**: Ringborn, Steader, Den-raised, Laneborn, Beltborn, Borderer |
+| D-35 | The moment that made you | Decided 2026-10-24 | **As recommended**: the survivor, the hero of the line, the hard call, the one who lost someone |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -381,7 +381,11 @@ which a public repository does, so we would use CC0 animation libraries instead.
 - **The style test** ([design/STYLE_TEST.md](design/STYLE_TEST.md)), 24 October 2026: four
   subjects from Gemini concepts (about $0.40), made by both tools: Meshy in 2–3 minutes each for
   30 credits each, trellis.cpp in 7–13 minutes each on the Mac. Both are in the proof's gallery for
-  the owner to judge on a phone. **Waiting for the owner's verdict.**
+  the owner to judge on a phone. **Verdict (the owner, 24 October 2026):** "let's build
+  everything with Meshy that we can within the budget that we have, and only once we run out of
+  budget, we use the local process on my Mac." Meshy is the first source of hard-surface models,
+  props and companions while the subscription's credits (and D-24's allowance for extra credits)
+  last; trellis.cpp takes over when they run out. Every Meshy run reports the credits left.
 
 ### D-23 · Voices — **Decided**
 
@@ -517,18 +521,21 @@ change** (colour, uniform, build). The look of each power's uniform comes later 
 **Decided:** approved for now, 24 October 2026 ("The uniform is fine for now"). It stays until the
 powers' own uniforms are designed with the story.
 
-## Round 4: classes and the past — open
+## Round 4: classes and the past — decided 24 October 2026
 
 The creator's appearance is built ([design/CREATOR.md](design/CREATOR.md)). Its class and past
 tabs need content only the owner should settle: the proposal, with options and a recommendation
 for each, is [design/CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md).
 
-- **D-33 · The six classes and their powers — Open.** Recommended: Breacher (Arms), Rigger
+**Decided:** all three as recommended, 24 October 2026 ("Continue with everything else as
+recommended").
+
+- **D-33 · The six classes and their powers — Decided.** Recommended: Breacher (Arms), Rigger
   (Systems), Fieldwright (Field), Shade (Arms + Systems), Striker (Arms + Field), Warden (Systems +
   Field), with the powers and specialisations listed there.
-- **D-34 · Where you are from — Open.** Recommended: Ringborn, Steader, Den-raised, Laneborn,
+- **D-34 · Where you are from — Decided.** Recommended: Ringborn, Steader, Den-raised, Laneborn,
   Beltborn, Borderer, each a place in the canon with a talent and a personal quest.
-- **D-35 · The moment that made you — Open.** Recommended: the survivor, the hero of the line,
+- **D-35 · The moment that made you — Decided.** Recommended: the survivor, the hero of the line,
   the hard call, the one who lost someone.
 
 ## Made without waiting
@@ -563,3 +570,6 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-24 | The game opens on the character creator until a hero is saved; `?play` skips it (the browser journeys use it), `?creator` opens it, *Change hero* in the HUD returns to it | [design/CREATOR.md](design/CREATOR.md) |
 | 2026-10-24 | Style test props are shown at about twice life size (sidearm, helmet, terminal) and prepared alike (about 15,000 triangles, 1024 px WebP); trellis.cpp's helmet stops at 28,000 because its many texture seams cannot be simplified across | a fair comparison on a phone; the seams are themselves a finding |
 | 2026-10-24 | `?debug` exposes the hero's state and a teleport for testing; nothing else changes | the browser journeys need to place the hero without walking for minutes on a software renderer |
+| 2026-10-24 | The body and face sliders are **baked into each mesh on the processor** when looks change; the GPU's morph targets stay at zero, for speech | the owner's Android phone drew black patches wherever a slider moved the body; the same looks draw cleanly on desktop GPUs and with baking; see `src/game/appearance.ts` |
+| 2026-10-24 | Sliders that pull against each other are **one two-way slider**: Build (slimmer ↔ heavier), Muscle (less ↔ more), Frame (long and lean ↔ short and dense) | the owner's feedback: "Heavier" and "Slimmer" could both be set |
+| 2026-10-24 | The HUD names the graphics chip | so a screenshot of a graphics fault says which chip it came from |

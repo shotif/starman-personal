@@ -96,6 +96,8 @@ export async function startCreator(
     camera.radius += (goal.radius - camera.radius) * t;
   });
   engine.runRenderLoop(() => scene.render());
+  // `?debug` exposes the creator's scene for testing in the browser's console.
+  if (new URLSearchParams(location.search).has('debug')) Object.assign(window, { lightkeeperCreator: { scene } });
   const onResize = () => engine.resize();
   window.addEventListener('resize', onResize);
 

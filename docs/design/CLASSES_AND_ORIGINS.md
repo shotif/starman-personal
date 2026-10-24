@@ -2,7 +2,8 @@
 
 *Written 24 October 2026 for the owner's decisions D-33 to D-35. It fills in D-10 (three
 disciplines, six classes) and D-11 (where you are from × the moment that made you) so the creator
-can offer them. Nothing here is built until the owner answers.*
+can offer them. Decided as recommended the same day; the creator offers them
+(`src/game/hero.ts`), and the powers are built with combat.*
 
 Everything is grounded technology (D-05) and original (no names from *Mass Effect*). It draws on
 the Starman canon: Reborn's combat stims, decoy flares and damage types, its places and peoples;

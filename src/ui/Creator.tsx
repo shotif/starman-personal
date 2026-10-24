@@ -2,19 +2,22 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { CHARACTERS } from '../game/appearance.ts';
 import type { Creator as CreatorScene, CreatorView } from '../game/creator.ts';
 import type { Renderer } from '../game/engine.ts';
+import { CLASSES, MOMENTS, ORIGINS } from '../game/hero.ts';
 import {
   applyLineage,
   BODIES,
   type Body,
+  controls,
   defaultLooks,
   type Looks,
   type Manifest,
+  pairValue,
   randomLooks,
-  sliderMorphs,
+  setPair,
 } from '../game/looks.ts';
 import type { QualityTier } from '../game/quality.ts';
 
-type Tab = 'who' | 'body' | 'face' | 'skin' | 'hair' | 'eyes';
+type Tab = 'who' | 'class' | 'past' | 'body' | 'face' | 'skin' | 'hair' | 'eyes';
 
 /** A plain colour for each eye swatch; the iris textures are laid out for the eyeball, not a swatch. */
 const IRIS: Record<string, string> = {
@@ -26,6 +29,8 @@ const IRIS: Record<string, string> = {
 };
 const TABS: { id: Tab; label: string; view: CreatorView }[] = [
   { id: 'who', label: 'Who', view: 'body' },
+  { id: 'class', label: 'Class', view: 'body' },
+  { id: 'past', label: 'Past', view: 'body' },
   { id: 'body', label: 'Body', view: 'body' },
   { id: 'face', label: 'Face', view: 'face' },
   { id: 'skin', label: 'Skin', view: 'face' },
@@ -191,6 +196,66 @@ export function Creator({ manifest, initial, tier, renderer, onStart }: CreatorP
             </>
           )}
 
+          {tab === 'class' && (
+            <div class="lineages" role="radiogroup" aria-label="Class">
+              {CLASSES.map((c) => (
+                <Option
+                  key={c.id}
+                  group="class"
+                  label={c.name}
+                  checked={looks.heroClass === c.id}
+                  onSelect={() => setLooks({ ...looks, heroClass: c.id })}
+                  class="lineage"
+                >
+                  <strong>
+                    {c.name} <small class="card__tag">{c.disciplines.join(' + ')}</small>
+                  </strong>
+                  <span>{c.playsAs}</span>
+                  <span class="card__powers">{c.powers.join(' · ')}</span>
+                </Option>
+              ))}
+            </div>
+          )}
+
+          {tab === 'past' && (
+            <>
+              <h2 class="creator__heading">Where you are from</h2>
+              <div class="lineages" role="radiogroup" aria-label="Where you are from">
+                {ORIGINS.map((o) => (
+                  <Option
+                    key={o.id}
+                    group="origin"
+                    label={o.name}
+                    checked={looks.origin === o.id}
+                    onSelect={() => setLooks({ ...looks, origin: o.id })}
+                    class="lineage"
+                  >
+                    <strong>{o.name}</strong>
+                    <span>{o.where}</span>
+                    <span class="card__powers">{o.talent}</span>
+                  </Option>
+                ))}
+              </div>
+              <h2 class="creator__heading">The moment that made you</h2>
+              <div class="lineages" role="radiogroup" aria-label="The moment that made you">
+                {MOMENTS.map((m) => (
+                  <Option
+                    key={m.id}
+                    group="moment"
+                    label={m.name}
+                    checked={looks.moment === m.id}
+                    onSelect={() => setLooks({ ...looks, moment: m.id })}
+                    class="lineage"
+                  >
+                    <strong>{m.name}</strong>
+                    <span>{m.what}</span>
+                    <span class="card__powers">{m.talent}</span>
+                  </Option>
+                ))}
+              </div>
+            </>
+          )}
+
           {(tab === 'body' || tab === 'face') && (
             <div class="sliders">
               {tab === 'body' && (
@@ -206,21 +271,43 @@ export function Creator({ manifest, initial, tier, renderer, onStart }: CreatorP
                   />
                 </label>
               )}
-              {sliderMorphs(manifest, looks.body)
-                .filter((m) => m.group === tab)
-                .map((m) => (
-                  <label key={m.name} class="slider">
-                    <span>{m.label}</span>
+              {controls(manifest, looks.body, tab).map((c) =>
+                c.kind === 'pair' ? (
+                  <label key={c.pair.label} class="slider">
+                    <span>
+                      {c.pair.label}
+                      <small class="slider__ends">
+                        {c.pair.lessLabel} ↔ {c.pair.moreLabel}
+                      </small>
+                    </span>
+                    <input
+                      type="range"
+                      min={-1}
+                      max={1}
+                      step={0.01}
+                      value={pairValue(looks.sliders, c.pair)}
+                      onInput={(e) =>
+                        setLooks({
+                          ...looks,
+                          sliders: setPair(looks.sliders, c.pair, Number((e.currentTarget as HTMLInputElement).value)),
+                        })
+                      }
+                    />
+                  </label>
+                ) : (
+                  <label key={c.morph.name} class="slider">
+                    <span>{c.morph.label}</span>
                     <input
                       type="range"
                       min={0}
                       max={1}
                       step={0.01}
-                      value={looks.sliders[m.name] ?? 0}
-                      onInput={(e) => slider(m.name, Number((e.currentTarget as HTMLInputElement).value))}
+                      value={looks.sliders[c.morph.name] ?? 0}
+                      onInput={(e) => slider(c.morph.name, Number((e.currentTarget as HTMLInputElement).value))}
                     />
                   </label>
-                ))}
+                ),
+              )}
             </div>
           )}
 

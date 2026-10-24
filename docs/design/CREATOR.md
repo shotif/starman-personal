@@ -19,8 +19,7 @@ the sliders. It is the first screen of the playable slice (D-20).*
 
 ## Out of scope
 
-Class (D-10) and backstory (D-11): they need their own designs (names, powers, origins and the
-moments that made the hero) and come next. Voice (two voices, D-23) comes with the voices.
+Voice (two voices, D-23) comes with the voices.
 Scars, tattoos, make-up and cosmetic armour come later, as the art allows.
 
 ## How it works
@@ -32,3 +31,14 @@ Scars, tattoos, make-up and cosmetic armour come later, as the art allows.
 | The creator scene | Its own small scene with a stand, studio light and an orbiting camera | `src/game/creator.ts` |
 | Screens | The panel, its tabs and swatches (skin and eye swatches are crops of their own textures) | `src/ui/Creator.tsx` |
 | Saving | The browser's storage, read through the checker so an old or broken save falls back to defaults | `src/ui/App.tsx` |
+
+## Since it was built
+
+- **Class and past** (D-33 to D-35, decided as recommended): two more tabs, *Class* (the six
+  classes with what each plays as and its first powers) and *Past* (where you are from and the
+  moment that made you), from `src/game/hero.ts`. The powers themselves come with combat.
+- **Sliders that pulled against each other** (the owner's feedback) are now one two-way slider
+  each: Build, Muscle and Frame (`PAIRS` in `src/game/looks.ts`).
+- **Sliders are baked on the processor** (`src/game/appearance.ts`): the owner's Android phone drew
+  black patches where the GPU's morph targets moved the body. The GPU now gets plain geometry.
+

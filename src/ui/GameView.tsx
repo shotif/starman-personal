@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Renderer } from '../game/engine.ts';
 import type { Game, GameStats, OrderKind } from '../game/game.ts';
+import { classOf } from '../game/hero.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { isTouch, QUALITY_KEY, save } from './settings.ts';
@@ -126,12 +127,16 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
       <canvas ref={canvas} class="scene" aria-label="The station corridor" />
       <header class="hud">
         <p class="hud__title">Starman Lightkeeper · proof</p>
+        <p class="hud__stats">
+          {looks.name || 'Your hero'} · {classOf(looks.heroClass)?.name}
+        </p>
         {stats && (
           <p class="hud__stats">
             {stats.fps} fps · {stats.renderer} · {stats.activeMeshes} meshes · {stats.speed.toFixed(1)} m/s
             {stats.companionNavigation ? '' : ' · companion without navigation'}
           </p>
         )}
+        {stats?.gpu && <p class="hud__stats hud__gpu">{stats.gpu}</p>}
         {stats && (
           <p class="hud__stats">
             {stats.inCover ? 'In cover · ' : ''}Drones down: {stats.dronesDown} of 3

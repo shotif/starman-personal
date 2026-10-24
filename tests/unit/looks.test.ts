@@ -1,11 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
 import {
   applyLineage,
   checkLooks,
+  controls,
   defaultLooks,
   type Manifest,
+  PAIRS,
+  pairValue,
   randomLooks,
+  setPair,
   sliderMorphs,
 } from '../../src/game/looks.ts';
 
@@ -56,5 +61,39 @@ describe('looks', () => {
     expect(repaired?.sliders.body_lean).toBe(1);
     expect(checkLooks(manifest, { body: 'robot' })).toBeNull();
     expect(checkLooks(manifest, null)).toBeNull();
+  });
+  it('never sets both sides of a pair: random heroes, saves and presets alike', () => {
+    const random = seeded(11);
+    for (let i = 0; i < 50; i++) {
+      const looks = randomLooks(manifest, random);
+      for (const p of PAIRS) expect(Math.min(looks.sliders[p.less] ?? 0, looks.sliders[p.more] ?? 0)).toBe(0);
+    }
+    const saved = checkLooks(manifest, { body: 'man', sliders: { body_slim: 0.7, body_heavy: 0.2 } });
+    expect(saved?.sliders.body_slim).toBeCloseTo(0.5);
+    expect(saved?.sliders.body_heavy).toBe(0);
+  });
+  it('turns a pair into one slider each way from the middle', () => {
+    const build = PAIRS[0];
+    if (!build) throw new Error('no pairs');
+    const heavier = setPair({}, build, 0.6);
+    expect(heavier[build.more]).toBeCloseTo(0.6);
+    expect(heavier[build.less]).toBe(0);
+    expect(pairValue(setPair(heavier, build, -0.4), build)).toBeCloseTo(-0.4);
+  });
+  it('shows the body tab as three pairs and four sliders, the face as nine', () => {
+    const body = controls(manifest, 'man', 'body');
+    expect(body.filter((c) => c.kind === 'pair')).toHaveLength(3);
+    expect(body.filter((c) => c.kind === 'single')).toHaveLength(4);
+    expect(controls(manifest, 'woman', 'face')).toHaveLength(9);
+  });
+  it('offers six classes, six origins and four moments, and repairs unknown ones', () => {
+    expect(CLASSES).toHaveLength(6);
+    expect(ORIGINS).toHaveLength(6);
+    expect(MOMENTS).toHaveLength(4);
+    expect(new Set(CLASSES.map((c) => c.id)).size).toBe(6);
+    const saved = checkLooks(manifest, { body: 'man', heroClass: 'shade', origin: 'nowhere', moment: 'hard-call' });
+    expect(saved?.heroClass).toBe('shade');
+    expect(saved?.origin).toBe(ORIGINS[0]?.id);
+    expect(saved?.moment).toBe('hard-call');
   });
 });

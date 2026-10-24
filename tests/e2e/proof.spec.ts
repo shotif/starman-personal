@@ -155,6 +155,11 @@ test('the creator makes a hero, who then plays', async ({ page }, testInfo) => {
   await page.getByPlaceholder("Your hero's name").fill('Ada');
   await pick('Woman');
   await pick(/Spacer/);
+  await press(page.getByRole('tab', { name: 'Class' }));
+  await pick('Warden');
+  await press(page.getByRole('tab', { name: 'Past' }));
+  await pick('Borderer');
+  await pick('The hard call');
   await press(page.getByRole('tab', { name: 'Hair' }));
   await pick('Long');
   await press(page.getByRole('tab', { name: 'Eyes' }));
@@ -165,6 +170,16 @@ test('the creator makes a hero, who then plays', async ({ page }, testInfo) => {
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true', { timeout: 60_000 });
   await expect(page.getByRole('button', { name: 'Change hero' })).toBeVisible();
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('lightkeeper.hero') ?? 'null'));
-  expect(saved).toMatchObject({ name: 'Ada', body: 'woman', lineage: 'spacer', hair: 'long', eyes: 'green' });
+  expect(saved).toMatchObject({
+    name: 'Ada',
+    body: 'woman',
+    lineage: 'spacer',
+    heroClass: 'warden',
+    origin: 'borderer',
+    moment: 'hard-call',
+    hair: 'long',
+    eyes: 'green',
+  });
+  await expect(page.getByText('Ada · Warden')).toBeVisible();
   expect(errors).toEqual([]);
 });

@@ -20,7 +20,7 @@ import { type Character, loadCharacterTemplate, spawnCharacter } from './charact
 import { buildRange } from './combat.ts';
 import { spawnCompanion } from './companion.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
-import { createEngine, type Renderer, rendererName } from './engine.ts';
+import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { buildGallery } from './gallery.ts';
 import { Input } from './input.ts';
 import { buildLevel } from './level.ts';
@@ -41,6 +41,8 @@ import { QUALITY, type QualityTier } from './quality.ts';
 export interface GameStats {
   fps: number;
   renderer: string;
+  /** The graphics chip, where the browser tells it. */
+  gpu: string;
   tier: QualityTier;
   activeMeshes: number;
   /** The hero's ground speed in metres a second. */
@@ -403,6 +405,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       options.onStats({
         fps: Math.round(engine.getFps()),
         renderer: rendererName(engine),
+        gpu: gpuName(engine),
         tier: options.tier,
         activeMeshes: scene.getActiveMeshes().length,
         speed: Math.hypot(controller.getVelocity().x, controller.getVelocity().z),

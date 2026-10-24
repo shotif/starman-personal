@@ -42,6 +42,16 @@ interface Task {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** The credits left (D-22: Meshy first while the credits last, then trellis.cpp on the Mac). */
+async function balance(): Promise<number | null> {
+  const response = await fetch('https://api.meshy.ai/openapi/v1/balance', { headers });
+  if (!response.ok) return null;
+  return ((await response.json()) as { balance?: number }).balance ?? null;
+}
+
+const before = await balance();
+console.log(`Meshy credits before: ${before ?? 'unknown'}`);
+
 await Promise.all(
   ids.map(async (id) => {
     const picture = await readFile(join('art', 'out', 'concepts', `${id}.jpg`));
@@ -90,3 +100,11 @@ await Promise.all(
     console.log(`${id}: ${(model.length / 1e6).toFixed(1)} MB, ${task.consumed_credits} credits`);
   }),
 );
+
+const after = await balance();
+console.log(
+  `Meshy credits after: ${after ?? 'unknown'}${before !== null && after !== null ? ` (used ${before - after})` : ''}`,
+);
+if (after !== null && after < 300) {
+  console.log('Fewer than 300 credits left: switch to trellis.cpp (npm run art:trellis) when they run out.');
+}

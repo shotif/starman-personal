@@ -32,3 +32,11 @@ export async function createEngine(
 export function rendererName(engine: AbstractEngine): string {
   return engine.isWebGPU ? 'WebGPU' : `WebGL${(engine as Engine).webGLVersion}`;
 }
+
+/** The graphics chip's name where the browser tells it, so a screenshot of a fault says which chip. */
+export function gpuName(engine: AbstractEngine): string {
+  const name = engine.isWebGPU ? '' : ((engine as Engine).getGlInfo?.().renderer ?? '');
+  // "ANGLE (Qualcomm, Adreno (TM) 740, OpenGL ES 3.2)" → "Adreno (TM) 740"
+  const inner = /ANGLE \([^,]*, ([^,]+)/.exec(name)?.[1];
+  return (inner ?? name).trim().slice(0, 40);
+}
