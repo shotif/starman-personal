@@ -153,9 +153,11 @@ export function buildKit(scene: Scene, q: QualitySettings) {
   /**
    * A Poly Haven material: colour, OpenGL normal map, and AO/roughness/metal packed in one texture;
    * on the low tier colour only, with a fixed sheen (`metal`, `rough`), to spare a phone's memory.
+   * With the maps, `metal` scales the map's metalness: painted panels are not bare metal, and bare
+   * metal in a dim room shows little but its reflections.
    */
   const textured = (id: string, tile: number, tint: Color3, name = id, metal = 0.3, rough = 0.7): Surface => {
-    const m = material(scene, name, tint, q.detailMaps ? 1 : metal, q.detailMaps ? 1 : rough, q.maxLights);
+    const m = material(scene, name, tint, metal, q.detailMaps ? 1 : rough, q.maxLights);
     m.albedoTexture = new Texture(`${base}/${id}/albedo.jpg`, scene);
     if (q.detailMaps) {
       m.bumpTexture = new Texture(`${base}/${id}/normal.jpg`, scene);

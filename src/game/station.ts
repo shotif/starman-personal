@@ -191,7 +191,7 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
     x: [-12, -4],
     z: [0, 8],
     height: 3,
-    floor: s.deck,
+    floor: s.floor,
     wall: s.warm,
     gaps: [{ side: 'e', from: 5, to: 6.8 }],
   });
@@ -216,8 +216,11 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
     );
   }
   kit.prop('helmet', [-11.45, 1.25, 5.3], Math.PI / 2 + 0.4, [0.32, 0.32, 0.32], () => {}, { solid: false });
-  kit.light([-8, 2.85, 4], new Color3(1, 0.86, 0.72), 6, 9);
-  kit.emergency([-8, 2.85, 6.5]);
+  // Night lighting, warm and low: enough to see the room the hero wakes in.
+  kit.light([-9.5, 2.85, 3.2], new Color3(1, 0.86, 0.72), 14, 10);
+  kit.light([-9.5, 2.85, 6.2], new Color3(1, 0.82, 0.66), 11, 9);
+  kit.light([-5.6, 2.85, 4.6], new Color3(1, 0.86, 0.72), 12, 9);
+  kit.emergency([-6, 2.85, 6.5]);
 
   // The lounge: the night shift, the galley, and a window on the star.
   kit.room({
