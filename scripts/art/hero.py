@@ -409,6 +409,72 @@ def tint_iris(px, tint):
     return px
 
 
+def colour_teeth(px, enamel, gums, shade=0.35):
+    """Recolour MakeHuman's teeth texture: its grey teeth become a warm off-white and its deep
+    red gums a soft pink. The texture's own shading is kept (scaled from `shade` to 1), so the
+    gaps between teeth stay dark."""
+    px = grade(px, keep_alpha=False)
+    rgb = px[:, :3]
+    lum = rgb @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    redness = rgb[:, 0] - (rgb[:, 1] + rgb[:, 2]) / 2
+    gum = np.clip((redness - 0.10) / 0.12, 0.0, 1.0)
+    tooth = gum < 0.5
+    top_tooth = np.percentile(lum[tooth], 95) if tooth.any() else 1.0
+    top_gum = np.percentile(lum[~tooth], 95) if (~tooth).any() else 1.0
+    t_tooth = np.clip(lum / max(top_tooth, 1e-3), 0.0, 1.0)
+    t_gum = np.clip(lum / max(top_gum, 1e-3), 0.0, 1.0)
+    enamel_rgb = np.array(enamel, dtype=np.float32)[None, :] * (shade + (1 - shade) * t_tooth)[:, None]
+    gum_rgb = np.array(gums, dtype=np.float32)[None, :] * (shade + (1 - shade) * t_gum)[:, None]
+    px[:, :3] = enamel_rgb * (1 - gum[:, None]) + gum_rgb * gum[:, None]
+    return px
+
+
+def depth_shade(obj, w, h, darkest=0.45):
+    """A shading map for a mouth part's texture: 1 at the front of the mouth, down to
+    `darkest` at the back, so teeth and tongue sit in the mouth's shadow instead of glowing.
+    Each face is painted into its own place in the texture (its UVs)."""
+    me = obj.data
+    co = np.empty(len(me.vertices) * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    front, back = np.percentile(co[:, 1], 2), np.percentile(co[:, 1], 98)  # forward is -Y
+    depth = np.clip((co[:, 1] - front) / max(back - front, 1e-6), 0.0, 1.0)
+    factor = 1.0 - (1.0 - darkest) * depth ** 0.8
+    uv_layer = me.uv_layers.active.data
+    shade = np.full((h, w), np.nan, dtype=np.float32)
+    for poly in me.polygons:
+        f = float(factor[list(poly.vertices)].mean())
+        uvs = np.array([uv_layer[i].uv[:] for i in poly.loop_indices]) * [w - 1, h - 1]
+        for k in range(1, len(uvs) - 1):  # fan of triangles
+            tri = uvs[[0, k, k + 1]]
+            x0, y0 = np.floor(tri.min(axis=0)).astype(int)
+            x1, y1 = np.ceil(tri.max(axis=0)).astype(int)
+            xs, ys = np.meshgrid(np.arange(max(x0, 0), min(x1, w - 1) + 1),
+                                 np.arange(max(y0, 0), min(y1, h - 1) + 1))
+            p = np.stack([xs.ravel(), ys.ravel()], axis=1).astype(np.float64)
+            a, b, c = tri
+            d = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1])
+            if abs(d) < 1e-9:
+                continue
+            l1 = ((b[1] - c[1]) * (p[:, 0] - c[0]) + (c[0] - b[0]) * (p[:, 1] - c[1])) / d
+            l2 = ((c[1] - a[1]) * (p[:, 0] - c[0]) + (a[0] - c[0]) * (p[:, 1] - c[1])) / d
+            inside = (l1 >= -0.02) & (l2 >= -0.02) & (1 - l1 - l2 >= -0.02)
+            shade[ys.ravel()[inside], xs.ravel()[inside]] = f
+    # Grow the painted areas a few pixels so filtering at the edges does not pick up white.
+    for _ in range(4):
+        empty = np.isnan(shade)
+        if not empty.any():
+            break
+        grown = shade.copy()
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            moved = np.roll(np.roll(shade, dy, axis=0), dx, axis=1)
+            take = empty & np.isnan(grown) & ~np.isnan(moved)
+            grown[take] = moved[take]
+        shade = grown
+    shade[np.isnan(shade)] = darkest
+    return shade.ravel()
+
+
 def look_by_id(items, look_id):
     for item in items:
         if item["id"] == look_id:
@@ -476,7 +542,7 @@ ASSET_LOOK = {
     "Eyes": ("MASK", 0.15, "smallTextureSize", False),
     "Eyebrows": ("BLEND", 0.8, "smallTextureSize", False),
     "Eyelashes": ("BLEND", 0.8, "smallTextureSize", False),
-    "Teeth": ("OPAQUE", 0.6, "smallTextureSize", False),
+    "Teeth": ("OPAQUE", 0.35, "smallTextureSize", False),
     "Tongue": ("OPAQUE", 0.45, "smallTextureSize", False),
     "Hair": ("MASK", 0.6, "smallTextureSize", False),
     "Clothes": ("OPAQUE", 0.45, "textureSize", True),
@@ -511,7 +577,17 @@ def set_materials(human, cfg):
         diffuse = mhmat_texture(info, "diffuseTexture")
         normal = mhmat_texture(info, "normalmapTexture") if use_normal else None
         tex_size = look.get("textureSize", cfg[size_key])
-        if kind == "Eyes" and eyes.get("irisTint"):
+        if kind in ("Teeth", "Tongue") and cfg.get("teethColours"):
+            w, h, px = load_pixels(diffuse, tex_size)
+            colours = cfg["teethColours"]
+            if kind == "Teeth":
+                px = colour_teeth(px, colours["enamel"], colours["gums"], colours.get("shade", 0.35))
+            else:
+                px = grade(px, keep_alpha=False, tint=cfg.get("tongueTint"))
+            px[:, :3] *= depth_shade(obj, w, h, colours.get("darkestBack", 0.45))[:, None]
+            mouth_file = save_pixels(w, h, px, tex_dir / f"{label}.jpg", "JPEG")
+            img = bpy.data.images.load(str(mouth_file), check_existing=False)
+        elif kind == "Eyes" and eyes.get("irisTint"):
             w, h, px = load_pixels(diffuse, tex_size)
             eye_file = save_pixels(w, h, tint_iris(px, eyes["irisTint"]),
                                    tex_dir / f"eyes-{eyes['id']}.png", "PNG")

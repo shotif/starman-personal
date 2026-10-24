@@ -655,8 +655,8 @@
   "outputs": [
     {
       "path": "public/assets/characters/hero-man.glb",
-      "bytes": 5092136,
-      "sha256": "93a4438d28fd441d86f4dd5c0d1b63c19ba34ab30dfe0edfb4c2ccdc107ca1c7",
+      "bytes": 5086624,
+      "sha256": "62b26b6ad7793a6a939c755c1ff34259ac630946ea2ee8b6c616df94f41ec113",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
@@ -669,8 +669,8 @@
     },
     {
       "path": "public/assets/characters/hero-woman.glb",
-      "bytes": 5326312,
-      "sha256": "11d93fe2705cc1f072b572a9a74fd106cd5de19f3b3f4ea36382340f0285a847",
+      "bytes": 5320764,
+      "sha256": "d9c2ebbb23335dc08869074c980bb940bf4528d2e53bf51b85a033ce33644f2a",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
@@ -684,7 +684,7 @@
     {
       "path": "public/assets/characters/heroes.json",
       "bytes": 76829,
-      "sha256": "3369aa91cbba048ea534899fa1b0765baa4fb5812fc226ad19857a5ad60d67c1",
+      "sha256": "c1194ef8192b62125d5326dbc95c0256588e90203b8549b82937dc63aa231554",
       "madeBy": "scripts/art/hero.py",
       "from": [],
       "licence": "CC0-1.0 inputs only; no attribution is required"

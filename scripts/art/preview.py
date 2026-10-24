@@ -36,7 +36,7 @@ def setup_scene(width, height):
     world = bpy.data.worlds.new("Preview")
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
-    bg.inputs[0].default_value = (0.45, 0.47, 0.5, 1.0)
+    bg.inputs[0].default_value = (0.47, 0.47, 0.47, 1.0)  # neutral, so colours read true
     bg.inputs[1].default_value = 0.8
     scene.world = world
     for name, energy, rot in (("Key", 3.0, (50, 0, 30)), ("Fill", 1.0, (70, 0, -120))):

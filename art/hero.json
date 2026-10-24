@@ -488,6 +488,26 @@
   ],
   "teeth": "system_assets/teeth/teeth_base/teeth_base.mhclo",
   "tongue": "system_assets/tongue/tongue01/tongue01.mhclo",
+  "teethColours": {
+    "enamel": [
+      0.94,
+      0.9,
+      0.82
+    ],
+    "gums": [
+      0.78,
+      0.44,
+      0.45
+    ],
+    "note": "warm off-white teeth and soft pink gums (MakeHuman's own are grey and deep red); teeth and tongue darken towards the back of the mouth, down to 'darkestBack', so the open mouth does not glow",
+    "darkestBack": 0.4,
+    "shade": 0.5
+  },
+  "tongueTint": [
+    0.62,
+    0.46,
+    0.48
+  ],
   "looks": {
     "hair": [
       {

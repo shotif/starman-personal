@@ -300,6 +300,11 @@ skin or an eye colour is a texture swap on the named material, for example
   the mouth's helper geometry, so an open mouth shows teeth and a tongue. A lip-sync library
   that speaks Oculus visemes can drive them by name; `viseme_sil` is the closed rest shape
   (no movement).
+- **Teeth and tongue.** MakeHuman's teeth are grey with deep red gums; `hero.py` recolours them
+  to a warm off-white with soft pink gums (`teethColours` in `art/hero.json`), roughness 0.35.
+  The teeth and the tongue darken towards the back of the mouth, down to 40%, so an open mouth
+  sits in shadow instead of glowing. In a mouth shaded by the lips, the teeth still look light
+  grey, because only the ambient light reaches them.
 - **Blinks.** `blink_left` and `blink_right` close the character's own left and right eye, from
   MPFB's eye-closure targets mixed by the body's ancestry. The eyelashes follow.
 - **Eye turns.** `look_left`, `look_right` (22°), `look_up` (15°) and `look_down` (18°) turn

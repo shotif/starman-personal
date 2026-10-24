@@ -280,7 +280,7 @@
   "bodies": {
     "man": {
       "file": "hero-man.glb",
-      "bytes": 5092136,
+      "bytes": 5086624,
       "heightMetres": 1.817,
       "triangles": 40057,
       "bones": 53,
@@ -1652,11 +1652,11 @@
     },
     "woman": {
       "file": "hero-woman.glb",
-      "bytes": 5326312,
+      "bytes": 5320764,
       "heightMetres": 1.67,
       "triangles": 44267,
       "bones": 53,
-      "megabytes": 5.33,
+      "megabytes": 5.32,
       "materials": [
         "woman_skin",
         "woman_eyes",
