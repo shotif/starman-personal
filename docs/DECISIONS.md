@@ -44,6 +44,9 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-30 | Which skins, hair and faces the character creator offers | Decided 2026-10-24 | **As recommended**: six skin tones, six to eight hair styles and five eye colours per body, with the 19 sliders |
 | D-31 | Lip sync for the voiced lines | Decided 2026-10-24 | **As recommended**: MakeHuman's CC0 mouth shapes, timed from each voiced line |
 | D-32 | The heroes' new look: uniform, colour, boots, proportions | Decided 2026-10-24 (owner's choice) | **Approved for now** |
+| D-33 | The six classes and their powers | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
+| D-34 | Where you are from: the origins | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
+| D-35 | The moment that made you | Open | proposal in [CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md) |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -513,6 +516,20 @@ change** (colour, uniform, build). The look of each power's uniform comes later 
 
 **Decided:** approved for now, 24 October 2026 ("The uniform is fine for now"). It stays until the
 powers' own uniforms are designed with the story.
+
+## Round 4: classes and the past — open
+
+The creator's appearance is built ([design/CREATOR.md](design/CREATOR.md)). Its class and past
+tabs need content only the owner should settle: the proposal, with options and a recommendation
+for each, is [design/CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md).
+
+- **D-33 · The six classes and their powers — Open.** Recommended: Breacher (Arms), Rigger
+  (Systems), Fieldwright (Field), Shade (Arms + Systems), Striker (Arms + Field), Warden (Systems +
+  Field), with the powers and specialisations listed there.
+- **D-34 · Where you are from — Open.** Recommended: Ringborn, Steader, Den-raised, Laneborn,
+  Beltborn, Borderer, each a place in the canon with a talent and a personal quest.
+- **D-35 · The moment that made you — Open.** Recommended: the survivor, the hero of the line,
+  the hard call, the one who lost someone.
 
 ## Made without waiting
 
