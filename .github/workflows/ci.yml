@@ -36,7 +36,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      # Only the journey a software renderer can carry; the rest run on a real GPU before each push.
+      - run: npm run test:e2e -- --grep @ci
         env:
           CI: "1"
       - name: Upload screenshots and traces

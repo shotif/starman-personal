@@ -59,9 +59,6 @@ async function win(page: Page, fight: string) {
 
 test('the slice plays from the night shift to the bridge', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'the long journey runs on the desktop');
-  // CI's machines draw in software, too slowly for an hour of story; this runs on a real GPU (the
-  // owner's Mac) before every push.
-  test.skip(!!process.env.CI, 'the whole slice needs a GPU');
   test.setTimeout(240_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
