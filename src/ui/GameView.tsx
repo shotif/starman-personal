@@ -38,7 +38,8 @@ const HINTS: Record<string, { touch: string; desk: string }> = {
     desk: 'Right mouse aims · left mouse fires',
   },
   powers: {
-    touch: 'Your powers sit above Fire: point the crosshair at a machine and tap one · Field powers prime, others set them off',
+    touch:
+      'Your powers sit above Fire: point the crosshair at a machine and tap one · Field powers prime, others set them off',
     desk: '1, 2 and 3 use your powers on what the crosshair points at · Field powers prime a machine; others set it off',
   },
   orders: {
