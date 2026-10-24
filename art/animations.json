@@ -1,0 +1,46 @@
+{
+  "about": "The animation set every character .glb carries. Each clip is taken from Quaternius's Universal Animation Library (UAL, CC0) and renamed. 'derived' clips are made by scripts/art/common.py from another clip, because the free libraries do not include them. Read by scripts/art/mannequin.py and scripts/art/hero.py.",
+  "fps": 30,
+  "libraries": {
+    "ual1": {
+      "file": "art/cache/ual1/Animation Library[Standard]/Godot/AnimationLibrary_Godot_Standard.glb",
+      "naming": "rigify"
+    },
+    "ual2": {
+      "file": "art/cache/ual2/Universal Animation Library 2 [Standard]/Unreal-Godot/UAL2_Standard.glb",
+      "naming": "unreal"
+    }
+  },
+  "clips": [
+    { "name": "idle", "library": "ual1", "source": "Idle_Loop", "loop": true },
+    { "name": "idle_talk", "library": "ual1", "source": "Idle_Talking_Loop", "loop": true },
+    { "name": "walk", "library": "ual1", "source": "Walk_Loop", "loop": true },
+    { "name": "jog", "library": "ual1", "source": "Jog_Fwd_Loop", "loop": true },
+    { "name": "sprint", "library": "ual1", "source": "Sprint_Loop", "loop": true },
+    { "name": "strafe_left", "derived": "strafe", "from": "walk", "side": "left", "loop": true },
+    { "name": "strafe_right", "derived": "strafe", "from": "walk", "side": "right", "loop": true },
+    { "name": "crouch_idle", "library": "ual1", "source": "Crouch_Idle_Loop", "loop": true, "note": "also the cover idle until a dedicated one exists" },
+    { "name": "crouch_walk", "library": "ual1", "source": "Crouch_Fwd_Loop", "loop": true },
+    { "name": "roll", "library": "ual1", "source": "Roll", "loop": false },
+    { "name": "jump_start", "library": "ual1", "source": "Jump_Start", "loop": false },
+    { "name": "jump_loop", "library": "ual1", "source": "Jump_Loop", "loop": true },
+    { "name": "jump_land", "library": "ual1", "source": "Jump_Land", "loop": false },
+    { "name": "pistol_idle", "library": "ual1", "source": "Pistol_Idle_Loop", "loop": true },
+    { "name": "pistol_aim", "library": "ual1", "source": "Pistol_Aim_Neutral", "loop": true },
+    { "name": "pistol_aim_up", "library": "ual1", "source": "Pistol_Aim_Up", "loop": true },
+    { "name": "pistol_aim_down", "library": "ual1", "source": "Pistol_Aim_Down", "loop": true },
+    { "name": "pistol_shoot", "library": "ual1", "source": "Pistol_Shoot", "loop": false },
+    { "name": "pistol_reload", "library": "ual1", "source": "Pistol_Reload", "loop": false },
+    { "name": "power_ready", "library": "ual1", "source": "Spell_Simple_Idle_Loop", "loop": true, "note": "a tech power held ready" },
+    { "name": "power_cast", "library": "ual1", "source": "Spell_Simple_Shoot", "loop": false, "note": "a tech power released" },
+    { "name": "punch_jab", "library": "ual1", "source": "Punch_Jab", "loop": false },
+    { "name": "punch_cross", "library": "ual1", "source": "Punch_Cross", "loop": false },
+    { "name": "melee_hook", "library": "ual2", "source": "Melee_Hook", "loop": false },
+    { "name": "melee_combo", "library": "ual2", "source": "Sword_Regular_Combo", "loop": false, "note": "a three-strike blade combo" },
+    { "name": "hit_chest", "library": "ual1", "source": "Hit_Chest", "loop": false },
+    { "name": "hit_head", "library": "ual1", "source": "Hit_Head", "loop": false },
+    { "name": "hit_knockback", "library": "ual2", "source": "Hit_Knockback", "loop": false },
+    { "name": "death", "library": "ual1", "source": "Death01", "loop": false },
+    { "name": "interact", "library": "ual1", "source": "Interact", "loop": false }
+  ]
+}

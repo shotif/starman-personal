@@ -1,5 +1,6 @@
 import '@babylonjs/core/Lights/Clustered/clusteredLightingSceneComponent';
 import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { ClusteredLightContainer } from '@babylonjs/core/Lights/Clustered/clusteredLightContainer';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -7,6 +8,7 @@ import type { Light } from '@babylonjs/core/Lights/light';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
@@ -18,7 +20,8 @@ import type { QualitySettings } from './quality.ts';
 
 /**
  * The proof's place: a station corridor that opens into a room with crates to take cover behind
- * later. Built from boxes with physically based materials until the real art exists (D-22).
+ * later. Built from boxes with Poly Haven's CC0 materials (art/materials.json) until the real art
+ * exists (D-22).
  * Everything solid is a static physics body, and the floor and obstacles feed the navigation mesh.
  */
 export interface Level {
@@ -33,11 +36,17 @@ export interface Level {
   companionStart: Vector3;
 }
 
+interface Surface {
+  material: PBRMaterial;
+  /** Metres covered by one repeat of the texture. */
+  tile: number;
+}
+
 interface Palette {
-  floor: PBRMaterial;
-  wall: PBRMaterial;
-  trim: PBRMaterial;
-  crate: PBRMaterial;
+  floor: Surface;
+  wall: Surface;
+  trim: Surface;
+  crate: Surface;
   glow: PBRMaterial;
 }
 
@@ -50,17 +59,60 @@ function material(scene: Scene, name: string, colour: Color3, metallic: number, 
   return m;
 }
 
+/**
+ * A Poly Haven material: base colour, an OpenGL-convention normal map, and ambient occlusion,
+ * roughness and metal packed in the red, green and blue of one texture.
+ */
+function surface(scene: Scene, id: string, tile: number, tint: Color3, maxLights: number): Surface {
+  const folder = `${import.meta.env.BASE_URL}assets/materials/${id}`;
+  const m = material(scene, id, tint, 1, 1, maxLights);
+  m.albedoTexture = new Texture(`${folder}/albedo.jpg`, scene);
+  m.bumpTexture = new Texture(`${folder}/normal.jpg`, scene);
+  // Babylon is left-handed: an OpenGL normal map needs its X flipped, as the glTF loader does.
+  m.invertNormalMapX = true;
+  m.metallicTexture = new Texture(`${folder}/arm.jpg`, scene);
+  m.useAmbientOcclusionFromMetallicTextureRed = true;
+  m.useRoughnessFromMetallicTextureGreen = true;
+  m.useMetallnessFromMetallicTextureBlue = true;
+  return { material: m, tile };
+}
+
 function palette(scene: Scene, q: QualitySettings): Palette {
   const glow = material(scene, 'glow', new Color3(0.02, 0.02, 0.02), 0, 0.6, q.maxLights);
   glow.emissiveColor = new Color3(0.75, 0.88, 1);
   glow.emissiveIntensity = 1.4;
   return {
-    floor: material(scene, 'floor', new Color3(0.16, 0.17, 0.19), 0.35, 0.55, q.maxLights),
-    wall: material(scene, 'wall', new Color3(0.42, 0.44, 0.47), 0.2, 0.62, q.maxLights),
-    trim: material(scene, 'trim', new Color3(0.1, 0.11, 0.12), 0.55, 0.4, q.maxLights),
-    crate: material(scene, 'crate', new Color3(0.55, 0.33, 0.12), 0.15, 0.7, q.maxLights),
+    floor: surface(scene, 'metal_plate', 1.5, new Color3(0.8, 0.82, 0.85), q.maxLights),
+    wall: surface(scene, 'metal_plate_02', 2, new Color3(0.9, 0.92, 0.95), q.maxLights),
+    trim: surface(scene, 'rusty_metal_02', 1, new Color3(0.45, 0.47, 0.5), q.maxLights),
+    crate: surface(scene, 'container_side', 1.2, new Color3(1, 1, 1), q.maxLights),
     glow,
   };
+}
+
+/**
+ * Gives a box texture coordinates from its place in the world, so a material repeats every
+ * `tile` metres on every face and lines up between neighbouring boxes, however long they are.
+ */
+function boxProjectUVs(mesh: Mesh, tile: number): void {
+  const positions = mesh.getVerticesData(VertexBuffer.PositionKind);
+  const normals = mesh.getVerticesData(VertexBuffer.NormalKind);
+  if (!positions || !normals) return;
+  const uvs = new Float32Array((positions.length / 3) * 2);
+  const { x: ox, y: oy, z: oz } = mesh.position;
+  for (let i = 0; i < positions.length / 3; i++) {
+    const x = (positions[i * 3] ?? 0) + ox;
+    const y = (positions[i * 3 + 1] ?? 0) + oy;
+    const z = (positions[i * 3 + 2] ?? 0) + oz;
+    const nx = Math.abs(normals[i * 3] ?? 0);
+    const ny = Math.abs(normals[i * 3 + 1] ?? 0);
+    const nz = Math.abs(normals[i * 3 + 2] ?? 0);
+    // Project along the face's main axis: floors and ceilings by x and z, side walls by z and y.
+    const [u, v] = ny >= nx && ny >= nz ? [x, z] : nx >= nz ? [z, y] : [x, y];
+    uvs[i * 2] = u / tile;
+    uvs[i * 2 + 1] = v / tile;
+  }
+  mesh.setVerticesData(VertexBuffer.UVKind, uvs);
 }
 
 export function buildLevel(scene: Scene, q: QualitySettings): Level {
@@ -70,10 +122,11 @@ export function buildLevel(scene: Scene, q: QualitySettings): Level {
   const bodies: PhysicsAggregate[] = [];
 
   /** A solid box with its centre at (x, y, z). */
-  const box = (name: string, size: [number, number, number], at: [number, number, number], mat: PBRMaterial) => {
+  const box = (name: string, size: [number, number, number], at: [number, number, number], look: Surface) => {
     const mesh = CreateBox(name, { width: size[0], height: size[1], depth: size[2] }, scene);
     mesh.position.set(at[0], at[1], at[2]);
-    mesh.material = mat;
+    boxProjectUVs(mesh, look.tile);
+    mesh.material = look.material;
     mesh.receiveShadows = q.shadowMapSize > 0;
     mesh.freezeWorldMatrix();
     bodies.push(new PhysicsAggregate(mesh, PhysicsShapeType.BOX, { mass: 0, friction: 0.8 }, scene));

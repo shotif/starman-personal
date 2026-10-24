@@ -1,0 +1,146 @@
+{
+  "source": "Poly Haven",
+  "licence": "CC0 1.0",
+  "materials": [
+    {
+      "id": "metal_plate",
+      "name": "Metal Plate",
+      "use": "floors",
+      "page": "https://polyhaven.com/a/metal_plate",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/metal_plate/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_diff_1k.jpg",
+          "bytes": 692234,
+          "sha256": "c6b6739eac2c75ccc898e753d7833df24eafbdb9aa92fb6eabfb92abd1a680a5"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/metal_plate/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_nor_gl_1k.jpg",
+          "bytes": 770307,
+          "sha256": "994f851a84d52b51e97906021a1b7070ee6eac9a789fef041132268de47d8e6b"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/metal_plate/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_arm_1k.jpg",
+          "bytes": 1004043,
+          "sha256": "fc4708b6700a2cc387654b693091dd0ac0cd1797ae803d75c894e62554fbef07"
+        }
+      ]
+    },
+    {
+      "id": "metal_plate_02",
+      "name": "Metal Plate 02",
+      "use": "walls and ceilings",
+      "page": "https://polyhaven.com/a/metal_plate_02",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/metal_plate_02/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_diff_1k.jpg",
+          "bytes": 625917,
+          "sha256": "6e80877d0e9d5973d96298c6091df7ace906b0a6760afc4f3592e4855f3f1d4c"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/metal_plate_02/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_nor_gl_1k.jpg",
+          "bytes": 183264,
+          "sha256": "58736fbb8aa4fc6690cf8152b174db65caf22a766375b625fb0087e1bc955bc7"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/metal_plate_02/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_arm_1k.jpg",
+          "bytes": 1075839,
+          "sha256": "e099a8385d53f4a515b7e0ce94f85d88657fcac49c23979474f5394b22dd550b"
+        }
+      ]
+    },
+    {
+      "id": "container_side",
+      "name": "Container Side",
+      "use": "crates",
+      "page": "https://polyhaven.com/a/container_side",
+      "authors": [
+        "Dimitrios Savva"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/container_side/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/container_side/container_side_diff_1k.jpg",
+          "bytes": 667470,
+          "sha256": "9d6a8a9a243b6111f9d13af12d90325f0f1d52e45c2e1731f2d496702f024452"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/container_side/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/container_side/container_side_nor_gl_1k.jpg",
+          "bytes": 538519,
+          "sha256": "1e9e54d5816c97e5abeb448c3468b1eafb4add9acb41fcdc26817563c8f21f22"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/container_side/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/container_side/container_side_arm_1k.jpg",
+          "bytes": 387982,
+          "sha256": "c5238fd9c6d234b1c6c9a62e2b1b97343636a4e42abd429e03faf58a613318b7"
+        }
+      ]
+    },
+    {
+      "id": "rusty_metal_02",
+      "name": "Rusty Metal 02",
+      "use": "ribs and trim",
+      "page": "https://polyhaven.com/a/rusty_metal_02",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/rusty_metal_02/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_metal_02/rusty_metal_02_diff_1k.jpg",
+          "bytes": 564932,
+          "sha256": "adaf094391518b6afe787a123942110aa88ef521c844f970b124420f5ed5d3d9"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/rusty_metal_02/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_metal_02/rusty_metal_02_nor_gl_1k.jpg",
+          "bytes": 403156,
+          "sha256": "995197a62cac6fbb000e6e6591a3330a3b77ef069c4ac58f505b586b9bdbd97b"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/rusty_metal_02/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rusty_metal_02/rusty_metal_02_arm_1k.jpg",
+          "bytes": 153031,
+          "sha256": "2982943ffe3273a65bf788b77fc0c7a4fd8227824386d065d13a8c8c0e07db10"
+        }
+      ]
+    }
+  ]
+}
