@@ -25,13 +25,22 @@ export function parseDotEnv(text: string): Record<string, string> {
 
 let dotEnv: Record<string, string> | undefined;
 
-/** The key's value, or an error naming the key (never its value). */
-export function requireKey(name: 'GEMINI_API_KEY' | 'MESHY_API_KEY' | 'ELEVENLABS_API_KEY'): string {
+/** A setting from the environment first, then `.env`; undefined when neither has it. */
+export function optionalKey(name: 'ELEVENLABS_API_BASE' | 'FFMPEG' | 'FFPROBE'): string | undefined {
+  return setting(name);
+}
+
+function setting(name: string): string | undefined {
   if (!dotEnv) {
     const path = resolve(import.meta.dirname, '../../.env');
     dotEnv = existsSync(path) ? parseDotEnv(readFileSync(path, 'utf8')) : {};
   }
-  const value = process.env[name] ?? dotEnv[name];
+  return process.env[name] || dotEnv[name] || undefined;
+}
+
+/** The key's value, or an error naming the key (never its value). */
+export function requireKey(name: 'GEMINI_API_KEY' | 'MESHY_API_KEY' | 'ELEVENLABS_API_KEY'): string {
+  const value = setting(name);
   if (!value) throw new Error(`${name} is not set: add it to .env (see .env.example)`);
   return value;
 }

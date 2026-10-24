@@ -1,11 +1,13 @@
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreatePolyhedron } from '@babylonjs/core/Meshes/Builders/polyhedronBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { PhysicsRaycastResult } from '@babylonjs/core/Physics/physicsRaycastResult';
 import {
   CharacterSupportedState,
@@ -206,6 +208,16 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
 const LIFTOFF_SECONDS = 8;
+/**
+ * The sidearm in the hand: its length, and how it sits in the hand bone. Solved from the aiming pose
+ * so the barrel runs along the forearm, upright, with the grip in the palm (the gun model's barrel
+ * is its +x and its top +y); a probe looked at it from four sides.
+ */
+const SIDEARM = {
+  length: 0.21,
+  rotation: [0.093, -1.141, 1.672] as [number, number, number],
+  offset: [-0.01, -0.125, -0.008] as [number, number, number],
+};
 /** Who speaks a line, by the name its tag gives, in the cast. */
 const SPEAKERS: Record<string, string> = {
   Ren: 'ren',
@@ -299,6 +311,20 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (c) characters[id] = c;
   });
   for (const c of [hero, characters.ren, characters.jo]) for (const mesh of c?.meshes ?? []) place.castShadow(mesh);
+  // The sidearm (the style test's Meshy model) in the hands of those who fight.
+  // It is drawn only in a fight, or while the hero aims: nobody carries a gun to the galley.
+  const grips: { hero: boolean; node: TransformNode }[] = [];
+  void LoadAssetContainerAsync(`${import.meta.env.BASE_URL}assets/props/sidearm-meshy.glb`, scene)
+    .then((gun) => {
+      for (const c of [hero, characters.ren, characters.jo]) {
+        const node = c?.hold(gun, SIDEARM.length, SIDEARM.rotation, SIDEARM.offset);
+        if (node) grips.push({ hero: c === hero, node });
+        node?.setEnabled(false);
+      }
+    })
+    .catch(() => {
+      // No sidearm: empty hands still fire.
+    });
 
   const controller = new PhysicsCharacterController(
     place.heroStart.at.add(new Vector3(0, CAPSULE_HEIGHT / 2 + 0.05, 0)),
@@ -852,6 +878,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let clock = 0;
   let vitalsTime = 0;
   let paused = false;
+  /** For testing: the camera held at a view instead of following the hero. */
+  let debugView: { from: Vector3; to: Vector3 } | null = null;
   scene.onBeforeRenderObservable.add(() => {
     if (paused) {
       input.takeLook();
@@ -1211,6 +1239,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // The camera: the player's view, a conversation's shots, or the lift-off.
     aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
+    for (const g of grips) g.node.setEnabled(fight !== null || (g.hero && aiming));
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
@@ -1259,6 +1288,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         director.event('done:liftoff');
         window.setTimeout(() => options.onFade(false), 300);
       }
+    }
+    if (debugView) {
+      from = debugView.from;
+      lookAt = debugView.to;
     }
     aimCamera(from, lookAt);
     // Anyone the camera is pressed against fades, rather than filling the screen.
@@ -1376,6 +1409,21 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           const to = target.subtract(eye);
           orbit.alpha = Math.atan2(-to.z, -to.x);
           orbit.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, Math.acos(-to.y / to.length())));
+        },
+        /** Holds the camera at a view (positions as [x, y, z]), or lets it follow the hero again (null). */
+        view: (from: number[] | null, to?: number[]) => {
+          debugView = from && to ? { from: Vector3.FromArray(from), to: Vector3.FromArray(to) } : null;
+        },
+        /** Where a node is (a bone, by name), for placing a view. */
+        where: (name: string) => scene.getTransformNodeByName(name)?.getAbsolutePosition().asArray() ?? null,
+        /** Sets how the sidearm sits in the hand (for finding the grip by eye). */
+        grip: (rotation: [number, number, number], offset: [number, number, number]) => {
+          for (const { node } of grips) {
+            const s = new Vector3();
+            if (node.parent instanceof TransformNode) node.parent.computeWorldMatrix(true).decompose(s);
+            node.rotation.set(...rotation);
+            node.position.set(offset[0] / s.x, offset[1] / s.y, offset[2] / s.z);
+          }
         },
         /** Holds or lets go of aim and fire, as the touch buttons do. */
         trigger: (aim: boolean, fire: boolean) => {

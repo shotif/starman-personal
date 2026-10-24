@@ -45,6 +45,16 @@ its source, its licence with a link, and what we changed, as the licence asks.
 - **[Poly Haven](https://polyhaven.com)**: *Metal Plate*, *Metal Plate 02* and *Rusty Metal 02*
   by Rob Tuytel, and *Container Side* by Dimitrios Savva (CC0).
 
+## Made for this game with generative tools
+
+These are generated from the game's own writing and designs on the owner's paid plans, which allow
+commercial use; the records say how each file was made.
+
+- **Voices:** generated with ElevenLabs text to speech (model eleven_v4) from the game's own
+  script, in ElevenLabs' premade voices, on a paid plan. Records in
+  [art/voices.json](art/voices.json); how in [docs/assets/VOICES.md](docs/assets/VOICES.md).
+- **The sidearm:** generated with Meshy from the game's own concept drawing.
+
 ## Tools used to make the assets
 
 These are not shipped with the game.

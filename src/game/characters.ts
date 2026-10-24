@@ -43,6 +43,16 @@ export interface Character {
   model: TransformNode | null;
   /** Gives parts added later (hair) the whole figure's bounds, as `spawnCharacter` gives its own. */
   fitBounds(parts: readonly AbstractMesh[]): void;
+  /**
+   * Puts a model in the right hand (the sidearm): scaled to `length` metres along its longest side,
+   * turned by `rotation` (radians, about x, y and z of the hand) and moved by `offset` (metres).
+   */
+  hold(
+    model: AssetContainer,
+    length: number,
+    rotation: [number, number, number],
+    offset: [number, number, number],
+  ): TransformNode | null;
   /** Fades the whole figure: 1 drawn as usual, 0 hidden. */
   setFade(visibility: number): void;
 }
@@ -176,6 +186,8 @@ export function spawnCharacter(
   const nodes = model.getDescendants(false).filter((n): n is TransformNode => n instanceof TransformNode);
   const upperNames = nodes.filter((n) => UPPER_BODY.test(sourceName(n.name))).map((n) => n.name);
   const hand = nodes.find((n) => sourceName(n.name).toLowerCase() === 'hand_r') ?? null;
+  let held: TransformNode | null = null;
+  let heldLength = 0;
 
   // Every walking clip plays twice: once on the legs and hips, once on the upper body, each held
   // by a mask that never changes. Aiming fades the upper copies out and the aim clip in, so the
@@ -259,8 +271,42 @@ export function spawnCharacter(
       if (shoot) shoot.goToFrame(shoot.from);
     },
     muzzle() {
+      if (held) return held.getAbsolutePosition().add(held.forward.scale(heldLength * 0.5));
       if (hand) return hand.getAbsolutePosition().clone();
       return root.position.add(new Vector3(0, 1.4, 0));
+    },
+    hold(model, length, rotation, offset) {
+      if (!hand) return null;
+      const entries = model.instantiateModelsToScene((n) => `${name}-held-${n}`, false, { doNotInstantiate: false });
+      const holder = new TransformNode(`${name}-held`, scene);
+      for (const node of entries.rootNodes) node.parent = holder;
+      const meshes = holder.getChildMeshes(false);
+      const min = new Vector3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+      const max = min.scale(-1);
+      for (const mesh of meshes) {
+        mesh.computeWorldMatrix(true);
+        min.minimizeInPlace(mesh.getBoundingInfo().boundingBox.minimumWorld);
+        max.maximizeInPlace(mesh.getBoundingInfo().boundingBox.maximumWorld);
+        mesh.isPickable = false;
+      }
+      const extent = max.subtract(min);
+      const k = length / Math.max(extent.x, extent.y, extent.z, 1e-6);
+      const centre = min.add(max).scale(0.5);
+      const grip = new TransformNode(`${name}-grip`, scene);
+      holder.parent = grip;
+      holder.scaling.setAll(k);
+      holder.position.set(-centre.x * k, -centre.y * k, -centre.z * k);
+      // The hand bone carries the character's scale (the model's units) and the import's mirror of one
+      // axis; undo both so the size holds and a rotation can seat the gun.
+      grip.parent = hand;
+      const handScale = new Vector3();
+      hand.computeWorldMatrix(true).decompose(handScale);
+      grip.scaling.set(1 / handScale.x, 1 / handScale.y, 1 / handScale.z);
+      grip.rotation.set(...rotation);
+      grip.position.set(offset[0] / handScale.x, offset[1] / handScale.y, offset[2] / handScale.z);
+      held = grip;
+      heldLength = length;
+      return grip;
     },
   };
 }
@@ -289,6 +335,7 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     skeleton: null,
     model: null,
     fitBounds() {},
+    hold: () => null,
     setFade: fader(root),
     speak() {},
     setPose() {},

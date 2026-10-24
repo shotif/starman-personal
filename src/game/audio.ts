@@ -21,6 +21,8 @@ interface VoiceEntry {
   file: string;
   seconds?: number;
   envelope?: number[];
+  /** Playback gain that levels the line with the rest (quiet deliveries come out quiet). */
+  gain?: number;
   radio?: boolean;
 }
 
@@ -217,6 +219,7 @@ export function createAudio(): GameAudio {
       if (!context || !entry || !bus.voice) return null;
       const ctx = context;
       const gain = ctx.createGain();
+      gain.gain.value = entry.gain ?? 1;
       let chain: AudioNode = gain;
       if (entry.radio) {
         // A comms band: the low and high ends cut, a little edge.
