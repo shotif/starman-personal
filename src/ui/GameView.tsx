@@ -500,8 +500,25 @@ export function GameView({
                 ? 'Ilya Marsh stood in front of Dena when the machines came. He did not leave Ross 128 b.'
                 : 'Everyone from the night shift came aboard.'}
             </li>
+            {ending.haveCurve && (
+              <li>Ilya's readings came with you: thirty-one nights of a star going dark in steps.</li>
+            )}
             <li>Chief Hale stayed behind to keep the doors working.</li>
             <li>The surveyor is yours now, and her name is Lantern.</li>
+            <li>
+              {ending.renApproval >= 3
+                ? 'Ren Okafor would follow you anywhere now.'
+                : ending.renApproval >= 2
+                  ? 'Ren Okafor trusts you.'
+                  : ending.renApproval >= 1
+                    ? 'Ren Okafor is still making up her mind about you.'
+                    : 'Ren Okafor has doubts, and keeps them to herself.'}{' '}
+              {ending.joApproval >= 2
+                ? 'Jo Rook likes the way you give orders.'
+                : ending.joApproval >= 1
+                  ? 'Jo Rook has stopped calling you the cavalry.'
+                  : 'Jo Rook is reserving judgement.'}
+            </li>
             {ending.firstLead && <li>Your first course: {LEADS[ending.firstLead] ?? ending.firstLead}.</li>}
           </ul>
           <p class="ending__next">Act 1, The dimming, is being written.</p>

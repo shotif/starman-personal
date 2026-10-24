@@ -103,6 +103,8 @@ export interface Ending {
   merrowWarned: boolean;
   ilyaLost: boolean;
   firstLead: string;
+  /** Ilya's readings came aboard (he brought them, or Dena did). */
+  haveCurve: boolean;
   renApproval: number;
   joApproval: number;
 }
@@ -607,6 +609,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     merrowWarned: runner.variable('merrow_warned') === true,
     ilyaLost: runner.variable('ilya_lost') === true,
     firstLead: String(runner.variable('first_lead') ?? ''),
+    haveCurve: runner.variable('have_curve') === true,
     renApproval: Number(runner.variable('ren_approval') ?? 0),
     joApproval: Number(runner.variable('jo_approval') ?? 0),
   });
