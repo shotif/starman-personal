@@ -811,8 +811,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     } catch {
       runner.story.ChoosePathString(`slice.${options.save.checkpoint}`);
     }
-  }
-  else if (options.chapter) runner.story.ChoosePathString(`slice.${options.chapter}`);
+  } else if (options.chapter) runner.story.ChoosePathString(`slice.${options.chapter}`);
 
   /** The orders of the command view, to one companion or all (ORDERS.md). */
   const view = () => {
