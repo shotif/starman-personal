@@ -38,6 +38,8 @@ export interface GameStats {
   renderer: string;
   tier: QualityTier;
   activeMeshes: number;
+  /** The hero's ground speed in metres a second. */
+  speed: number;
   companionNavigation: boolean;
 }
 
@@ -193,6 +195,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         renderer: engine.isWebGPU ? 'WebGPU' : `WebGL${(engine as Engine).webGLVersion}`,
         tier: options.tier,
         activeMeshes: scene.getActiveMeshes().length,
+        speed: Math.hypot(controller.getVelocity().x, controller.getVelocity().z),
         companionNavigation: follow.navigated,
       });
     }

@@ -18,6 +18,7 @@ export function TouchControls({ input }: { input: Input }) {
   const lookLast = useRef({ x: 0, y: 0 });
   const [stick, setStick] = useState<{ x: number; y: number; dx: number; dy: number } | null>(null);
   const [running, setRunning] = useState(false);
+  const runTouchedAt = useRef(Number.NEGATIVE_INFINITY);
 
   const stickDown = (e: PointerEvent) => {
     if (stickFinger.current !== null) return;
@@ -61,6 +62,17 @@ export function TouchControls({ input }: { input: Input }) {
     input.sprintToggle = !running;
     setRunning(!running);
   };
+  // Phones send no click for a tap made while another finger is down (the left thumb is on the
+  // stick), so the button acts on the touch itself. The click that may follow that touch is
+  // ignored; a click with no touch before it (the keyboard) still toggles, for accessibility.
+  const runDown = (e: PointerEvent) => {
+    e.preventDefault();
+    runTouchedAt.current = performance.now();
+    toggleRun();
+  };
+  const runClick = () => {
+    if (performance.now() - runTouchedAt.current > 1000) toggleRun();
+  };
 
   return (
     <div class="touch">
@@ -89,7 +101,8 @@ export function TouchControls({ input }: { input: Input }) {
         type="button"
         class={`touch__run${running ? ' touch__run--on' : ''}`}
         aria-pressed={running}
-        onClick={toggleRun}
+        onPointerDown={runDown}
+        onClick={runClick}
       >
         Run
       </button>

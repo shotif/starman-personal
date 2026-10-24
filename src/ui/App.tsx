@@ -88,7 +88,7 @@ export function App() {
         <p class="hud__title">Starman Lightkeeper · proof</p>
         {stats && (
           <p class="hud__stats">
-            {stats.fps} fps · {stats.renderer} · {stats.activeMeshes} meshes
+            {stats.fps} fps · {stats.renderer} · {stats.activeMeshes} meshes · {stats.speed.toFixed(1)} m/s
             {stats.companionNavigation ? '' : ' · companion without navigation'}
           </p>
         )}
