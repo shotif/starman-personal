@@ -40,7 +40,7 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-26 | How finished work reaches `main` | Assumed 2026-10-24 | Pushed to `main` once the checks pass, as in Reborn and Control |
 | D-27 | Reuse open source | Decided 2026-10-24 (owner's direction) | Look for open-source and CC0 work first; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) |
 | D-28 | What may go into the public repository | Assumed 2026-10-24 | Only files whose licence lets us share them, each recorded with its source |
-| D-29 | Real sideways walks: buy UAL Pro? | Open | |
+| D-29 | Real sideways walks: buy UAL Pro? | Decided 2026-10-24 | **A, buy UAL Pro** ($9.99, bought by the owner) |
 | D-30 | Which skins, hair and faces the character creator offers | Open | |
 | D-31 | Lip sync for the voiced lines | Open | |
 
@@ -440,7 +440,7 @@ The art pipeline ([ART_PIPELINE.md](ART_PIPELINE.md)) now makes the hero as a ma
 from MPFB 2, with 19 body and face sliders, the lineage presets and 30 animations, all CC0. It
 raised three questions.
 
-### D-29 · Real sideways walks: buy UAL Pro? — **Open**
+### D-29 · Real sideways walks: buy UAL Pro? — **Decided**
 
 The free animation libraries have no sideways walk, so `strafe_left` and `strafe_right` are made
 from the forward walk with the hips turned. They pass, but they are stand-ins, and cover and aiming
@@ -451,6 +451,13 @@ from the forward walk with the hips turned. They pass, but they are stand-ins, a
 | **A. Buy Quaternius's Universal Animation Library Pro** (recommended) | $9.99 on itch.io, inside D-24's allowance, with walks and runs in eight directions and more combat clips, under the same CC0 licence. Claude cannot pay, so the owner buys it and puts the download in `art/cache/` |
 | B. Keep the stand-ins | Free; they show when the hero moves sideways in cover |
 | C. Ask Meshy for them | Meshy's library has directional walks; licence to be confirmed for the library itself |
+
+**Decided:** A, 24 October 2026: the owner asked how to buy it. The Pro version of Library 1
+(<https://quaternius.itch.io/universal-animation-library>, $9.99 or more) has more than 120
+animations, eight-direction movement among them, as FBX and GLB, under CC0. The download goes into
+`art/cache/` (ignored by git) and is recorded in `art/records.json`. Library 2 has no Pro version;
+its Source version ($14.99, about three times the free clips, mostly melee and movement) can follow
+when melee is built.
 
 ### D-30 · Which skins, hair and faces the creator offers — **Open**
 
