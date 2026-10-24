@@ -31,7 +31,15 @@ The project owner decides; Claude designs, documents, builds and tests.
 - **Grounded science fiction** (D-05). Bold technology (quantum, warp, gravity engineering) is
   welcome; magic is not. Every power, weapon and device works by technology with rules and costs.
 - **Rich stories, never filler** (D-04). Every quest, main or side, has people, a reason and a
-  consequence. No fetch quests, no empty errands.
+  consequence. No fetch quests, no empty errands. Generated landing sites generate the ground,
+  never the story (D-19).
+- **Semi-realistic, and still playable on a phone** (D-22). Quality settings, levels of detail and
+  compressed assets are designed in from the start.
+- **Every line voiced** (D-23), the hero in two voices (D-09).
+- **Reuse open source first** (D-27). Before building a system or making an asset, look for an
+  open-source or CC0 one and record what was found.
+- **Only shareable files in the repository** (D-28). Every asset is recorded with its source and
+  licence. API keys never reach the game or the repository; they live in the git-ignored `.env`.
 
 ## Writing style (shared with Starman Reborn and Starman Control)
 
@@ -47,4 +55,7 @@ The project owner decides; Claude designs, documents, builds and tests.
 
 ## Stack
 
-Not decided yet (D-21). No code is written until it is.
+The browser first (D-21). The engine is not agreed yet; Claude recommends Babylon.js with Preact
+screens, ink for dialogue, and Blender 5.2 for the asset pipeline
+([docs/research/TECH_STACK.md](docs/research/TECH_STACK.md)). No game code is written until the
+owner agrees.

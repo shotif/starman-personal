@@ -1,7 +1,26 @@
 # Vision
 
-**Status:** draft 1, 24 October 2026, written from the owner's brief. Everything marked *(D-xx)*
-is an open question in [DECISIONS.md](DECISIONS.md) and may change.
+**Status:** draft 2, 24 October 2026, written from the owner's brief, with rounds 1 and 2 of
+[the decisions](DECISIONS.md) answered. The engine (D-21) and the title (D-25) are still open.
+
+## Decided so far, in short
+
+- **When:** Control's era, the 2180s, after first contact *(D-06)*.
+- **The threat:** the stars are going out, wrapped by a machine swarm that takes their light, with
+  a villain who has a face *(D-07)*.
+- **The hero:** a man or a woman *(D-09)* of one of four human lineages (Earthborn, Spacer,
+  Heavyworlder, Remade) *(D-08)*; one of six classes from three disciplines: Arms, Systems and
+  Field *(D-10)*; an origin and a defining moment, each with a personal quest *(D-11)*.
+- **Choices:** no meter; people remember; mercy or resolve *(D-12)*; full lines in a list *(D-13)*.
+- **Companions:** two at a time, about eight in all, at least two of them aliens *(D-14)*, given
+  objectives in a command view that nearly stops time *(D-16)*.
+- **Rating:** mature, with content switches for the player *(D-15)*.
+- **Combat:** cover, guns, full melee and combinable powers *(D-17)*.
+- **Ship and places:** a ship you live on and command *(D-18)*; hand-made places, plus generated
+  landing sites that always carry a written story *(D-19)*.
+- **Making it:** the whole story planned, built in acts after a playable slice *(D-20)*; the
+  browser first *(D-21)*; a semi-realistic look *(D-22)*; every line voiced *(D-23)*; open source
+  reused wherever it is good enough *(D-27)*.
 
 ## The pitch
 
@@ -77,8 +96,9 @@ only: no names, text, art or data from those games.
 
 ## Tone
 
-Reborn's voice: plain, short, wry and understated, in British English. The heroism is real but
-earned, and quiet rather than loud. People are never just quest givers: they want things, and they
+Reborn's voice: plain, short, wry and understated, in British English. The game is for adults
+*(D-15)*: violence has a cost and people speak as people do. The heroism is real but earned, and
+quiet rather than loud. People are never just quest givers: they want things, and they
 are often right. The threat should feel larger than any one power, which is why it needs one person
 who will cross every border.
 

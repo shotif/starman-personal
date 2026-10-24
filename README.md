@@ -15,8 +15,8 @@ No names, text, art or data from *Mass Effect* are used. See
 It is made to be **completely playable on a phone, with a dedicated desktop experience**, and is
 published on GitHub Pages.
 
-**Status: planning.** The first round of questions for the owner is open in
-[docs/DECISIONS.md](docs/DECISIONS.md). No code yet.
+**Status: planning.** The first two rounds of [decisions](docs/DECISIONS.md) are answered; the
+engine and the title are still open. No code yet.
 
 ## Design documents
 
@@ -26,4 +26,6 @@ published on GitHub Pages.
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Key decisions: the open questions, the options, a recommendation, and the owner's answers |
 | [docs/research/MASS_EFFECT.md](docs/research/MASS_EFFECT.md) | How *Mass Effect* works, what worked, what failed, lessons |
 | [docs/research/STARMAN_UNIVERSE.md](docs/research/STARMAN_UNIVERSE.md) | What Starman Reborn and Starman Control already establish, and what we can reuse |
+| [docs/research/TECH_STACK.md](docs/research/TECH_STACK.md) | The 3D engines compared, and a recommendation |
+| [docs/research/OPEN_SOURCE.md](docs/research/OPEN_SOURCE.md) | Open-source models, animations, generators and code we can reuse, with their licences |
 | [CLAUDE.md](CLAUDE.md) | How we work: documentation first, decisions by the owner, style rules |
