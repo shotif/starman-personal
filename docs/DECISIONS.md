@@ -368,8 +368,9 @@ which a public repository does, so we would use CC0 animation libraries instead.
   which checks it with Meshy before saving it.
 - **The open-source generator:** research on running one on the Mac recommends **trellis.cpp**
   (MIT, a C++ build of TRELLIS.2 with Metal, no Python), compiled locally, with about 15 GB of
-  weights. See [research/OPEN_SOURCE.md](research/OPEN_SOURCE.md) §3. Waiting for the owner's go
-  before compiling it and downloading the weights.
+  weights. See [research/OPEN_SOURCE.md](research/OPEN_SOURCE.md) §3. **Installed** on the owner's
+  go ("You can install trellis"), 24 October 2026, in `~/tools/trellis-cpp`, every weight file
+  checked against its published checksum.
 
 ### D-23 · Voices — **Decided**
 

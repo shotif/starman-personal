@@ -76,6 +76,20 @@ Licence notes from that research:
 - Background removal: RMBG-2.0 is non-commercial and BiRefNet is MIT. We avoid both by feeding
   the generator concept pictures that already have transparent backgrounds.
 
+**Installed (24 October 2026, the owner's go):** trellis.cpp v0.8.1 (commit `c0bed38`) in
+`~/tools/trellis-cpp` on the owner's Mac, outside the repository and outside iCloud (the
+Documents folder syncs). CMake and Ninja live in a private Python environment there; the build uses
+Metal and fetched only libwebp 1.5.0 from Google's GitHub. The weights are the F16 set and
+BiRefNet (MIT) from `ilintar/trellis2-gguf` at revision `a57397bd3d35`, 15 GB, each file checked
+against its published SHA-256 (`models/expected.sha256`, re-runnable with `fetch-models.sh`). The
+generator runs with network access denied (`sandbox-exec`), and `trellis-server` is never started.
+`npm run art:trellis -- <picture.png> <name>` runs it and records the input, settings, versions
+and licences beside the candidate in `art/out/`.
+
+**First test** (trellis.cpp's own sample picture, a cartoon goblin, used only to check the
+install): resolution 512 on the M4 Pro's GPU in **9 minutes**, 145,000 triangles, a 1024 px
+texture, a 5.3 MB GLB. Shape, armour plates and colours came through faithfully from one picture.
+
 What it makes: 150,000–300,000 triangles, UV charts, base colour, metal and roughness, no normal
 map yet, and no quad retopology on a Mac. So its models need decimating and normal baking in
 Blender before they go into the game. Good for hard-surface props and armour; Meshy (rigging,

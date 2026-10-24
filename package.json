@@ -19,6 +19,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "key:meshy": "bash scripts/set-meshy-key.sh",
+    "art:materials": "node scripts/art/materials.ts",
+    "art:trellis": "node scripts/art/trellis.ts",
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
