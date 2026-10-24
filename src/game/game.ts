@@ -367,7 +367,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // The companions' sidearms have a voice of their own, so the player hears who fired.
     audio.play(shooter === 0 ? 'pistol' : 'pistol_ally', { at: from, volume: shooter === 0 ? 1 : 0.8 });
   };
-  const swarm = buildSwarm(scene, q.maxLights);
+  const swarm = buildSwarm(scene, q.maxLights, q.detailMaps);
   range.join(swarm);
   const input = new Input(canvas);
 

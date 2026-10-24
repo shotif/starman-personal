@@ -75,6 +75,12 @@ interface Prop {
   parent: TransformNode | null;
 }
 
+/**
+ * Where the models are: on the low tier, the copies with their textures fitted within 512 px
+ * (scripts/art/models-low.ts), a quarter of the memory.
+ */
+export const modelsAt = (detailed: boolean) => `${import.meta.env.BASE_URL}assets/models/${detailed ? '' : 'low/'}`;
+
 /** The models the asset scripts made (public/assets/models/models.json). */
 interface ModelManifest {
   models: Record<string, { file: string; size?: number; front?: string }>;
@@ -362,7 +368,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
       if (!c) {
         const entry = manifest?.models[id];
         c = entry
-          ? LoadAssetContainerAsync(`${import.meta.env.BASE_URL}assets/models/${entry.file}`, scene).catch(() => null)
+          ? LoadAssetContainerAsync(`${modelsAt(q.detailMaps)}${entry.file}`, scene).catch(() => null)
           : Promise.resolve(null);
         containers.set(id, c);
       }

@@ -14,6 +14,7 @@ import type { PhysicsBody } from '@babylonjs/core/Physics/v2/physicsBody';
 import type { Scene } from '@babylonjs/core/scene';
 import type { Damage, TargetGroup } from './combat.ts';
 import { type Defences, DIFFICULTY, type Difficulty, moteDefences, takeHit } from './defences.ts';
+import { modelsAt } from './kit.ts';
 import { BOLT, boltMeetsBody, type FirePhase, fireStep, MACHINES, type MachineKind, pickSpot } from './swarm.ts';
 
 /**
@@ -143,7 +144,7 @@ function defencesOf(kind: MachineKind, toughness: number): Defences {
   return moteDefences(toughness);
 }
 
-export function buildSwarm(scene: Scene, maxLights: number): Swarm {
+export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Swarm {
   const plate = new PBRMaterial('mote-plate', scene);
   plate.albedoColor = new Color3(0.16, 0.13, 0.12);
   plate.metallic = 0.8;
@@ -258,10 +259,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
       for (const kind of ['mote', 'lattice', 'tender'] as MachineKind[]) {
         const entry = manifest.models[kind];
         if (!entry) continue;
-        const container = await LoadAssetContainerAsync(
-          `${import.meta.env.BASE_URL}assets/models/${entry.file}`,
-          scene,
-        );
+        const container = await LoadAssetContainerAsync(`${modelsAt(detailed)}${entry.file}`, scene);
         for (const m of machines.filter((x) => x.kind === kind)) {
           const holder = new TransformNode(`${kind}-model`, scene);
           const made = container.instantiateModelsToScene((n) => `${kind}-${n}`, false, { doNotInstantiate: false });

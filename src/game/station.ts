@@ -281,11 +281,11 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
     box([1.1, 2, 0.8], [0, 1, 0], s.panel);
     box([0.8, 1.2, 0.05], [0, 1.2, 0.42], s.screenWarm);
   });
-  // Planters by the west window.
-  for (const z of [9.2, 12.8]) {
-    kit.solid([0.8, 0.6, 0.8], [-3.4, 0.3, z], s.hullDark);
-    kit.deco([0.6, 0.6, 0.6], [-3.4, 0.9, z], s.plant);
-  }
+  // A planter along the west window.
+  kit.prop('planter', [-3.5, 0, 11], Math.PI / 2, [2.6, 0.97, 0.75], (box) => {
+    box([2.6, 0.6, 0.75], [0, 0.3, 0], s.hullDark);
+    box([2.4, 0.3, 0.6], [0, 0.75, 0], s.plant);
+  });
   for (const [x, z] of [
     [0, 4],
     [6, 4],

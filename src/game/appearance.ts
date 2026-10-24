@@ -45,16 +45,18 @@ const floats = (data: ArrayLike<number> | null) => (data ? Float32Array.from(dat
  * Bakes the sliders into each mesh's own vertices on the processor, instead of leaving them to the
  * GPU's morph targets. Some phone drivers read morph targets wrongly and draw black patches
  * wherever a slider moves the body (seen on the owner's Android phone, 24 October 2026; the same
- * looks draw cleanly on desktop GPUs). The GPU then draws plain geometry; the morph targets stay,
- * at zero, for speech. Each mesh gets its own copy of its geometry first, so the loaded template
- * that other characters are cloned from is never changed.
+ * looks draw cleanly on desktop GPUs). Speech is baked here too, so the GPU draws plain geometry:
+ * the morph targets are copied out once and taken off the mesh, and the GPU never holds them (forty
+ * targets on every part of eight people came to about 240 MB). Each mesh gets its own copy of its
+ * geometry first, so the loaded template that other characters are cloned from is never changed.
  */
 function bakeSliders(meshes: readonly AbstractMesh[], sliders: Record<string, number>): void {
   for (const mesh of meshes) {
-    const manager = mesh.morphTargetManager;
-    if (!manager || !(mesh instanceof Mesh)) continue;
+    if (!(mesh instanceof Mesh)) continue;
     let base = unbaked.get(mesh);
     if (!base) {
+      const manager = mesh.morphTargetManager;
+      if (!manager) continue;
       // The character files store positions on a shared 16-bit grid and keep the scale to metres in
       // the skeleton (ART_PIPELINE.md §8), so bounds recomputed from the positions are about 2.5
       // times too small and the mesh is culled. Keep the loader's (taken before the geometry is
@@ -73,6 +75,9 @@ function bakeSliders(meshes: readonly AbstractMesh[], sliders: Record<string, nu
       }
       base = { bounds, positions, normals: floats(mesh.getVerticesData(VertexBuffer.NormalKind, true, true)), targets };
       unbaked.set(mesh, base);
+      mesh.morphTargetManager = null;
+      // Each copy of a character has its own manager; free its textures unless another mesh shares it.
+      if (!mesh.getScene().meshes.some((m) => m.morphTargetManager === manager)) manager.dispose();
     }
     const positions = base.positions.slice();
     const normals = base.normals?.slice() ?? null;
@@ -103,11 +108,6 @@ function bakeSliders(meshes: readonly AbstractMesh[], sliders: Record<string, nu
       mesh.setVerticesData(VertexBuffer.NormalKind, normals, true);
     }
     mesh.setVerticesData(VertexBuffer.PositionKind, positions, true);
-    // The sliders' GPU morphs stay at zero; only speech will use morph targets.
-    for (let i = 0; i < manager.numTargets; i++) {
-      const target = manager.getTarget(i);
-      if (target.name in sliders) target.influence = 0;
-    }
     mesh.setBoundingInfo(new BoundingInfo(base.bounds.minimum.clone(), base.bounds.maximum.clone()));
   }
 }
