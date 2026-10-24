@@ -41,6 +41,8 @@ export interface World {
 const EYE = 1.5;
 const DECIDE_EVERY = 0.25;
 const FIRE_INTERVAL = 0.55;
+/** Between orders she fires more carefully: the hero carries the fight, she helps. */
+const OWN_FIRE_INTERVAL = 1.1;
 /** She hits about three shots in four. */
 const ACCURACY = 0.75;
 
@@ -119,12 +121,25 @@ export async function spawnCompanion(
       crowd.agentGoto(agent, here);
     };
 
+    /** The nearest live threat (the swarm) she can see from `eye`, if any. */
+    const nearestThreat = (eye: Vector3) => {
+      const threats = world.range
+        .threats()
+        .sort((a, b) => Vector3.Distance(eye, a.position) - Vector3.Distance(eye, b.position));
+      // Only the nearest few: each costs a ray.
+      for (const threat of threats.slice(0, 3)) {
+        const seen = world.cast(eye, threat.position.add(threat.position.subtract(eye).normalize().scale(0.5)));
+        if (seen && world.range.isDrone(threat.id, seen.body)) return { id: threat.id, position: threat.position };
+      }
+      return null;
+    };
+
     const fire = (id: number, eye: Vector3) => {
       const centre = world.range.centre(id);
       const struck = world.cast(eye, centre.add(centre.subtract(eye).normalize().scale(0.5)));
       const lands = Math.random() < ACCURACY && struck && world.range.isDrone(id, struck.body);
       const miss = centre.add(new Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5));
-      if (lands) world.range.hit(struck.body);
+      if (lands) world.range.hit(struck.body, 'partner');
       character.fire();
       world.range.shot(character.muzzle(), lands ? struck.point : miss, !!lands, 1);
       shotPose = 0.18;
@@ -186,6 +201,7 @@ export async function spawnCompanion(
             heroForward: { x: heroForward.x, z: heroForward.z },
             target,
             reachable: canReach,
+            threat: nearestThreat(eye),
           });
           objective = decision.objective;
           if (decision.say) say(decision.say);
@@ -206,7 +222,7 @@ export async function spawnCompanion(
           const centre = world.range.centre(shootAt);
           yaw = turnTowards(yaw, yawOf({ x: centre.x - here.x, z: centre.z - here.z }), 8 * dt);
           if (cooldown <= 0) {
-            cooldown = FIRE_INTERVAL;
+            cooldown = objective.kind === 'attack' ? FIRE_INTERVAL : OWN_FIRE_INTERVAL;
             fire(shootAt, here.add(new Vector3(0, EYE, 0)));
           }
           character.setPose(poseWeights({ mode: 'aim', speed, direction: { x: 0, y: 0 }, firing: shotPose > 0 }), dt);

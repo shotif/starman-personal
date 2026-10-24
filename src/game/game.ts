@@ -25,6 +25,7 @@ import { buildGallery } from './gallery.ts';
 import { Input } from './input.ts';
 import { buildLevel } from './level.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
+import { buildSwarm } from './motes.ts';
 import {
   cameraDistance,
   cameraFraming,
@@ -39,6 +40,7 @@ import {
 import { poseWeights } from './pose.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
+import { type Drill, drillStep, hitSide } from './swarm.ts';
 
 export interface GameStats {
   fps: number;
@@ -54,6 +56,10 @@ export interface GameStats {
   /** Shots fired since the start, and drones down right now. */
   shots: number;
   dronesDown: number;
+  /** The swarm (COMBAT.md): motes flying, motes brought down, and bolts that hit the hero. */
+  motesLive: number;
+  motesDown: number;
+  hitsTaken: number;
 }
 
 /** The orders of the command view (ORDERS.md). */
@@ -89,9 +95,16 @@ export interface GameOptions {
   onSay(name: string, line: string): void;
   /** Called when someone to talk to comes within reach, or leaves it. */
   onCanTalk(canTalk: boolean): void;
+  /** A bolt hit the hero, from this edge of the screen (COMBAT.md). */
+  onHit(side: 'front' | 'back' | 'left' | 'right'): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
+/** How far ahead the cover is looked for while in it: as far as it can be taken from, and a little. */
+const COVER_AHEAD = COVER.reach + 0.35 + 0.15;
+/** The hero's capsule's collision group, and every group but it (Havok's 32-bit masks). */
+const HERO_GROUP = 2;
+const ALL_BUT_HERO = 0xffffffff - HERO_GROUP;
 const CAPSULE_RADIUS = 0.35;
 const GRAVITY = new Vector3(0, -18, 0);
 const vector = (p: Point) => new Vector3(p.x, p.y, p.z);
@@ -106,6 +119,14 @@ const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, max
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
+/** Where the swarm comes in: the range's vents, high on the far wall and the sides. */
+const VENTS = [
+  new Vector3(-5, 3.2, 37.4),
+  new Vector3(5, 3.2, 37.4),
+  new Vector3(0, 3.4, 37.4),
+  new Vector3(-5.4, 3, 33),
+  new Vector3(5.4, 3, 33),
+];
 const DRONES = [new Vector3(-2.6, 1.7, 37.2), new Vector3(0.8, 1.9, 37), new Vector3(4.8, 1.4, 31.5)];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
@@ -134,6 +155,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
     scene,
   );
+  // The controller's capsule is a body rays can meet. It has a group of its own, so the swarm's rays
+  // can look past it to the hero (COMBAT.md) while walls and cover still stop them.
+  controller.shape.filterMembershipMask = HERO_GROUP;
 
   const camera = new ArcRotateCamera('camera', -Math.PI / 2, 1.2, 3.4, level.heroStart.clone(), scene);
   camera.inputs.clear();
@@ -154,6 +178,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
 
   const range = buildRange(scene, DRONES, q.maxLights);
+  const swarm = buildSwarm(scene, q.maxLights);
+  range.join(swarm);
+  /** The drill that turns into a fight; `?swarm` starts the fight at once, for testing. */
+  let drill: Drill = new URLSearchParams(location.search).has('swarm')
+    ? { kind: 'warning', left: 1, wave: 0 }
+    : { kind: 'quiet' };
+  let hitsTaken = 0;
   // The style test's props; the scene starts without waiting for them.
   buildGallery(scene, q.maxLights).catch((error: unknown) => console.warn('The gallery could not load.', error));
   const input = new Input(canvas);
@@ -169,9 +200,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let shotPose = 0;
   let shots = 0;
 
-  /** Distance to the first thing a ray meets, its point and normal; null if it meets nothing. */
-  const cast = (from: Vector3, to: Vector3) => {
-    physics.raycast(from, to, ray);
+  /**
+   * Distance to the first thing a ray meets, its point and normal; null if it meets nothing.
+   * `pastHero` looks through the hero's own capsule.
+   */
+  const cast = (from: Vector3, to: Vector3, pastHero = false) => {
+    physics.raycast(from, to, ray, pastHero ? { collideWith: ALL_BUT_HERO } : undefined);
     return ray.hasHit
       ? {
           distance: Vector3.Distance(from, ray.hitPointWorld),
@@ -353,20 +387,24 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const unit = length > 0 ? { x: direction.x / length, z: direction.z / length } : { x: 0, z: 0 };
     const feet = hero.root.position;
 
-    // Cover: walk into low cover to take it; push away, sprint, or run out of it to leave.
+    // Cover: walk into low cover to take it; push away, sprint, or run out of it to leave. The ray
+    // that checks the cover is still there reaches as far as cover can be taken from.
+    const ahead = cover.inCover
+      ? cast(
+          feet.add(new Vector3(0, COVER.kneeHeight, 0)),
+          feet.add(new Vector3(-cover.normal.x * COVER_AHEAD, COVER.kneeHeight, -cover.normal.z * COVER_AHEAD)),
+        )
+      : null;
     const result = coverStep(cover, {
       move: { x: unit.x * push, z: unit.z * push },
       sprint: input.sprint,
       aiming,
       probe: !cover.inCover && push > 0.3 ? probeCover(feet, unit) : null,
-      coverAhead: cover.inCover
-        ? cast(
-            feet.add(new Vector3(0, COVER.kneeHeight, 0)),
-            feet.add(new Vector3(-cover.normal.x * 1.1, COVER.kneeHeight, -cover.normal.z * 1.1)),
-          ) !== null
-        : false,
+      coverAhead: ahead !== null,
     });
     cover = result.state;
+    /** How far the hero's front is from the cover, to settle against it. */
+    const coverGap = ahead ? ahead.distance - CAPSULE_RADIUS : 0;
 
     const velocity = controller.getVelocity();
     const groundSpeed = Math.hypot(velocity.x, velocity.z);
@@ -390,6 +428,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       );
     } else if (cover.inCover) {
       desired.set(result.velocity.x, 0, result.velocity.z);
+      // Settle against the cover, rather than crouching short of it.
+      if (cover.inCover && coverGap > 0.1) {
+        const settle = Math.min(2, coverGap * 5);
+        desired.addInPlace(new Vector3(-cover.normal.x * settle, 0, -cover.normal.z * settle));
+      }
       heroYaw = turnTowards(heroYaw, yawOf({ x: -cover.normal.x, z: -cover.normal.z }), 10 * dt);
       hero.setPose(poseWeights({ mode: 'cover', slide: result.slide }), dt);
     } else {
@@ -417,9 +460,24 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       shoot();
     }
     range.update(dt);
+    const wave = drillStep(drill, { dronesDown: range.down, drones: DRONES.length, live: swarm.live }, dt);
+    drill = wave.drill;
+    if (wave.say) options.onSay('Ren', wave.say);
+    if (wave.wake) swarm.wake(VENTS.slice(0, wave.wake));
+    swarm.update(dt, {
+      // Crouched behind cover the hero is a smaller mark: the cover takes the bolts.
+      hero: { feet: hero.root.position, height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT },
+      partner: { feet: companion.root.position },
+      cast: (from, to) => cast(from, to, true),
+      onHeroHit: (from) => {
+        hitsTaken += 1;
+        options.onHit(hitSide(forward, hero.root.position, from));
+      },
+    });
     ren.converse(talking ? hero.root.position.clone() : null, talking?.speaker === 'partner');
     ren.update(dt, hero.root.position, heroForward);
-    const near = !held && Math.hypot(toPartner.x, toPartner.z) < TALK_REACH;
+    // No conversations while the swarm is fighting.
+    const near = !held && swarm.live === 0 && Math.hypot(toPartner.x, toPartner.z) < TALK_REACH;
     if (near !== couldTalk) {
       couldTalk = near;
       options.onCanTalk(near);
@@ -488,7 +546,16 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           shots,
           commanding,
           companion: { objective: ren.objective, feet: companion.root.position.asArray() },
+          swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, drill: drill.kind, motes: swarm.inspect() },
+          hitsTaken,
         }),
+        /** The first thing a ray between two points meets, for testing: its distance and point. */
+        ray: (from: number[], to: number[]) => {
+          const hit = cast(Vector3.FromArray(from), Vector3.FromArray(to));
+          return hit ? { distance: hit.distance, point: hit.point.asArray() } : null;
+        },
+        /** Sends motes in at once, without running the drill. */
+        wake: (count = 3) => swarm.wake(VENTS.slice(0, count)),
         probe: () => probeCover(hero.root.position, facing()),
         /**
          * Moves the hero (feet at x, z) and turns the camera to look along yaw (radians, 0 = +z),
@@ -525,6 +592,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         inCover: cover.inCover,
         shots,
         dronesDown: range.down,
+        motesLive: swarm.live,
+        motesDown: swarm.down,
+        hitsTaken,
       });
     }
   });

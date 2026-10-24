@@ -24,6 +24,8 @@ export interface Facts {
   target: { alive: boolean; position: Point; visible: boolean } | null;
   /** Whether the point she is heading for can be reached on the navigation mesh. */
   reachable: boolean;
+  /** The nearest machine that is fighting (the swarm, not the practice drones), if she can see one. */
+  threat: { id: number; position: Point } | null;
 }
 
 export interface Decision {
@@ -65,21 +67,28 @@ export function followSpot(feet: Point, forward: { x: number; z: number }): Poin
 }
 
 export function decide(objective: Objective, facts: Facts): Decision {
+  // Between orders she fights on her own (D-16): a threat she can see, in range, from where she is.
+  const threat = facts.threat && flat(facts.me, facts.threat.position) <= ORDERS.range ? facts.threat.id : null;
   if (objective.kind === 'follow') {
     const distance = flat(facts.me, facts.heroFeet);
     if (distance > ORDERS.followFar) {
       return { objective, moveTo: followSpot(facts.heroFeet, facts.heroForward), shootAt: null, say: null };
     }
-    return { objective, moveTo: distance < ORDERS.followNear ? facts.me : null, shootAt: null, say: null };
+    return { objective, moveTo: distance < ORDERS.followNear ? facts.me : null, shootAt: threat, say: null };
   }
   if (objective.kind === 'hold') {
     if (!facts.reachable) {
       return { objective: { kind: 'follow' }, moveTo: null, shootAt: null, say: "I can't reach that." };
     }
     if (!objective.arrived && flat(facts.me, objective.at) <= ORDERS.arrive) {
-      return { objective: { ...objective, arrived: true }, moveTo: null, shootAt: null, say: 'In position.' };
+      return { objective: { ...objective, arrived: true }, moveTo: null, shootAt: threat, say: 'In position.' };
     }
-    return { objective, moveTo: objective.arrived ? null : objective.at, shootAt: null, say: null };
+    return {
+      objective,
+      moveTo: objective.arrived ? null : objective.at,
+      shootAt: objective.arrived ? threat : null,
+      say: null,
+    };
   }
   const target = facts.target;
   if (!target?.alive) {

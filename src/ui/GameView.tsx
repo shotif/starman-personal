@@ -33,6 +33,8 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
   const commandingNow = useRef(false);
   const [line, setLine] = useState<{ name: string; text: string; id: number } | null>(null);
   const [canTalk, setCanTalk] = useState(false);
+  /** The last hit the hero took, for the red flash at the edge it came from (COMBAT.md). */
+  const [hit, setHit] = useState<{ side: string; id: number } | null>(null);
   const [conversation, setConversation] = useState<Conversation | null>(null);
   /** Whether a conversation is open, for the key handler, as `commandingNow` is for the command view. */
   const talkingNow = useRef(false);
@@ -53,6 +55,7 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           assist: isTouch(),
           onAim: setAiming,
           onCanTalk: setCanTalk,
+          onHit: (side) => setHit({ side, id: performance.now() }),
           onSay: (name, text) => {
             setLine({ name, text, id: performance.now() });
             // For the browser journeys: the last thing the companion said.
@@ -63,6 +66,9 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
             // For the browser journeys: how many shots, and how many drones are down.
             document.body.dataset.shots = String(s.shots);
             document.body.dataset.dronesDown = String(s.dronesDown);
+            document.body.dataset.motesLive = String(s.motesLive);
+            document.body.dataset.motesDown = String(s.motesDown);
+            document.body.dataset.hits = String(s.hitsTaken);
           },
           onReady: () => {
             setStatus({ kind: 'ready' });
@@ -175,6 +181,11 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
             {stats.inCover ? 'In cover · ' : ''}Drones down: {stats.dronesDown} of 3
           </p>
         )}
+        {stats && (stats.motesLive > 0 || stats.motesDown > 0) && (
+          <p class="hud__stats hud__swarm">
+            Swarm: {stats.motesLive} flying · {stats.motesDown} down · hits taken {stats.hitsTaken}
+          </p>
+        )}
         <div class="hud__row">
           <button type="button" class="hud__button" onClick={changeQuality}>
             Quality: {tier}
@@ -199,6 +210,7 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
         </p>
       )}
       {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
+      {hit && <div class={`hit hit--${hit.side}`} key={hit.id} aria-hidden="true" />}
       {canTalk && !conversation && !commanding && !touch && (
         <p class="talk-prompt">
           <kbd>E</kbd>Talk to Ren

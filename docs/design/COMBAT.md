@@ -83,11 +83,16 @@ dodge. Desktop: **F** to strike, **Space** to dodge.
 and fall faster, aim assist stronger, for those who came for the story), *Standard*, and *Hard*
 (enemies flank and use cover, less aim assist). Nothing in the story depends on the level.
 
-## How the first increment works
+## The first increment, as built
 
 | Part | Rule | Where |
 | --- | --- | --- |
-| Motes | Pure rules for where a mote goes (a place 6–14 m from its target that sees it, changed every few seconds and when shot) and when it fires (a glow of 0.6 s, then a bolt; a pause between shots) | `src/game/swarm.ts` |
-| Bolts | Slow, bright projectiles stepped each frame; a ray between each step finds the first thing they meet: cover and walls stop them | `src/game/bolts.ts` |
-| Hits | Shown, not yet counted against anything: the screen's edge flashes red on the side the bolt came from, and the HUD counts hits taken until D-42 is answered | `src/ui/GameView.tsx` |
-| Where | The range: after the three drones are down, Ren calls the drill done and the motes come (the slice's beat 5 in miniature) | `src/game/game.ts` |
+| Motes | Pure rules: where a mote goes (a place 6–14 m from its target, 1.2–2.6 m up, that it can reach and that sees its target, swung round from where it is so it flanks; it moves on after 2.5–4 s, when it loses sight, and when shot), when it fires (rests 1.6–2.4 s, glows 0.6 s, fires; gives up the shot if its target ducks), and what a bolt meets. It turns on whoever shot it last. Three hits bring it down | `src/game/swarm.ts` |
+| The scene | Motes as moving physics bodies the hero's and Ren's shots and aim assist find like the drones (they join the range); bolts at 18 m/s with a spread that grows with distance; walls and cover stop them. The hero's capsule has a collision group of its own, so the swarm's rays look past it to the hero. Simple shapes until the art pass | `src/game/motes.ts` |
+| Hits | Shown, not yet counted against anything: the screen's edge flashes red on the side the bolt came from, and the HUD counts hits taken until D-42 is answered. Crouched in cover, the hero is a smaller mark | `src/ui/GameView.tsx`, `src/game/game.ts` |
+| Ren | Between orders she shoots the nearest machine of the swarm she can see, from where she is, more slowly than under an order; the practice drones she leaves alone | `src/game/orders.ts`, `src/game/companion.ts` |
+| Where | The range: once all three drones are down, Ren calls the drill done and the motes come from the vents, three, then five. `?swarm` starts the fight at once | `src/game/swarm.ts` (`drillStep`) |
+
+Measured on the software renderer over fifteen seconds against three motes: standing in the open,
+3 of 10 bolts hit; crouched behind a low crate, none of 6. No conversation starts while the swarm is
+fighting.

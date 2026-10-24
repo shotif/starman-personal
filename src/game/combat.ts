@@ -11,9 +11,26 @@ import type { PhysicsBody } from '@babylonjs/core/Physics/v2/physicsBody';
 import type { Scene } from '@babylonjs/core/scene';
 import type { AimCandidate } from './aim.ts';
 
+/** Who fired a shot: the hero, or the companion. */
+export type Shooter = 'hero' | 'partner';
+
+/**
+ * Other things that can be aimed at and shot, joined to the range: the swarm (src/game/motes.ts).
+ * Their ids are their own, from 0; the range numbers them after its drones.
+ */
+export interface TargetGroup {
+  readonly size: number;
+  centre(id: number): Vector3;
+  alive(id: number): boolean;
+  owns(id: number, body: PhysicsBody | null | undefined): boolean;
+  /** Applies a hit if the body is one of its live targets; true if it was. */
+  hit(body: PhysicsBody | null | undefined, by: Shooter): boolean;
+}
+
 /**
  * The proof's practice range (COVER_AND_AIM.md): drones that hover, take three hits, fall when
- * destroyed and come back; and the flash, tracer and spark of a shot.
+ * destroyed and come back; and the flash, tracer and spark of a shot. Joined groups (the swarm) are
+ * aimed at and shot through it the same way, and are the threats a companion fights unordered.
  */
 export interface Range {
   /** Live drones, as seen from a point (the camera), for aim assist. */
@@ -26,8 +43,12 @@ export interface Range {
   isDrone(id: number, body: PhysicsBody | null | undefined): boolean;
   /** The live drone a physics body belongs to, or null. */
   droneOf(body: PhysicsBody | null | undefined): number | null;
-  /** Applies a hit to whatever body a shot struck; true if it was a drone. */
-  hit(body: PhysicsBody | null | undefined): boolean;
+  /** Applies a hit to whatever body a shot struck; true if it was a target. */
+  hit(body: PhysicsBody | null | undefined, by?: Shooter): boolean;
+  /** Live targets of joined groups (the swarm), which fight back. */
+  threats(): { id: number; position: Vector3 }[];
+  /** Adds a group of targets after the drones. */
+  join(group: TargetGroup): void;
   /**
    * Shows a shot from the muzzle to where it struck (or where it ended). `shooter` keeps the hero's
    * and the companion's shots apart (0 and 1).
@@ -108,29 +129,64 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
   });
 
   const alive = (d: Drone) => d.respawnIn <= 0;
+  const groups: { group: TargetGroup; first: number }[] = [];
+  /** The joined group an id falls in, and the id within it. */
+  const joined = (id: number) => {
+    for (const { group, first } of groups) {
+      if (id >= first && id < first + group.size) return { group, own: id - first };
+    }
+    return null;
+  };
+  /** Every live joined target, with its range id. */
+  const liveJoined = () =>
+    groups.flatMap(({ group, first }) =>
+      Array.from({ length: group.size }, (_, own) => own)
+        .filter((own) => group.alive(own))
+        .map((own) => ({ id: first + own, position: group.centre(own) })),
+    );
 
   return {
     candidates(from) {
-      return drones.filter(alive).map((d) => {
-        const offset = d.body.position.subtract(from);
-        return { id: d.id, offset: { x: offset.x, y: offset.y, z: offset.z } };
+      const targets = [...drones.filter(alive).map((d) => ({ id: d.id, position: d.body.position })), ...liveJoined()];
+      return targets.map(({ id, position }) => {
+        const offset = position.subtract(from);
+        return { id, offset: { x: offset.x, y: offset.y, z: offset.z } };
       });
     },
     centre(id) {
+      const j = joined(id);
+      if (j) return j.group.centre(j.own);
       return drones[id]?.body.position.clone() ?? Vector3.Zero();
     },
     alive(id) {
+      const j = joined(id);
+      if (j) return j.group.alive(j.own);
       const d = drones[id];
       return !!d && alive(d);
     },
     isDrone(id, body) {
+      const j = joined(id);
+      if (j) return j.group.alive(j.own) && j.group.owns(j.own, body);
       const d = drones[id];
       return !!d && !!body && d.aggregate.body === body;
     },
     droneOf(body) {
-      return drones.find((d) => alive(d) && !!body && d.aggregate.body === body)?.id ?? null;
+      const drone = drones.find((d) => alive(d) && !!body && d.aggregate.body === body);
+      if (drone) return drone.id;
+      for (const { group, first } of groups) {
+        for (let own = 0; own < group.size; own++) {
+          if (group.alive(own) && group.owns(own, body)) return first + own;
+        }
+      }
+      return null;
     },
-    hit(struck) {
+    threats: liveJoined,
+    join(group) {
+      const last = groups[groups.length - 1];
+      groups.push({ group, first: last ? last.first + last.group.size : drones.length });
+    },
+    hit(struck, by = 'hero') {
+      if (groups.some(({ group }) => group.hit(struck, by))) return true;
       const drone = drones.find((d) => alive(d) && d.aggregate.body === struck);
       if (!drone) return false;
       drone.hp -= 1;

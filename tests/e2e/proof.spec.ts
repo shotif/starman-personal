@@ -213,6 +213,30 @@ test('talking to Ren: every line and choice, to the end', async ({ page }, testI
   expect(errors).toEqual([]);
 });
 
+test('the swarm comes, shoots back, and goes down', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  if (testInfo.project.name !== 'phone') await page.setViewportSize({ width: 800, height: 500 });
+  // `swarm` starts the fight at once; `debug` lets the journey place the hero in the open.
+  await page.goto('./?play&debug&swarm&quality=low');
+  const body = page.locator('body');
+  await expect(body).toHaveAttribute('data-ready', 'true');
+  await page.evaluate(() =>
+    (
+      window as unknown as { lightkeeper: { teleport(x: number, z: number, yaw: number, beta: number): void } }
+    ).lightkeeper.teleport(-0.6, 27.2, 0, 1.5),
+  );
+  await expect(page.getByText(/Swarm: \d+ flying/)).toBeVisible({ timeout: 30_000 });
+  // Standing in the open, the hero is hit, and the edge of the screen flashes.
+  await expect.poll(async () => Number(await body.getAttribute('data-hits')), { timeout: 60_000 }).toBeGreaterThan(0);
+  await page.screenshot({ path: testInfo.outputPath('swarm.png') });
+  // Ren fights them between orders: some come down.
+  await expect
+    .poll(async () => Number(await body.getAttribute('data-motes-down')), { timeout: 90_000 })
+    .toBeGreaterThan(0);
+  expect(errors).toEqual([]);
+});
+
 test('the creator makes a hero, who then plays', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));

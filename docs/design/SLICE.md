@@ -90,7 +90,8 @@ All names are working names the owner may change.
 Each keeps the game playable, passes CI and deploys (D-01).
 
 1. **Enemies that shoot back**: motes in the range, their shots stopped by cover. Needs no
-   decision; the hits are only shown until D-42 is answered.
+   decision; the hits are only shown until D-42 is answered. *Built 24 October 2026
+   ([COMBAT.md](COMBAT.md)).*
 2. **Defences, health, falling and trying again** (D-42, D-43, D-46).
 3. **Powers**: one signature power per class first, then the rest of the starting powers, on
    buttons and keys.

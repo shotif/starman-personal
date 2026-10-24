@@ -52,6 +52,10 @@ checks them.
   and lashes vanished. A skinned mesh is culled by the box of its bind pose, which the animation
   does not move; crouched, the head drops half a metre below those boxes. Every part of a character
   now has the box of the whole figure in any pose (`fitFigureBounds` in `src/game/characters.ts`).
+- **Cover that would not hold.** Cover could be taken with the crate up to 1.15 m ahead (its reach
+  and the capsule's radius), but the ray that checks it is still there was only 1.1 m long, so
+  taking cover from just that far ended it the next frame. Both now agree, and the hero settles
+  against the cover after dropping into it (found while building the swarm, [COMBAT.md](COMBAT.md)).
 - **The camera at the face.** The camera could not come nearer than 0.9 m to its pivot, so with a
   wall closer than that it sat inside the wall, against the hero's face. It now stops just short of
   any wall, however near, and the hero fades out as it comes within 0.75 m of the head, and is gone

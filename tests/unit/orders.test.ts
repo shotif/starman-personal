@@ -8,7 +8,28 @@ const facts = (over: Partial<Facts> = {}): Facts => ({
   heroForward: { x: 0, z: 1 },
   target: null,
   reachable: true,
+  threat: null,
   ...over,
+});
+
+describe('fighting between orders', () => {
+  const threat = { id: 7, position: { x: 0, y: 2, z: 8 } };
+  it('shoots a threat she can see while following, and keeps up first', () => {
+    expect(decide({ kind: 'follow' }, facts({ me: at(0, -1), threat })).shootAt).toBe(7);
+    const behind = decide({ kind: 'follow' }, facts({ me: at(0, -6), threat }));
+    expect(behind.shootAt).toBeNull();
+    expect(behind.moveTo).not.toBeNull();
+  });
+  it('shoots from a held point once there, not on the way', () => {
+    const holding: Objective = { kind: 'hold', at: at(0, 0), arrived: true };
+    expect(decide(holding, facts({ threat })).shootAt).toBe(7);
+    const going: Objective = { kind: 'hold', at: at(5, 5), arrived: false };
+    expect(decide(going, facts({ threat })).shootAt).toBeNull();
+  });
+  it('leaves a threat out of range alone', () => {
+    const far = { id: 7, position: { x: 0, y: 2, z: ORDERS.range + 5 } };
+    expect(decide({ kind: 'follow' }, facts({ me: at(0, -1), threat: far })).shootAt).toBeNull();
+  });
 });
 
 describe('receiving orders', () => {
