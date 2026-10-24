@@ -83,6 +83,12 @@ VAR have_curve = false
 Three drones. Use the crates; that's what they're for. #speaker: Ren #line: ren_drill_01
 >>> hint aim
 >>> drill
+Good. Now use me. Open your orders and send me at one; I'm quicker when I'm told. #speaker: Ren #line: ren_drill_orders
+>>> hint orders
+>>> drill
+That's how we'll work. Last round: your own kit. Show me what you trained for. #speaker: Ren #line: ren_drill_powers
+>>> hint powers
+>>> drill
 Clean. Hale's going to want a report on that star before— #speaker: Ren #line: ren_drill_02
 >>> lights out
 >>> sky swarm

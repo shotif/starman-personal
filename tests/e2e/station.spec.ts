@@ -18,6 +18,11 @@ type Lightkeeper = {
   };
 };
 const debug = (page: Page) => page.evaluate.bind(page);
+/**
+ * CI's machines draw in software at a few frames a second, too slow for journeys that walk, aim or
+ * fight in real time; those run on a real GPU (the owner's Mac) before every push.
+ */
+const SOFTWARE_GPU = !!process.env.CI;
 const call = <T>(page: Page, fn: (lk: Lightkeeper) => T) =>
   debug(page)((source) => {
     const lk = (window as unknown as { lightkeeper: Lightkeeper }).lightkeeper;
@@ -71,6 +76,7 @@ test('Run toggles while the other thumb holds the stick', async ({ page }, testI
 
 test('the hero walks out of the bunk room on the keyboard', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'keyboard journey runs on the desktop');
+  test.skip(SOFTWARE_GPU, 'walking in real time needs a GPU');
   await start(page);
   await page.keyboard.down('KeyW');
   await page.waitForTimeout(1500);
@@ -80,6 +86,7 @@ test('the hero walks out of the bunk room on the keyboard', async ({ page }, tes
 });
 
 test('aiming shows the crosshair, and shots bring a drone down', async ({ page }, testInfo) => {
+  test.skip(SOFTWARE_GPU, 'shooting in real time needs a GPU');
   const errors = await start(page);
   // In the range, facing the middle drone.
   await call(page, (lk) => lk.teleport(1.5, 24, 0, 1.6));
@@ -205,6 +212,7 @@ test('talking to Ren in the lounge, every line to the end', async ({ page }, tes
 
 test('the swarm shoots back; down, Ren comes and helps the hero up', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'the long journey runs on the desktop');
+  test.skip(SOFTWARE_GPU, 'a fight in real time needs a GPU');
   const errors = await start(page, '?chapter=concourse&debug&quality=low');
   const body = page.locator('body');
   // Into the concourse: the fight begins.

@@ -103,6 +103,8 @@ const SCENE: Record<string, string> = {
 const LINE: Record<string, string> = {
   ren_drill_01: '[calm, instructing]',
   ren_drill_02: '[pleased]',
+  ren_drill_orders: '[calm, instructing]',
+  ren_drill_powers: '[calm, instructing, a little amused]',
   hale_call_01: '[urgent, commanding]',
   ren_drill_03: '[quiet, alarmed]',
   ren_spine_01: '[quietly, uneasy]',

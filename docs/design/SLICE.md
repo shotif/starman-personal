@@ -107,11 +107,32 @@ Each keeps the game playable, passes CI and deploys (D-01).
    `>>>` commands, waits on events, checkpoints that save; conversations in a flow of their own.
    The title offers Continue. A browser journey plays it from the night shift to the bridge.*
 6. **Jo Rook** and two companions at once. *Built: orders to either or both.*
-7. **Voices and mouths.**
+7. **Voices and mouths.** *Built: every line voiced with ElevenLabs, the hero's in two voices
+   ([assets/VOICES.md](../assets/VOICES.md)); mouths from each line's loudness, baked on the
+   processor (`src/game/appearance.ts`). The story waits while a line is said.*
 8. **The art pass**: Meshy for the station's pieces, the swarm and the bridge (the owner's
-   style decision: Meshy first, the local pipeline when the budget runs out).
-9. **A strike and a dodge.**
+   style decision: Meshy first, the local pipeline when the budget runs out). *Built: 26 models
+   ([assets/MODELS.md](../assets/MODELS.md)), 20 pictures and 12 materials
+   ([assets/IMAGES.md](../assets/IMAGES.md)); the sidearm in the hands of those who fight.*
+9. **A strike and a dodge.** *Built.*
 10. **Sound and music** (D-45).
+11. **The hour, filled.** *Built:* the drill in three rounds (the drones, with orders, with
+    powers); things to look at, each with the hero's voiced remark; Sorrel and Ilya when the lights
+    go; the survivors in *Lantern*'s hold before the crew at the end; and a codex that opens as
+    people speak.
+
+### What the hour adds to the canon
+
+Small things, all fiction, all in `story/slice.ink`; the owner may change any of them.
+
+- Sorrel's crew on the Antares run called the ring "the halo"; an Authority ship took their logs
+  and paid them to say it was natural.
+- Ilya's readings fall in steps; if the hero tells him to bring them, they reach the ship (by his
+  hand, or Dena's if he is lost), and Ilya points at the Cooperative's observatory at Pyre Remnant.
+- Dena's note on the supply board asks the *Merrow* for cardamom.
+- The beacon's spare regulator Sorrel kept ready for thirty years goes into *Lantern*.
+- The hero's locker holds a keepsake of the moment that made them (D-35): a crew tag, a
+  commendation kept face down, a list of names, or a last message never played to the end.
 
 ## The decisions it needs
 
