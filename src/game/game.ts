@@ -117,7 +117,16 @@ export interface SaveData {
   checkpoint: string;
   difficulty: Difficulty;
   at: number;
+  /** Which script the story's state belongs to; a save from another resumes at its checkpoint. */
+  script?: string;
 }
+
+/** A short fingerprint of the compiled script (FNV-1a), to tell saves from an older one. */
+const SCRIPT = (() => {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < slice.length; i++) h = Math.imul(h ^ slice.charCodeAt(i), 0x01000193);
+  return (h >>> 0).toString(16);
+})();
 
 /** The orders of the command view (ORDERS.md). */
 export type OrderKind = 'go' | 'attack' | 'follow';
@@ -782,10 +791,27 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       return say(line);
     },
     checkpoint: (name, state) => {
-      options.onSave({ version: 1, looks: options.looks, story: state, checkpoint: name, difficulty, at: Date.now() });
+      options.onSave({
+        version: 1,
+        looks: options.looks,
+        story: state,
+        checkpoint: name,
+        difficulty,
+        at: Date.now(),
+        script: SCRIPT,
+      });
     },
   });
-  if (options.save) runner.load(options.save.story);
+  if (options.save) {
+    // The story's state only fits the script it was saved from: a save from an older one starts
+    // its chapter again (what was chosen before it is forgotten, the chapter and the hero are kept).
+    try {
+      if (options.save.script !== SCRIPT) throw new Error('saved from another version of the story');
+      runner.load(options.save.story);
+    } catch {
+      runner.story.ChoosePathString(`slice.${options.save.checkpoint}`);
+    }
+  }
   else if (options.chapter) runner.story.ChoosePathString(`slice.${options.chapter}`);
 
   /** The orders of the command view, to one companion or all (ORDERS.md). */
