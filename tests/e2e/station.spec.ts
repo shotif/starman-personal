@@ -130,7 +130,10 @@ test('walking into a low crate takes cover, crouched whole, feet on the floor', 
     const { scene } = (window as unknown as { lightkeeper: { scene: { meshes: MeshLike[]; transformNodes: Node[] } } })
       .lightkeeper;
     const head = scene.transformNodes.find((n) => n.name === 'hero-head')?.getAbsolutePosition().y ?? Number.NaN;
-    const parts = scene.meshes.filter((m) => m.name.startsWith('hero-') && m.getTotalVertices() > 0);
+    // The figure's own parts; the sidearm in the hand (hero-held-…) is not one.
+    const parts = scene.meshes.filter(
+      (m) => m.name.startsWith('hero-') && !m.name.startsWith('hero-held') && m.getTotalVertices() > 0,
+    );
     const root = scene.transformNodes.find((n) => n.name === 'hero');
     return {
       head,
