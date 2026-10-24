@@ -58,6 +58,11 @@ left, back, right, top), on a grid, with its measured size and base. The full-si
 
 ## 2. Using them in the game
 
+**On the low quality tier** the game loads the copies in `public/assets/models/low/`, the same
+models with their textures fitted within 512 px (a quarter of the texture memory; 7.1 MB against
+13.6 MB). Make them again after any model changes: `npm run art:models-low`
+([scripts/art/models-low.ts](../../scripts/art/models-low.ts)).
+
 `models.json` lists each model as `{ file, size, dimensions: [x, y, z], triangles, texture,
 front: "+z", bytes }`. Load a model once and copy it for each use; turn and place the copy with a
 holder node, because the loader's `__root__` carries its own rotation:

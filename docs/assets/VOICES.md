@@ -9,12 +9,12 @@ a woman's voice (D-09). The voices are made by ElevenLabs text to speech from
 
 | | |
 | --- | --- |
-| Lines voiced | **162** (every line with `#speaker:` and `#line:`), 45 of them the hero's |
-| Files | **207** MP3s in `public/assets/voices/`: 117 for the cast, 45 × 2 for the hero |
-| Length | 13.5 minutes in all; 30.7 KB a file on average, the largest 79 KB (`sorrel_night_06a`) |
-| Size | **6.21 MB** of MP3, plus an 86 KB manifest: 4.49 MB for the cast, 0.87 MB for the hero's man, 0.85 MB for the woman. A player hears one hero voice, so at most about 5.4 MB is ever fetched |
+| Lines voiced | **225** (every line with `#speaker:` and `#line:`), 70 of them the hero's; 162 in the first run, the rest added as the slice grew (the drill's rounds, things to look at, the night shift in the dark, the hold) |
+| Files | **295** MP3s in `public/assets/voices/`: 155 for the cast, 70 × 2 for the hero |
+| Length | About 17 minutes in all (one hero voice) |
+| Size | **9.6 MB** of MP3 with the manifest. A player hears one hero voice, so less is ever fetched |
 | Format | MP3, mono, 44.1 kHz, 64 kbps (`mp3_44100_64`), about 8 KB a second |
-| Heard back | **207 of 207** heard word for word by speech to text (after the spelling rules in §4) |
+| Heard back | Every take heard back by speech to text; three are flagged only for homophones ("crews" heard as "cruise", "Pell" as "pal") and kept |
 | Not voiced | none: no spoken line holds ink logic (`{...}`) |
 
 Commands (`>>>`) and choice text in brackets are not spoken. The hero's spoken line under each
