@@ -19,6 +19,9 @@ export function TouchControls({ input }: { input: Input }) {
   const [stick, setStick] = useState<{ x: number; y: number; dx: number; dy: number } | null>(null);
   const [running, setRunning] = useState(false);
   const runTouchedAt = useRef(Number.NEGATIVE_INFINITY);
+  const [aiming, setAiming] = useState(false);
+  const aimTouchedAt = useRef(Number.NEGATIVE_INFINITY);
+  const [firing, setFiring] = useState(false);
 
   const stickDown = (e: PointerEvent) => {
     if (stickFinger.current !== null) return;
@@ -74,6 +77,30 @@ export function TouchControls({ input }: { input: Input }) {
     if (performance.now() - runTouchedAt.current > 1000) toggleRun();
   };
 
+  // Aim toggles like Run; Fire fires for as long as it is held.
+  const toggleAim = () => {
+    input.aimToggle = !aiming;
+    setAiming(!aiming);
+  };
+  const aimDown = (e: PointerEvent) => {
+    e.preventDefault();
+    aimTouchedAt.current = performance.now();
+    toggleAim();
+  };
+  const aimClick = () => {
+    if (performance.now() - aimTouchedAt.current > 1000) toggleAim();
+  };
+  const fireDown = (e: PointerEvent) => {
+    e.preventDefault();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    input.fireTouch = true;
+    setFiring(true);
+  };
+  const fireUp = () => {
+    input.fireTouch = false;
+    setFiring(false);
+  };
+
   return (
     <div class="touch">
       <div
@@ -105,6 +132,24 @@ export function TouchControls({ input }: { input: Input }) {
         onClick={runClick}
       >
         Run
+      </button>
+      <button
+        type="button"
+        class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}
+        aria-pressed={aiming}
+        onPointerDown={aimDown}
+        onClick={aimClick}
+      >
+        Aim
+      </button>
+      <button
+        type="button"
+        class={`touch__fire${firing ? ' touch__fire--on' : ''}`}
+        onPointerDown={fireDown}
+        onPointerUp={fireUp}
+        onPointerCancel={fireUp}
+      >
+        Fire
       </button>
     </div>
   );

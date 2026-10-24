@@ -1,0 +1,23 @@
+{
+  "about": "Concept pictures for the style test (docs/design/STYLE_TEST.md). Each becomes a 3D model with trellis.cpp and with Meshy. The style line is added to every subject.",
+  "model": "gemini-nano-banana-2.1",
+  "style": "Semi-realistic hard-surface product render for a grounded near-future science-fiction game. A single object, whole and centred, three-quarter view from slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. Practical, worn and believable, as if made and used by people. No text, no letters, no numbers, no logos, no people, no hands.",
+  "subjects": [
+    {
+      "id": "sidearm",
+      "prompt": "A compact station-security sidearm (an energy pistol): matte gunmetal frame with worn olive-green polymer grip panels, a short squared barrel shroud, a small glowing amber charge light above the grip, scuffs on the edges."
+    },
+    {
+      "id": "helmet",
+      "prompt": "A sealed spacesuit (EVA) helmet: a scuffed off-white hard shell with faded orange hazard stripes, a wide dark-tinted curved visor, a small lamp on one side, a ribbed neck ring at the base."
+    },
+    {
+      "id": "locker",
+      "prompt": "A rugged freestanding supply locker for a space station, about chest height: dented grey-green painted metal panels, two heavy latches, reinforced corners, stencilled panel lines without any letters, chipped paint."
+    },
+    {
+      "id": "terminal",
+      "prompt": "A wall-mounted maintenance terminal from a space station: a squat industrial housing in dark grey metal, a small glowing blue-green screen showing only abstract bars, a chunky keypad below it, cable conduits leaving the bottom."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+import { locomotionWeights, SPEED, type Vec2 } from './motion.ts';
+
+/**
+ * Which animation clips play, and how strongly, for what the hero is doing (COVER_AND_AIM.md).
+ * Pure, so every blend is tested. The clip names are the art pipeline's (heroes.json).
+ */
+export const CLIPS = [
+  'idle',
+  'walk',
+  'jog',
+  'sprint',
+  'walk_back',
+  'strafe_left',
+  'strafe_right',
+  'crouch_idle',
+  'crouch_left',
+  'crouch_right',
+  'pistol_aim',
+  'pistol_shoot',
+] as const;
+export type Clip = (typeof CLIPS)[number];
+
+export type Weights = Partial<Record<Clip, number>>;
+
+export type PoseState =
+  /** Moving freely: idle, walk, jog and sprint by ground speed. */
+  | { mode: 'move'; speed: number }
+  /** Aiming: walking in any direction (x right, y forward, relative to the hero) with the arms up. */
+  | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean }
+  /** In low cover, facing it; `slide` is -1 (left) to 1 (right) along it. */
+  | { mode: 'cover'; slide: number };
+
+export interface Pose {
+  /** The whole body, or the legs and hips when `upper` is set. */
+  lower: Weights;
+  /** The spine, arms and head on their own, or null when the whole body follows `lower`. */
+  upper: Weights | null;
+}
+
+/** The four walking directions while aiming, by angle from forward (clockwise, radians). */
+const AIM_WALKS: [Clip, number][] = [
+  ['walk', 0],
+  ['strafe_right', Math.PI / 2],
+  ['walk_back', Math.PI],
+  ['strafe_left', -Math.PI / 2],
+];
+
+/** Splits one unit of weight between the two walking clips either side of a direction. */
+export function directionalWeights(direction: Vec2): Weights {
+  const weights: Weights = {};
+  if (direction.x === 0 && direction.y === 0) return { walk: 1 };
+  const angle = Math.atan2(direction.x, direction.y);
+  let total = 0;
+  for (const [clip, at] of AIM_WALKS) {
+    const w = Math.max(0, Math.cos(angle - at));
+    if (w > 1e-6) {
+      weights[clip] = w;
+      total += w;
+    }
+  }
+  for (const clip of Object.keys(weights) as Clip[]) weights[clip] = (weights[clip] ?? 0) / total;
+  return weights;
+}
+
+export function poseWeights(state: PoseState): Pose {
+  if (state.mode === 'move') {
+    const w = locomotionWeights(state.speed);
+    return { lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint }, upper: null };
+  }
+  if (state.mode === 'cover') {
+    const s = Math.max(-1, Math.min(1, state.slide));
+    return {
+      lower: { crouch_idle: 1 - Math.abs(s), crouch_left: Math.max(0, -s), crouch_right: Math.max(0, s) },
+      upper: null,
+    };
+  }
+  const moving = Math.min(1, Math.max(0, state.speed / SPEED.walk));
+  const lower: Weights = { idle: 1 - moving };
+  for (const [clip, w] of Object.entries(directionalWeights(state.direction)) as [Clip, number][]) {
+    lower[clip] = w * moving;
+  }
+  return { lower, upper: state.firing ? { pistol_shoot: 1 } : { pistol_aim: 1 } };
+}

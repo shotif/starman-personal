@@ -2,15 +2,21 @@ import { keysToVector, type Vec2 } from './motion.ts';
 
 /**
  * What the player is asking for this frame, from whichever device they use. The touch controls
- * (src/ui/TouchControls.tsx) write the stick and look drag here; this class adds the keyboard
- * and the mouse on a desktop.
+ * (src/ui/TouchControls.tsx) write the stick, look drag, aim toggle and fire button here; this class
+ * adds the keyboard and the mouse on a desktop.
  */
 export class Input {
   /** Movement from the touch stick, x right, y forward, length 0–1. */
   stick: Vec2 = { x: 0, y: 0 };
   /** Sprint held (Shift) or toggled (the touch button). */
   sprintToggle = false;
+  /** Aim toggled by the touch button. */
+  aimToggle = false;
+  /** Fire held on the touch button. */
+  fireTouch = false;
   private readonly keys = new Set<string>();
+  private aimMouse = false;
+  private fireMouse = false;
   private lookX = 0;
   private lookY = 0;
   private readonly abort = new AbortController();
@@ -28,17 +34,38 @@ export class Input {
       { signal },
     );
     window.addEventListener('keyup', (e) => this.keys.delete(e.code), { signal });
-    window.addEventListener('blur', () => this.keys.clear(), { signal });
-    // On a desktop, a click on the scene captures the mouse for looking around; Escape frees it.
-    canvas.addEventListener(
-      'click',
+    window.addEventListener(
+      'blur',
       () => {
-        if (matchMedia('(pointer: fine)').matches && document.pointerLockElement !== canvas) {
-          canvas.requestPointerLock?.()?.catch?.(() => {});
+        this.keys.clear();
+        this.aimMouse = false;
+        this.fireMouse = false;
+      },
+      { signal },
+    );
+    // On a desktop, a click on the scene captures the mouse for looking around; Escape frees it.
+    // With the mouse captured, the left button fires; the right button aims either way. The buttons
+    // are read from every pointer event's button state: Babylon cancels pointerdown's default, so
+    // no mousedown follows, and a second button pressed while one is held sends only a move.
+    const buttons = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      this.aimMouse = (e.buttons & 2) !== 0;
+      this.fireMouse = (e.buttons & 1) !== 0 && (document.pointerLockElement === canvas || this.aimMouse);
+    };
+    canvas.addEventListener(
+      'pointerdown',
+      (e) => {
+        buttons(e);
+        const locked = document.pointerLockElement === canvas;
+        if (e.pointerType === 'mouse' && e.button === 0 && !locked && !this.aimMouse) {
+          if (matchMedia('(pointer: fine)').matches) canvas.requestPointerLock?.()?.catch?.(() => {});
         }
       },
       { signal },
     );
+    window.addEventListener('pointermove', buttons, { signal });
+    window.addEventListener('pointerup', buttons, { signal });
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault(), { signal });
     window.addEventListener(
       'mousemove',
       (e) => {
@@ -70,6 +97,14 @@ export class Input {
 
   get sprint(): boolean {
     return this.sprintToggle || this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
+  }
+
+  get aiming(): boolean {
+    return this.aimToggle || this.aimMouse;
+  }
+
+  get firing(): boolean {
+    return this.fireTouch || this.fireMouse;
   }
 
   dispose(): void {

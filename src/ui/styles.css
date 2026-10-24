@@ -193,10 +193,10 @@ body {
 
 .touch__run {
   position: absolute;
-  right: calc(var(--safe-right) + 18px);
-  bottom: calc(var(--safe-bottom) + 64px);
-  width: 64px;
-  height: 64px;
+  right: calc(var(--safe-right) + 108px);
+  bottom: calc(var(--safe-bottom) + 40px);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   font: inherit;
   font-weight: 600;
@@ -215,4 +215,62 @@ body {
   .hint {
     animation: none;
   }
+}
+
+.touch__aim,
+.touch__fire {
+  position: absolute;
+  border-radius: 50%;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel);
+  border: 2px solid var(--panel-edge);
+  touch-action: none;
+}
+
+.touch__aim {
+  right: calc(var(--safe-right) + 30px);
+  bottom: calc(var(--safe-bottom) + 150px);
+  width: 60px;
+  height: 60px;
+}
+
+.touch__fire {
+  right: calc(var(--safe-right) + 18px);
+  bottom: calc(var(--safe-bottom) + 56px);
+  width: 80px;
+  height: 80px;
+}
+
+.touch__aim--on,
+.touch__fire--on {
+  background: rgb(127 212 255 / 0.35);
+  border-color: var(--accent);
+}
+
+.crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border: 2px solid rgb(232 237 242 / 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crosshair::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: rgb(232 237 242 / 0.95);
 }

@@ -56,3 +56,49 @@ test('Run toggles while the other thumb holds the stick', async ({ page }, testI
   await expect(run).toHaveAttribute('aria-pressed', 'true');
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
 });
+
+test('aiming shows the crosshair and firing shoots', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('./');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  if (testInfo.project.name === 'phone') {
+    await page.getByRole('button', { name: 'Aim' }).tap();
+    await expect(page.locator('.crosshair')).toBeVisible();
+    const fire = page.getByRole('button', { name: 'Fire' });
+    const box = await fire.boundingBox();
+    if (!box) throw new Error('no Fire button');
+    const cdp = await page.context().newCDPSession(page);
+    const finger = { x: box.x + box.width / 2, y: box.y + box.height / 2, id: 1 };
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [finger] });
+    await page.waitForTimeout(1200);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  } else {
+    const canvas = page.locator('canvas');
+    const box = await canvas.boundingBox();
+    if (!box) throw new Error('no canvas');
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down({ button: 'right' });
+    await expect(page.locator('.crosshair')).toBeVisible();
+    await page.mouse.down({ button: 'left' });
+    await page.waitForTimeout(1200);
+    await page.mouse.up({ button: 'left' });
+    await page.mouse.up({ button: 'right' });
+  }
+  await expect.poll(async () => Number(await page.locator('body').getAttribute('data-shots'))).toBeGreaterThan(0);
+  await page.screenshot({ path: testInfo.outputPath('aiming.png') });
+  expect(errors).toEqual([]);
+});
+
+test('walking into the corridor crate takes cover', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
+  // The software renderer is slow: a small window at low quality keeps the frames coming.
+  await page.setViewportSize({ width: 800, height: 500 });
+  await page.goto('./?quality=low');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await page.keyboard.down('KeyW');
+  await expect(page.getByText(/In cover/)).toBeVisible({ timeout: 60_000 });
+  await page.keyboard.up('KeyW');
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: testInfo.outputPath('cover.png') });
+});

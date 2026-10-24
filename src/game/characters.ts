@@ -1,5 +1,6 @@
 import '@babylonjs/core/Animations/animatable';
 import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup';
+import { AnimationGroupMask, AnimationGroupMaskMode } from '@babylonjs/core/Animations/animationGroupMask';
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
@@ -12,7 +13,7 @@ import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { foldMissing, type LocomotionWeights, locomotionWeights } from './motion.ts';
+import { CLIPS, type Clip, type Pose, type Weights } from './pose.ts';
 
 registerBuiltInLoaders();
 
@@ -22,8 +23,15 @@ export interface Character {
   meshes: AbstractMesh[];
   /** True when the model brought animations; the stand-in capsule has none. */
   animated: boolean;
-  /** Blends idle, walk, run and sprint for a ground speed in metres a second. */
-  setLocomotion(speed: number): void;
+  /**
+   * Fades towards the clips a pose asks for (src/game/pose.ts) over `dt` seconds; the upper body
+   * follows `pose.upper` when it has its own clips, and the legs otherwise.
+   */
+  setPose(pose: Pose, dt: number): void;
+  /** Restarts the shooting clip, for one shot. */
+  fire(): void;
+  /** Where a shot leaves from: the right hand, in world space. */
+  muzzle(): Vector3;
 }
 
 /** Loads a character model once, to be placed many times. Null when it cannot be loaded. */
@@ -36,26 +44,9 @@ export async function loadCharacterTemplate(scene: Scene, url: string): Promise<
   }
 }
 
-const LOCOMOTION_PATTERNS: Record<keyof LocomotionWeights, { want: RegExp; avoid: RegExp }> = {
-  idle: { want: /idle/i, avoid: /crouch|aim|gun|pistol|rifle|sword|melee|talk|sit|swim/i },
-  walk: { want: /walk/i, avoid: /back|left|right|strafe|crouch|aim|gun|pistol|rifle|zombie/i },
-  run: { want: /jog|run/i, avoid: /back|left|right|strafe|crouch|aim|gun|pistol|rifle|zombie|sprint/i },
-  sprint: { want: /sprint/i, avoid: /back|left|right|strafe|crouch|aim|gun|pistol|rifle/i },
-};
-
-/** Picks the animation for each locomotion slot by name, preferring the shortest matching name. */
-export function pickLocomotion(
-  groups: readonly AnimationGroup[],
-): Partial<Record<keyof LocomotionWeights, AnimationGroup>> {
-  const picked: Partial<Record<keyof LocomotionWeights, AnimationGroup>> = {};
-  for (const key of Object.keys(LOCOMOTION_PATTERNS) as (keyof LocomotionWeights)[]) {
-    const { want, avoid } = LOCOMOTION_PATTERNS[key];
-    const matches = groups.filter((g) => want.test(g.name) && !avoid.test(g.name));
-    matches.sort((a, b) => a.name.length - b.name.length);
-    if (matches[0]) picked[key] = matches[0];
-  }
-  return picked;
-}
+/** The bones the aim and shoot clips own while aiming: the spine, arms, hands, neck and head. */
+const UPPER_BODY = /^(spine_0[123]|clavicle_|upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_|neck_|head)/i;
+const UPPER_CLIPS: readonly Clip[] = ['pistol_aim', 'pistol_shoot'];
 
 /**
  * Places a character from a template with its feet on the ground: at the model's own size (the MPFB
@@ -71,7 +62,8 @@ export function spawnCharacter(
   const root = new TransformNode(name, scene);
   if (!template) return standIn(scene, root, options.height ?? 1.8, options.tint);
 
-  const entries = template.instantiateModelsToScene((source) => `${name}-${source}`, true);
+  const prefix = `${name}-`;
+  const entries = template.instantiateModelsToScene((source) => `${prefix}${source}`, true);
   const model = new TransformNode(`${name}-model`, scene);
   model.parent = root;
   for (const node of entries.rootNodes) node.parent = model;
@@ -98,25 +90,73 @@ export function spawnCharacter(
     }
   }
 
-  const groups = entries.animationGroups;
-  for (const group of groups) group.stop();
-  const slots = pickLocomotion(groups);
-  const has = { idle: !!slots.idle, walk: !!slots.walk, run: !!slots.run, sprint: !!slots.sprint };
-  for (const group of Object.values(slots)) {
+  const sourceName = (n: string) => (n.startsWith(prefix) ? n.slice(prefix.length) : n);
+  const nodes = model.getDescendants(false).filter((n): n is TransformNode => n instanceof TransformNode);
+  const upperNames = nodes.filter((n) => UPPER_BODY.test(sourceName(n.name))).map((n) => n.name);
+  const hand = nodes.find((n) => sourceName(n.name).toLowerCase() === 'hand_r') ?? null;
+
+  // Every walking clip plays twice: once on the legs and hips, once on the upper body, each held
+  // by a mask that never changes. Aiming fades the upper copies out and the aim clip in, so the
+  // arms never snap through the rest pose.
+  const legs = new AnimationGroupMask(upperNames, AnimationGroupMaskMode.Exclude);
+  const torso = new AnimationGroupMask(upperNames, AnimationGroupMaskMode.Include);
+  const lower = new Map<Clip, AnimationGroup>();
+  const upper = new Map<Clip, AnimationGroup>();
+  for (const group of entries.animationGroups) {
+    group.stop();
+    const clip = sourceName(group.name) as Clip;
+    if (!(CLIPS as readonly string[]).includes(clip)) continue;
+    if (UPPER_CLIPS.includes(clip)) {
+      group.mask = torso;
+      upper.set(clip, group);
+    } else {
+      const top = group.clone(`${group.name}-upper`);
+      top.mask = torso;
+      upper.set(clip, top);
+      group.mask = legs;
+      lower.set(clip, group);
+    }
+  }
+  const current = new Map<AnimationGroup, number>();
+  for (const group of [...lower.values(), ...upper.values()]) {
     group.start(true);
     group.weight = 0;
+    current.set(group, 0);
   }
+  /** Fades a clip's weight towards its target. */
+  const fade = (group: AnimationGroup, target: number, t: number) => {
+    const next = (current.get(group) ?? 0) + (target - (current.get(group) ?? 0)) * t;
+    const weight = Math.abs(next - target) < 1e-3 ? target : next;
+    current.set(group, weight);
+    group.weight = weight;
+  };
+  /** A clip the model lacks hands its weight to idle. */
+  const withIdle = (weights: Weights, have: Map<Clip, AnimationGroup>): Weights => {
+    let orphaned = 0;
+    for (const [clip, weight] of Object.entries(weights) as [Clip, number][]) {
+      if (!have.has(clip)) orphaned += weight;
+    }
+    return orphaned > 0 ? { ...weights, idle: (weights.idle ?? 0) + orphaned } : weights;
+  };
 
   return {
     root,
     meshes,
-    animated: Object.keys(slots).length > 0,
-    setLocomotion(speed) {
-      const weights = foldMissing(locomotionWeights(speed), has);
-      for (const key of Object.keys(slots) as (keyof LocomotionWeights)[]) {
-        const group = slots[key];
-        if (group) group.weight = weights[key];
-      }
+    animated: lower.size > 0,
+    setPose(pose, dt) {
+      const t = Math.min(1, dt * 12);
+      const legWeights = withIdle(pose.lower, lower);
+      const torsoWeights = withIdle(pose.upper ?? pose.lower, upper);
+      for (const [clip, group] of lower) fade(group, legWeights[clip] ?? 0, t);
+      for (const [clip, group] of upper) fade(group, torsoWeights[clip] ?? 0, t);
+    },
+    fire() {
+      const shoot = upper.get('pistol_shoot');
+      if (shoot) shoot.goToFrame(shoot.from);
+    },
+    muzzle() {
+      if (hand) return hand.getAbsolutePosition().clone();
+      return root.position.add(new Vector3(0, 1.4, 0));
     },
   };
 }
@@ -138,5 +178,12 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
   glass.emissiveColor = new Color3(0.3, 0.6, 0.9);
   visor.material = glass;
   const meshes: Mesh[] = [body, visor];
-  return { root, meshes, animated: false, setLocomotion() {} };
+  return {
+    root,
+    meshes,
+    animated: false,
+    setPose() {},
+    fire() {},
+    muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),
+  };
 }

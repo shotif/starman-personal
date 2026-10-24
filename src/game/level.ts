@@ -164,8 +164,10 @@ export function buildLevel(scene: Scene, q: QualitySettings): Level {
   box('room-wall-near-right', [4, 4, 0.2], [4, 2, 26.1], p.wall);
   box('room-lintel', [4, 0.8, 0.2], [0, 3.6, 26.1], p.wall);
 
-  // Crates: low cover (1 m) and high cover (1.6 m), for the cover increment.
+  // Crates: low cover (1 m) and high cover (1.6 m). The first stands in the corridor on the way
+  // in, so cover can be tried at once.
   const crates: [number, number, number, number][] = [
+    [0, 10.5, 1.2, 1],
     [-3, 30, 1.6, 1],
     [2.5, 29, 2.4, 1],
     [-1, 34, 1.2, 1.6],

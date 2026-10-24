@@ -33,6 +33,7 @@ export function App() {
   const [status, setStatus] = useState<Status>({ kind: 'loading' });
   const [stats, setStats] = useState<GameStats | null>(null);
   const [tier] = useState(startingTier);
+  const [aiming, setAiming] = useState(false);
   const touch = isTouch();
 
   useEffect(() => {
@@ -49,7 +50,14 @@ export function App() {
           tier,
           renderer,
           hero,
-          onStats: setStats,
+          assist: isTouch(),
+          onAim: setAiming,
+          onStats: (s) => {
+            setStats(s);
+            // For the browser journeys: how many shots, and how many drones are down.
+            document.body.dataset.shots = String(s.shots);
+            document.body.dataset.dronesDown = String(s.dronesDown);
+          },
           onReady: () => {
             setStatus({ kind: 'ready' });
             document.body.dataset.ready = 'true';
@@ -95,6 +103,11 @@ export function App() {
             {stats.companionNavigation ? '' : ' · companion without navigation'}
           </p>
         )}
+        {stats && (
+          <p class="hud__stats">
+            {stats.inCover ? 'In cover · ' : ''}Drones down: {stats.dronesDown} of 3
+          </p>
+        )}
         <button type="button" class="hud__button" onClick={changeQuality}>
           Quality: {tier}
         </button>
@@ -109,10 +122,11 @@ export function App() {
       {status.kind === 'ready' && (
         <p class="hint">
           {touch
-            ? 'Left thumb moves · right thumb looks · Run toggles running'
-            : 'Click to look around · WASD to move · Shift to run · Esc frees the mouse'}
+            ? 'Left thumb moves · right thumb looks · walk into a crate for cover · Aim, then Fire'
+            : 'Click to look around · WASD to move · Shift to run · walk into a crate for cover · right mouse aims, left fires'}
         </p>
       )}
+      {aiming && <div class="crosshair" aria-hidden="true" />}
       {touch && game && <TouchControls input={game.input} />}
     </main>
   );
