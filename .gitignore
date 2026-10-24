@@ -1,7 +1,37 @@
-node_modules/
+# Dependencies
+node_modules
+
+# Build output
 dist/
+*.tsbuildinfo
+
+# Test output
 test-results/
 playwright-report/
+blob-report/
+coverage/
+
+# Local env (API keys) and editor files
 .env
 *.env
+.env.local
 .DS_Store
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Local scratch scripts
+.scratch/
+
+# Agent worktrees (local only)
+.claude/worktrees/
+
+# Downloaded sources for the art pipeline, re-fetched by its scripts (docs/ART_PIPELINE.md)
+art/cache/
+
+# Generated candidates awaiting review; approved files go to public/
+art/out/
+
+# Python caches from the art scripts
+__pycache__/

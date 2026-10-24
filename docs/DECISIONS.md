@@ -32,11 +32,11 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-18 | The ship and travel | Decided 2026-10-24 | A ship you live on and command; encounters after the first milestone |
 | D-19 | Where you play | Decided 2026-10-24 (owner's choice) | **Hand-made places plus generated landing sites** |
 | D-20 | Size of 1.0, and the first milestone | Decided 2026-10-24 | The whole story planned, built in acts, starting with a playable slice |
-| D-21 | Platform and engine | Browser decided 2026-10-24; **engine open** | The browser first; Claude recommends **Babylon.js** ([TECH_STACK.md](research/TECH_STACK.md)) |
+| D-21 | Platform and engine | Decided 2026-10-24 | The browser first, on **Babylon.js** ([TECH_STACK.md](research/TECH_STACK.md)) |
 | D-22 | The look, and where the 3D models come from | Decided 2026-10-24 (owner's choice) | **Semi-realistic**; open-source people and animation first, Meshy as the paid alternative; see [D-22](#d-22--the-look-and-where-the-3d-models-come-from--decided) |
 | D-23 | Voices | Decided 2026-10-24 (owner's choice) | **Every line voiced**, the hero too |
 | D-24 | What may be spent without asking | Decided 2026-10-24 (owner's choice) | **Up to $50** |
-| D-25 | The title | Open | the owner is open to suggestions; Claude suggests ***Starman Lightkeeper***; see [D-25](#d-25--the-title--open) |
+| D-25 | The title | Decided 2026-10-24 | ***Starman Lightkeeper*** |
 | D-26 | How finished work reaches `main` | Assumed 2026-10-24 | Pushed to `main` once the checks pass, as in Reborn and Control |
 | D-27 | Reuse open source | Decided 2026-10-24 (owner's direction) | Look for open-source and CC0 work first; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) |
 | D-28 | What may go into the public repository | Assumed 2026-10-24 | Only files whose licence lets us share them, each recorded with its source |
@@ -299,7 +299,7 @@ dialogue) before the story is built on them.
 
 **Decided:** as recommended, 24 October 2026.
 
-### D-21 · Platform and engine — **Browser decided; engine open**
+### D-21 · Platform and engine — **Decided**
 
 Control chose the web platform with Preact (D-22 there). A 3D action RPG is far heavier.
 
@@ -321,6 +321,10 @@ engine for the browser (physics, a character controller, companions' pathfinding
 blending and area streaming built in), open source, written in TypeScript, with the series' Preact
 screens over it. The first proof on a phone confirms it instead of a full two-engine bake-off.
 three.js stays the fallback, and Godot is the choice only if native apps ever come first.
+
+**Decided:** Babylon.js, 24 October 2026. The owner: "continue setting everything up with Babylon
+JS and all of the other open source suggestions". The first proof is
+[design/PROOF.md](design/PROOF.md).
 
 ### D-22 · The look, and where the 3D models come from — **Decided**
 
@@ -359,6 +363,13 @@ which a public repository does, so we would use CC0 animation libraries instead.
   pricing](https://meshy.ai/pricing)). Take it for the month of the style test, and keep it only
   if it beats the open-source generators. Its API key goes into the repository's git-ignored
   `.env` as `MESHY_API_KEY`, never into a chat or a commit.
+- **Taken (24 October 2026):** the owner subscribed to **Meshy Premium for one month** (3,000
+  credits). The key is stored with `npm run key:meshy` ([`scripts/set-meshy-key.sh`](../scripts/set-meshy-key.sh)),
+  which checks it with Meshy before saving it.
+- **The open-source generator:** research on running one on the Mac recommends **trellis.cpp**
+  (MIT, a C++ build of TRELLIS.2 with Metal, no Python), compiled locally, with about 15 GB of
+  weights. See [research/OPEN_SOURCE.md](research/OPEN_SOURCE.md) §3. Waiting for the owner's go
+  before compiling it and downloading the weights.
 
 ### D-23 · Voices — **Decided**
 
@@ -387,7 +398,7 @@ above that asked for. Voices are paid from the ElevenLabs plan, as in Control.
 (ElevenLabs, and an image-to-3D plan if one is taken) are paid outside this allowance. Every spend
 is recorded with what it bought.
 
-### D-25 · The title — **Open**
+### D-25 · The title — **Decided**
 
 **Recommendation:** keep ***Starman Personal*** as the working title. After the cockpit (Reborn)
 and the command table (Control), this is the starman in person. Decide the final title before the
@@ -405,6 +416,12 @@ The owner is open to suggestions (24 October 2026). The series' titles are one w
 | ***Starman Personal*** | The working title, kept |
 
 Before a title is final, Claude checks that no other game uses it.
+
+**Decided:** ***Starman Lightkeeper***, the owner's choice, 24 October 2026 ("You can use Starman
+Lightkeeper"). The GitHub repository keeps its first name, `starman-personal`, so its address and
+the Pages address (<https://shotif.github.io/starman-personal/>) stay as they are; renaming it is
+easy later if the owner wants. A check for other games of the same name is still to be done
+before any public release.
 
 ### D-27 · Reuse open source — **Decided** (owner's direction)
 
@@ -431,4 +448,9 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | Date | Choice | Why |
 | --- | --- | --- |
 | 2026-10-24 | The repository starts with documents only; no code until D-21 is decided | Documentation first (D-01) |
+| 2026-10-24 | The proof renders with **WebGL2** by default; WebGPU with `?renderer=webgpu` | WebGL2 runs on every phone we target; WebGPU is measured before it becomes the default |
+| 2026-10-24 | Recast (navigation) is **bundled** with the game | Babylon's navigation plugin loads it from unpkg.com by default; a game that may be installed and played offline cannot depend on a CDN |
+| 2026-10-24 | The local servers use ports **5391** (development) and **4391** (preview and tests) | the owner's other projects already use Vite's usual ports |
+| 2026-10-24 | Biome formats code but **not Markdown** | Biome's Markdown formatting rewrites the series' documents (italics, tables) |
+| 2026-10-24 | Quaternius's CC0 mannequin stands in for the hero and the companion until MPFB people exist | it carries the animations the proof needs; see [ART_PIPELINE.md](ART_PIPELINE.md) |
 | 2026-10-24 | Dialogue and quests to be written in **ink** (MIT), if the engine is agreed | plain text Claude can write and test, with a JavaScript runtime; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) §4 |

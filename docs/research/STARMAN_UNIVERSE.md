@@ -1,4 +1,4 @@
-# The Starman universe: what Starman Personal inherits
+# The Starman universe: what Starman Lightkeeper inherits
 
 A digest of what [Starman Reborn](https://github.com/shotif/starman-reborn) and
 [Starman Control](https://github.com/shotif/starman-control) establish, read on 24 October 2026.
@@ -55,9 +55,9 @@ has the detail and the source paths. This page is the summary for the decisions 
 - **War and peace:** first contact as a process (signal, words, talk), treaties, borders, fleets
   and wars between powers.
 
-## 3. What this means for Personal
+## 3. What this means for Lightkeeper
 
-| Inheritance | Use in Personal |
+| Inheritance | Use in Lightkeeper |
 | --- | --- |
 | The real stars and their data (Reborn's census, Control's 33 ly map) | The star map you command the ship across; real planets as places to land |
 | The three human powers | Origins for the hero, factions with standing, and politics to cross |

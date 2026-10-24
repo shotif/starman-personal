@@ -1,7 +1,8 @@
 # Vision
 
 **Status:** draft 2, 24 October 2026, written from the owner's brief, with rounds 1 and 2 of
-[the decisions](DECISIONS.md) answered. The engine (D-21) and the title (D-25) are still open.
+[the decisions](DECISIONS.md) answered, the engine chosen (Babylon.js, D-21) and the title
+settled: ***Starman Lightkeeper*** (D-25).
 
 ## Decided so far, in short
 
@@ -19,8 +20,8 @@
 - **Ship and places:** a ship you live on and command *(D-18)*; hand-made places, plus generated
   landing sites that always carry a written story *(D-19)*.
 - **Making it:** the whole story planned, built in acts after a playable slice *(D-20)*; the
-  browser first *(D-21)*; a semi-realistic look *(D-22)*; every line voiced *(D-23)*; open source
-  reused wherever it is good enough *(D-27)*.
+  browser first, on Babylon.js *(D-21)*; a semi-realistic look *(D-22)*; every line voiced
+  *(D-23)*; open source reused wherever it is good enough *(D-27)*.
 
 ## The pitch
 
@@ -30,11 +31,11 @@
 > command of a ship and a crew, cross the real stars around the Sun, and find out what is coming
 > for the neighbourhood, before it is too late to stop it.
 
-Starman Personal is a single-player, 3D third-person role-playing game in the browser. It is
+Starman Lightkeeper is a single-player, 3D third-person role-playing game in the browser. It is
 completely playable on a phone and has a dedicated desktop experience. It is set in the universe
 of [Starman Reborn](https://github.com/shotif/starman-reborn) and
 [Starman Control](https://github.com/shotif/starman-control). Reborn is the view from one
-cockpit. Control is the view from the command table. **Personal is the view from your own eyes:**
+cockpit. Control is the view from the command table. **Lightkeeper is the view from your own eyes:**
 the stations, the worlds and the people, on foot.
 
 ## What the owner asked for

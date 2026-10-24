@@ -54,6 +54,33 @@ and automatic rigging with 21 movement presets. It is young and recommends 32 GB
 our 24, and it does not state the licence of its rigging method or its presets. **Worth a trial
 for props and armour, not to be relied on yet.**
 
+**Which route, on this Mac (research of 24 October 2026, nothing installed yet):** the Mac has
+the Command Line Tools but not the full Xcode, and no Homebrew. The safest route is
+**trellis.cpp** (<https://github.com/pwilkin/trellis.cpp>, MIT, by a maintainer of llama.cpp): a
+C++ build of TRELLIS.2 with Metal and no Python at run time, which also runs Pixal3D. It is
+compiled locally (CMake and Ninja in a private Python environment, version v0.8.1) into an
+isolated folder outside the repository, and reads about **15 GB of weights** in GGUF files, which
+hold no code. Mac support is new: one report gives about 9 minutes and 5.6 GB at resolution 512 on
+an M5 with 24 GB. The others were set aside: the PyTorch port (trellis-mac) needs about 18 GB at
+its peak and clones five small repositories; AssetFurnace installs by `curl | bash`, needs the full
+Xcode for one backend and recommends 32 GB; Stable Fast 3D is barely maintained.
+
+Licence notes from that research:
+
+- TRELLIS.2 and Pixal3D are MIT. **DINOv3**'s licence is royalty-free with no commercial ban, but
+  ends if one sues Meta, asks that a copy goes with any weights shared, and forbids end uses
+  barred by trade controls (its wording on weapons is export-control language; a game with guns
+  is not that, but it is worth knowing). We commit the models it makes, never the weights.
+- The upstream TRELLIS.2 texturing uses **nvdiffrast, licensed for non-commercial use only**;
+  trellis.cpp bakes its textures with its own code instead.
+- Background removal: RMBG-2.0 is non-commercial and BiRefNet is MIT. We avoid both by feeding
+  the generator concept pictures that already have transparent backgrounds.
+
+What it makes: 150,000–300,000 triangles, UV charts, base colour, metal and roughness, no normal
+map yet, and no quad retopology on a Mac. So its models need decimating and normal baking in
+Blender before they go into the game. Good for hard-surface props and armour; Meshy (rigging,
+quads, target triangle counts) is the better tool for rigged companions.
+
 **Against a paid service:** Meshy's paid plans produce cleaner topology and textures faster, with
 an API, a private commercial licence and rigging (§5). The style test (D-22) runs the same concept
 pictures through both and keeps whichever looks better on a phone.

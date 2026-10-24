@@ -1,6 +1,6 @@
-# Working agreement for Starman Personal
+# Working agreement for Starman Lightkeeper
 
-Starman Personal is a 3D third-person, story-led role-playing game in the universe of
+Starman Lightkeeper (D-25; the repository keeps its first name, `starman-personal`) is a 3D third-person, story-led role-playing game in the universe of
 [Starman Reborn](https://github.com/shotif/starman-reborn) and
 [Starman Control](https://github.com/shotif/starman-control), inspired most by *Mass Effect*.
 The project owner decides; Claude designs, documents, builds and tests.
@@ -50,12 +50,27 @@ The project owner decides; Claude designs, documents, builds and tests.
   structure and mechanics only; every character, species, faction, technology and story is
   original. [docs/research/MASS_EFFECT.md](docs/research/MASS_EFFECT.md) §6 lists the terms to
   avoid.
-- Starman Reborn and Starman Control are canon. Starman Personal adds canon and must not
+- Starman Reborn and Starman Control are canon. Starman Lightkeeper adds canon and must not
   contradict them unless the owner decides otherwise.
 
-## Stack
+## Stack (D-21)
 
-The browser first (D-21). The engine is not agreed yet; Claude recommends Babylon.js with Preact
-screens, ink for dialogue, and Blender 5.2 for the asset pipeline
-([docs/research/TECH_STACK.md](docs/research/TECH_STACK.md)). No game code is written until the
-owner agrees.
+TypeScript, Vite, Vitest, Playwright and Biome, as in Control. **Babylon.js** for 3D, with Havok
+physics, its character controller and its navigation plugin (recast-navigation-js, bundled, never
+loaded from a CDN). **Preact + Signals** for every screen over the 3D canvas (JSX via
+`jsxImportSource: preact`, never React). **ink** for dialogue and quests. Blender 5.2 and MPFB 2
+for the art pipeline ([docs/ART_PIPELINE.md](docs/ART_PIPELINE.md)). WebGL2 by default; WebGPU
+with `?renderer=webgpu` until it is proven on phones. See
+[docs/research/TECH_STACK.md](docs/research/TECH_STACK.md).
+
+## Commands
+
+```bash
+npm ci                 # install the locked dependencies (Node 22.18+)
+npm run dev            # development server at http://localhost:5391
+npm run dev:host       # the same, reachable from a phone on the same network
+npm run check          # typecheck, lint (Biome), unit tests, production build
+npm run test:e2e       # browser journeys on a phone and a desktop (Playwright, port 4391)
+npm run format         # apply Biome's formatting (Markdown is left alone)
+npm run key:meshy      # store the owner's Meshy API key in the git-ignored .env
+```

@@ -1,7 +1,7 @@
 # *Mass Effect*: how it works, what worked, what failed
 
 Research for the first round of [decisions](../DECISIONS.md), 24 October 2026. Mechanics and
-structure only. Starman Personal uses no names, text, art or data from these games (§6).
+structure only. Starman Lightkeeper uses no names, text, art or data from these games (§6).
 
 Most of what follows describes how the games play and comes from the games themselves. Claims
 about reception and development cite the sources listed in §7.
@@ -115,7 +115,7 @@ otherwise rarely punishes doing things in any order [4].
 6. **Thin melee**, and companions you can only point at targets.
 7. **Repeated arenas** that warn you a fight is coming [2].
 
-## 5. Lessons for Starman Personal
+## 5. Lessons for Starman Lightkeeper
 
 | Lesson | How it shapes us |
 | --- | --- |
