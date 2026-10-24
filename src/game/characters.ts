@@ -22,6 +22,8 @@ registerBuiltInLoaders();
 
 /** A person in the world: a root at their feet, turned by `root.rotation.y`, and their animations. */
 export interface Character {
+  /** Moves the mouth to a voice's loudness, 0 to 1 (set by the wardrobe; silent for a stand-in). */
+  speak(level: number): void;
   root: TransformNode;
   meshes: AbstractMesh[];
   /** True when the model brought animations; the stand-in capsule has none. */
@@ -235,6 +237,7 @@ export function spawnCharacter(
     model,
     fitBounds: (parts) => fitFigureBounds(root, figure, parts),
     setFade: fader(model),
+    speak() {},
     setPose(pose, dt) {
       const t = Math.min(1, dt * (pose.blend ?? 12));
       const legWeights = withIdle(pose.lower, lower);
@@ -287,6 +290,7 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     model: null,
     fitBounds() {},
     setFade: fader(root),
+    speak() {},
     setPose() {},
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),

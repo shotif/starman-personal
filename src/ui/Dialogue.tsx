@@ -14,6 +14,11 @@ export interface DialogueProps {
   touch: boolean;
   /** Who is speaking now, for the game's staging. */
   onSpeaker(who: 'hero' | 'partner' | null): void;
+  /** A line is on screen: its voice plays; how long it lasts, or null if it has no voice. */
+  onLine(line: { speaker: string; id: string | null }): number | null;
+  /** A voiced line was skipped. */
+  onSkip(): void;
+  onChoose(): void;
   onEnd(): void;
 }
 
@@ -21,7 +26,9 @@ export interface DialogueProps {
  * A conversation on screen (DIALOGUE.md): subtitles with the speaker's name, moved on by a tap, a
  * click, Space or Return; and the hero's choices as the full lines, chosen by a tap or 1 to 4.
  */
-export function Dialogue({ conversation, heroName, touch, onSpeaker, onEnd }: DialogueProps) {
+export function Dialogue({ conversation, heroName, touch, onSpeaker, onLine, onSkip, onChoose, onEnd }: DialogueProps) {
+  /** A voiced line moves on by itself when it has been spoken. */
+  const autoNext = useRef<number | null>(null);
   const [beat, setBeat] = useState<Beat | null>(null);
   /** The beat on screen for the key handler, which may run before the screen re-renders. */
   const now = useRef<Beat | null>(null);
@@ -41,12 +48,22 @@ export function Dialogue({ conversation, heroName, touch, onSpeaker, onEnd }: Di
     }
     setBeat(next);
     onSpeaker(next.kind === 'line' ? (next.speaker === 'hero' ? 'hero' : 'partner') : null);
+    if (autoNext.current) window.clearTimeout(autoNext.current);
+    autoNext.current = null;
+    if (next.kind === 'line') {
+      const seconds = onLine({ speaker: next.speaker, id: next.id });
+      if (seconds !== null) autoNext.current = window.setTimeout(() => advance(true), (seconds + 0.55) * 1000);
+    }
   };
-  const advance = () => {
-    if (now.current?.kind === 'line') show(conversation.next());
+  /** The next line; by the player's hand it also cuts short the voice still speaking. */
+  const advance = (byItself = false) => {
+    if (now.current?.kind !== 'line') return;
+    if (!byItself) onSkip();
+    show(conversation.next());
   };
   const choose = (index: number) => {
     if (now.current?.kind !== 'choices') return;
+    onChoose();
     conversation.choose(index);
     show(conversation.next());
   };
@@ -57,6 +74,7 @@ export function Dialogue({ conversation, heroName, touch, onSpeaker, onEnd }: Di
     show(conversation.next());
     return () => {
       document.body.dataset.talking = 'false';
+      if (autoNext.current) window.clearTimeout(autoNext.current);
     };
   }, [conversation]);
 

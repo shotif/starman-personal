@@ -26,6 +26,8 @@ export interface AbilityContext {
   /** Mends the hero's health by an amount, and companions near them. */
   heal(amount: number): void;
   say(text: string): void;
+  /** A sound from the audio manifest, placed where it happens. */
+  sound(id: string, at: Vector3): void;
 }
 
 export interface Abilities {
@@ -117,6 +119,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       swarm.unprime(machine);
       swarm.burst(status.at, COMBO.radius, { amount: COMBO.amount, kind: COMBO.kind }, 'hero');
       flash(status.at, VIOLET, 1.2, 0.5, COMBO.radius * 1.6);
+      ctx.sound('charge_blast', status.at);
       ctx.say('Combination!');
     }
     if (result.damage) swarm.strikeMachine(machine, result.damage, 'hero');
@@ -136,6 +139,24 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
     }
     const at =
       target !== null ? (swarm.status(target)?.at ?? ctx.groundAhead(spec.range)) : ctx.groundAhead(spec.range);
+    const chest = ctx.heroChest();
+    const field: PowerId[] = ['lift', 'pull', 'slam', 'shove', 'hop'];
+    const arc: PowerId[] = ['overload', 'spoof', 'mark'];
+    const own: Partial<Record<PowerId, string>> = {
+      stim: 'stim',
+      brace: 'barrier',
+      veil: 'veil',
+      barrier: 'barrier',
+      repair: 'repair',
+      seeker: 'drone',
+      flare: 'drone',
+      charge: 'dodge',
+    };
+    const struck = field.includes(id) || arc.includes(id);
+    ctx.sound(
+      field.includes(id) ? 'power_field' : arc.includes(id) ? 'power_arc' : (own[id] ?? 'power_field'),
+      struck ? at : chest,
+    );
     switch (id) {
       case 'stim':
         effects.stim = spec.lasts ?? 5;
@@ -193,6 +214,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
             }
             swarm.burst(spot, 4, spec.damage ?? { amount: 90, kind: 'blast' }, 'hero');
             flash(spot, ORANGE, 1, 0.45, 5);
+            ctx.sound('charge_blast', spot);
           },
         );
         break;

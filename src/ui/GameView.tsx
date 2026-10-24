@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import type { GameAudio } from '../game/audio.ts';
 import type { Conversation } from '../game/conversation.ts';
 import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
 import type { Renderer } from '../game/engine.ts';
@@ -17,6 +18,7 @@ export interface GameViewProps {
   tier: QualityTier;
   renderer: Renderer;
   difficulty: Difficulty;
+  audio: GameAudio;
   /** A saved game to resume, or null for a new one. */
   saved: SaveData | null;
   /** Back to the title. */
@@ -61,6 +63,7 @@ export function GameView({
   tier,
   renderer,
   difficulty: startDifficulty,
+  audio,
   saved,
   onQuit,
 }: GameViewProps) {
@@ -107,6 +110,7 @@ export function GameView({
           manifest,
           assist: isTouch(),
           difficulty: startDifficulty,
+          audio,
           save: saved,
           chapter: params.get('chapter'),
           onAim: setAiming,
@@ -126,6 +130,7 @@ export function GameView({
             setConversation({ conversation: c, partner });
           },
           onObjective: (text) => {
+            if (text) audio.play('objective', { volume: 0.6 });
             setObjective(text);
             document.body.dataset.objective = text ?? '';
           },
@@ -144,6 +149,7 @@ export function GameView({
           },
           onFade: setBlack,
           onSave: (data) => {
+            audio.play('saved', { volume: 0.4 });
             save(SAVE_KEY, JSON.stringify(data));
             setSavedAt(performance.now());
             document.body.dataset.checkpoint = data.checkpoint;
@@ -386,6 +392,9 @@ export function GameView({
           heroName={looks.name || 'You'}
           touch={touch}
           onSpeaker={(who) => game?.setSpeaker(who)}
+          onLine={(line) => game?.speak(line) ?? null}
+          onSkip={() => game?.hush()}
+          onChoose={() => audio.play('ui_choice', { volume: 0.5 })}
           onEnd={endTalk}
         />
       )}

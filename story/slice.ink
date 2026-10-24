@@ -27,6 +27,7 @@ VAR first_lead = ""
 === slice ===
 = night_shift
 >>> checkpoint night_shift
+>>> music night
 >>> sky clear
 >>> lights on
 >>> start hero hero_start
@@ -59,6 +60,7 @@ VAR first_lead = ""
 
 = range
 >>> checkpoint range
+>>> music night
 >>> start hero drill
 >>> start ren drill
 >>> follow ren
@@ -74,6 +76,7 @@ Three drones. Use the crates; that's what they're for. #speaker: Ren #line: ren_
 Clean. Hale's going to want a report on that star before— #speaker: Ren #line: ren_drill_02
 >>> lights out
 >>> sky swarm
+>>> music tension
 >>> wait 2
 All staff to Control. Now. This is not a drill. #speaker: Hale #line: hale_call_01
 That's the chief. #speaker: Ren #line: ren_drill_03
@@ -81,6 +84,7 @@ That's the chief. #speaker: Ren #line: ren_drill_03
 
 = to_control
 >>> checkpoint to_control
+>>> music tension
 >>> sky swarm
 >>> start hero drill
 >>> start ren drill
@@ -103,6 +107,7 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 
 = control
 >>> checkpoint control
+>>> music tension
 >>> sky swarm
 >>> start hero control
 >>> start ren control
@@ -126,6 +131,7 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 
 = concourse
 >>> checkpoint concourse
+>>> music tension
 >>> sky swarm
 >>> start hero concourse
 >>> start ren concourse
@@ -154,6 +160,7 @@ That's the last of them. For now. #speaker: Ren #line: ren_concourse_02
 
 = mast
 >>> checkpoint mast
+>>> music tension
 >>> sky swarm
 >>> start hero booth
 >>> start ren booth
@@ -194,6 +201,7 @@ Something's at the clinic door. It's at the— Officer, they're inside! #speaker
 
 = escort
 >>> checkpoint escort
+>>> music tension
 >>> sky swarm
 >>> start hero booth
 >>> start ren booth
@@ -221,6 +229,7 @@ I tried the Merrow. Nothing. They'll be in it before they hear us. #speaker: Pel
 
 = gate
 >>> checkpoint gate
+>>> music tension
 >>> sky swarm
 >>> start hero hangar_gate
 >>> start ren hangar_gate
@@ -245,6 +254,7 @@ Gate's open. Don't wait for me. Control out. #speaker: Hale #line: hale_gate_01
 
 = hangar
 >>> checkpoint hangar
+>>> music tension
 >>> sky swarm
 >>> start hero hangar
 >>> start ren hangar
@@ -276,6 +286,7 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 
 = bridge
 >>> checkpoint bridge
+>>> music ending
 >>> sky swarm
 >>> lights on
 >>> place hero bridge_hero

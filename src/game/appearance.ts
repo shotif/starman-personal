@@ -23,6 +23,11 @@ export async function loadManifest(): Promise<Manifest> {
 /** Puts a set of looks on a character and changes them later (CREATOR.md, ART_PIPELINE.md §8). */
 export interface Wardrobe {
   wear(looks: Looks): Promise<void>;
+  /**
+   * Moves the mouth to a voice's loudness, 0 to 1 (D-31): the visemes are baked on the processor
+   * like the sliders, never left to the GPU's morph targets, which some phones draw wrongly.
+   */
+  speak(level: number): void;
 }
 
 /** A mesh's own vertices before any slider, and its morph targets, kept for baking. */
@@ -159,7 +164,26 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
     bakeSliders(worn, sliders);
   };
 
+  let lastLevel = 0;
+  let lastBake = 0;
   return {
+    speak(level) {
+      const now = performance.now();
+      // About fifteen times a second while speaking, and once more to close the mouth.
+      if (level > 0.02 ? now - lastBake < 66 : lastLevel <= 0.02) return;
+      lastLevel = level;
+      lastBake = now;
+      const t = now / 1000;
+      const mouth =
+        level > 0.02
+          ? {
+              viseme_aa: level * 0.75,
+              viseme_E: level * 0.3 * (0.5 + 0.5 * Math.sin(t * 7)),
+              viseme_O: level * 0.3 * (0.5 + 0.5 * Math.cos(t * 5)),
+            }
+          : { viseme_aa: 0, viseme_E: 0, viseme_O: 0 };
+      bakeSliders(character.meshes, { ...sliders, ...mouth });
+    },
     async wear(looks) {
       sliders = looks.sliders;
       character.root.scaling.setAll(looks.height);

@@ -115,7 +115,11 @@ export async function dress(
   looks: Looks,
 ): Promise<Character> {
   const character = spawnCharacter(scene, templates[looks.body], id);
-  if (templates[looks.body]) await wardrobe(scene, character, manifest, looks.body).wear(looks);
+  if (templates[looks.body]) {
+    const clothes = wardrobe(scene, character, manifest, looks.body);
+    await clothes.wear(looks);
+    character.speak = (level) => clothes.speak(level);
+  }
   const tint = COSTUMES[id];
   if (tint) {
     for (const mesh of character.meshes) {

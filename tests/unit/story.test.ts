@@ -56,6 +56,7 @@ const VERBS = new Set([
   'checkpoint',
   'lights',
   'sky',
+  'music',
   'place',
   'start',
   'hide',
@@ -243,7 +244,8 @@ describe('the slice script', () => {
     const again = new Director(resumed, { command: (c) => commands.push(c), bark: () => {}, checkpoint: () => {} });
     again.step();
     // Straight after the checkpoint come the commands that set the scene up.
-    expect(commands.slice(0, 5).map((c) => `${c.verb} ${c.rest}`)).toEqual([
+    expect(commands.slice(0, 6).map((c) => `${c.verb} ${c.rest}`)).toEqual([
+      'music night',
       'start hero drill',
       'start ren drill',
       'follow ren',

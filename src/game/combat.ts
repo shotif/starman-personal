@@ -62,6 +62,8 @@ export interface Range {
    * and the companion's shots apart (0 and 1).
    */
   shot(from: Vector3, to: Vector3, struck: boolean, shooter?: number): void;
+  /** Called for every shot shown, for its sound. */
+  onShot: ((from: Vector3, shooter: number) => void) | null;
   update(dt: number): void;
   /** How many drones are down right now, and how many have been destroyed since the start. */
   readonly down: number;
@@ -218,7 +220,9 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
       }
       return true;
     },
+    onShot: null,
     shot(from, to, struck, shooter = 0) {
+      this.onShot?.(from, shooter);
       const fx = effects[shooter] ?? effects[0];
       if (!fx) return;
       fx.tracer.position = Vector3.Lerp(from, to, 0.5);

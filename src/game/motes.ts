@@ -43,6 +43,15 @@ export interface Swarm extends TargetGroup {
   burst(at: Vector3, radius: number, damage: Damage, by: string): number;
   /** Takes the primed state off a machine (it was set off). */
   unprime(id: number): void;
+  /** What happened since the last call, for sound. */
+  drainEvents(): SwarmEvent[];
+}
+
+/** Something the swarm did that can be heard. */
+export interface SwarmEvent {
+  kind: 'fire' | 'impact' | 'charge' | 'beam' | 'down' | 'spawn';
+  machine: MachineKind;
+  at: Vector3;
 }
 
 /** Someone the swarm can shoot at: the hero or a companion. */
@@ -281,6 +290,10 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
   let down = 0;
   let fired = 0;
   let clock = 0;
+  let events: SwarmEvent[] = [];
+  const heard = (kind: SwarmEvent['kind'], machine: MachineKind, at: Vector3) => {
+    if (events.length < 40) events.push({ kind, machine, at: at.clone() });
+  };
   let toughness = 1;
   const flying = (m: Machine) => m.active && m.alive;
   const isMachineBody = (body: PhysicsBody | null | undefined) =>
@@ -310,6 +323,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     bolt.from = from;
     bolt.damage = damage;
     fired += 1;
+    heard('fire', m.kind, from);
   };
 
   const wakeKind = (from: readonly Vector3[], kind: MachineKind): Machine[] => {
@@ -370,6 +384,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     );
     m.aggregate.body.applyImpulse(new Vector3(0, 0.5, 0), m.shell.getAbsolutePosition());
     down += 1;
+    heard('down', m.kind, m.root.position);
     // A lattice comes apart into the motes it was made of.
     if (m.kind === 'lattice') {
       const at = m.root.position;
@@ -577,7 +592,10 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
         });
         // A lattice locks its aim when the charge starts, and draws the line it will fire along.
         if (m.kind === 'lattice') {
-          if (step.phase.kind === 'charge' && !m.aim && aim) m.aim = aim.clone();
+          if (step.phase.kind === 'charge' && !m.aim && aim) {
+            m.aim = aim.clone();
+            heard('charge', 'lattice', here);
+          }
           if (step.phase.kind === 'rest' && !step.fire) m.aim = null;
           const line = beams.find((b) => b.owner === m);
           if (line && m.aim && step.phase.kind === 'charge') drawLine(line.mesh, here, m.aim, 0.5);
@@ -608,6 +626,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
           }
           spark(stop, 2);
           fired += 1;
+          heard('beam', 'lattice', here);
           m.aim = null;
         } else {
           // A tender sends out motes in threes, up to six of its own at once.
@@ -621,6 +640,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
               at.add(new Vector3(0, -0.5, 1.5)),
             ];
             m.brood.push(...wakeKind(exits.slice(0, room), 'mote'));
+            heard('spawn', 'tender', at);
           }
         }
       }
@@ -644,6 +664,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
         }
         if (first <= 1) {
           spark(Vector3.Lerp(a, b, first));
+          if (!struck) heard('impact', 'mote', Vector3.Lerp(a, b, first));
           bolt.life = 0;
           bolt.mesh.setEnabled(false);
           if (struck) world.onHit(struck.id, bolt.from, bolt.damage);
@@ -715,6 +736,11 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
       }
       spark(at, radius * 0.9);
       return struck;
+    },
+    drainEvents() {
+      const out = events;
+      events = [];
+      return out;
     },
     unprime(id) {
       const m = machines[id];

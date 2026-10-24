@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { loadManifest } from '../game/appearance.ts';
+import { createAudio } from '../game/audio.ts';
 import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
 import type { Renderer } from '../game/engine.ts';
 import type { SaveData } from '../game/game.ts';
@@ -7,6 +8,9 @@ import { checkLooks, defaultLooks, type Looks, type Manifest } from '../game/loo
 import { Creator } from './Creator.tsx';
 import { GameView } from './GameView.tsx';
 import { DIFFICULTY_KEY, HERO_KEY, load, SAVE_KEY, save, startingTier } from './settings.ts';
+
+/** One sound system for the whole visit: the title's music runs on into the game's. */
+const audio = createAudio();
 
 type Screen =
   | { kind: 'loading' }
@@ -60,6 +64,20 @@ export function App() {
   const [tier] = useState(startingTier);
   const params = new URLSearchParams(location.search);
   const renderer: Renderer = params.get('renderer') === 'webgpu' ? 'webgpu' : 'webgl2';
+
+  // Browsers allow sound only after the player touches or presses something.
+  useEffect(() => {
+    const unlock = () => audio.unlock();
+    window.addEventListener('pointerdown', unlock, { capture: true });
+    window.addEventListener('keydown', unlock, { capture: true });
+    return () => {
+      window.removeEventListener('pointerdown', unlock, { capture: true });
+      window.removeEventListener('keydown', unlock, { capture: true });
+    };
+  }, []);
+  useEffect(() => {
+    if (screen.kind === 'title' || screen.kind === 'creator') audio.music('title');
+  }, [screen.kind]);
 
   useEffect(() => {
     loadManifest()
@@ -156,6 +174,7 @@ export function App() {
       tier={tier}
       renderer={renderer}
       difficulty={difficulty}
+      audio={audio}
       saved={screen.saved}
       onQuit={() => {
         setSaved(readSave(manifest));

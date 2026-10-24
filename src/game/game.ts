@@ -21,6 +21,7 @@ import { buildAbilities } from './abilities.ts';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { CHARACTERS } from './appearance.ts';
 import { buildAtmosphere } from './atmosphere.ts';
+import type { GameAudio, Playing, Voice } from './audio.ts';
 import { type Character, loadCharacterTemplate } from './characters.ts';
 import { buildRange } from './combat.ts';
 import { type Companion, spawnCompanion } from './companion.ts';
@@ -133,6 +134,10 @@ export interface Game {
   setDifficulty(difficulty: Difficulty): void;
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
+  /** A conversation's line is on screen: its voice plays, the speaker's mouth moves. Seconds long, or null. */
+  speak(line: { speaker: string; id: string | null }): number | null;
+  /** Stops the voice now speaking (a line skipped). */
+  hush(): void;
   /** The companions with the hero now. */
   companions(): string[];
   dispose(): void;
@@ -147,6 +152,8 @@ export interface GameOptions {
   /** Aim assist turns shots towards a nearby target (D-17: on phones). */
   assist: boolean;
   difficulty: Difficulty;
+  /** The sound system, shared with the title (src/game/audio.ts). */
+  audio: GameAudio;
   /** A saved game to resume, or null for a new one. */
   save: SaveData | null;
   /** For testing: start at a chapter of the slice (a stitch of `slice`). */
@@ -199,6 +206,23 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
 const LIFTOFF_SECONDS = 8;
+/** Who speaks a line, by the name its tag gives, in the cast. */
+const SPEAKERS: Record<string, string> = {
+  Ren: 'ren',
+  Jo: 'jo',
+  Hale: 'hale',
+  Pell: 'pell',
+  Dena: 'dena',
+  Sorrel: 'sorrel',
+  Ilya: 'ilya',
+  hero: 'hero',
+};
+/** The ambience of each place. */
+const AMBIENCE: Record<string, string> = {
+  catwalk: 'wind',
+  mast: 'wind',
+  hangar: 'ambience_hangar',
+};
 /** After a companion's help, this long before shots count again. */
 const GRACE_SECONDS = 2.5;
 /** The strike: two blows, how far they reach from the chest, and what each does (COMBAT.md). */
@@ -220,6 +244,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   const place = buildStation(scene, q);
   let difficulty = options.difficulty;
+  const audio = options.audio;
+  /** The voice speaking now, and whose mouth it moves. */
+  let voiceNow: { voice: Voice; who: Character | null } | null = null;
+  /** The music the chapter asks for; a fight's music overrides it while the fight lasts. */
+  let chapterMusic: string | null = null;
+  let alarm: Playing | null = null;
+  let heartbeat: Playing | null = null;
+  let stepDistance = 0;
   const ray = new PhysicsRaycastResult();
   /**
    * Distance to the first thing a ray meets, its point and normal; null if it meets nothing.
@@ -299,6 +331,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
 
   const range = buildRange(scene, place.drones, q.maxLights);
+  range.onShot = (from, shooter) => {
+    audio.play('pistol', { at: from, volume: shooter === 0 ? 1 : 0.7, rate: shooter === 0 ? 1 : 1.08 });
+  };
   const swarm = buildSwarm(scene, q.maxLights);
   range.join(swarm);
   const input = new Input(canvas);
@@ -449,6 +484,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       heroDefences = { ...heroDefences, health: Math.min(heroDefences.healthMax, heroDefences.health + amount) };
     },
     say: (text) => options.onNote(text),
+    sound: (id, at) => {
+      audio.play(id, { at });
+    },
   });
   /** Uses the hero's power in a slot, facing where the camera looks, the casting arm up. */
   const usePower = (slot: number) => {
@@ -542,10 +580,31 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     joApproval: Number(runner.variable('jo_approval') ?? 0),
   });
 
+  /** Plays a line's voice, the speaker's mouth moving with it; its length in seconds, or null. */
+  const speakLine = (line: { speaker: string; id: string | null }): number | null => {
+    voiceNow?.voice.stop();
+    voiceNow?.who?.speak(0);
+    voiceNow = null;
+    if (!line.id) return null;
+    const voice = audio.voice(line.id, options.looks.body);
+    if (!voice) return null;
+    const id = SPEAKERS[line.speaker];
+    voiceNow = { voice, who: id ? (characterOf(id) ?? null) : null };
+    return voice.seconds;
+  };
+
   const run = (c: Command) => {
     const [a = '', b = ''] = c.args;
     switch (c.verb) {
+      case 'music':
+        chapterMusic = a === 'none' ? null : a;
+        break;
       case 'lights':
+        if (a === 'out' && !lightsAreOut) {
+          audio.play('power_fail');
+          alarm = audio.play('alarm', { loop: true, volume: 0.5 });
+          window.setTimeout(() => alarm?.stop(1.5), 7000);
+        }
         lightsAreOut = a === 'out';
         place.lightsOut(lightsAreOut);
         atmosphere.setMood({ lightsOut: lightsAreOut, outdoors: area === 'catwalk' || area === 'mast' });
@@ -565,9 +624,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         else people[a]?.show(c.verb === 'show');
         break;
       case 'open':
-      case 'close':
-        place.doors[a]?.set(c.verb === 'open');
+      case 'close': {
+        const door = place.doors[a];
+        if (door && door.open !== (c.verb === 'open') && !resuming) {
+          audio.play(c.verb === 'open' ? 'door_open' : 'door_close', { at: door.centre });
+        }
+        door?.set(c.verb === 'open');
         break;
+      }
       case 'lock':
       case 'unlock':
         place.doors[a]?.lock(c.verb === 'lock');
@@ -629,6 +693,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         people[a]?.fall();
         break;
       case 'liftoff':
+        audio.play('liftoff');
         liftoff = { t: 0 };
         place.freeShip();
         options.onObjective(null);
@@ -642,8 +707,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   const director = new Director(runner, {
     command: run,
-    bark: (line) =>
-      options.onSay(line.speaker === 'hero' ? options.looks.name || 'You' : line.speaker, line.text, line.id),
+    bark: (line) => {
+      options.onSay(line.speaker === 'hero' ? options.looks.name || 'You' : line.speaker, line.text, line.id);
+      speakLine(line);
+    },
     checkpoint: (name, state) => {
       options.onSave({ version: 1, looks: options.looks, story: state, checkpoint: name, difficulty, at: Date.now() });
     },
@@ -851,6 +918,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       const along = dir.x * heroForward.x + dir.z * heroForward.z;
       const clip = Math.abs(across) > Math.abs(along) ? (across > 0 ? 'dodge_right' : 'dodge_left') : 'roll';
       dodge = { t: 0, dir, clip };
+      audio.play('dodge', { at: hero.root.position });
       strike = null;
       cover = { inCover: false };
       // A dodge outruns one shot.
@@ -890,7 +958,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           swarm.affect(m, 'pull', 0.4, st.at.add(ahead.scale(3)));
           landed = true;
         }
-        if (landed) options.onNote('Hit!');
+        if (landed) {
+          options.onNote('Hit!');
+          audio.play('punch', { at: chest });
+        }
       }
       if (strike.t >= MELEE.seconds) strike = null;
     } else if (condition.kind === 'down') {
@@ -947,6 +1018,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const bottom = position.subtract(new Vector3(0, CAPSULE_HEIGHT / 2, 0));
     hero.root.position.set(position.x, groundUnder(bottom) ?? bottom.y, position.z);
     hero.root.rotation.y = heroYaw;
+    // Footsteps on the deck: one every stride, louder at a run.
+    stepDistance += groundSpeed * dt;
+    const stride = groundSpeed > 4 ? 1.1 : 0.75;
+    if (stepDistance > stride && condition.kind === 'up') {
+      stepDistance = 0;
+      audio.play(`step_${1 + Math.floor(Math.random() * 4)}`, {
+        at: hero.root.position,
+        volume: Math.min(1, 0.25 + groundSpeed * 0.1),
+        rate: 0.92 + Math.random() * 0.16,
+      });
+    }
 
     // Shoot: where the crosshair points, or at the nearest target near it with aim assist.
     fireCooldown -= dt;
@@ -996,7 +1078,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           if (condition.kind === 'down' || grace > 0) return;
           // Braced, the hero takes half; a barrier takes what it can first.
           const left = abilities.absorb(amount * (abilities.effects.brace > 0 ? 0.5 : 1));
+          const shielded = heroDefences.shield > 0;
           const r = takeHit(heroDefences, left, 'kinetic');
+          audio.play(shielded ? 'shield_hit' : 'health_hit', { volume: 0.8 });
+          if (shielded && r.defences.shield <= 0) audio.play('shield_down');
+          if (r.down) audio.play('down');
           heroDefences = r.defences;
           options.onHit(hitSide(forward, hero.root.position, from));
           if (r.down) {
@@ -1008,6 +1094,27 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         }
       },
     });
+
+    // What the swarm did, heard where it happened.
+    for (const e of swarm.drainEvents()) {
+      const sound =
+        e.kind === 'fire'
+          ? 'bolt_fire'
+          : e.kind === 'impact'
+            ? 'bolt_hit'
+            : e.kind === 'charge'
+              ? 'beam_charge'
+              : e.kind === 'beam'
+                ? 'beam_fire'
+                : e.kind === 'spawn'
+                  ? 'tender_spawn'
+                  : e.machine === 'lattice'
+                    ? 'lattice_break'
+                    : e.machine === 'tender'
+                      ? 'tender_down'
+                      : 'machine_down';
+      audio.play(sound, { at: e.at, volume: e.kind === 'impact' ? 0.45 : e.kind === 'fire' ? 0.6 : 1 });
+    }
 
     // The hero's shield and health return out of fire; down, a companion may come (D-43).
     if (condition.kind === 'up') heroDefences = recover(heroDefences, dt);
@@ -1030,6 +1137,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     condition = fallStep.condition;
     grace = Math.max(0, grace - dt);
     if (fallStep.helpedUp) {
+      audio.play('revive');
       heroDefences = helpedUp(heroDefences);
       grace = GRACE_SECONDS + FALLING.rising;
       helpUsed = true;
@@ -1157,6 +1265,24 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     hero.setFade(Math.min(closeFade(Vector3.Distance(from, head)), abilities.effects.veil > 0 ? 0.25 : 1));
     for (const c of Object.values(companionsById))
       c.character.setFade(closeFade(Vector3.Distance(from, headOf(c.character))));
+
+    // The ears go with the camera; the speaking mouth moves; the music follows the fight.
+    audio.listen(from, lookAt.subtract(from).normalize());
+    if (voiceNow) {
+      voiceNow.who?.speak(voiceNow.voice.level());
+      if (voiceNow.voice.ended()) {
+        voiceNow.who?.speak(0);
+        voiceNow = null;
+      }
+    }
+    audio.music(fight ? 'combat' : chapterMusic);
+    audio.ambience(liftoff ? null : (AMBIENCE[area ?? ''] ?? 'ambience_station'));
+    const wounded = condition.kind === 'up' && heroDefences.health / heroDefences.healthMax < 0.35;
+    if (wounded && !heartbeat) heartbeat = audio.play('heartbeat', { loop: true, volume: 0.6 });
+    if (!wounded && heartbeat) {
+      heartbeat.stop(0.6);
+      heartbeat = null;
+    }
 
     // The objective's marker.
     const mp = markerPosition();
@@ -1319,6 +1445,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     setCommandView,
     order,
     usePower,
+    speak: (line) => speakLine(line),
+    hush() {
+      voiceNow?.voice.stop();
+      voiceNow?.who?.speak(0);
+      voiceNow = null;
+    },
     interact() {
       if (!promptTarget || talking) return;
       if (promptTarget.kind === 'talk') {
@@ -1327,6 +1459,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       } else {
         const id = promptTarget.id;
         usable.delete(id);
+        audio.play(id === 'relay' ? 'relay' : 'ui_click', { at: hero.root.position });
         director.event(`used:${id}`);
       }
     },
