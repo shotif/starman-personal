@@ -904,6 +904,35 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   marker.renderingGroupId = 2;
   marker.isPickable = false;
   marker.setEnabled(false);
+  // A small glint over each thing to look at, near enough to notice: they are found by walking.
+  const glintMaterial = new StandardMaterial('look-glint', scene);
+  glintMaterial.emissiveColor = new Color3(0.6, 0.85, 1);
+  glintMaterial.disableLighting = true;
+  const glints = new Map<string, ReturnType<typeof CreatePolyhedron>>();
+  const showGlints = (feet: Vector3) => {
+    for (const [id, thing] of usable) {
+      if (!thing.knot) continue;
+      let glint = glints.get(id);
+      if (!glint) {
+        glint = CreatePolyhedron(`glint-${id}`, { type: 1, size: 0.045 }, scene);
+        glint.material = glintMaterial;
+        glint.isPickable = false;
+        glints.set(id, glint);
+      }
+      const near = Math.hypot(thing.at.x - feet.x, thing.at.z - feet.z) < 7 && !talking && !fight;
+      glint.setEnabled(near);
+      if (near) {
+        glint.position.set(thing.at.x, thing.at.y + 1.4 + Math.sin(clock * 2.6) * 0.04, thing.at.z);
+        glint.rotation.y = clock * 2;
+        glint.scaling.setAll(0.85 + 0.2 * Math.sin(clock * 4));
+      }
+    }
+    for (const [id, glint] of glints) {
+      if (usable.get(id)?.knot) continue;
+      glint.dispose();
+      glints.delete(id);
+    }
+  };
   const markerPosition = (): Vector3 | null => {
     if (!markerTarget) return null;
     const who = characterOf(markerTarget);
@@ -1370,6 +1399,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       heartbeat = null;
     }
 
+    showGlints(feet);
     // The objective's marker.
     const mp = markerPosition();
     const showMarker = !!mp && !talking && !liftoff && Vector3.Distance(mp, feet) > 3;
