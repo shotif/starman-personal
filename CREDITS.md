@@ -50,6 +50,13 @@ its source, its licence with a link, and what we changed, as the licence asks.
   *Interior Tiles* by Charlotte Baglioni; *Corrugated Iron 02* by Jenelle van Heerden and Sergej
   Majboroda (CC0). How they are used: [docs/assets/IMAGES.md](docs/assets/IMAGES.md).
 
+**Sound**
+
+- **[Kenney](https://kenney.nl)**: *Impact Sounds*, *Interface Sounds* and *UI Audio* (CC0), for
+  the footsteps, a hit, and the interface's clicks.
+- **bart**: *[Space Ship Shield Sounds](https://opengameart.org/content/space-ship-shield-sounds)*
+  on OpenGameArt (CC0), for the shield's hit.
+
 **Lettering in the pictures**
 
 - **Barlow** and **Barlow Condensed** by Jeremy Tribby, and **Share Tech Mono** by Carrois
@@ -69,6 +76,10 @@ commercial use; the records say how each file was made.
   remesh) from the game's own concept pictures, made with Google Gemini (gemini-nano-banana-2.1),
   on paid plans. Records in [art/models.json](art/models.json); how in
   [docs/assets/MODELS.md](docs/assets/MODELS.md).
+- **Sound effects:** the other 37, generated with ElevenLabs' sound effects; **music:** all five
+  pieces, generated with Google's Lyria through the Gemini API (each carries Google's inaudible
+  SynthID watermark). Records in [art/audio.json](art/audio.json); how in
+  [docs/assets/AUDIO.md](docs/assets/AUDIO.md).
 - **Pictures:** the key art, loading pictures, sign plates, poster art, the ground of Ross 128 b
   and its horizon, generated with Google Gemini (gemini-nano-banana-2.1) from the game's own
   prompts; all words on them, and the console screens, drawn by our scripts. Records in

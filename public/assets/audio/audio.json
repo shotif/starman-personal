@@ -1,0 +1,330 @@
+{
+  "about": "Sound effects and music for the game: see docs/assets/AUDIO.md. Loops carry loopStart and loopEnd in seconds; play them with an AudioBufferSourceNode (loop = true, loopStart, loopEnd), not the whole file. volume is a suggested starting mix, 0-1.",
+  "sfx": {
+    "bolt_hit": {
+      "file": "sfx/bolt_hit.mp3",
+      "seconds": 0.68,
+      "loop": false,
+      "volume": 0.6
+    },
+    "machine_down": {
+      "file": "sfx/machine_down.mp3",
+      "seconds": 0.86,
+      "loop": false,
+      "volume": 0.85
+    },
+    "tender_down": {
+      "file": "sfx/tender_down.mp3",
+      "seconds": 2.693,
+      "loop": false,
+      "volume": 1
+    },
+    "charge_blast": {
+      "file": "sfx/charge_blast.mp3",
+      "seconds": 1.837,
+      "loop": false,
+      "volume": 1
+    },
+    "punch": {
+      "file": "sfx/punch.mp3",
+      "seconds": 0.556,
+      "loop": false,
+      "volume": 0.85
+    },
+    "step_1": {
+      "file": "sfx/step_1.mp3",
+      "seconds": 0.25,
+      "loop": false,
+      "volume": 0.5
+    },
+    "step_2": {
+      "file": "sfx/step_2.mp3",
+      "seconds": 0.35,
+      "loop": false,
+      "volume": 0.5
+    },
+    "step_3": {
+      "file": "sfx/step_3.mp3",
+      "seconds": 0.241,
+      "loop": false,
+      "volume": 0.5
+    },
+    "step_4": {
+      "file": "sfx/step_4.mp3",
+      "seconds": 0.244,
+      "loop": false,
+      "volume": 0.5
+    },
+    "door_open": {
+      "file": "sfx/door_open.mp3",
+      "seconds": 1,
+      "loop": false,
+      "volume": 0.6
+    },
+    "door_close": {
+      "file": "sfx/door_close.mp3",
+      "seconds": 0.927,
+      "loop": false,
+      "volume": 0.6
+    },
+    "ui_click": {
+      "file": "sfx/ui_click.mp3",
+      "seconds": 0.091,
+      "loop": false,
+      "volume": 0.55
+    },
+    "ui_choice": {
+      "file": "sfx/ui_choice.mp3",
+      "seconds": 0.273,
+      "loop": false,
+      "volume": 0.5
+    },
+    "saved": {
+      "file": "sfx/saved.mp3",
+      "seconds": 0.12,
+      "loop": false,
+      "volume": 0.45
+    },
+    "shield_hit": {
+      "file": "sfx/shield_hit.mp3",
+      "seconds": 1.043,
+      "loop": false,
+      "volume": 0.65
+    },
+    "health_hit": {
+      "file": "sfx/health_hit.mp3",
+      "seconds": 0.51,
+      "loop": false,
+      "volume": 0.75
+    },
+    "pistol": {
+      "file": "sfx/pistol.mp3",
+      "seconds": 0.649,
+      "loop": false,
+      "volume": 0.9
+    },
+    "pistol_ally": {
+      "file": "sfx/pistol_ally.mp3",
+      "seconds": 0.81,
+      "loop": false,
+      "volume": 0.75
+    },
+    "bolt_fire": {
+      "file": "sfx/bolt_fire.mp3",
+      "seconds": 0.68,
+      "loop": false,
+      "volume": 0.7
+    },
+    "bolt_whizz": {
+      "file": "sfx/bolt_whizz.mp3",
+      "seconds": 0.772,
+      "loop": false,
+      "volume": 0.6
+    },
+    "beam_charge": {
+      "file": "sfx/beam_charge.mp3",
+      "seconds": 2,
+      "loop": false,
+      "volume": 0.75
+    },
+    "beam_fire": {
+      "file": "sfx/beam_fire.mp3",
+      "seconds": 1.349,
+      "loop": false,
+      "volume": 0.95
+    },
+    "tender_spawn": {
+      "file": "sfx/tender_spawn.mp3",
+      "seconds": 2.48,
+      "loop": false,
+      "volume": 0.8
+    },
+    "mote_hum": {
+      "file": "sfx/mote_hum.mp3",
+      "seconds": 3.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 3.1,
+      "volume": 0.35
+    },
+    "lattice_break": {
+      "file": "sfx/lattice_break.mp3",
+      "seconds": 1.51,
+      "loop": false,
+      "volume": 0.9
+    },
+    "power_field": {
+      "file": "sfx/power_field.mp3",
+      "seconds": 1.049,
+      "loop": false,
+      "volume": 0.8
+    },
+    "power_arc": {
+      "file": "sfx/power_arc.mp3",
+      "seconds": 1,
+      "loop": false,
+      "volume": 0.85
+    },
+    "barrier": {
+      "file": "sfx/barrier.mp3",
+      "seconds": 1.391,
+      "loop": false,
+      "volume": 0.7
+    },
+    "stim": {
+      "file": "sfx/stim.mp3",
+      "seconds": 1.686,
+      "loop": false,
+      "volume": 0.8
+    },
+    "veil": {
+      "file": "sfx/veil.mp3",
+      "seconds": 1.385,
+      "loop": false,
+      "volume": 0.7
+    },
+    "drone": {
+      "file": "sfx/drone.mp3",
+      "seconds": 3.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 3.1,
+      "volume": 0.4
+    },
+    "repair": {
+      "file": "sfx/repair.mp3",
+      "seconds": 1.467,
+      "loop": false,
+      "volume": 0.6
+    },
+    "dodge": {
+      "file": "sfx/dodge.mp3",
+      "seconds": 0.438,
+      "loop": false,
+      "volume": 0.7
+    },
+    "power_fail": {
+      "file": "sfx/power_fail.mp3",
+      "seconds": 4.277,
+      "loop": false,
+      "volume": 0.95
+    },
+    "alarm": {
+      "file": "sfx/alarm.mp3",
+      "seconds": 4.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 4.1,
+      "volume": 0.35
+    },
+    "ambience_station": {
+      "file": "sfx/ambience_station.mp3",
+      "seconds": 20.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 20.1,
+      "volume": 0.4
+    },
+    "ambience_hangar": {
+      "file": "sfx/ambience_hangar.mp3",
+      "seconds": 18.7,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 18.6,
+      "volume": 0.45
+    },
+    "wind": {
+      "file": "sfx/wind.mp3",
+      "seconds": 15.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 15.1,
+      "volume": 0.45
+    },
+    "radio": {
+      "file": "sfx/radio.mp3",
+      "seconds": 0.837,
+      "loop": false,
+      "volume": 0.5
+    },
+    "objective": {
+      "file": "sfx/objective.mp3",
+      "seconds": 1.229,
+      "loop": false,
+      "volume": 0.55
+    },
+    "shield_down": {
+      "file": "sfx/shield_down.mp3",
+      "seconds": 1.2,
+      "loop": false,
+      "volume": 0.8
+    },
+    "heartbeat": {
+      "file": "sfx/heartbeat.mp3",
+      "seconds": 3.4,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 3.3,
+      "volume": 0.6
+    },
+    "down": {
+      "file": "sfx/down.mp3",
+      "seconds": 1.449,
+      "loop": false,
+      "volume": 0.8
+    },
+    "revive": {
+      "file": "sfx/revive.mp3",
+      "seconds": 1.93,
+      "loop": false,
+      "volume": 0.7
+    },
+    "liftoff": {
+      "file": "sfx/liftoff.mp3",
+      "seconds": 6.862,
+      "loop": false,
+      "volume": 1
+    },
+    "relay": {
+      "file": "sfx/relay.mp3",
+      "seconds": 1.816,
+      "loop": false,
+      "volume": 0.7
+    }
+  },
+  "music": {
+    "title": {
+      "file": "music/title.mp3",
+      "seconds": 94.34,
+      "loop": true,
+      "loopStart": 3,
+      "loopEnd": 94.24
+    },
+    "night": {
+      "file": "music/night.mp3",
+      "seconds": 127.49,
+      "loop": true,
+      "loopStart": 3,
+      "loopEnd": 127.3896
+    },
+    "tension": {
+      "file": "music/tension.mp3",
+      "seconds": 92.6,
+      "loop": true,
+      "loopStart": 3,
+      "loopEnd": 92.5005
+    },
+    "combat": {
+      "file": "music/combat.mp3",
+      "seconds": 115.1,
+      "loop": true,
+      "loopStart": 19,
+      "loopEnd": 115.0002
+    },
+    "ending": {
+      "file": "music/ending.mp3",
+      "seconds": 108.961,
+      "loop": false
+    }
+  }
+}

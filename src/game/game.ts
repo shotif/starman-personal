@@ -267,6 +267,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let chapterMusic: string | null = null;
   let alarm: Playing | null = null;
   let heartbeat: Playing | null = null;
+  /** The swarm's hum, while machines fly. */
+  let hum: Playing | null = null;
   let stepDistance = 0;
   const ray = new PhysicsRaycastResult();
   /**
@@ -362,7 +364,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   const range = buildRange(scene, place.drones, q.maxLights);
   range.onShot = (from, shooter) => {
-    audio.play('pistol', { at: from, volume: shooter === 0 ? 1 : 0.7, rate: shooter === 0 ? 1 : 1.08 });
+    // The companions' sidearms have a voice of their own, so the player hears who fired.
+    audio.play(shooter === 0 ? 'pistol' : 'pistol_ally', { at: from, volume: shooter === 0 ? 1 : 0.8 });
   };
   const swarm = buildSwarm(scene, q.maxLights);
   range.join(swarm);
@@ -1206,12 +1209,33 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
                 ? 'beam_fire'
                 : e.kind === 'spawn'
                   ? 'tender_spawn'
-                  : e.machine === 'lattice'
-                    ? 'lattice_break'
-                    : e.machine === 'tender'
-                      ? 'tender_down'
-                      : 'machine_down';
+                  : e.kind === 'whizz'
+                    ? 'bolt_whizz'
+                    : e.machine === 'lattice'
+                      ? 'lattice_break'
+                      : e.machine === 'tender'
+                        ? 'tender_down'
+                        : 'machine_down';
       audio.play(sound, { at: e.at, volume: e.kind === 'impact' ? 0.45 : e.kind === 'fire' ? 0.6 : 1 });
+    }
+    // The swarm's hum, from the nearest machine, while any fly.
+    const flying = fight ? swarm.inspect() : [];
+    if (flying.length > 0) {
+      let nearest: number[] = flying[0]?.at ?? [];
+      let best = Number.POSITIVE_INFINITY;
+      for (const f of flying) {
+        const d = ((f.at[0] ?? 0) - feet.x) ** 2 + ((f.at[2] ?? 0) - feet.z) ** 2;
+        if (d < best) {
+          best = d;
+          nearest = f.at;
+        }
+      }
+      const at = { x: nearest[0] ?? 0, y: nearest[1] ?? 0, z: nearest[2] ?? 0 };
+      hum ??= audio.play('mote_hum', { loop: true, at, volume: 0.7 });
+      hum?.setPosition(at);
+    } else if (hum) {
+      hum.stop(0.8);
+      hum = null;
     }
 
     // The hero's shield and health return out of fire; down, a companion may come (D-43).

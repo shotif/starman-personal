@@ -11,9 +11,22 @@ export interface Vec3 {
   z: number;
 }
 
+/**
+ * A sound in the manifest. A loop plays from the top once, then between `loopStart` and `loopEnd`
+ * (clear of the MP3's padding; a piece of music may loop only its later part).
+ */
+interface SoundEntry {
+  file: string;
+  seconds?: number;
+  loop?: boolean;
+  loopStart?: number;
+  loopEnd?: number;
+  volume?: number;
+}
+
 interface AudioManifest {
-  sfx: Record<string, { file: string; seconds?: number; loop?: boolean; volume?: number }>;
-  music: Record<string, { file: string; seconds?: number; loop?: boolean }>;
+  sfx: Record<string, SoundEntry>;
+  music: Record<string, SoundEntry>;
 }
 
 interface VoiceEntry {
@@ -114,16 +127,23 @@ export function createAudio(): GameAudio {
     return b;
   };
 
-  /** A looped piece on a bus, faded in; returns its handle as soon as it starts. */
-  const loop = async (url: string, busName: keyof typeof BUSES, fadeIn: number) => {
-    const b = await buffer(url);
+  /** Loops between the entry's loop points, where it has them. */
+  const loopPoints = (source: AudioBufferSourceNode, entry: SoundEntry) => {
+    if (entry.loopStart !== undefined) source.loopStart = entry.loopStart;
+    if (entry.loopEnd !== undefined) source.loopEnd = entry.loopEnd;
+  };
+
+  /** A piece on a bus (music, ambience), faded in, looping unless it says not; its handle once it starts. */
+  const loop = async (entry: SoundEntry, busName: keyof typeof BUSES, fadeIn: number) => {
+    const b = await buffer(`${BASE}audio/${entry.file}`);
     if (!b || !context || !bus[busName]) return null;
     const source = context.createBufferSource();
     source.buffer = b;
-    source.loop = true;
+    source.loop = entry.loop ?? true;
+    loopPoints(source, entry);
     const gain = context.createGain();
     gain.gain.value = 0;
-    gain.gain.linearRampToValueAtTime(1, context.currentTime + fadeIn);
+    gain.gain.linearRampToValueAtTime(entry.volume ?? 1, context.currentTime + fadeIn);
     source.connect(gain).connect(bus[busName] as GainNode);
     source.start();
     return { gain, source };
@@ -195,6 +215,7 @@ export function createAudio(): GameAudio {
         source = ctx.createBufferSource();
         source.buffer = b;
         source.loop = options.loop ?? entry.loop ?? false;
+        if (source.loop) loopPoints(source, entry);
         source.playbackRate.value = options.rate ?? 1;
         source.connect(gain);
         source.start();
@@ -233,7 +254,10 @@ export function createAudio(): GameAudio {
         chain = high;
       }
       chain.connect(bus.voice);
-      const started = ctx.currentTime;
+      // Over comms, the click of the channel opening first.
+      const delay = entry.radio ? 0.18 : 0;
+      if (entry.radio) api.play('radio', { volume: 0.5 });
+      const started = ctx.currentTime + delay;
       const seconds = entry.seconds ?? 2;
       let source: AudioBufferSourceNode | null = null;
       let done = false;
@@ -254,14 +278,14 @@ export function createAudio(): GameAudio {
         source.buffer = b;
         source.connect(gain);
         source.onended = finish;
-        source.start();
+        source.start(started);
       });
       const envelope = entry.envelope ?? [];
       return {
         seconds,
         level() {
           const t = ctx.currentTime - started;
-          if (done || t > seconds) return 0;
+          if (done || t < 0 || t > seconds) return 0;
           if (envelope.length === 0) return 0.5 + 0.5 * Math.sin(t * 18);
           return envelope[Math.min(envelope.length - 1, Math.floor(t * 20))] ?? 0;
         },
@@ -280,7 +304,7 @@ export function createAudio(): GameAudio {
       musicNow = null;
       const entry = id ? manifest.music[id] : null;
       if (!id || !entry) return;
-      void loop(`${BASE}audio/${entry.file}`, 'music', 3).then((node) => {
+      void loop(entry, 'music', 3).then((node) => {
         if (!node) return;
         if (musicWanted !== id) {
           fadeOut(node, 0.5);
@@ -297,7 +321,7 @@ export function createAudio(): GameAudio {
       ambienceNow = null;
       const entry = id ? manifest.sfx[id] : null;
       if (!id || !entry) return;
-      void loop(`${BASE}audio/${entry.file}`, 'ambience', 2).then((node) => {
+      void loop(entry, 'ambience', 2).then((node) => {
         if (!node) return;
         if (ambienceWanted !== id) {
           fadeOut(node, 0.5);

@@ -1,0 +1,2557 @@
+{
+  "about": "The record of every sound effect and piece of music in public/assets/audio/ (D-28, D-45): where each came from and under what licence. 'sources', 'elevenlabs', 'lyria', 'sfx' and 'music' are written by hand and read by scripts/art/audio.ts and scripts/art/music.ts; 'outputs' is filled in by those scripts. Downloads live in the git-ignored art/cache/kenney-audio/, generated candidates in the git-ignored art/out/audio/ and art/out/music/. How to re-run: docs/assets/AUDIO.md.",
+  "updated": "2026-10-24",
+  "sources": [
+    {
+      "id": "sci-fi-sounds",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "Sci-Fi Sounds 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/sci-fi-sounds",
+      "url": "https://kenney.nl/media/pages/assets/sci-fi-sounds/6b296f9ecf-1677589334/kenney_sci-fi-sounds.zip",
+      "file": "kenney_sci-fi-sounds.zip",
+      "bytes": 5875104,
+      "sha256": "119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04",
+      "downloaded": "2026-10-24",
+      "used": "Tried first for the bolt's hit, the shield hit, the doors and the three explosions; set beside ElevenLabs takes and judged too synthetic for the semi-realistic look (D-22), so no output uses it now (24 October 2026). Kept so the comparison can be repeated."
+    },
+    {
+      "id": "impact-sounds",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "Impact Sounds 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "url": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "file": "kenney_impact-sounds.zip",
+      "bytes": 800850,
+      "sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8",
+      "downloaded": "2026-10-24",
+      "used": "The four footsteps (footstep_concrete with impactPlate_light layered) and the health hit (impactSoft_heavy_000 with impactPunch_heavy_000). Its punch was tried and not used."
+    },
+    {
+      "id": "interface-sounds",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "Interface Sounds 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/interface-sounds",
+      "url": "https://kenney.nl/media/pages/assets/interface-sounds/fa43c1dd4d-1677589452/kenney_interface-sounds.zip",
+      "file": "kenney_interface-sounds.zip",
+      "bytes": 834536,
+      "sha256": "f2193d072726d6758a5f7871b2dcc54dcce0d5c35c6f0a62f92549b327c81232",
+      "downloaded": "2026-10-24",
+      "used": "The dialogue choice (glass_001) and the checkpoint (bong_001)."
+    },
+    {
+      "id": "ui-audio",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "UI Audio 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/ui-audio",
+      "url": "https://kenney.nl/media/pages/assets/ui-audio/490d233f68-1677590494/kenney_ui-audio.zip",
+      "file": "kenney_ui-audio.zip",
+      "bytes": 411949,
+      "sha256": "946fc23a63d535d693eb31b2eabb80c8c28d6351e2186b344ceb71b2cb1d5eb6",
+      "downloaded": "2026-10-24",
+      "used": "The interface click (click1)."
+    },
+    {
+      "id": "digital-audio",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "Digital Audio 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/digital-audio",
+      "url": "https://kenney.nl/media/pages/assets/digital-audio/216eac4753-1677590265/kenney_digital-audio.zip",
+      "file": "kenney_digital-audio.zip",
+      "bytes": 990367,
+      "sha256": "24e6ce28b76a6d8c89cff4d331e0965ff5c3de8a73c612028e9d363cc64e4f06",
+      "downloaded": "2026-10-24",
+      "used": "Listened to and not used: its tones are too retro for the slice (D-22)."
+    },
+    {
+      "id": "rpg-audio",
+      "site": "Kenney",
+      "cache": "kenney-audio",
+      "name": "RPG Audio 1.0",
+      "author": "Kenney (www.kenney.nl)",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://kenney.nl/assets/rpg-audio",
+      "url": "https://kenney.nl/media/pages/assets/rpg-audio/8e99002d76-1677590336/kenney_rpg-audio.zip",
+      "file": "kenney_rpg-audio.zip",
+      "bytes": 964837,
+      "sha256": "6dbeaf8544da958d8f2adcb4a4a4b76c1ade34a05f8ab9edccd327da7375f38b",
+      "downloaded": "2026-10-24",
+      "used": "Listened to and not used: its footsteps are on grit and wood, not a metal deck."
+    },
+    {
+      "id": "oga-space-shield-sounds",
+      "site": "OpenGameArt",
+      "cache": "oga-audio",
+      "name": "Space Ship Shield Sounds",
+      "author": "bart",
+      "licence": "CC0-1.0 (as listed on the page)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://opengameart.org/content/space-ship-shield-sounds",
+      "url": "https://opengameart.org/sites/default/files/space%20shield%20sounds.zip",
+      "file": "space-shield-sounds.zip",
+      "bytes": 1565317,
+      "sha256": "3d59c0dafd6934486b9d4ce1c9c6d39b96222609adc559a9409376f2d31c1385",
+      "downloaded": "2026-10-24",
+      "used": "The shield hit (space shield sounds - 3.wav), which beat the ElevenLabs takes side by side."
+    },
+    {
+      "id": "oga-50-cc0-sci-fi-sfx",
+      "site": "OpenGameArt",
+      "cache": "oga-audio",
+      "name": "50 CC0 Sci-Fi SFX",
+      "author": "rubberduck",
+      "licence": "CC0-1.0 (as listed on the page)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://opengameart.org/content/50-cc0-sci-fi-sfx",
+      "url": "https://opengameart.org/sites/default/files/sci-fi-sfx.zip",
+      "file": "sci-fi-sfx.zip",
+      "unpackTo": "sci-fi-sfx",
+      "bytes": 2436465,
+      "sha256": "7824c08e54b5b68d6c70ced9d8fe9e47f86ce19c1d8d47d093e1dc1b579f78ec",
+      "downloaded": "2026-10-24",
+      "used": "Listened to and not used: mostly retro beeps and zaps; its best ambient loop (loop_ambient_01) lost to the ElevenLabs hangar side by side."
+    },
+    {
+      "id": "oga-door-set",
+      "site": "OpenGameArt",
+      "cache": "oga-audio",
+      "name": "Door Open, Door Close Set",
+      "author": "qubodup",
+      "licence": "CC0-1.0 (as listed on the page)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://opengameart.org/content/door-open-door-close-set",
+      "url": "https://opengameart.org/sites/default/files/qubodup-DoorSet.7z",
+      "file": "qubodup-DoorSet.7z",
+      "bytes": 3340803,
+      "sha256": "88502c82451a646fa4bc1b9021a26bbd3441b2850a613784a05336067b11a25d",
+      "downloaded": "2026-10-24",
+      "used": "Listened to and not used: hinged wooden doors with handles and latches, not a station's sliding doors."
+    }
+  ],
+  "elevenlabs": {
+    "service": "ElevenLabs sound effects (POST /v1/sound-generation), on the owner's paid account",
+    "model": "eleven_text_to_sound_v3",
+    "format": "pcm_44100 (44.1 kHz, 16-bit stereo, saved as WAV)",
+    "candidates": 2,
+    "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated."
+  },
+  "lyria": {
+    "service": "Google Lyria through the Gemini API's Interactions endpoint, on the owner's Gemini key (as Starman Control)",
+    "model": "lyria-3.5",
+    "candidates": 2,
+    "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+    "style": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir."
+  },
+  "sfx": [
+    {
+      "id": "pistol",
+      "what": "The hero's sidearm, a station-security coil pistol (fiction): one shot",
+      "eleven": {
+        "prompt": "Single gunshot from a compact sci-fi coilgun pistol, very close: a sharp, dry, punchy crack with a short electric snap and a faint metallic ring, no echo, no music.",
+        "seconds": 0.9,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.15,
+      "volume": 0.9
+    },
+    {
+      "id": "pistol_ally",
+      "what": "Ren's sidearm, the same make heard from a few metres: a little lower and duller",
+      "eleven": {
+        "prompt": "Single gunshot from a compact sci-fi coilgun pistol fired a few metres away: a slightly lower, duller crack with a short electric snap and a faint metallic ring, no echo, no music.",
+        "seconds": 0.9,
+        "influence": 0.6
+      },
+      "fadeOut": 0.15,
+      "volume": 0.75
+    },
+    {
+      "id": "bolt_fire",
+      "what": "A mote fires its slow, bright bolt",
+      "eleven": {
+        "prompt": "A small hovering machine fires a slow bolt of plasma: a short, wet electric spit with a crackling fizz, sci-fi, close, no music.",
+        "seconds": 0.7,
+        "influence": 0.6
+      },
+      "fadeOut": 0.1,
+      "volume": 0.7
+    },
+    {
+      "id": "bolt_hit",
+      "what": "A bolt strikes metal (cover, walls, deck)",
+      "volume": 0.6,
+      "eleven": {
+        "prompt": "A plasma bolt hits a metal wall: a sharp metallic clang with a short crackling electric sizzle, close, no music.",
+        "seconds": 0.7,
+        "influence": 0.6
+      },
+      "tried": "Kenney's impactMetal_002 with forceField_003 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "fadeOut": 0.1
+    },
+    {
+      "id": "bolt_whizz",
+      "what": "A bolt passes close to the hero",
+      "eleven": {
+        "prompt": "A glowing energy bolt flies past the listener's ear, very close: a fast, sizzling electric whoosh that rises and then drops in pitch as it passes, about half a second, no impact, no music.",
+        "seconds": 0.8,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.1,
+      "volume": 0.6
+    },
+    {
+      "id": "beam_charge",
+      "what": "A lattice charges its beam for two seconds (the line is drawn while this plays)",
+      "eleven": {
+        "prompt": "A sci-fi energy beam weapon charging for two seconds: a rising electric whine that climbs steadily in pitch and intensity with crackling static, stopping at its peak, no explosion, no music.",
+        "seconds": 2,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.03,
+      "volume": 0.75
+    },
+    {
+      "id": "beam_fire",
+      "what": "A lattice fires its beam",
+      "eleven": {
+        "prompt": "A heavy sci-fi energy beam fires: a deep, powerful electric zap with a thick buzzing roar and crackle, then a quick decay, no music.",
+        "seconds": 1.5,
+        "influence": 0.6
+      },
+      "fadeOut": 0.25,
+      "volume": 0.95
+    },
+    {
+      "id": "tender_spawn",
+      "what": "The tender releases motes in threes",
+      "eleven": {
+        "prompt": "Three small drones launch one after another from a large hovering machine: a heavy hatch clunk, then three quick, rising electric whirs in a row, sci-fi, no music.",
+        "seconds": 2.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.2,
+      "volume": 0.8
+    },
+    {
+      "id": "mote_hum",
+      "what": "A mote's hum while it flies (loop, placed on each mote)",
+      "eleven": {
+        "prompt": "Steady close electric hum of a small hovering machine: a low tonal buzz with a faint warble and a soft whirr, sci-fi, constant, no music.",
+        "seconds": 3,
+        "loop": true,
+        "influence": 0.7
+      },
+      "loop": {},
+      "volume": 0.35
+    },
+    {
+      "id": "machine_down",
+      "what": "A mote destroyed: a small electrical explosion",
+      "fadeOut": 0.2,
+      "volume": 0.85,
+      "eleven": {
+        "prompt": "A small hovering machine is destroyed by gunfire: a sharp electrical crack and pop, a burst of fizzing sparks, and a few small metal pieces clattering to the floor, short, no music.",
+        "seconds": 1,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "tried": "Kenney's explosionCrunch_000 with impactMetal_003 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "pick": 2,
+      "pickNote": "Take 2 won two of three side-by-side listenings by Gemini 3.1 Pro (24 October 2026); the owner may overrule."
+    },
+    {
+      "id": "lattice_break",
+      "what": "A lattice comes apart into motes",
+      "eleven": {
+        "prompt": "A frame of interlocked metal drones breaks apart: a sharp electrical crack, then a cascade of metal plates and parts clattering and scattering, with a fading electric fizz, no music.",
+        "seconds": 1.8,
+        "influence": 0.6
+      },
+      "fadeOut": 0.3,
+      "volume": 0.9
+    },
+    {
+      "id": "tender_down",
+      "what": "The tender destroyed: the hangar's last stand ends",
+      "fadeOut": 0.5,
+      "volume": 1,
+      "eleven": {
+        "prompt": "A large flying machine the size of a van explodes inside a hangar: a huge, deep blast with a crackling electrical burst, heavy metal debris crashing down and a long rumbling echo, no music.",
+        "seconds": 3,
+        "influence": 0.6
+      },
+      "tried": "Kenney's explosionCrunch_003, lowFrequency_explosion_000, explosionCrunch_004 and impactMetal_001 layered (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026."
+    },
+    {
+      "id": "power_field",
+      "what": "A field power (Lift, Pull, Slam; the priming glow)",
+      "eleven": {
+        "prompt": "A gravity field power: a deep, warping whoosh with a resonant low thrum that bends in pitch, like space itself being pulled, sci-fi, no music.",
+        "seconds": 1.2,
+        "influence": 0.6
+      },
+      "fadeOut": 0.2,
+      "volume": 0.8
+    },
+    {
+      "id": "power_arc",
+      "what": "Overload: an electric arc that strips shields",
+      "eleven": {
+        "prompt": "An electrical overload discharge: a sharp, crackling electric zap arcing between metal, bright snapping sparks, short, no music.",
+        "seconds": 1,
+        "influence": 0.6
+      },
+      "fadeOut": 0.15,
+      "volume": 0.85
+    },
+    {
+      "id": "charge_blast",
+      "what": "A Breach Charge goes off",
+      "fadeOut": 0.3,
+      "volume": 1,
+      "eleven": {
+        "prompt": "A shaped breaching charge detonates nearby inside a metal station: a sharp, powerful blast with a deep concussive boom, debris rattling and a short metallic echo, no music.",
+        "seconds": 2.5,
+        "influence": 0.6
+      },
+      "tried": "Kenney's Audio/explosionCrunch_004.ogg with lowFrequency_explosion_001.ogg (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026."
+    },
+    {
+      "id": "barrier",
+      "what": "Barrier: a field shell switches on (a hum rising)",
+      "eleven": {
+        "prompt": "Sci-fi energy shield powering up around a person: a low electric hum that swells and rises in pitch for about a second, then settles into a steady, shimmering electrical drone. No bells, no chimes, no music.",
+        "seconds": 1.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.3,
+      "volume": 0.7
+    },
+    {
+      "id": "stim",
+      "what": "Stim Burst: the world slows for the hero",
+      "eleven": {
+        "prompt": "A combat stimulant kicks in: one deep, heavy heartbeat thump, then a long, slow, deep whoosh that stretches out and fades, as if time slows down, no music.",
+        "seconds": 2.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.3,
+      "volume": 0.8
+    },
+    {
+      "id": "veil",
+      "what": "Veil: the light-bending cloak",
+      "eleven": {
+        "prompt": "A light-bending cloak activates: a soft, airy, glassy shimmer that sweeps upward and fades into a faint crystalline hiss, sci-fi, no music.",
+        "seconds": 1.5,
+        "influence": 0.6
+      },
+      "fadeOut": 0.3,
+      "volume": 0.7
+    },
+    {
+      "id": "drone",
+      "what": "A Seeker or Repair Drone flying (loop)",
+      "eleven": {
+        "prompt": "Steady buzz of a small drone hovering close: a fast, light electric rotor whine with a slight wobble, constant, no music.",
+        "seconds": 3,
+        "loop": true,
+        "influence": 0.7
+      },
+      "loop": {},
+      "volume": 0.4
+    },
+    {
+      "id": "repair",
+      "what": "Repair: a drone or med-patch mends someone",
+      "eleven": {
+        "prompt": "A medical repair drone heals someone: a soft, rising electronic chime with a gentle, warm shimmer, calm, sci-fi, no music.",
+        "seconds": 1.5,
+        "influence": 0.6
+      },
+      "fadeOut": 0.3,
+      "volume": 0.6
+    },
+    {
+      "id": "punch",
+      "what": "A strike lands on a plated machine",
+      "fadeOut": 0.1,
+      "volume": 0.85,
+      "eleven": {
+        "prompt": "A heavy armoured fist strikes a metal-plated machine: a solid, punchy thud with a hard metallic clank, close, no music.",
+        "seconds": 0.6,
+        "influence": 0.6
+      },
+      "tried": "Kenney's impactPunch_medium_000 with impactPlate_medium_000 (Impact Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026."
+    },
+    {
+      "id": "dodge",
+      "what": "The dodge: a quick step out of a shot's way",
+      "eleven": {
+        "prompt": "A quick sideways dodge: a fast, short whoosh of air and cloth with a soft scuff of a shoe, no metal, no music.",
+        "seconds": 0.6,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.1,
+      "volume": 0.7
+    },
+    {
+      "id": "step_1",
+      "what": "A walking footstep on a metal deck (one of four, chosen at random)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/footstep_concrete_004.ogg"
+        },
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactPlate_light_000.ogg",
+          "db": -9
+        }
+      ],
+      "filter": "highpass=f=70",
+      "fadeOut": 0.05,
+      "volume": 0.5,
+      "tried": "footstep_concrete_000 with impactPlate_light_000 was heard as a small metal clink; footstep_concrete_004 with the same plate won a four-way side-by-side by Gemini 3.1 Pro (24 October 2026)."
+    },
+    {
+      "id": "step_2",
+      "what": "A walking footstep on a metal deck (two of four)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/footstep_concrete_001.ogg"
+        },
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactPlate_light_001.ogg",
+          "db": -9
+        }
+      ],
+      "filter": "highpass=f=70",
+      "fadeOut": 0.05,
+      "volume": 0.5
+    },
+    {
+      "id": "step_3",
+      "what": "A walking footstep on a metal deck (three of four)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/footstep_concrete_002.ogg"
+        },
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactPlate_light_002.ogg",
+          "db": -9
+        }
+      ],
+      "filter": "highpass=f=70",
+      "fadeOut": 0.05,
+      "volume": 0.5
+    },
+    {
+      "id": "step_4",
+      "what": "A walking footstep on a metal deck (four of four)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/footstep_concrete_003.ogg"
+        },
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactPlate_light_003.ogg",
+          "db": -9
+        }
+      ],
+      "filter": "highpass=f=70",
+      "fadeOut": 0.05,
+      "volume": 0.5
+    },
+    {
+      "id": "door_open",
+      "what": "A station door slides open",
+      "volume": 0.6,
+      "eleven": {
+        "prompt": "A sci-fi station door slides open: a short pneumatic hiss and a smooth motorised slide, ending in a soft thud, no music.",
+        "seconds": 1,
+        "influence": 0.6
+      },
+      "tried": "Kenney's doorOpen_000 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "fadeOut": 0.1
+    },
+    {
+      "id": "door_close",
+      "what": "A station door slides shut",
+      "volume": 0.6,
+      "eleven": {
+        "prompt": "A sci-fi station door slides shut: a smooth motorised slide and a short pneumatic hiss, ending in a firm, solid clunk, no music.",
+        "seconds": 1,
+        "influence": 0.6
+      },
+      "tried": "Kenney's doorClose_000 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "fadeOut": 0.1
+    },
+    {
+      "id": "power_fail",
+      "what": "The station's power fails: a big thunk, then everything winds down",
+      "eleven": {
+        "prompt": "A space station's main power fails: a huge, deep electrical thunk as the breakers trip, then every machine and fan winds down with a long falling whine into silence, no music.",
+        "seconds": 4.5,
+        "influence": 0.6
+      },
+      "fadeOut": 0.6,
+      "volume": 0.95
+    },
+    {
+      "id": "alarm",
+      "what": "The emergency alarm after the lights go (loop): soft, not shrill",
+      "eleven": {
+        "prompt": "Soft emergency alarm in a space station corridor: a low, mellow two-tone electronic pulse repeating slowly, about once a second, heard from a distance, not shrill, constant, no voice, no music.",
+        "seconds": 4,
+        "loop": true,
+        "influence": 0.6
+      },
+      "loop": {
+        "xfade": 0
+      },
+      "volume": 0.35
+    },
+    {
+      "id": "ambience_station",
+      "what": "Inside Calder Station at night (loop)",
+      "eleven": {
+        "prompt": "Room tone inside a quiet space station at night: a low, steady ventilation hum, a distant machinery rumble, a faint electrical buzz and the occasional soft creak of metal, constant, no voices, no music.",
+        "seconds": 20,
+        "loop": true,
+        "influence": 0.5
+      },
+      "loop": {},
+      "volume": 0.4
+    },
+    {
+      "id": "ambience_hangar",
+      "what": "The hangar (loop)",
+      "eleven": {
+        "prompt": "Ambience of a large, cavernous spacecraft hangar: a deep, wide air-handling rumble, distant metallic echoes, a faint hiss of vents and a low engine idling far away, constant, no voices, no music.",
+        "seconds": 20,
+        "loop": true,
+        "influence": 0.5
+      },
+      "loop": {},
+      "volume": 0.45
+    },
+    {
+      "id": "wind",
+      "what": "Outside on the catwalk: thin, cold wind (loop)",
+      "eleven": {
+        "prompt": "Cold, thin wind gusting across an exposed metal catwalk outside a station: a steady hollow howl with occasional stronger gusts and a faint whistle through the railings, constant, no music.",
+        "seconds": 15,
+        "loop": true,
+        "influence": 0.5
+      },
+      "loop": {},
+      "volume": 0.45
+    },
+    {
+      "id": "radio",
+      "what": "A comms call opens: click, static, click",
+      "eleven": {
+        "prompt": "A short burst of radio static on a helmet comm channel: a click on, a crackle of static, then a click off, no voices, no music.",
+        "seconds": 1,
+        "influence": 0.6
+      },
+      "fadeOut": 0.05,
+      "volume": 0.5
+    },
+    {
+      "id": "ui_click",
+      "what": "Any button or menu press",
+      "library": [
+        {
+          "pack": "ui-audio",
+          "file": "Audio/click1.ogg"
+        }
+      ],
+      "volume": 0.55
+    },
+    {
+      "id": "ui_choice",
+      "what": "A dialogue choice is chosen",
+      "library": [
+        {
+          "pack": "interface-sounds",
+          "file": "Audio/glass_001.ogg"
+        }
+      ],
+      "volume": 0.5
+    },
+    {
+      "id": "objective",
+      "what": "The objective is updated",
+      "eleven": {
+        "prompt": "A calm, soft two-note notification chime: warm, low, glassy tones, slightly melancholy, a gentle ring that fades, no music.",
+        "seconds": 1.5,
+        "influence": 0.6
+      },
+      "fadeOut": 0.3,
+      "volume": 0.55
+    },
+    {
+      "id": "saved",
+      "what": "A checkpoint is saved (subtle)",
+      "library": [
+        {
+          "pack": "interface-sounds",
+          "file": "Audio/bong_001.ogg"
+        }
+      ],
+      "volume": 0.45
+    },
+    {
+      "id": "shield_hit",
+      "what": "A hit on the hero's shield",
+      "fadeOut": 0.1,
+      "volume": 0.65,
+      "tried": "Kenney's forceField_003 (Sci-Fi Sounds) and two ElevenLabs takes; side by side, Gemini 3.1 Pro judged them too retro or too heavy, and this CC0 sound the best fit (24 October 2026).",
+      "library": [
+        {
+          "pack": "oga-space-shield-sounds",
+          "file": "space shield sounds - 3.wav"
+        }
+      ]
+    },
+    {
+      "id": "health_hit",
+      "what": "A hit on the hero's health, under the shield (a thud)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactSoft_heavy_000.ogg"
+        },
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactPunch_heavy_000.ogg",
+          "db": -6
+        }
+      ],
+      "filter": "lowpass=f=5000",
+      "fadeOut": 0.1,
+      "volume": 0.75
+    },
+    {
+      "id": "shield_down",
+      "what": "The hero's shield is gone (a warning, with the red edge)",
+      "eleven": {
+        "prompt": "A personal energy shield fails: a falling electric warble that slides down in pitch over a second, breaks up into crackles and fizzles out. No explosion, no music.",
+        "seconds": 1.2,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.2,
+      "volume": 0.8
+    },
+    {
+      "id": "heartbeat",
+      "what": "Low health: a heartbeat (loop)",
+      "eleven": {
+        "prompt": "A slow, heavy human heartbeat heard from inside the body, steady at about seventy-five beats a minute, muffled and deep, constant, no music.",
+        "seconds": 3.2,
+        "loop": true,
+        "influence": 0.7
+      },
+      "loop": {
+        "xfade": 0
+      },
+      "volume": 0.6
+    },
+    {
+      "id": "down",
+      "what": "The hero goes down",
+      "eleven": {
+        "prompt": "A person in light armour falls heavily onto a metal deck: a heavy body thud and a short rattle of armour plates, no voice, no music.",
+        "seconds": 1.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.4,
+      "volume": 0.8
+    },
+    {
+      "id": "revive",
+      "what": "A companion brings the hero back up",
+      "eleven": {
+        "prompt": "A medical injector hisses sharply, then a slow, deep, soft swell of air rises and fades, calm, no voice, no music.",
+        "seconds": 2.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.3,
+      "volume": 0.7
+    },
+    {
+      "id": "liftoff",
+      "what": "The ship lifts off and escapes",
+      "eleven": {
+        "prompt": "A small spaceship lifts off from a station landing pad: the engines ignite with a deep thump, then a huge rising roar of thrusters with rumbling bass and rattling metal, slowly climbing away, no music.",
+        "seconds": 7.5,
+        "influence": 0.6
+      },
+      "fadeOut": 1.2,
+      "volume": 1
+    },
+    {
+      "id": "relay",
+      "what": "A relay console is turned by hand",
+      "eleven": {
+        "prompt": "A heavy relay console turned by hand: a mechanical whirr of gears and servos, a ratchet clicking, then a solid locking clunk, no music.",
+        "seconds": 2,
+        "influence": 0.6
+      },
+      "fadeOut": 0.15,
+      "volume": 0.7
+    }
+  ],
+  "music": [
+    {
+      "id": "title",
+      "what": "The title and the menus (loop)",
+      "subject": "The main theme. About ninety seconds long. Slow, about 66 BPM, in D minor: a dying red star, hope under dread. It opens on a low drone and a distant glassy shimmer; a simple, memorable melody of a few notes on felt piano enters over slow pads and low strings, and a solo cello answers it; the strings swell gently towards a warm major chord, then fall back to the drone. Steady to the end, without a fade-out, so it can loop.",
+      "loop": {
+        "minS": 70,
+        "maxS": 100
+      },
+      "pick": 2,
+      "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    },
+    {
+      "id": "night",
+      "what": "The night shift before the attack (loop)",
+      "subject": "Calm, uneasy ambient music for a station at three in the morning, on the night shift. About two minutes long. Very slow, about 60 BPM, in A minor. Long, evolving synthesiser pads and a soft low string drone, sparse felt piano notes far apart, the faint ring of distant glassy bells, a quiet pulse like machinery deep in the walls. No drums, no woodwinds, no swells and no climax: it stays quiet and even from start to finish. Calm, but something is not quite right. Without a fade-out, so it can loop.",
+      "loop": {
+        "minS": 95,
+        "maxS": 130
+      },
+      "candidates": 4,
+      "pick": 2,
+      "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    },
+    {
+      "id": "tension",
+      "what": "After the lights go, walking to Control (loop)",
+      "subject": "Tense, quiet music after the station's lights go out, walking through dark corridors towards the control room. About ninety seconds long. Slow, about 70 BPM, in C minor. A low, steady pulse on deep synthesiser, taut low strings with slow tremolo, dissonant glassy textures that rise and fall, a muted low thud like a distant heartbeat. Suspense that never breaks: no big melody, no climax. Even throughout, without a fade-out, so it can loop.",
+      "loop": {
+        "minS": 70,
+        "maxS": 100
+      },
+      "pick": 2,
+      "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    },
+    {
+      "id": "combat",
+      "what": "Fights with the swarm (loop)",
+      "candidates": 7,
+      "subject": "Driving, dark electronic music for tense, fast action in a dark station. About two minutes long. Fast, about 124 BPM, in E minor. A pulsing analogue synthesiser bass in steady sixteenth notes, tight electronic drums, cold arpeggiated synthesisers and glassy stabs, with a small section of cellos and violas playing short, repeated notes underneath. Minimal, relentless and mechanical, like machinery that will not stop; tense and determined, never epic or triumphant. No brass, no horns, no choir, no cymbal crashes, no big melody. The same intensity throughout, without a fade-in or an ending, so it can loop.",
+      "loop": {
+        "minS": 95,
+        "maxS": 130
+      },
+      "pick": 5,
+      "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    },
+    {
+      "id": "ending",
+      "what": "The bridge, the escape and the ending (plays once)",
+      "subject": "Music for the escape and the ending: a small ship lifts away from the dark station and its dim red star. About two minutes long. Slow, about 64 BPM, in D minor turning to F major. It begins with felt piano and pads alone; a simple, slow melody on solo cello enters; the low strings and warm pads rise to a broad, hopeful, resolved statement; then it settles on a long, quiet major chord and fades gently to silence. Melancholic, hopeful and resolved, never triumphant.",
+      "pick": 1,
+      "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    }
+  ],
+  "outputs": {
+    "music/combat.mp3": {
+      "id": "combat",
+      "what": "Fights with the swarm (loop)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nDriving, dark electronic music for tense, fast action in a dark station. About two minutes long. Fast, about 124 BPM, in E minor. A pulsing analogue synthesiser bass in steady sixteenth notes, tight electronic drums, cold arpeggiated synthesisers and glassy stabs, with a small section of cellos and violas playing short, repeated notes underneath. Minimal, relentless and mechanical, like machinery that will not stop; tense and determined, never epic or triumphant. No brass, no horns, no choir, no cymbal crashes, no big melody. The same intensity throughout, without a fade-in or an ending, so it can loop.",
+          "made": "2026-10-24T20:34:41.433Z",
+          "note": "[[A0]]\n[[A1]]\n[[A2]]\n[[A3]]\n[[A4]]\n[[A5]]\n[[A6]]\n[[A7]]",
+          "candidate": 5,
+          "of": 7,
+          "chosenBy": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'.",
+          "candidateSha256": "dc892d5c2bc1da428f7d597bd3950e62c8abdde82cead99563111b3410425167",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "inside the piece, where the music either side of both points matched",
+          "loopStart": 19,
+          "loopEnd": 115.0002,
+          "bestMatchInsideDb": 2.888,
+          "onsetMatch": 0.58,
+          "bpm": 125.01,
+          "beats": 200,
+          "crossfadeSeconds": 1.5,
+          "candidateSeconds": 124.8
+        },
+        "gainDb": -5,
+        "loudness": "-18.1 LUFS integrated",
+        "peakDb": -5,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 115.1,
+      "bytes": 1842781,
+      "sha256": "1f3ecf2b02ad9f24915f3b011ad0c4afe674df5c2f0cae3e075cd5059e56add1",
+      "built": "2026-10-24"
+    },
+    "music/ending.mp3": {
+      "id": "ending",
+      "what": "The bridge, the escape and the ending (plays once)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nMusic for the escape and the ending: a small ship lifts away from the dark station and its dim red star. About two minutes long. Slow, about 64 BPM, in D minor turning to F major. It begins with felt piano and pads alone; a simple, slow melody on solo cello enters; the low strings and warm pads rise to a broad, hopeful, resolved statement; then it settles on a long, quiet major chord and fades gently to silence. Melancholic, hopeful and resolved, never triumphant.",
+          "made": "2026-10-24T20:17:57.516Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'.",
+          "candidateSha256": "9e77acfcc931c343737bd5e2971ee597037be616754e46411a3eca294f78eb62",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "fadeOutSeconds": 2.5,
+        "gainDb": -5.9,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 108.961,
+      "bytes": 1744560,
+      "sha256": "e73815ec9623f975644844d3919019c7ed00be4d98b99624b117c5def0c9b103",
+      "built": "2026-10-24"
+    },
+    "music/night.mp3": {
+      "id": "night",
+      "what": "The night shift before the attack (loop)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nCalm, uneasy ambient music for a station at three in the morning, on the night shift. About two minutes long. Very slow, about 60 BPM, in A minor. Long, evolving synthesiser pads, a soft low string drone, sparse felt piano notes far apart, the faint ring of distant glassy bells, a quiet pulse like machinery deep in the walls. No drums. Calm, but something is not quite right. Even throughout, without a fade-out, so it can loop.",
+          "made": "2026-10-24T20:17:27.502Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]\n[[C4]]\n[[E5]]",
+          "candidate": 2,
+          "of": 4,
+          "chosenBy": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'.",
+          "candidateSha256": "45b0a2eb4b153311e50ee2dba38e91565f532b4dcb3fb80e66710216be9561a7",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "the whole piece: no close match inside it, so its end is crossfaded into its opening",
+          "loopStart": 3,
+          "loopEnd": 127.3896,
+          "bestMatchInsideDb": 9.352,
+          "crossfadeSeconds": 3,
+          "candidateSeconds": 127.4
+        },
+        "gainDb": -6.2,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6.3,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 127.49,
+      "bytes": 2040893,
+      "sha256": "82ee3546e9f8c2b448221ecc0ee031283d86422a0846191c1f66af6dd1871ef9",
+      "built": "2026-10-24"
+    },
+    "music/tension.mp3": {
+      "id": "tension",
+      "what": "After the lights go, walking to Control (loop)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nTense, quiet music after the station's lights go out, walking through dark corridors towards the control room. About ninety seconds long. Slow, about 70 BPM, in C minor. A low, steady pulse on deep synthesiser, taut low strings with slow tremolo, dissonant glassy textures that rise and fall, a muted low thud like a distant heartbeat. Suspense that never breaks: no big melody, no climax. Even throughout, without a fade-out, so it can loop.",
+          "made": "2026-10-24T20:17:29.443Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'.",
+          "candidateSha256": "685aa7fc1641ed794c1f18b3e4cbd34f9008040d275843e5d8b44532567114cf",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "the whole piece: no close match inside it, so its end is crossfaded into its opening",
+          "loopStart": 3,
+          "loopEnd": 92.5005,
+          "bestMatchInsideDb": 5.97,
+          "crossfadeSeconds": 3,
+          "candidateSeconds": 92.5
+        },
+        "gainDb": -4.1,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -4.1,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 92.6,
+      "bytes": 1482500,
+      "sha256": "0b69d8dac5cb2f9922bf35032670d4eebe24185fc49492f6ceb1b3dfcc1f2048",
+      "built": "2026-10-24"
+    },
+    "music/title.mp3": {
+      "id": "title",
+      "what": "The title and the menus (loop)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nThe main theme. About ninety seconds long. Slow, about 66 BPM, in D minor: a dying red star, hope under dread. It opens on a low drone and a distant glassy shimmer; a simple, memorable melody of a few notes on felt piano enters over slow pads and low strings, and a solo cello answers it; the strings swell gently towards a warm major chord, then fall back to the drone. Steady to the end, without a fade-out, so it can loop.",
+          "made": "2026-10-24T20:17:03.542Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]\n[[E4]]",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'.",
+          "candidateSha256": "d7ed8aff270846daedefea04cb77f1265dfbbafec116d1c16ba683ce4ce61635",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "the whole piece: no close match inside it, so its end is crossfaded into its opening",
+          "loopStart": 3,
+          "loopEnd": 94.24,
+          "bestMatchInsideDb": 11.172,
+          "crossfadeSeconds": 3,
+          "candidateSeconds": 94.2
+        },
+        "gainDb": -6.4,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6.5,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 94.34,
+      "bytes": 1510503,
+      "sha256": "6626838d5546a9bd7b494685dfbe2452278ee448fd94b85d2aa0e582915dad08",
+      "built": "2026-10-24"
+    },
+    "sfx/alarm.mp3": {
+      "id": "alarm",
+      "what": "The emergency alarm after the lights go (loop): soft, not shrill",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Soft emergency alarm in a space station corridor: a low, mellow two-tone electronic pulse repeating slowly, about once a second, heard from a distance, not shrill, constant, no voice, no music.",
+          "seconds": 4,
+          "loop": true,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:29.494Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "cd8bf4f6d605144053118fb4aaf4234c3a534a36eafae2494bbcbd30c5d22d2c",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 1.96,
+            "levelStepDb": 14.13,
+            "usualStepDb": 1.37
+          },
+          "crossfadeSeconds": 0,
+          "why": "a rhythm: the generator's own join is kept"
+        },
+        "gainDb": 8.2,
+        "loudness": "-17.9 LUFS integrated",
+        "peakDb": -6.1,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 4.2,
+      "bytes": 51095,
+      "sha256": "c8bf8cbb681a8857989651c18eb315887baccc8aed99be16138f217bc0e1fa32",
+      "built": "2026-10-24"
+    },
+    "sfx/ambience_hangar.mp3": {
+      "id": "ambience_hangar",
+      "what": "The hangar (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Ambience of a large, cavernous spacecraft hangar: a deep, wide air-handling rumble, distant metallic echoes, a faint hiss of vents and a low engine idling far away, constant, no voices, no music.",
+          "seconds": 20,
+          "loop": true,
+          "promptInfluence": 0.5,
+          "made": "2026-10-24T20:15:36.450Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "c333f0289c21ab0ad8fbf70db3db427fe88329ef0bc8a512fd0be8865e8cf821",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 11.88,
+            "levelStepDb": 3.24,
+            "usualStepDb": 4.13
+          },
+          "crossfadeSeconds": 1.5,
+          "why": "the join measured rough, so the end is crossfaded into the start"
+        },
+        "gainDb": 8.2,
+        "loudness": "-19.6 LUFS integrated",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 18.7,
+      "bytes": 225071,
+      "sha256": "5f0c11b66b0362017136b76530d8d55dedb2186bb27db12c33f7b9efd9196a96",
+      "built": "2026-10-24"
+    },
+    "sfx/ambience_station.mp3": {
+      "id": "ambience_station",
+      "what": "Inside Calder Station at night (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Room tone inside a quiet space station at night: a low, steady ventilation hum, a distant machinery rumble, a faint electrical buzz and the occasional soft creak of metal, constant, no voices, no music.",
+          "seconds": 20,
+          "loop": true,
+          "promptInfluence": 0.5,
+          "made": "2026-10-24T20:15:32.757Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "e71f20e9b53665092ab27e7b51ff5f0f18d114ccd5d2d5f08da783dbcc1d06d2",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 3.31,
+            "levelStepDb": 2.34,
+            "usualStepDb": 2.07
+          },
+          "crossfadeSeconds": 0,
+          "why": "the generator's own join measured clean and is kept"
+        },
+        "gainDb": 22.6,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -2.9,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 20.2,
+      "bytes": 243252,
+      "sha256": "5798744170a065ed85b0884fd8a81ea3ab5976dc37a0bc3c4729f1efa2fa8ccb",
+      "built": "2026-10-24"
+    },
+    "sfx/barrier.mp3": {
+      "id": "barrier",
+      "what": "Barrier: a field shell switches on (a hum rising)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Sci-fi energy shield powering up around a person: a low electric hum that swells and rises in pitch for about a second, then settles into a steady, shimmering electrical drone. No bells, no chimes, no music.",
+          "seconds": 1.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:27:58.153Z",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "37b2213ffca81bcc1b638521fbab518b1e1e70ea8f1d593828d000ab61754457",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": 17.8,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -3.9,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.391,
+      "bytes": 17554,
+      "sha256": "2e2656299090e677720e90466cf18b01237af80cb2c72a98b15e556014060062",
+      "built": "2026-10-24"
+    },
+    "sfx/beam_charge.mp3": {
+      "id": "beam_charge",
+      "what": "A lattice charges its beam for two seconds (the line is drawn while this plays)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A sci-fi energy beam weapon charging for two seconds: a rising electric whine that climbs steadily in pitch and intensity with crackling static, stopping at its peak, no explosion, no music.",
+          "seconds": 2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:17.435Z",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "b0298bc5b84ebac4b8b7c2f702983345d3f788b086a6db9f8b5ea31fdb3b2a77",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.03,
+        "gainDb": 4,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -4.8,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 2,
+      "bytes": 24764,
+      "sha256": "5c0d0f67728f121594fb1cad9fc45f84b2d2f90ac00a3b388e77c5bb5552a57c",
+      "built": "2026-10-24"
+    },
+    "sfx/beam_fire.mp3": {
+      "id": "beam_fire",
+      "what": "A lattice fires its beam",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A heavy sci-fi energy beam fires: a deep, powerful electric zap with a thick buzzing roar and crackle, then a quick decay, no music.",
+          "seconds": 1.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:17.417Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "21c3841c1eb707df2323750ba1777fd3d2e777fbcf7a1f84c2c4931fedfbcb26",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.25,
+        "gainDb": -1.3,
+        "loudness": "-16.2 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.349,
+      "bytes": 16927,
+      "sha256": "45c7cdb02105e56a55fd186cd9bf67d8832b333fa56a2442f2832ec663c0fc2a",
+      "built": "2026-10-24"
+    },
+    "sfx/bolt_fire.mp3": {
+      "id": "bolt_fire",
+      "what": "A mote fires its slow, bright bolt",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A small hovering machine fires a slow bolt of plasma: a short, wet electric spit with a crackling fizz, sci-fi, close, no music.",
+          "seconds": 0.7,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:15.138Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "c5228a3e073e595b53f70858db253f2f830c1745d4d58390dd0db19d9304e0eb",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 1.6,
+        "loudness": "-16.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.68,
+      "bytes": 9090,
+      "sha256": "1a8f62ee6a76734e6d088659c892e77ef275aed5736e5732c16cc626fb0f4659",
+      "built": "2026-10-24"
+    },
+    "sfx/bolt_hit.mp3": {
+      "id": "bolt_hit",
+      "what": "A bolt strikes metal (cover, walls, deck)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A plasma bolt hits a metal wall: a sharp metallic clang with a short crackling electric sizzle, close, no music.",
+          "seconds": 0.7,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:57.995236Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "50e7f248acc7246b0fb1e3eadf13b20f44b8f6fe60ff49d2a64c18edf22adceb",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's impactMetal_002 with forceField_003 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 9.8,
+        "loudness": "-18.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.68,
+      "bytes": 9090,
+      "sha256": "8fd9876df084c7e10b0d5d3d602c27a203edeedfd509ae09de36d3334175fd14",
+      "built": "2026-10-24"
+    },
+    "sfx/bolt_whizz.mp3": {
+      "id": "bolt_whizz",
+      "what": "A bolt passes close to the hero",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A glowing energy bolt flies fast past the listener's head: a short, sizzling electric whizz with a doppler pitch drop, no impact, no music.",
+          "seconds": 0.8,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:16.116Z",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "66db00dc9a21d1ed4c9b6f41b5f0a392a29dc11958c183329193b1c52d57c5d0",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 7.5,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -1.7,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.772,
+      "bytes": 10031,
+      "sha256": "da43afec7dc97f796d4b356a3b999dfc1e49d49b5e4991f3047cdbc99acb1d8d",
+      "built": "2026-10-24"
+    },
+    "sfx/charge_blast.mp3": {
+      "id": "charge_blast",
+      "what": "A Breach Charge goes off",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A shaped breaching charge detonates nearby inside a metal station: a sharp, powerful blast with a deep concussive boom, debris rattling and a short metallic echo, no music.",
+          "seconds": 2.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:53.384818Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "9abe7b2b6c51ec23a186f7847e4768c6f25aa8e5e4241f52ee98c51c30b92637",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's Audio/explosionCrunch_004.ogg with lowFrequency_explosion_001.ogg (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": -1.9,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -2.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.837,
+      "bytes": 22883,
+      "sha256": "e7d5cc4183aea82f7f505324cc763818b2985067c7d8ea3823d33c8577a9b458",
+      "built": "2026-10-24"
+    },
+    "sfx/dodge.mp3": {
+      "id": "dodge",
+      "what": "The dodge: a quick step out of a shot's way",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A quick sideways dodge: a fast, short whoosh of air and cloth with a soft scuff of a shoe, no metal, no music.",
+          "seconds": 0.6,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:55:30.042Z",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "3bbc201e44d3830988c351df63fc45b86532572325cafc562e40ca4a414c12dd",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 1.8,
+        "loudness": "-25.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.438,
+      "bytes": 5955,
+      "sha256": "27b1d5053bde26b7949e125be5bb20e872aeef0ba56d9b6bfc766c74363f008e",
+      "built": "2026-10-24"
+    },
+    "sfx/door_close.mp3": {
+      "id": "door_close",
+      "what": "A station door slides shut",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A sci-fi station door slides shut: a smooth motorised slide and a short pneumatic hiss, ending in a firm, solid clunk, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:56.416607Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "1852c04885e32bf86df8ec4d9b1c6bc76eb33c98fb5516295001f466536ee5fa",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's doorClose_000 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 2.2,
+        "loudness": "-19.2 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.927,
+      "bytes": 11911,
+      "sha256": "a9a84f36ffe9dcda02630a0815fca95398b3d1ff0172f5ef439649913746f272",
+      "built": "2026-10-24"
+    },
+    "sfx/door_open.mp3": {
+      "id": "door_open",
+      "what": "A station door slides open",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A sci-fi station door slides open: a short pneumatic hiss and a smooth motorised slide, ending in a soft thud, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:56.629261Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "1dc42d653b9a86e2ff73721ac6e1a076f2f7876ccb4569665f69b0a6ac392d1b",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's doorOpen_000 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 4.5,
+        "loudness": "-16.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1,
+      "bytes": 12852,
+      "sha256": "5655f74512117e281e6044fea36dc50e67b5b0279a214e0ef1c5b2f2679a400a",
+      "built": "2026-10-24"
+    },
+    "sfx/down.mp3": {
+      "id": "down",
+      "what": "The hero goes down",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A soldier in light armour is hit and collapses onto a metal deck: a heavy body thud with a short rattle of armour plates, then a dull, muffled high ringing in the ears that slowly fades. No voice, no music.",
+          "seconds": 2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:27:59.907Z",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "5391ef642f24eee9f52bc65e4f77e2907c3e47f445f31e512be7d9470bc32a7e",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.4,
+        "gainDb": -4.5,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -3,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.449,
+      "bytes": 18181,
+      "sha256": "e4f19dafcf99a4c4b65abf7897b3909b2344d6b397919dad94f8df38dbc31a9a",
+      "built": "2026-10-24"
+    },
+    "sfx/drone.mp3": {
+      "id": "drone",
+      "what": "A Seeker or Repair Drone flying (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Steady buzz of a small drone hovering close: a fast, light electric rotor whine with a slight wobble, constant, no music.",
+          "seconds": 3,
+          "loop": true,
+          "promptInfluence": 0.7,
+          "made": "2026-10-24T20:15:26.312Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "946228dca04ea435a11d9ed75c60208343af70f2f46c90014be169984f77183e",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 1.4,
+            "levelStepDb": 0.96,
+            "usualStepDb": 0.75
+          },
+          "crossfadeSeconds": 0,
+          "why": "the generator's own join measured clean and is kept"
+        },
+        "gainDb": 24.4,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6.7,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 3.2,
+      "bytes": 39183,
+      "sha256": "51960f263e44c0359a98596dc078c278e178174a7f9aeac9c26f9fd939e091e7",
+      "built": "2026-10-24"
+    },
+    "sfx/health_hit.mp3": {
+      "id": "health_hit",
+      "what": "A hit on the hero's health, under the shield (a thud)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactSoft_heavy_000.ogg",
+          "licence": "CC0-1.0"
+        },
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactPunch_heavy_000.ogg",
+          "gainDb": -6,
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "lowpass=f=5000",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": -1.2,
+        "loudness": "-17.8 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.51,
+      "bytes": 6896,
+      "sha256": "58ad2742f40ea14db75c2c6326274d727ce5ae83b9a18fd67f2b22da0ecddf64",
+      "built": "2026-10-24"
+    },
+    "sfx/heartbeat.mp3": {
+      "id": "heartbeat",
+      "what": "Low health: a heartbeat (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A slow, heavy human heartbeat heard from inside the body, steady at about seventy-five beats a minute, muffled and deep, constant, no music.",
+          "seconds": 3.2,
+          "loop": true,
+          "promptInfluence": 0.7,
+          "made": "2026-10-24T20:15:40.629Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "f5de45db986c0c2976beba73845320e88f07570158846a8d2031e64e63903f10",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 0.67,
+            "levelStepDb": 4.46,
+            "usualStepDb": 4.04
+          },
+          "crossfadeSeconds": 0,
+          "why": "a rhythm: the generator's own join is kept"
+        },
+        "gainDb": 5.2,
+        "loudness": "-18.6 LUFS integrated",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 3.4,
+      "bytes": 41691,
+      "sha256": "9dc2b6a10b9d37cfad464e2ae8fabeab3d4e49d2321fe146f1bf2bed25d7c0f2",
+      "built": "2026-10-24"
+    },
+    "sfx/lattice_break.mp3": {
+      "id": "lattice_break",
+      "what": "A lattice comes apart into motes",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A frame of interlocked metal drones breaks apart: a sharp electrical crack, then a cascade of metal plates and parts clattering and scattering, with a fading electric fizz, no music.",
+          "seconds": 1.8,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:20.828Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "c2cad8f4670918248e05049cb0100bc54faf28665cab2dbccb8731f206dd7cca",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": -2.4,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -3.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.51,
+      "bytes": 18808,
+      "sha256": "03d7c96659597a99b16978a9ebcca9e127fbfe44e1e11c3b4d271dc9503eebee",
+      "built": "2026-10-24"
+    },
+    "sfx/liftoff.mp3": {
+      "id": "liftoff",
+      "what": "The ship lifts off and escapes",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A small spaceship lifts off from a station landing pad: the engines ignite with a deep thump, then a huge rising roar of thrusters with rumbling bass and rattling metal, slowly climbing away, no music.",
+          "seconds": 7.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:43.860Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "1e60fc79d29dc4b5f8101515941dfc5e1da18dea2838a743c59a93f8a9186e3e",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 1.2,
+        "gainDb": -0.5,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -2.2,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 6.862,
+      "bytes": 83069,
+      "sha256": "b27754a4e059eb08533ec0ef1f25f2445c34c03fecd3b91f1e21dfeb2565dde0",
+      "built": "2026-10-24"
+    },
+    "sfx/machine_down.mp3": {
+      "id": "machine_down",
+      "what": "A mote destroyed: a small electrical explosion",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A small flying drone is shot and destroyed: a sharp electrical pop and crackle of sparks with a small metallic burst and a few pieces clattering, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:54.881196Z",
+          "candidate": 2,
+          "of": 4,
+          "chosenBy": "Take 2 won two of three side-by-side listenings by Gemini 3.1 Pro (24 October 2026); the owner may overrule.",
+          "candidateSha256": "3a24b6f0b369e77e1c770c3a1013791e3ad418d1f7d1b388de0cb1b059da91ea",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's explosionCrunch_000 with impactMetal_003 (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.2,
+        "gainDb": -3.7,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -2.2,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.86,
+      "bytes": 10971,
+      "sha256": "85c6d398701968f0e5df7df5e1612d9947997d666324c3a766987b816b6cf070",
+      "built": "2026-10-24"
+    },
+    "sfx/mote_hum.mp3": {
+      "id": "mote_hum",
+      "what": "A mote's hum while it flies (loop, placed on each mote)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Steady close electric hum of a small hovering machine: a low tonal buzz with a faint warble and a soft whirr, sci-fi, constant, no music.",
+          "seconds": 3,
+          "loop": true,
+          "promptInfluence": 0.7,
+          "made": "2026-10-24T20:15:21.394Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "63001e3538118e7a1eb2d4d36aec58e0c44afc10f9b66ada1928b721bf490440",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 2.92,
+            "levelStepDb": 2.25,
+            "usualStepDb": 1.08
+          },
+          "crossfadeSeconds": 0,
+          "why": "the generator's own join measured clean and is kept"
+        },
+        "gainDb": 23.2,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 3.2,
+      "bytes": 39183,
+      "sha256": "3e06f95dd39b50d7734dac6b5d58e0ed00a0b1e0b0287fff0d0d2aeeb8ede402",
+      "built": "2026-10-24"
+    },
+    "sfx/objective.mp3": {
+      "id": "objective",
+      "what": "The objective is updated",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A calm, soft two-note notification chime: warm, low, glassy tones, slightly melancholy, a gentle ring that fades, no music.",
+          "seconds": 1.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:37.865Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "31f387f8bd96ab5899ffe59690dc7e115624f6777d73e8bd56ee172e2edd2f09",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": -2.7,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -5.1,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.229,
+      "bytes": 15673,
+      "sha256": "c28749577b342e76d7a762d06dbf6b19480afd8931713c5fe01bfa686235b899",
+      "built": "2026-10-24"
+    },
+    "sfx/pistol.mp3": {
+      "id": "pistol",
+      "what": "The hero's sidearm, a station-security coil pistol (fiction): one shot",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single gunshot from a compact sci-fi coilgun pistol, very close: a sharp, dry, punchy crack with a short electric snap and a faint metallic ring, no echo, no music.",
+          "seconds": 0.9,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:13.967Z",
+          "candidate": 1,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "7ce037070727a1b66be2927aedf52fe8b08f970f8a656fa76f28e492eb3f9733",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.15,
+        "gainDb": -2.8,
+        "loudness": "-16.4 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.649,
+      "bytes": 8463,
+      "sha256": "9f16d279e57e6f6964ebeaaa61c1d8f50b75eca28699cebdc7f2eab68b89a248",
+      "built": "2026-10-24"
+    },
+    "sfx/pistol_ally.mp3": {
+      "id": "pistol_ally",
+      "what": "Ren's sidearm, the same make heard from a few metres: a little lower and duller",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single gunshot from a compact sci-fi coilgun pistol fired a few metres away: a slightly lower, duller crack with a short electric snap and a faint metallic ring, no echo, no music.",
+          "seconds": 0.9,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:15.110Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "9c280c12f8470dac2c6cdbc6ad7a244da6631b83d5608d5bafe6ed7097fb6f80",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.15,
+        "gainDb": 2.4,
+        "loudness": "-17.4 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.81,
+      "bytes": 10658,
+      "sha256": "03526e4fb405a79cd2b2e8fb9447b80848c23c2b6d7d64b1342cce8e7dae0171",
+      "built": "2026-10-24"
+    },
+    "sfx/power_arc.mp3": {
+      "id": "power_arc",
+      "what": "Overload: an electric arc that strips shields",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "An electrical overload discharge: a sharp, crackling electric zap arcing between metal, bright snapping sparks, short, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:22.307Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "b924960afd99d1d6a73eb8db475c51d9205c14842e259c4a347764b9c9ab635b",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.15,
+        "gainDb": -5.4,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -4.1,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1,
+      "bytes": 12852,
+      "sha256": "eaa0928e3becfb3c02a77c079684b41f5403e80bc93c712d5e41f026c573c8d9",
+      "built": "2026-10-24"
+    },
+    "sfx/power_fail.mp3": {
+      "id": "power_fail",
+      "what": "The station's power fails: a big thunk, then everything winds down",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A space station's main power fails: a huge, deep electrical thunk as the breakers trip, then every machine and fan winds down with a long falling whine into silence, no music.",
+          "seconds": 4.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:28.293Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "9777739a0a9b1dfa8de8da505fa700eff4d9933f115b688e0a0764eb70dbe5f6",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.6,
+        "gainDb": 0.1,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -2.8,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 4.277,
+      "bytes": 52035,
+      "sha256": "bc62a6617b4e330b62f1e3a551f3c36d6886d7c906614f819255a30ffa101231",
+      "built": "2026-10-24"
+    },
+    "sfx/power_field.mp3": {
+      "id": "power_field",
+      "what": "A field power (Lift, Pull, Slam; the priming glow)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A gravity field power: a deep, warping whoosh with a resonant low thrum that bends in pitch, like space itself being pulled, sci-fi, no music.",
+          "seconds": 1.2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:22.954Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "d9f76d23e71ba8a8b353b77ad42b761da27094ae03118982d865a83c2a028381",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.2,
+        "gainDb": -1.1,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -2.2,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.049,
+      "bytes": 13479,
+      "sha256": "3f17d9b6d1dd0c8cb1764e6726cdd64145c9d8997ceab672af787c9b3ed909bd",
+      "built": "2026-10-24"
+    },
+    "sfx/punch.mp3": {
+      "id": "punch",
+      "what": "A strike lands on a plated machine",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A heavy armoured fist strikes a metal-plated machine: a solid, punchy thud with a hard metallic clank, close, no music.",
+          "seconds": 0.6,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:54.919255Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "d14691d7f739ba1491d3d5e68a33add2e6d102deb483c2383c759c6c4aa04583",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's impactPunch_medium_000 with impactPlate_medium_000 (Impact Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": -2,
+        "loudness": "-16.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.556,
+      "bytes": 7523,
+      "sha256": "8383028dd30ee7c64c080649c6490907454156b14929cedc218e415fa107034b",
+      "built": "2026-10-24"
+    },
+    "sfx/radio.mp3": {
+      "id": "radio",
+      "what": "A comms call opens: click, static, click",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A short burst of radio static on a helmet comm channel: a click on, a crackle of static, then a click off, no voices, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:38.758Z",
+          "candidate": 2,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "2f5132650fb1db28bcc06b39ed63d4380482f53f29909464248a597f0b3552ba",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 1.1,
+        "loudness": "-20.8 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.837,
+      "bytes": 10971,
+      "sha256": "35c4f55ab5a8b8edd3181a1802b3ed158e6b20a25071b3c085003cbf2fc5772a",
+      "built": "2026-10-24"
+    },
+    "sfx/relay.mp3": {
+      "id": "relay",
+      "what": "A relay console is turned by hand",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A heavy relay console turned by hand: a mechanical whirr of gears and servos, a ratchet clicking, then a solid locking clunk, no music.",
+          "seconds": 2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:43.901Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "2502861405e6a59630f4dc7e7d31fcf8a32c751259073f96443a12ff57c692c6",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.15,
+        "gainDb": 2.4,
+        "loudness": "-20.6 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.816,
+      "bytes": 22569,
+      "sha256": "ea015e18127cbc305582ac036bcf50d7ecf25a2890cf326a16d56e19837e4478",
+      "built": "2026-10-24"
+    },
+    "sfx/repair.mp3": {
+      "id": "repair",
+      "what": "Repair: a drone or med-patch mends someone",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A medical repair drone heals someone: a soft, rising electronic chime with a gentle, warm shimmer, calm, sci-fi, no music.",
+          "seconds": 1.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:26.479Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "54dc897bb096492641f0f067184a4cadc9e26b61d536b3761f73a35bc1d74757",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": 14.9,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -5.6,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.467,
+      "bytes": 18494,
+      "sha256": "0abd4e08b93cbd7597af24eaed553c140dce7389a7ed361dc7fbee237e12b3c4",
+      "built": "2026-10-24"
+    },
+    "sfx/revive.mp3": {
+      "id": "revive",
+      "what": "A companion brings the hero back up",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A medical injector is pressed into a wounded person: a short, sharp pneumatic hiss, then a slow, deep, muffled whoosh that swells up as breath and hearing return, ending clear. No voice, no music.",
+          "seconds": 2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:28:00.220Z",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "fcb957c62d552cda629146e8727f0541e9d5efdd22ea849604596ef6afe9b8e9",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": 15.3,
+        "loudness": "-20.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.93,
+      "bytes": 23823,
+      "sha256": "2cbbc382846c444a6fea71354af79f7b04d8a6bb918cd824f28a02252fe6dd5b",
+      "built": "2026-10-24"
+    },
+    "sfx/saved.mp3": {
+      "id": "saved",
+      "what": "A checkpoint is saved (subtle)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Interface Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/interface-sounds",
+          "file": "Audio/bong_001.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.02,
+        "gainDb": 5.2,
+        "loudness": "-22.5 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.12,
+      "bytes": 2194,
+      "sha256": "832890489011d26806c0f9464764032109f6194fd0b5fdc6c574ce747bf322f6",
+      "built": "2026-10-24"
+    },
+    "sfx/shield_down.mp3": {
+      "id": "shield_down",
+      "what": "The hero's shield is gone (a warning, with the red edge)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A personal energy shield collapses: a descending electric warble that breaks up with a crackle and fizzles out, a warning, sci-fi, no music.",
+          "seconds": 1.2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:40.251Z",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "04f55daf9ac928b5b080f967bbfc03036bf5b4f73a7d17969ecc81ac06b6cc89",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.2,
+        "gainDb": -5.5,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -3.7,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.2,
+      "bytes": 15046,
+      "sha256": "66224837530c37d1297503e6673d82874568491f9c1f890e43a61f4531a9747c",
+      "built": "2026-10-24"
+    },
+    "sfx/shield_hit.mp3": {
+      "id": "shield_hit",
+      "what": "A hit on the hero's shield",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "OpenGameArt",
+          "pack": "Space Ship Shield Sounds",
+          "author": "bart",
+          "page": "https://opengameart.org/content/space-ship-shield-sounds",
+          "file": "space shield sounds - 3.wav",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "tried": "Kenney's forceField_003 (Sci-Fi Sounds) and two ElevenLabs takes; side by side, Gemini 3.1 Pro judged them too retro or too heavy, and this CC0 sound the best fit (24 October 2026).",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 9,
+        "loudness": "-16.5 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.043,
+      "bytes": 13165,
+      "sha256": "ad38b89f287c8201144bcca3ad67bd7ed9ee26ce3628d3cd0931d9f4614df62a",
+      "built": "2026-10-24"
+    },
+    "sfx/step_1.mp3": {
+      "id": "step_1",
+      "what": "A walking footstep on a metal deck (one of four, chosen at random)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/footstep_concrete_004.ogg",
+          "licence": "CC0-1.0"
+        },
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactPlate_light_000.ogg",
+          "gainDb": -9,
+          "licence": "CC0-1.0"
+        }
+      ],
+      "tried": "footstep_concrete_000 with impactPlate_light_000 was heard as a small metal clink; footstep_concrete_004 with the same plate won a four-way side-by-side by Gemini 3.1 Pro (24 October 2026).",
+      "processing": {
+        "filter": "highpass=f=70",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 4,
+        "loudness": "-27.2 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.25,
+      "bytes": 3761,
+      "sha256": "7be3db5b45e471acc0927a48272815aa06836889654b5b5b086a7554f107a83c",
+      "built": "2026-10-24"
+    },
+    "sfx/step_2.mp3": {
+      "id": "step_2",
+      "what": "A walking footstep on a metal deck (two of four)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/footstep_concrete_001.ogg",
+          "licence": "CC0-1.0"
+        },
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactPlate_light_001.ogg",
+          "gainDb": -9,
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=70",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 5.4,
+        "loudness": "-26.7 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.35,
+      "bytes": 5015,
+      "sha256": "e48719bab51aab0b6c64c11f94c0f4b3bfa7f036a48114b199c42a72e97f3b38",
+      "built": "2026-10-24"
+    },
+    "sfx/step_3.mp3": {
+      "id": "step_3",
+      "what": "A walking footstep on a metal deck (three of four)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/footstep_concrete_002.ogg",
+          "licence": "CC0-1.0"
+        },
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactPlate_light_002.ogg",
+          "gainDb": -9,
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=70",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 6.4,
+        "loudness": "-25.8 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.241,
+      "bytes": 3761,
+      "sha256": "406c5069eaba20ab3e8abc28ed60e2a75a01d91d7e3fc385f408c82cb28a4c87",
+      "built": "2026-10-24"
+    },
+    "sfx/step_4.mp3": {
+      "id": "step_4",
+      "what": "A walking footstep on a metal deck (four of four)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/footstep_concrete_003.ogg",
+          "licence": "CC0-1.0"
+        },
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactPlate_light_003.ogg",
+          "gainDb": -9,
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=70",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 4.5,
+        "loudness": "-26.4 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.244,
+      "bytes": 3761,
+      "sha256": "16d663f29f0093baf741d08db5e4aa1a19bd09fcd0c3cbe73957821522d73041",
+      "built": "2026-10-24"
+    },
+    "sfx/stim.mp3": {
+      "id": "stim",
+      "what": "Stim Burst: the world slows for the hero",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A combat stimulant takes effect: one deep heartbeat thump, then a slow, deep whoosh as time seems to slow down, with a low stretched rumble, no music.",
+          "seconds": 2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:23.810Z",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "357ac11451d35b1537aab150af7147d8c513f11f21b0e5e5a4f1af3c32b231ef",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": 0.6,
+        "loudness": "-18.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.686,
+      "bytes": 21002,
+      "sha256": "09162bb5a4c8a740cb9e66f040113f418a017bb9dc48eba190704925b064b139",
+      "built": "2026-10-24"
+    },
+    "sfx/tender_down.mp3": {
+      "id": "tender_down",
+      "what": "The tender destroyed: the hangar's last stand ends",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A large flying machine the size of a van explodes inside a hangar: a huge, deep blast with a crackling electrical burst, heavy metal debris crashing down and a long rumbling echo, no music.",
+          "seconds": 3,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:46:54.344743Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "61a02e4f9de5c1b7ba49a9fe3dd18c0a05e4363253e77c2f4a94d13ade94a0ff",
+          "aiGenerated": true
+        }
+      ],
+      "tried": "Kenney's explosionCrunch_003, lowFrequency_explosion_000, explosionCrunch_004 and impactMetal_001 layered (Sci-Fi Sounds), first choice under D-45; set beside two ElevenLabs takes and judged by Gemini 3.1 Pro listening (asked twice, in opposite orders) as too synthetic or retro for the semi-realistic look (D-22), 24 October 2026.",
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.5,
+        "gainDb": -2.9,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -3.7,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 2.693,
+      "bytes": 33227,
+      "sha256": "3baa594477dac36af5bee3a6a52f59d3b1edc38fdf339713dadc30be9fc54966",
+      "built": "2026-10-24"
+    },
+    "sfx/tender_spawn.mp3": {
+      "id": "tender_spawn",
+      "what": "The tender releases motes in threes",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Three small drones launch one after another from a large hovering machine: a heavy hatch clunk, then three quick, rising electric whirs in a row, sci-fi, no music.",
+          "seconds": 2.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:55:28.958Z",
+          "candidate": 3,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "224f3c5125f26441c909efde3471f0b189ae58c504741c249f258a14ab3d21f4",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.2,
+        "gainDb": 6.7,
+        "loudness": "-18.7 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 2.48,
+      "bytes": 30406,
+      "sha256": "47fb1a2aaf8889ad75b8b8f3630a8df37928e1e9c9ea52072d23a145285c14e8",
+      "built": "2026-10-24"
+    },
+    "sfx/ui_choice.mp3": {
+      "id": "ui_choice",
+      "what": "A dialogue choice is chosen",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Interface Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/interface-sounds",
+          "file": "Audio/glass_001.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.02,
+        "gainDb": 4,
+        "loudness": "-17.5 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.273,
+      "bytes": 4075,
+      "sha256": "4149830def270767aef1d428b39010be12924d61e8fb05a2fbd8d62aaff69a26",
+      "built": "2026-10-24"
+    },
+    "sfx/ui_click.mp3": {
+      "id": "ui_click",
+      "what": "Any button or menu press",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "UI Audio 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/ui-audio",
+          "file": "Audio/click1.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.02,
+        "gainDb": 3.5,
+        "loudness": "-26.8 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.091,
+      "bytes": 1880,
+      "sha256": "cd9d643b6e32765d575f2f9ebd7bc18cbd49194f9a43090b97ab5971018175c3",
+      "built": "2026-10-24"
+    },
+    "sfx/veil.mp3": {
+      "id": "veil",
+      "what": "Veil: the light-bending cloak",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A light-bending cloak activates: a soft, airy, glassy shimmer that sweeps upward and fades into a faint crystalline hiss, sci-fi, no music.",
+          "seconds": 1.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-24T20:15:24.275Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "4fc937db2955041a1731bf4ca87d4796eb7c9a1d99a122b442770da8e059a0db",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.3,
+        "gainDb": 18.2,
+        "loudness": "-16 LUFS momentary maximum",
+        "peakDb": -6.4,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.385,
+      "bytes": 17554,
+      "sha256": "96c64af97d289217a635b05e82f331ec0d28f1bc76f2395dfa0ba615565f0093",
+      "built": "2026-10-24"
+    },
+    "sfx/wind.mp3": {
+      "id": "wind",
+      "what": "Outside on the catwalk: thin, cold wind (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Cold, thin wind gusting across an exposed metal catwalk outside a station: a steady hollow howl with occasional stronger gusts and a faint whistle through the railings, constant, no music.",
+          "seconds": 15,
+          "loop": true,
+          "promptInfluence": 0.5,
+          "made": "2026-10-24T20:15:36.400Z",
+          "candidate": 1,
+          "of": 2,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "556f14339b844fb21b65b42802199c74b00d6bb4dac86d971613571952c513ca",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 0.66,
+            "levelStepDb": 0.59,
+            "usualStepDb": 1.9
+          },
+          "crossfadeSeconds": 0,
+          "why": "the generator's own join measured clean and is kept"
+        },
+        "gainDb": 17.1,
+        "loudness": "-18.3 LUFS integrated",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 15.2,
+      "bytes": 183066,
+      "sha256": "582f7f57b3113f61867f75fa808edbc74538053ab6c0495de5bcce5796f05d34",
+      "built": "2026-10-24"
+    }
+  }
+}

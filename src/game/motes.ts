@@ -50,7 +50,8 @@ export interface Swarm extends TargetGroup {
 
 /** Something the swarm did that can be heard. */
 export interface SwarmEvent {
-  kind: 'fire' | 'impact' | 'charge' | 'beam' | 'down' | 'spawn';
+  /** `whizz`: a bolt went by the hero's head without hitting. */
+  kind: 'fire' | 'impact' | 'charge' | 'beam' | 'down' | 'spawn' | 'whizz';
   machine: MachineKind;
   at: Vector3;
 }
@@ -119,6 +120,8 @@ interface Bolt {
   life: number;
   from: Vector3;
   damage: number;
+  /** It has gone close by the hero once already. */
+  whizzed: boolean;
 }
 
 const chestOf = (feet: Vector3, height: number) => feet.add(new Vector3(0, height * 0.65, 0));
@@ -301,7 +304,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     mesh.material = boltGlow;
     mesh.isPickable = false;
     mesh.setEnabled(false);
-    return { mesh, velocity: Vector3.Zero(), life: 0, from: Vector3.Zero(), damage: 0 };
+    return { mesh, velocity: Vector3.Zero(), life: 0, from: Vector3.Zero(), damage: 0, whizzed: false };
   });
   const sparks = Array.from({ length: 8 }, (_, i) => {
     const mesh = CreateSphere(`bolt-spark-${i}`, { diameter: 0.25, segments: 6 }, scene);
@@ -370,6 +373,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     bolt.life = BOLT.life;
     bolt.from = from;
     bolt.damage = damage;
+    bolt.whizzed = false;
     fired += 1;
     heard('fire', m.kind, from);
   };
@@ -719,6 +723,18 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
           continue;
         }
         bolt.mesh.position.copyFrom(b);
+        // A near miss is heard going by: the closest the bolt came to the hero's head this step.
+        const hero = standing.find((t) => t.id === 'hero');
+        if (hero && !bolt.whizzed) {
+          const head = hero.feet.add(new Vector3(0, hero.height * 0.85, 0));
+          const ab = b.subtract(a);
+          const t = Math.min(1, Math.max(0, Vector3.Dot(head.subtract(a), ab) / Math.max(1e-6, ab.lengthSquared())));
+          const near = Vector3.Lerp(a, b, t);
+          if (Vector3.Distance(near, head) < 1.3) {
+            bolt.whizzed = true;
+            heard('whizz', 'mote', near);
+          }
+        }
         if (bolt.life <= 0) bolt.mesh.setEnabled(false);
       }
       for (const s of sparks) {
