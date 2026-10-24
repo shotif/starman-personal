@@ -110,7 +110,7 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   await teleport(page, 58, 31, Math.PI / 2);
   await win(page, 'catwalk');
   await teleport(page, 93.6, 31.2, Math.PI / 2, 3);
-  await expect(body).toHaveAttribute('data-prompt', 'Turn the relay');
+  await expect(body).toHaveAttribute('data-prompt', 'Turn the relay', { timeout: 15_000 });
   await page.screenshot({ path: testInfo.outputPath('3-mast.png') });
   await page.keyboard.press('KeyE');
   await expect(body).toHaveAttribute('data-objective', 'Get back to the clinic', { timeout: 30_000 });

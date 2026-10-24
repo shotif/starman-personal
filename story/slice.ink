@@ -151,6 +151,11 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> objective Get through the concourse
 >>> marker concourse
 >>> hint orders
+{ asked_files:
+    Lightkeeper's eyes only. Hale's sat on that for thirty years, and it came for him anyway. #speaker: Ren #line: ren_walk_files
+- else:
+    One ship, one gate, and all of that in between. Stay close, Officer. #speaker: Ren #line: ren_walk_gate
+}
 -> concourse
 
 = concourse
@@ -204,6 +209,7 @@ That's the last of them. For now. #speaker: Ren #line: ren_concourse_02
 >>> wait enter:catwalk
 Out in the open. Stay low, use what cover there is. #speaker: Ren #line: ren_catwalk_01
 >>> encounter catwalk
+Thousands of them round the star, and they still sent some down for a beacon station. Why us? #speaker: Ren #line: ren_catwalk_02
 >>> objective Turn the relay by hand
 >>> marker relay
 >>> use relay relay Turn the relay
@@ -250,6 +256,7 @@ Something's at the clinic door. It's at the— Officer, they're inside! #speaker
 Movement! Get them down! #speaker: Ren #line: ren_escort_01
 >>> encounter escort
 I tried the Merrow. Nothing. They'll be in it before they hear us. #speaker: Pell #line: pell_escort_01
+Keep walking, all of you. Eyes on the officer's back. Don't look up. #speaker: Dena #line: dena_escort_04
 -> gate
 
 = gate
