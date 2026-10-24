@@ -142,6 +142,46 @@ test('orders: Ren attacks a drone until it is down', async ({ page }, testInfo) 
   await page.screenshot({ path: testInfo.outputPath('attack.png') });
 });
 
+test('talking to Ren: every line and choice, to the end', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('./?play');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  const phone = testInfo.project.name === 'phone';
+  // The hero starts beside Ren, so the prompt is there from the start.
+  if (phone) await page.getByRole('button', { name: 'Talk' }).tap();
+  else {
+    await expect(page.getByText('Talk to Ren')).toBeVisible();
+    await page.keyboard.press('KeyE');
+  }
+  const body = page.locator('body');
+  await expect(body).toHaveAttribute('data-talking', 'true');
+  if (phone) await expect(page.getByRole('button', { name: 'Fire' })).toBeHidden();
+  const heard: string[] = [];
+  for (let step = 0; step < 20; step += 1) {
+    if ((await body.getAttribute('data-talking')) === 'false') break;
+    const line = (await body.getAttribute('data-line')) ?? '';
+    heard.push(line);
+    if (step === 0) await page.screenshot({ path: testInfo.outputPath('talking.png') });
+    // A tap is ignored for a moment after a new line, so one meant for the line before cannot skip it.
+    await page.waitForTimeout(400);
+    if (line === 'choices') {
+      if (heard.filter((l) => l === 'choices').length === 1) {
+        await page.screenshot({ path: testInfo.outputPath('choosing.png') });
+      }
+      if (phone) await page.locator('.dialogue__choice').first().tap();
+      else await page.keyboard.press('Digit1');
+    } else if (phone) await page.locator('.dialogue--line').tap();
+    else await page.keyboard.press('Space');
+    await expect(body).not.toHaveAttribute('data-line', line);
+  }
+  expect(heard.slice(0, 4)).toEqual(['ren_range_01', 'choices', 'hero_range_02a', 'ren_range_03a']);
+  expect(heard).toContain('ren_range_06');
+  await expect(body).toHaveAttribute('data-talking', 'false');
+  if (phone) await expect(page.getByRole('button', { name: 'Fire' })).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test('the creator makes a hero, who then plays', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));

@@ -14,12 +14,20 @@ const LOOK_SCALE = 1.5;
 export function TouchControls({
   input,
   commanding,
+  talking,
+  canTalk,
   onOrders,
+  onTalk,
 }: {
   input: Input;
   /** In the command view only the look area stays, to point the crosshair. */
   commanding: boolean;
+  /** In a conversation none of the controls show; the conversation takes the screen. */
+  talking: boolean;
+  /** Someone to talk to is within reach. */
+  canTalk: boolean;
   onOrders: () => void;
+  onTalk: () => void;
 }) {
   const stickFinger = useRef<number | null>(null);
   const stickOrigin = useRef({ x: 0, y: 0 });
@@ -110,6 +118,7 @@ export function TouchControls({
     setFiring(false);
   };
 
+  if (talking) return null;
   return (
     <div class="touch">
       {!commanding && (
@@ -156,6 +165,18 @@ export function TouchControls({
           >
             Orders
           </button>
+          {canTalk && (
+            <button
+              type="button"
+              class="touch__talk"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                onTalk();
+              }}
+            >
+              Talk
+            </button>
+          )}
           <button
             type="button"
             class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}

@@ -6,6 +6,7 @@ import { locomotionWeights, SPEED, type Vec2 } from './motion.ts';
  */
 export const CLIPS = [
   'idle',
+  'idle_talk',
   'walk',
   'jog',
   'sprint',
@@ -28,7 +29,9 @@ export type PoseState =
   /** Aiming: walking in any direction (x right, y forward, relative to the hero) with the arms up. */
   | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean }
   /** In low cover, facing it; `slide` is -1 (left) to 1 (right) along it. */
-  | { mode: 'cover'; slide: number };
+  | { mode: 'cover'; slide: number }
+  /** In a conversation: standing, gesturing while speaking (DIALOGUE.md). */
+  | { mode: 'talk'; speaking: boolean };
 
 export interface Pose {
   /** The whole body, or the legs and hips when `upper` is set. */
@@ -66,6 +69,9 @@ export function poseWeights(state: PoseState): Pose {
   if (state.mode === 'move') {
     const w = locomotionWeights(state.speed);
     return { lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint }, upper: null };
+  }
+  if (state.mode === 'talk') {
+    return { lower: state.speaking ? { idle_talk: 1 } : { idle: 1 }, upper: null };
   }
   if (state.mode === 'cover') {
     const s = Math.max(-1, Math.min(1, state.slide));

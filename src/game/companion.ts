@@ -24,6 +24,8 @@ export interface Companion {
   order(order: Order): void;
   /** Slows her walking with the rest of the game, for the command view. */
   setTimeFactor(factor: number): void;
+  /** In a conversation (DIALOGUE.md): she stops, faces this point and gestures while speaking; null ends it. */
+  converse(facing: Vector3 | null, speaking: boolean): void;
   update(dt: number, heroFeet: Vector3, heroForward: Vector3): void;
 }
 
@@ -87,6 +89,7 @@ export async function spawnCompanion(
 
     let sinceDecision = DECIDE_EVERY;
     let goal: Vector3 | null = null;
+    let talking: { facing: Vector3; speaking: boolean } | null = null;
     let shootAt: number | null = null;
     let cooldown = 0;
     let shotPose = 0;
@@ -135,8 +138,19 @@ export async function spawnCompanion(
       setTimeFactor(factor) {
         navigation.timeFactor = factor;
       },
+      converse(facing, speaking) {
+        if (facing && !talking) stop(crowd.getAgentPosition(agent));
+        talking = facing ? { facing, speaking } : null;
+      },
       update(dt, heroFeet, heroForward) {
         const here = crowd.getAgentPosition(agent);
+        if (talking) {
+          const towards = talking.facing.subtract(here);
+          yaw = turnTowards(yaw, yawOf(towards), 8 * dt);
+          character.root.rotation.y = yaw;
+          character.setPose(poseWeights({ mode: 'talk', speaking: talking.speaking }), dt);
+          return;
+        }
         sinceDecision += dt;
         if (sinceDecision >= DECIDE_EVERY) {
           sinceDecision = 0;
@@ -206,6 +220,7 @@ export async function spawnCompanion(
         say(order.kind === 'follow' ? 'With you.' : "I can't reach that.");
       },
       setTimeFactor() {},
+      converse() {},
       update(dt, heroFeet, heroForward) {
         const goal = heroFeet.subtract(heroForward.scale(1.8));
         const offset = goal.subtract(character.root.position);

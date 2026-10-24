@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import proof from '../../story/proof.ink';
+import { Conversation } from '../game/conversation.ts';
 import type { Renderer } from '../game/engine.ts';
 import type { Game, GameStats, OrderKind } from '../game/game.ts';
 import { classOf } from '../game/hero.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
+import { Dialogue } from './Dialogue.tsx';
 import { isTouch, QUALITY_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
@@ -29,6 +32,10 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
   /** The command view's state for the key handler, which may run before the screen re-renders. */
   const commandingNow = useRef(false);
   const [line, setLine] = useState<{ name: string; text: string; id: number } | null>(null);
+  const [canTalk, setCanTalk] = useState(false);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
+  /** Whether a conversation is open, for the key handler, as `commandingNow` is for the command view. */
+  const talkingNow = useRef(false);
   const touch = isTouch();
 
   useEffect(() => {
@@ -45,6 +52,7 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           manifest,
           assist: isTouch(),
           onAim: setAiming,
+          onCanTalk: setCanTalk,
           onSay: (name, text) => {
             setLine({ name, text, id: performance.now() });
             // For the browser journeys: the last thing the companion said.
@@ -97,11 +105,36 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
     setCommanding(false);
   };
 
-  // On a desktop: Q (or Tab) opens and closes the command view; 1, 2 and 3 give the orders.
+  const talk = () => {
+    if (talkingNow.current || !game?.startConversation()) return;
+    talkingNow.current = true;
+    setLine(null);
+    setConversation(
+      new Conversation(proof, 'ren_range', {
+        name: looks.name,
+        heroClass: looks.heroClass,
+        origin: looks.origin,
+        moment: looks.moment,
+      }),
+    );
+  };
+  const endTalk = () => {
+    game?.endConversation();
+    talkingNow.current = false;
+    setConversation(null);
+  };
+
+  // On a desktop: E talks; Q (or Tab) opens and closes the command view; 1, 2 and 3 give the orders.
   useEffect(() => {
     if (!game) return;
     const keys = (e: KeyboardEvent) => {
-      if (e.code === 'KeyQ' || e.code === 'Tab') {
+      if (talkingNow.current) {
+        // The conversation reads its own keys; Tab must not leave the page mid-line.
+        if (e.code === 'Tab') e.preventDefault();
+        return;
+      }
+      if (e.code === 'KeyE' && !commandingNow.current) talk();
+      else if (e.code === 'KeyQ' || e.code === 'Tab') {
         e.preventDefault();
         openCommand(!commandingNow.current);
       } else if (commandingNow.current) {
@@ -158,14 +191,28 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           <p class="notice__detail">{status.message}</p>
         </div>
       )}
-      {status.kind === 'ready' && (
+      {status.kind === 'ready' && !conversation && (
         <p class="hint">
           {touch
             ? 'Left thumb moves · right thumb looks · walk into a crate for cover · Aim, then Fire · Orders for Ren'
             : 'Click to look · WASD to move · Shift to run · walk into a crate for cover · right mouse aims, left fires · Q gives Ren orders'}
         </p>
       )}
-      {(aiming || commanding) && <div class="crosshair" aria-hidden="true" />}
+      {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
+      {canTalk && !conversation && !commanding && !touch && (
+        <p class="talk-prompt">
+          <kbd>E</kbd>Talk to Ren
+        </p>
+      )}
+      {conversation && (
+        <Dialogue
+          conversation={conversation}
+          heroName={looks.name || 'You'}
+          touch={touch}
+          onSpeaker={(who) => game?.setSpeaker(who)}
+          onEnd={endTalk}
+        />
+      )}
       {line && (
         <p class="said" key={line.id} role="status">
           <span class="said__name">{line.name}:</span> {line.text}
@@ -190,7 +237,16 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           </div>
         </div>
       )}
-      {touch && game && <TouchControls input={game.input} commanding={commanding} onOrders={() => openCommand(true)} />}
+      {touch && game && (
+        <TouchControls
+          input={game.input}
+          commanding={commanding}
+          talking={conversation !== null}
+          canTalk={canTalk}
+          onOrders={() => openCommand(true)}
+          onTalk={talk}
+        />
+      )}
     </main>
   );
 }

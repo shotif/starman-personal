@@ -107,6 +107,14 @@ export class Input {
     return this.fireTouch || this.fireMouse;
   }
 
+  /** Lets go of everything held, and frees the mouse: a conversation needs the pointer for its choices. */
+  release(): void {
+    this.stick = { x: 0, y: 0 };
+    this.fireTouch = false;
+    this.fireMouse = false;
+    if (document.pointerLockElement === this.canvas) document.exitPointerLock();
+  }
+
   dispose(): void {
     this.abort.abort();
     if (document.pointerLockElement === this.canvas) document.exitPointerLock();

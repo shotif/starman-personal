@@ -63,6 +63,11 @@ export interface Game {
   setCommandView(open: boolean): void;
   /** Gives the companion an order about what the crosshair points at, and closes the command view. */
   order(kind: OrderKind): void;
+  /** Starts a conversation with the companion if she is close enough (DIALOGUE.md). */
+  startConversation(): boolean;
+  /** Who is speaking now, so they gesture and the camera knows. */
+  setSpeaker(who: 'hero' | 'partner' | null): void;
+  endConversation(): void;
   dispose(): void;
 }
 
@@ -80,11 +85,15 @@ export interface GameOptions {
   onAim(aiming: boolean): void;
   /** A companion says something (ORDERS.md). */
   onSay(name: string, line: string): void;
+  /** Called when someone to talk to comes within reach, or leaves it. */
+  onCanTalk(canTalk: boolean): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
 const CAPSULE_RADIUS = 0.35;
 const GRAVITY = new Vector3(0, -18, 0);
+/** How near the hero must be to talk to someone; Ren, following, stays within 2.6 m (ORDERS). */
+const TALK_REACH = 3;
 const UP = Vector3.Up();
 const DOWN = Vector3.Down();
 const CAMERA = { minDistance: 0.9, eye: 1.55, coverEye: 1.05, minBeta: 0.55, maxBeta: 1.85, fov: 0.95, aimFov: 0.72 };
@@ -164,6 +173,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     (line) => options.onSay('Ren', line),
   );
   let commanding = false;
+  /** A conversation in progress (DIALOGUE.md), and who is speaking. */
+  let talking: { speaker: 'hero' | 'partner' | null } | null = null;
+  let couldTalk = false;
 
   /** The camera's view: where it is and where it looks. */
   const view = () => {
@@ -244,8 +256,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   scene.onBeforeRenderObservable.add(() => {
     // In the command view time nearly stops: the game's rules run slow, the camera does not.
-    const dt = Math.min(engine.getDeltaTime() / 1000, 0.1) * (commanding ? COMMAND_TIME : 1);
-    const aiming = !commanding && (input.aiming || input.firing);
+    const real = Math.min(engine.getDeltaTime() / 1000, 0.1);
+    const dt = real * (commanding ? COMMAND_TIME : 1);
+    // In the command view or a conversation, the player's movement and shots wait.
+    const held = commanding || talking !== null;
+    const aiming = !held && (input.aiming || input.firing);
+    const toPartner = companion.root.position.subtract(hero.root.position);
     if (aiming !== wasAiming) {
       wasAiming = aiming;
       options.onAim(aiming);
@@ -253,13 +269,22 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // Look: drag or mouse turns the camera round the hero, more finely while aiming.
     const look = input.takeLook();
-    const fine = aiming ? 0.6 : 1;
-    camera.alpha -= look.x * 0.0055 * fine;
-    camera.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, camera.beta - look.y * 0.0045 * fine));
+    if (talking) {
+      // In a conversation the camera swings round behind the hero to frame the other speaker.
+      let turn = (Math.atan2(-toPartner.z, -toPartner.x) - camera.alpha) % (Math.PI * 2);
+      if (turn > Math.PI) turn -= Math.PI * 2;
+      if (turn < -Math.PI) turn += Math.PI * 2;
+      camera.alpha += turn * Math.min(1, real * 4);
+      camera.beta += (1.42 - camera.beta) * Math.min(1, real * 4);
+    } else {
+      const fine = aiming ? 0.6 : 1;
+      camera.alpha -= look.x * 0.0055 * fine;
+      camera.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, camera.beta - look.y * 0.0045 * fine));
+    }
 
     // Move: relative to where the camera looks.
     const forward: Vec3Like = { x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) };
-    const move = commanding ? { x: 0, y: 0 } : input.move();
+    const move = held ? { x: 0, y: 0 } : input.move();
     const push = Math.min(1, Math.hypot(move.x, move.y));
     const direction = cameraRelative(move, forward);
     const length = Math.hypot(direction.x, direction.z);
@@ -283,7 +308,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     const velocity = controller.getVelocity();
     const groundSpeed = Math.hypot(velocity.x, velocity.z);
-    if (aiming) {
+    if (talking) {
+      desired.set(0, 0, 0);
+      heroYaw = turnTowards(heroYaw, yawOf({ x: toPartner.x, z: toPartner.z }), 8 * dt);
+      hero.setPose(poseWeights({ mode: 'talk', speaking: talking.speaker === 'hero' }), dt);
+    } else if (aiming) {
       // Aiming: face where the camera looks and walk in any direction; from cover, stand and aim.
       const speed = cover.inCover ? 0 : SPEED.walk * push;
       desired.set(unit.x * speed, 0, unit.z * speed);
@@ -320,17 +349,22 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // Shoot: where the crosshair points, or at the nearest drone near it with aim assist.
     fireCooldown -= dt;
     shotPose -= dt;
-    if (!commanding && input.firing && fireCooldown <= 0) {
+    if (!held && input.firing && fireCooldown <= 0) {
       fireCooldown = FIRE_INTERVAL;
       shoot();
     }
     range.update(dt);
+    ren.converse(talking ? hero.root.position.clone() : null, talking?.speaker === 'partner');
     ren.update(dt, hero.root.position, heroForward);
+    const near = !held && Math.hypot(toPartner.x, toPartner.z) < TALK_REACH;
+    if (near !== couldTalk) {
+      couldTalk = near;
+      options.onCanTalk(near);
+    }
 
     // Camera: over the right shoulder, closer while aiming or giving orders and lower in cover,
     // pulled in when a wall is in the way. On a portrait phone it stands further back.
-    const real = Math.min(engine.getDeltaTime() / 1000, 0.1);
-    aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
+    aimBlend = lerp(aimBlend, aiming || commanding ? 1 : talking ? 0.6 : 0, Math.min(1, real * 9));
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
@@ -426,6 +460,18 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   return {
     input,
     setCommandView,
+    startConversation() {
+      if (!couldTalk || commanding) return false;
+      input.release();
+      talking = { speaker: null };
+      return true;
+    },
+    setSpeaker(who) {
+      if (talking) talking.speaker = who;
+    },
+    endConversation() {
+      talking = null;
+    },
     order,
     dispose() {
       window.removeEventListener('resize', onResize);

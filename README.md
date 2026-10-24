@@ -15,9 +15,10 @@ No names, text, art or data from *Mass Effect* are used. See
 It is made to be **completely playable on a phone, with a dedicated desktop experience**, and is
 published on GitHub Pages.
 
-**Status: the first proof.** The decisions so far are in [docs/DECISIONS.md](docs/DECISIONS.md).
-The first proof ([docs/design/PROOF.md](docs/design/PROOF.md)) is a station corridor with a
-hero you move and a companion who follows. Try it on a phone or a desktop at
+**Status: the proofs.** The decisions so far are in [docs/DECISIONS.md](docs/DECISIONS.md).
+The proofs are a station corridor and a practice range: a hero you make in the character creator,
+cover and aim, a companion you give orders to, and a conversation with her. Try them on a phone or
+a desktop at
 <https://shotif.github.io/starman-personal/> (the repository keeps its first name).
 
 ## Run it
@@ -44,6 +45,13 @@ Every push to `main` is published to GitHub Pages by `.github/workflows/pages.ym
 | [docs/research/STARMAN_UNIVERSE.md](docs/research/STARMAN_UNIVERSE.md) | What Starman Reborn and Starman Control already establish, and what we can reuse |
 | [docs/research/TECH_STACK.md](docs/research/TECH_STACK.md) | The 3D engines compared, and a recommendation |
 | [docs/design/PROOF.md](docs/design/PROOF.md) | The first proof: what it must show on a phone, and how it is built |
+| [docs/design/COVER_AND_AIM.md](docs/design/COVER_AND_AIM.md) | The second proof: cover, aim and the practice range |
+| [docs/design/ORDERS.md](docs/design/ORDERS.md) | The third proof: objectives for a companion, not control |
+| [docs/design/DIALOGUE.md](docs/design/DIALOGUE.md) | The fourth proof: conversations written in ink, on a phone and a desktop |
+| [docs/design/CREATOR.md](docs/design/CREATOR.md) | The character creator |
+| [docs/design/CLASSES_AND_ORIGINS.md](docs/design/CLASSES_AND_ORIGINS.md) | Classes, powers and origins |
+| [docs/design/STORY.md](docs/design/STORY.md) | The story: a proposal, awaiting the owner (D-36 to D-41) |
+| [docs/design/STYLE_TEST.md](docs/design/STYLE_TEST.md) | Where the hard-surface art comes from: Meshy against trellis.cpp |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How people, animations and models are made, recorded and licensed |
 | [docs/research/OPEN_SOURCE.md](docs/research/OPEN_SOURCE.md) | Open-source models, animations, generators and code we can reuse, with their licences |
 | [CLAUDE.md](CLAUDE.md) | How we work: documentation first, decisions by the owner, style rules |

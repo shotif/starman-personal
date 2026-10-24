@@ -673,3 +673,154 @@ body {
   font-size: 12px;
   opacity: 0.85;
 }
+
+.touch__talk {
+  position: absolute;
+  right: calc(var(--safe-right) + 104px);
+  bottom: calc(var(--safe-bottom) + 118px);
+  min-width: 68px;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--accent);
+  border: 0;
+  touch-action: none;
+}
+
+.talk-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 56px);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 14px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.talk-prompt kbd,
+.dialogue kbd {
+  padding: 1px 6px;
+  font:
+    12px ui-monospace,
+    monospace;
+  color: var(--ink-dim);
+  border: 1px solid var(--panel-edge);
+  border-radius: 4px;
+}
+
+.talk-prompt kbd {
+  margin-right: 6px;
+}
+
+/* A conversation: the scene stays, with subtitles over a darkened foot of the screen. */
+.dialogue {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 28px) calc(var(--safe-left) + 16px);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent 42%);
+  z-index: 5;
+}
+
+.dialogue--line {
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: var(--ink);
+  text-align: inherit;
+  cursor: pointer;
+}
+
+.dialogue__subtitle {
+  margin: 0;
+  max-width: min(680px, 100%);
+  font-size: 18px;
+  line-height: 1.45;
+  text-align: center;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.9);
+}
+
+.dialogue__name {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.dialogue__name--hero {
+  color: var(--ink-dim);
+}
+
+.dialogue__next {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-dim);
+  opacity: 0.8;
+}
+
+.dialogue__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(560px, 100%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dialogue__choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dialogue__choice:hover,
+.dialogue__choice:focus-visible {
+  border-color: var(--accent);
+}
+
+.dialogue__manner {
+  flex: none;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid currentcolor;
+}
+
+.dialogue__manner--mercy {
+  color: #8fd3a8;
+}
+
+.dialogue__manner--resolve {
+  color: #f0b46b;
+}
+
+.dialogue__manner--ask {
+  color: var(--accent);
+}
