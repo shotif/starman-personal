@@ -1,38 +1,28 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import type { Renderer } from '../game/engine.ts';
 import type { Game, GameStats, OrderKind } from '../game/game.ts';
-import { chooseQuality, isQualityTier, nextTier, type QualityTier } from '../game/quality.ts';
+import type { Looks, Manifest } from '../game/looks.ts';
+import { nextTier, type QualityTier } from '../game/quality.ts';
+import { isTouch, QUALITY_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
-
-const QUALITY_KEY = 'lightkeeper.quality';
-
-function isTouch(): boolean {
-  return matchMedia('(pointer: coarse)').matches;
-}
-
-function savedTier(): QualityTier | null {
-  try {
-    const value = localStorage.getItem(QUALITY_KEY);
-    return isQualityTier(value) ? value : null;
-  } catch {
-    return null;
-  }
-}
-
-function startingTier(): QualityTier {
-  const fromAddress = new URLSearchParams(location.search).get('quality');
-  if (isQualityTier(fromAddress)) return fromAddress;
-  const nav = navigator as Navigator & { deviceMemory?: number };
-  return savedTier() ?? chooseQuality({ touch: isTouch(), memoryGb: nav.deviceMemory, cores: nav.hardwareConcurrency });
-}
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
 
-export function App() {
+export interface GameViewProps {
+  looks: Looks;
+  manifest: Manifest;
+  tier: QualityTier;
+  renderer: Renderer;
+  /** Back to the character creator. */
+  onChangeHero(): void;
+}
+
+/** The proof: the corridor, the hero the player made, Ren and the drones. */
+export function GameView({ looks, manifest, tier, renderer, onChangeHero }: GameViewProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [status, setStatus] = useState<Status>({ kind: 'loading' });
   const [stats, setStats] = useState<GameStats | null>(null);
-  const [tier] = useState(startingTier);
   const [aiming, setAiming] = useState(false);
   const [commanding, setCommanding] = useState(false);
   /** The command view's state for the key handler, which may run before the screen re-renders. */
@@ -45,15 +35,13 @@ export function App() {
     if (!element) return;
     let disposed = false;
     let started: Game | null = null;
-    const params = new URLSearchParams(location.search);
-    const renderer = params.get('renderer') === 'webgpu' ? 'webgpu' : 'webgl2';
-    const hero = params.get('hero') === 'woman' ? 'woman' : 'man';
     import('../game/game.ts')
       .then(({ startGame }) =>
         startGame(element, {
           tier,
           renderer,
-          hero,
+          looks,
+          manifest,
           assist: isTouch(),
           onAim: setAiming,
           onSay: (name, text) => {
@@ -88,7 +76,7 @@ export function App() {
       disposed = true;
       started?.dispose();
     };
-  }, [tier]);
+  }, [tier, renderer, looks, manifest]);
 
   // A companion's line stays for a few seconds.
   useEffect(() => {
@@ -127,11 +115,7 @@ export function App() {
   });
 
   const changeQuality = () => {
-    try {
-      localStorage.setItem(QUALITY_KEY, nextTier(tier));
-    } catch {
-      // Storage may be blocked; the change then lasts only for this load.
-    }
+    save(QUALITY_KEY, nextTier(tier));
     const url = new URL(location.href);
     url.searchParams.set('quality', nextTier(tier));
     location.replace(url);
@@ -153,9 +137,14 @@ export function App() {
             {stats.inCover ? 'In cover · ' : ''}Drones down: {stats.dronesDown} of 3
           </p>
         )}
-        <button type="button" class="hud__button" onClick={changeQuality}>
-          Quality: {tier}
-        </button>
+        <div class="hud__row">
+          <button type="button" class="hud__button" onClick={changeQuality}>
+            Quality: {tier}
+          </button>
+          <button type="button" class="hud__button" onClick={onChangeHero}>
+            Change hero
+          </button>
+        </div>
       </header>
       {status.kind === 'loading' && <p class="notice">Loading the station…</p>}
       {status.kind === 'error' && (

@@ -3,11 +3,11 @@
   "props": [
     {
       "output": "public/assets/props/sidearm-trellis.glb",
-      "bytes": 765712,
-      "sha256": "afc13aca76c558e9e81da60723fad5bd55afc8b7da545c2f4970623b8ff23e5b",
+      "bytes": 763536,
+      "sha256": "e016cb946ebc6c5d670a1ab2658b6aa575470cfef3aaeb35715040b503135e5d",
       "triangles": {
         "made": 146226,
-        "shipped": 18198
+        "shipped": 18116
       },
       "textures": "1024 px WebP",
       "concept": "art/out/concepts/sidearm.jpg (Gemini; see art/concepts.json)",
@@ -89,6 +89,52 @@
       }
     },
     {
+      "output": "public/assets/props/helmet-trellis.glb",
+      "bytes": 1347304,
+      "sha256": "1851f7b751e83160626cd57a24e5d8c520041c540d88338ffc17970d923aad37",
+      "triangles": {
+        "made": 140494,
+        "shipped": 28178
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/helmet.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "name": "helmet-trellis",
+        "made": "2026-10-24T16:28:32.740Z",
+        "seconds": 805,
+        "input": {
+          "file": "helmet.jpg",
+          "bytes": 1913908,
+          "sha256": "7eb94d30c38f4035aef420560fb1fd38bd5ecc9b96b49d3c61305d7fa8b25918"
+        },
+        "output": {
+          "file": "art/out/helmet-trellis.glb",
+          "bytes": 5866128,
+          "sha256": "9313cf43790cf65dc7e00d8d89348979604de38a1e0dc801e37c88a9abdca541"
+        },
+        "settings": {
+          "res": 512,
+          "seed": 42,
+          "network": "denied"
+        },
+        "tool": {
+          "name": "trellis.cpp",
+          "version": "v0.8.1",
+          "commit": "c0bed38c1578f7e36e3e50c8ff1e38fa0d47583f"
+        },
+        "weights": {
+          "repository": "ilintar/trellis2-gguf",
+          "revision": "a57397bd3d351599d9729fc144b3f87c3f87d65b"
+        },
+        "licences": [
+          "TRELLIS.2 (Microsoft): MIT",
+          "trellis.cpp: MIT",
+          "DINOv3 image encoder (Meta): DINOv3 Licence; no claim over outputs",
+          "BiRefNet background removal: MIT"
+        ]
+      }
+    },
+    {
       "output": "public/assets/props/helmet-meshy.glb",
       "bytes": 1003020,
       "sha256": "d65d555800844771ab064a6dbb6d0b9b24e0697752f436ecc51a7c4ed724f2ec",
@@ -130,6 +176,52 @@
       }
     },
     {
+      "output": "public/assets/props/locker-trellis.glb",
+      "bytes": 669600,
+      "sha256": "0a835497af59668a36bce9297b45abec5cb1009fd64e3a6c5fdc2ccaa4f4c5f5",
+      "triangles": {
+        "made": 146606,
+        "shipped": 14998
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/locker.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "name": "locker-trellis",
+        "made": "2026-10-24T16:38:55.617Z",
+        "seconds": 623,
+        "input": {
+          "file": "locker.jpg",
+          "bytes": 2528487,
+          "sha256": "7942af05494e621cfab43ccbc9c7a327c19c91b74016aec17b058687dcb4d192"
+        },
+        "output": {
+          "file": "art/out/locker-trellis.glb",
+          "bytes": 5234196,
+          "sha256": "a161571f89e456b34341b9099c94c659ba61229fbf6969945c9f861c41f5eece"
+        },
+        "settings": {
+          "res": 512,
+          "seed": 42,
+          "network": "denied"
+        },
+        "tool": {
+          "name": "trellis.cpp",
+          "version": "v0.8.1",
+          "commit": "c0bed38c1578f7e36e3e50c8ff1e38fa0d47583f"
+        },
+        "weights": {
+          "repository": "ilintar/trellis2-gguf",
+          "revision": "a57397bd3d351599d9729fc144b3f87c3f87d65b"
+        },
+        "licences": [
+          "TRELLIS.2 (Microsoft): MIT",
+          "trellis.cpp: MIT",
+          "DINOv3 image encoder (Meta): DINOv3 Licence; no claim over outputs",
+          "BiRefNet background removal: MIT"
+        ]
+      }
+    },
+    {
       "output": "public/assets/props/locker-meshy.glb",
       "bytes": 759656,
       "sha256": "b96a95edabea4c04086b01cc558abea2b2bfa122102511c2ed7871e897dabcd4",
@@ -168,6 +260,52 @@
           "sha256": "7d27e1f88d04b3d51891b76e2c60885dc61ee8216371cf7b0392854392f88734"
         },
         "licence": "Meshy paid plan: private, the owner's to use commercially"
+      }
+    },
+    {
+      "output": "public/assets/props/terminal-trellis.glb",
+      "bytes": 739016,
+      "sha256": "4801d3e987e3c8f69f61da3efa3401469481502a3b8295409fcbc6a35dc09fc5",
+      "triangles": {
+        "made": 144806,
+        "shipped": 15000
+      },
+      "textures": "1024 px WebP",
+      "concept": "art/out/concepts/terminal.jpg (Gemini; see art/concepts.json)",
+      "made": {
+        "name": "terminal-trellis",
+        "made": "2026-10-24T16:48:15.002Z",
+        "seconds": 559,
+        "input": {
+          "file": "terminal.jpg",
+          "bytes": 1705267,
+          "sha256": "a032efcdace74ecf59e2f34ca1c30ed6daa05f195cc205c37640a8771b5bd021"
+        },
+        "output": {
+          "file": "art/out/terminal-trellis.glb",
+          "bytes": 5284720,
+          "sha256": "f5492e45705e8716a6ba7886f58600bde8483de5751d3e209d080ad5a596dd6e"
+        },
+        "settings": {
+          "res": 512,
+          "seed": 42,
+          "network": "denied"
+        },
+        "tool": {
+          "name": "trellis.cpp",
+          "version": "v0.8.1",
+          "commit": "c0bed38c1578f7e36e3e50c8ff1e38fa0d47583f"
+        },
+        "weights": {
+          "repository": "ilintar/trellis2-gguf",
+          "revision": "a57397bd3d351599d9729fc144b3f87c3f87d65b"
+        },
+        "licences": [
+          "TRELLIS.2 (Microsoft): MIT",
+          "trellis.cpp: MIT",
+          "DINOv3 image encoder (Meta): DINOv3 Licence; no claim over outputs",
+          "BiRefNet background removal: MIT"
+        ]
       }
     },
     {

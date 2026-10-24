@@ -375,6 +375,10 @@ which a public repository does, so we would use CC0 animation libraries instead.
   weights. See [research/OPEN_SOURCE.md](research/OPEN_SOURCE.md) §3. **Installed** on the owner's
   go ("You can install trellis"), 24 October 2026, in `~/tools/trellis-cpp`, every weight file
   checked against its published checksum.
+- **The style test** ([design/STYLE_TEST.md](design/STYLE_TEST.md)), 24 October 2026: four
+  subjects from Gemini concepts (about $0.40), made by both tools: Meshy in 2–3 minutes each for
+  30 credits each, trellis.cpp in 7–13 minutes each on the Mac. Both are in the proof's gallery for
+  the owner to judge on a phone. **Waiting for the owner's verdict.**
 
 ### D-23 · Voices — **Decided**
 
@@ -536,3 +540,9 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-24 | The proof's hero is the **MPFB man** (`?hero=woman` for the woman), and the companion is the other; both at their own heights. The mannequin stays as the fallback | the art pipeline delivered them; the style test needs them |
 | 2026-10-24 | Character files use 16- and 8-bit vertex data (`KHR_mesh_quantization`), which Babylon reads without a decoder; meshopt compression, which needs a decoder, waits until we host one ourselves | the decoder would otherwise come from a CDN |
 | 2026-10-24 | Dialogue and quests to be written in **ink** (MIT), if the engine is agreed | plain text Claude can write and test, with a JavaScript runtime; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) §4 |
+| 2026-10-24 | The proof's companion is called **Ren**, a placeholder until the companions are designed (D-14) | orders need someone to speak; see [design/ORDERS.md](design/ORDERS.md) |
+| 2026-10-24 | In the practice range Ren fires only when ordered | the drones are the player's to shoot; with real enemies she will choose targets herself |
+| 2026-10-24 | Where a file's own licence line contradicts its pack's CC0, the stricter one is followed (AGPL items left out; one CC BY bun credited) | D-28; the packs' metadata and the files disagree |
+| 2026-10-24 | The game opens on the character creator until a hero is saved; `?play` skips it (the browser journeys use it), `?creator` opens it, *Change hero* in the HUD returns to it | [design/CREATOR.md](design/CREATOR.md) |
+| 2026-10-24 | Style test props are shown at about twice life size (sidearm, helmet, terminal) and prepared alike (about 15,000 triangles, 1024 px WebP); trellis.cpp's helmet stops at 28,000 because its many texture seams cannot be simplified across | a fair comparison on a phone; the seams are themselves a finding |
+| 2026-10-24 | `?debug` exposes the hero's state and a teleport for testing; nothing else changes | the browser journeys need to place the hero without walking for minutes on a software renderer |

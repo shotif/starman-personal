@@ -2,6 +2,7 @@ import '@babylonjs/core/Animations/animatable';
 import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup';
 import { AnimationGroupMask, AnimationGroupMaskMode } from '@babylonjs/core/Animations/animationGroupMask';
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
+import type { Skeleton } from '@babylonjs/core/Bones/skeleton';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -32,6 +33,10 @@ export interface Character {
   fire(): void;
   /** Where a shot leaves from: the right hand, in world space. */
   muzzle(): Vector3;
+  /** The skeleton, for parts that bind to it (hair); null for the stand-in. */
+  skeleton: Skeleton | null;
+  /** The node the model's meshes hang from, for parts added later. */
+  model: TransformNode | null;
 }
 
 /** Loads a character model once, to be placed many times. Null when it cannot be loaded. */
@@ -143,6 +148,8 @@ export function spawnCharacter(
     root,
     meshes,
     animated: lower.size > 0,
+    skeleton: entries.skeletons[0] ?? null,
+    model,
     setPose(pose, dt) {
       const t = Math.min(1, dt * 12);
       const legWeights = withIdle(pose.lower, lower);
@@ -182,6 +189,8 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     root,
     meshes,
     animated: false,
+    skeleton: null,
+    model: null,
     setPose() {},
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),

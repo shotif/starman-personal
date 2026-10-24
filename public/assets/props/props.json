@@ -5,24 +5,40 @@
       "tool": "trellis",
       "label": "trellis.cpp (open source)",
       "file": "sidearm-trellis.glb",
-      "size": 0.24,
-      "triangles": 18198
+      "size": 0.48,
+      "triangles": 18116
     },
     {
       "subject": "sidearm",
       "tool": "meshy",
       "label": "Meshy (paid)",
       "file": "sidearm-meshy.glb",
-      "size": 0.24,
+      "size": 0.48,
       "triangles": 14266
+    },
+    {
+      "subject": "helmet",
+      "tool": "trellis",
+      "label": "trellis.cpp (open source)",
+      "file": "helmet-trellis.glb",
+      "size": 0.6,
+      "triangles": 28178
     },
     {
       "subject": "helmet",
       "tool": "meshy",
       "label": "Meshy (paid)",
       "file": "helmet-meshy.glb",
-      "size": 0.36,
+      "size": 0.6,
       "triangles": 14999
+    },
+    {
+      "subject": "locker",
+      "tool": "trellis",
+      "label": "trellis.cpp (open source)",
+      "file": "locker-trellis.glb",
+      "size": 1.25,
+      "triangles": 14998
     },
     {
       "subject": "locker",
@@ -34,10 +50,18 @@
     },
     {
       "subject": "terminal",
+      "tool": "trellis",
+      "label": "trellis.cpp (open source)",
+      "file": "terminal-trellis.glb",
+      "size": 0.8,
+      "triangles": 15000
+    },
+    {
+      "subject": "terminal",
       "tool": "meshy",
       "label": "Meshy (paid)",
       "file": "terminal-meshy.glb",
-      "size": 0.62,
+      "size": 0.8,
       "triangles": 14792
     }
   ]

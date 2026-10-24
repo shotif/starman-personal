@@ -8,7 +8,7 @@ test('the corridor starts and draws', async ({ page }, testInfo) => {
     if (message.type() === 'error') errors.push(message.text());
   });
 
-  await page.goto('./');
+  await page.goto('./?play');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   await expect(page.getByText(/fps · WebGL/)).toBeVisible();
 
@@ -30,7 +30,7 @@ test('the corridor starts and draws', async ({ page }, testInfo) => {
 
 test('the hero walks forward on the keyboard', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'keyboard journey runs on the desktop');
-  await page.goto('./');
+  await page.goto('./?play');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   await page.keyboard.down('KeyW');
   await page.waitForTimeout(1500);
@@ -40,7 +40,7 @@ test('the hero walks forward on the keyboard', async ({ page }, testInfo) => {
 
 test('Run toggles while the other thumb holds the stick', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'two-finger touch is a phone journey');
-  await page.goto('./');
+  await page.goto('./?play');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   const run = page.getByRole('button', { name: 'Run' });
   const box = await run.boundingBox();
@@ -60,7 +60,7 @@ test('Run toggles while the other thumb holds the stick', async ({ page }, testI
 test('aiming shows the crosshair and firing shoots', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('./');
+  await page.goto('./?play');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   if (testInfo.project.name === 'phone') {
     await page.getByRole('button', { name: 'Aim' }).tap();
@@ -94,7 +94,7 @@ test('walking into the corridor crate takes cover', async ({ page }, testInfo) =
   test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
   // The software renderer is slow: a small window at low quality keeps the frames coming.
   await page.setViewportSize({ width: 800, height: 500 });
-  await page.goto('./?quality=low');
+  await page.goto('./?play&quality=low');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   await page.keyboard.down('KeyW');
   await expect(page.getByText(/In cover/)).toBeVisible({ timeout: 60_000 });
@@ -106,7 +106,7 @@ test('walking into the corridor crate takes cover', async ({ page }, testInfo) =
 const said = (page: import('@playwright/test').Page) => page.locator('body').getAttribute('data-said');
 
 test('orders: the command view opens, and Ren answers each order', async ({ page }, testInfo) => {
-  await page.goto('./');
+  await page.goto('./?play');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   const dialog = page.getByRole('dialog', { name: 'Orders for Ren' });
   if (testInfo.project.name === 'phone') {
@@ -126,7 +126,7 @@ test('orders: the command view opens, and Ren answers each order', async ({ page
 test('orders: Ren attacks a drone until it is down', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
   await page.setViewportSize({ width: 800, height: 500 });
-  await page.goto('./?debug&quality=low');
+  await page.goto('./?play&debug&quality=low');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   // Stand in the room looking level at the middle drone.
   await page.evaluate(() =>
@@ -140,4 +140,31 @@ test('orders: Ren attacks a drone until it is down', async ({ page }, testInfo) 
   await expect.poll(() => said(page)).toBe('On it.');
   await expect.poll(() => said(page), { timeout: 60_000 }).toBe('Target down.');
   await page.screenshot({ path: testInfo.outputPath('attack.png') });
+});
+
+test('the creator makes a hero, who then plays', async ({ page }, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  const press = (locator: import('@playwright/test').Locator) =>
+    testInfo.project.name === 'phone' ? locator.tap() : locator.click();
+  /** The creator's choices are radio buttons hidden inside labels drawn as buttons: press the label. */
+  const pick = (name: string | RegExp) => press(page.locator('label', { has: page.getByRole('radio', { name }) }));
+  await page.goto('./?creator');
+  await expect(page.getByRole('heading', { name: 'Create your hero' })).toBeVisible();
+  await expect(page.locator('body')).toHaveAttribute('data-creator', 'ready', { timeout: 60_000 });
+  await page.getByPlaceholder("Your hero's name").fill('Ada');
+  await pick('Woman');
+  await pick(/Spacer/);
+  await press(page.getByRole('tab', { name: 'Hair' }));
+  await pick('Long');
+  await press(page.getByRole('tab', { name: 'Eyes' }));
+  await pick('Green');
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: testInfo.outputPath('creator.png') });
+  await press(page.getByRole('button', { name: 'Start' }));
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true', { timeout: 60_000 });
+  await expect(page.getByRole('button', { name: 'Change hero' })).toBeVisible();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('lightkeeper.hero') ?? 'null'));
+  expect(saved).toMatchObject({ name: 'Ada', body: 'woman', lineage: 'spacer', hair: 'long', eyes: 'green' });
+  expect(errors).toEqual([]);
 });

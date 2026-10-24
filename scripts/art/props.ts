@@ -55,7 +55,7 @@ for (const subject of Object.keys(SIZES)) {
     const before = triangles(doc);
     await doc.transform(
       weld(),
-      simplify({ simplifier: MeshoptSimplifier, ratio: Math.min(1, TARGET_TRIANGLES / before), error: 0.02 }),
+      simplify({ simplifier: MeshoptSimplifier, ratio: Math.min(1, TARGET_TRIANGLES / before), error: 0.06 }),
       dedup(),
       prune(),
       textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [TEXTURE_SIZE, TEXTURE_SIZE] }),

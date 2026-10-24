@@ -1,8 +1,6 @@
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
-import type { AbstractEngine } from '@babylonjs/core/Engines/abstractEngine';
-import { Engine } from '@babylonjs/core/Engines/engine';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -17,13 +15,16 @@ import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
+import { CHARACTERS, wardrobe } from './appearance.ts';
 import { type Character, loadCharacterTemplate, spawnCharacter } from './characters.ts';
 import { buildRange } from './combat.ts';
 import { spawnCompanion } from './companion.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
+import { createEngine, type Renderer, rendererName } from './engine.ts';
 import { buildGallery } from './gallery.ts';
 import { Input } from './input.ts';
 import { buildLevel } from './level.ts';
+import type { Body, Looks, Manifest } from './looks.ts';
 import {
   cameraDistance,
   cameraFraming,
@@ -65,10 +66,10 @@ export interface Game {
 
 export interface GameOptions {
   tier: QualityTier;
-  /** Which MPFB person the player is (D-09); the other is the companion. */
-  hero: 'man' | 'woman';
-  /** `?renderer=webgpu` in the address asks for WebGPU; WebGL2 is the default. */
-  renderer: 'webgl2' | 'webgpu';
+  /** The hero the player made (CREATOR.md); the other body is the companion. */
+  looks: Looks;
+  manifest: Manifest;
+  renderer: Renderer;
   /** Aim assist turns shots towards a nearby target (D-17: on phones). */
   assist: boolean;
   onStats(stats: GameStats): void;
@@ -94,27 +95,11 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
 
-async function createEngine(canvas: HTMLCanvasElement, options: GameOptions): Promise<AbstractEngine> {
-  const q = QUALITY[options.tier];
-  if (options.renderer === 'webgpu' && 'gpu' in navigator) {
-    try {
-      const { WebGPUEngine } = await import('@babylonjs/core/Engines/webgpuEngine');
-      const engine = new WebGPUEngine(canvas, { antialias: q.antialias, powerPreference: 'high-performance' });
-      await engine.initAsync();
-      return engine;
-    } catch (error) {
-      console.warn('WebGPU could not start; using WebGL2.', error);
-    }
-  }
-  return new Engine(canvas, q.antialias, { powerPreference: 'high-performance', stencil: true }, false);
-}
-
 export async function startGame(canvas: HTMLCanvasElement, options: GameOptions): Promise<Game> {
   const q = QUALITY[options.tier];
-  const engine = await createEngine(canvas, options);
+  const engine = await createEngine(canvas, options.tier, options.renderer);
   const applyScaling = () =>
     engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, q.maxPixelRatio));
-  applyScaling();
 
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.015, 0.02, 0.03, 1);
@@ -125,7 +110,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   scene.enablePhysics(GRAVITY, physics);
 
   const level = buildLevel(scene, q);
-  const { hero, companion } = await spawnCast(scene, options.hero);
+  const { hero, companion } = await spawnCast(scene, options.looks, options.manifest);
   for (const mesh of [...hero.meshes, ...companion.meshes]) level.castShadow(mesh as Mesh);
 
   const controller = new PhysicsCharacterController(
@@ -417,7 +402,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       statsTime = 0;
       options.onStats({
         fps: Math.round(engine.getFps()),
-        renderer: engine.isWebGPU ? 'WebGPU' : `WebGL${(engine as Engine).webGLVersion}`,
+        renderer: rendererName(engine),
         tier: options.tier,
         activeMeshes: scene.getActiveMeshes().length,
         speed: Math.hypot(controller.getVelocity().x, controller.getVelocity().z),
@@ -450,23 +435,25 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 }
 
 /**
- * The hero and the companion: the MPFB man and woman from the art pipeline (docs/ART_PIPELINE.md),
- * or two tinted mannequins if they cannot be loaded.
+ * The hero and the companion: the player's hero in the looks they made (CREATOR.md), and the other
+ * MPFB body as the companion in its defaults; two tinted mannequins if they cannot be loaded.
  */
-async function spawnCast(scene: Scene, heroBody: 'man' | 'woman'): Promise<{ hero: Character; companion: Character }> {
-  const folder = `${import.meta.env.BASE_URL}assets/characters`;
-  const companionBody = heroBody === 'man' ? 'woman' : 'man';
+async function spawnCast(
+  scene: Scene,
+  looks: Looks,
+  manifest: Manifest,
+): Promise<{ hero: Character; companion: Character }> {
+  const other: Body = looks.body === 'man' ? 'woman' : 'man';
   const [heroTemplate, companionTemplate] = await Promise.all([
-    loadCharacterTemplate(scene, `${folder}/hero-${heroBody}.glb`),
-    loadCharacterTemplate(scene, `${folder}/hero-${companionBody}.glb`),
+    loadCharacterTemplate(scene, `${CHARACTERS}${manifest.bodies[looks.body].file}`),
+    loadCharacterTemplate(scene, `${CHARACTERS}${manifest.bodies[other].file}`),
   ]);
   if (heroTemplate && companionTemplate) {
-    return {
-      hero: spawnCharacter(scene, heroTemplate, 'hero'),
-      companion: spawnCharacter(scene, companionTemplate, 'companion'),
-    };
+    const hero = spawnCharacter(scene, heroTemplate, 'hero');
+    await wardrobe(scene, hero, manifest, looks.body).wear(looks);
+    return { hero, companion: spawnCharacter(scene, companionTemplate, 'companion') };
   }
-  const mannequin = await loadCharacterTemplate(scene, `${folder}/mannequin.glb`);
+  const mannequin = await loadCharacterTemplate(scene, `${CHARACTERS}mannequin.glb`);
   return {
     hero: spawnCharacter(scene, mannequin, 'hero', { height: 1.8 }),
     companion: spawnCharacter(scene, mannequin, 'companion', { height: 1.8, tint: new Color3(0.45, 0.75, 0.8) }),
