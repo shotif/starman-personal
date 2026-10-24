@@ -3,6 +3,7 @@
     blender -b --factory-startup --python scripts/art/hero.py              # both bodies
     blender -b --factory-startup --python scripts/art/hero.py -- man       # one body
     blender -b --factory-startup --python scripts/art/hero.py -- --no-anim # skip animation
+    blender -b --factory-startup --python scripts/art/hero.py -- --config other.json
 
 Needs MPFB 2 installed in this Blender, and the MakeHuman and UAL files in art/cache/
 (python3 scripts/art/fetch_sources.py). Settings: art/hero.json, art/animations.json and
@@ -36,6 +37,7 @@ import bpy  # noqa: E402
 import numpy as np  # noqa: E402
 
 import common as C  # noqa: E402
+import posture  # noqa: E402
 
 MPFB_MODULE = "bl_ext.user_default.mpfb"
 MH = C.CACHE / "makehuman"
@@ -82,6 +84,13 @@ def coords(obj):
     return arr.reshape(-1, 3)
 
 
+def tidy_delta(delta, floor=0.0005):
+    """Zero the movements under half a millimetre, so the morph stores fewer vertices."""
+    delta = delta.copy()
+    delta[np.linalg.norm(delta, axis=1) < floor] = 0.0
+    return delta
+
+
 def bone_heads(rig):
     return {b.name: np.array(b.head_local) for b in rig.data.bones}
 
@@ -98,14 +107,23 @@ class Human:
         self.basemesh = mp.Human.create_human(scale=0.1, macro_detail_dict=pheno,
                                               feet_on_ground=True)
         self.basemesh.name = f"{self.name}.body"
+        # The body's own shape (before the skeleton is fitted, so the joints follow it).
+        for tname, weight in self.body.get("targets", {}).items():
+            path = self.targets_dir / f"{tname}.target.gz"
+            if not path.exists():
+                raise RuntimeError(f"no MPFB target {tname}")
+            mp.Target.load_target(self.basemesh, str(path), weight=weight,
+                                  name="base_" + tname.replace("/", "_"))
         self.rig = mp.Human.add_builtin_rig(self.basemesh, rig_name)
         self.rig.name = self.rig.data.name = f"{self.name}_rig"
         for kind, key in (("Eyes", "eyes"), ("Eyebrows", "eyebrows"),
                           ("Eyelashes", "eyelashes"), ("Hair", "hair")):
             if self.body.get(key):
                 self.add_asset(kind, MH / self.body[key])
-        for path in self.body.get("clothes", []):
-            self.add_asset("Clothes", MH / path)
+        for item in self.body.get("clothes", []):
+            item = {"file": item} if isinstance(item, str) else item
+            obj = self.add_asset("Clothes", MH / item["file"])
+            obj["look"] = json.dumps(item)
 
     def add_asset(self, kind, path):
         mp = self.mp
@@ -176,8 +194,8 @@ class Human:
             shift = max(float(np.linalg.norm(v)) for v in d_bones.values())
             deltas.append({
                 "name": morph["name"],
-                "body": shot["body"] - base["body"],
-                "assets": [s - b for s, b in zip(shot["assets"], base["assets"])],
+                "body": tidy_delta(shot["body"] - base["body"]),
+                "assets": [tidy_delta(s - b) for s, b in zip(shot["assets"], base["assets"])],
                 "bones": d_bones,
                 "maxJointShift": shift,
             })
@@ -206,20 +224,37 @@ class Human:
 # Clean-up, materials and textures
 
 
-def delete_hidden_body(basemesh):
-    """Delete MPFB's helper geometry and the skin hidden under clothes (keeps shape keys)."""
+def delete_hidden_body(basemesh, clothes=(), reach=0.05):
+    """Delete MPFB's helper geometry and the skin hidden under clothes (keeps shape keys).
+
+    Skin is hidden when the clothes' own list says so (MakeHuman's delete groups), or when a
+    ray from the skin outwards along its normal meets the clothes within `reach` metres, or
+    inwards within 2 cm (skin that already pokes through). The ray tests catch skin that the
+    lists leave and that would show through at bent knees and elbows."""
+    from mathutils.bvhtree import BVHTree
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    trees = [BVHTree.FromObject(o, depsgraph) for o in clothes]
     vg = basemesh.vertex_groups
     body = vg["body"].index
     hidden = {g.index for g in vg if g.name.startswith("Delete.")}
     me = basemesh.data
     bm = bmesh.new()
     bm.from_mesh(me)
+    bm.normal_update()
     deform = bm.verts.layers.deform.active
     doomed = []
     for v in bm.verts:
         groups = v[deform]
         if body not in groups or any(groups.get(i, 0.0) > 0.0 for i in hidden):
             doomed.append(v)
+            continue
+        for tree in trees:
+            # outwards: covered skin; inwards a little: skin already poking through at rest
+            out = tree.ray_cast(v.co - v.normal * 0.001, v.normal, reach)
+            back = tree.ray_cast(v.co + v.normal * 0.001, -v.normal, 0.02)
+            if out[0] is not None or back[0] is not None:
+                doomed.append(v)
+                break
     bmesh.ops.delete(bm, geom=doomed, context="VERTS")
     bm.to_mesh(me)
     bm.free()
@@ -257,16 +292,28 @@ def mhmat_texture(info, key):
     return p if p.exists() else None
 
 
-def load_scaled(path, size, out_dir, colour=True, keep_alpha=False):
-    """Load an image, scale it to at most size x size and save it as JPEG (or PNG with alpha)."""
+def load_scaled(path, size, out_dir, colour=True, keep_alpha=False, tint=None, name=None):
+    """Load an image, scale it to at most size x size and save it as JPEG (or PNG with alpha).
+    tint multiplies the colour channels (values above 1 lighten)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     src = bpy.data.images.load(str(path), check_existing=False)
     w, h = src.size
     scale = min(1.0, size / max(w, h))
     if scale < 1.0:
         src.scale(max(1, int(w * scale)), max(1, int(h * scale)))
+    if tint is not None or not keep_alpha:
+        px = np.array(src.pixels[:], dtype=np.float32).reshape(-1, 4)
+        if not keep_alpha and colour:
+            # Unused, see-through parts of an opaque texture are often white, and show at
+            # the edges of cuffs and seams; fill them with the texture's average colour.
+            clear = px[:, 3] < 0.5
+            if clear.any() and (~clear).any():
+                px[clear, :3] = px[~clear, :3].mean(axis=0)
+        if tint is not None:
+            px[:, :3] = np.clip(px[:, :3] * np.array(tint[:3], dtype=np.float32), 0.0, 1.0)
+        src.pixels.foreach_set(px.ravel())
     ext = "png" if keep_alpha else "jpg"
-    dest = out_dir / f"{Path(path).stem}.{ext}"
+    dest = out_dir / f"{name or Path(path).stem}.{ext}"
     scene = bpy.context.scene
     settings = scene.render.image_settings
     settings.file_format = "PNG" if keep_alpha else "JPEG"
@@ -342,17 +389,20 @@ def set_materials(human, cfg):
     human.basemesh.data.materials.clear()
     human.basemesh.data.materials.append(skin_mat)
     used = [str(MH / human.body["skin"])]
-    for kind, obj, mhclo in human.assets:
+    for index, (kind, obj, mhclo) in enumerate(human.assets):
         alpha, rough, size_key, use_normal = ASSET_LOOK[kind]
+        look = json.loads(obj["look"]) if "look" in obj else {}
+        rough = look.get("roughness", rough)
         mat_path = MH / human.body["eyeMaterial"] if kind == "Eyes" else Path(mhclo.material)
         info = read_mhmat(mat_path)
         diffuse = mhmat_texture(info, "diffuseTexture")
         normal = mhmat_texture(info, "normalmapTexture") if use_normal else None
-        img = load_scaled(diffuse, cfg[size_key], tex_dir, keep_alpha=alpha != "OPAQUE") \
-            if diffuse else None
-        nimg = load_scaled(normal, cfg[size_key], tex_dir, colour=False) if normal else None
-        mat = make_material(f"{human.name}_{kind.lower()}", img, nimg, alpha=alpha,
-                            roughness=rough)
+        tex_size = look.get("textureSize", cfg[size_key])
+        img = load_scaled(diffuse, tex_size, tex_dir, keep_alpha=alpha != "OPAQUE",
+                          tint=look.get("tint")) if diffuse else None
+        nimg = load_scaled(normal, tex_size, tex_dir, colour=False) if normal else None
+        label = kind.lower() if kind != "Clothes" else look.get("name", f"clothes{index}")
+        mat = make_material(f"{human.name}_{label}", img, nimg, alpha=alpha, roughness=rough)
         obj.data.materials.clear()
         obj.data.materials.append(mat)
         used.append(str(mat_path))
@@ -363,36 +413,14 @@ def set_materials(human, cfg):
 # Animation
 
 
-def ual_sources(anim_cfg):
-    sources = {}
-    for lib, info in anim_cfg["libraries"].items():
-        objs = C.import_glb(C.REPO / info["file"])
-        arm = C.armature_of(objs)
-        C.delete_objects([o for o in objs if o is not arm])
-        acts = C.actions_by_name(arm)
-        C.clear_animation(arm)
-        arm.location = (0.0, 2.0, 0.0)  # out of the way; motion is measured from rest
-        sources[lib] = (arm, acts)
-    return sources
-
-
-def mpfb_to_ual_maps(rig, anim_cfg):
-    unreal_to_rigify = {u: r for r, u in C.RIGIFY_TO_UNREAL.items()}
-    lower = {n.lower(): n for n in C.UNREAL_BONES}
-    maps = {}
-    for lib, info in anim_cfg["libraries"].items():
-        m = {}
-        for b in rig.data.bones:
-            u = lower.get(b.name.lower())
-            if u is None:
-                continue
-            m[b.name] = unreal_to_rigify[u] if info["naming"] == "rigify" else u
-        maps[lib] = m
-    return maps
-
-
 # --------------------------------------------------------------------------------------------
 # Main
+
+
+def clothes_file(item):
+    """A clothes entry is a path, or {"file": path, "name": ..., "roughness": ...,
+    "tint": [r, g, b], "textureSize": ...}."""
+    return item if isinstance(item, str) else item["file"]
 
 
 def to_gltf(v):
@@ -411,7 +439,8 @@ def build_body(name, cfg, anim_cfg, with_anim):
     deltas = human.bake_morphs(cfg["morphs"])
     used_files = set_materials(human, cfg)
 
-    removed = delete_hidden_body(human.basemesh)
+    removed = delete_hidden_body(human.basemesh,
+                                 [obj for kind, obj, _ in human.assets if kind == "Clothes"])
     C.log(f"  removed {removed} hidden body vertices")
     meshes = [human.basemesh] + [obj for _, obj, _ in human.assets]
     for obj in meshes:
@@ -436,18 +465,24 @@ def build_body(name, cfg, anim_cfg, with_anim):
             del idblock[k]
 
     clips = []
+    posture_result = None
     if with_anim:
-        sources = ual_sources(anim_cfg)
-        maps = mpfb_to_ual_maps(rig, anim_cfg)
-        clips = C.build_clips(
-            rig, anim_cfg["clips"], sources, maps, hips="pelvis", root="Root",
-            strafe_args={"pelvis": "pelvis",
-                         "spine_weights": [("spine_01", 0.35), ("spine_02", 0.35),
-                                           ("spine_03", 0.30)]},
-            align_rest=True)
+        sources = C.load_sources(anim_cfg)
+        maps = {lib: C.bone_map(rig, arm, anim_cfg["libraries"][lib]["naming"])
+                for lib, (arm, _) in sources.items()}
+        clips = C.build_clips(rig, anim_cfg["clips"], sources, maps, hips="pelvis", root="Root",
+                              retarget=C.retarget_options(rig))
         for arm, _ in sources.values():
             C.delete_objects([arm])
         C.drop_foreign_actions(clips)
+        # The standing idle must be upright, and lean as the mannequin's does.
+        ref_path = C.ART / "out" / "posture" / "mannequin-idle.json"
+        reference = json.loads(ref_path.read_text()) if ref_path.exists() else None
+        if reference is None:
+            C.log("  no mannequin posture yet (run mannequin.py first); checking marks only")
+        idle = next(a for a in clips if a.name == "idle")
+        posture_result = posture.check(rig, idle, f"hero-{name} idle", reference)
+        C.write_report(posture_result, f"art/out/posture/hero-{name}-idle.json")
         C.push_to_nla(rig, clips)
 
     raw = OUT / f"hero-{name}.raw.glb"
@@ -477,15 +512,20 @@ def build_body(name, cfg, anim_cfg, with_anim):
         "morphs": morph_info,
         "sourcesUsed": sorted(set(
             used_files + [str(MH / body[k]) for k in ("eyes", "eyebrows", "eyelashes", "hair")
-                          if body.get(k)] + [str(MH / p) for p in body.get("clothes", [])])),
+                          if body.get(k)] + [str(MH / clothes_file(p)) for p in body.get("clothes", [])])),
     }
 
 
 def main():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     with_anim = "--no-anim" not in argv
+    config = "art/hero.json"
+    if "--config" in argv:  # try other settings without touching art/hero.json
+        i = argv.index("--config")
+        config = argv[i + 1]
+        del argv[i:i + 2]
     names = [a for a in argv if not a.startswith("--")]
-    cfg = C.load_json("art/hero.json")
+    cfg = C.load_json(config)
     anim_cfg = C.load_json("art/animations.json")
     results = {}
     C.reset_scene()

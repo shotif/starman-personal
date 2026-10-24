@@ -1,5 +1,6 @@
 """Builds public/assets/characters/mannequin.glb: Quaternius's UAL mannequin (CC0) with the
-game's core animations (art/animations.json), for the code prototype.
+game's animations (art/animations.json). It stops if the standing idle is not upright
+(scripts/art/posture.py).
 
     blender -b --factory-startup --python scripts/art/mannequin.py
 
@@ -14,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bpy  # noqa: E402
 
 import common as C  # noqa: E402
+import posture  # noqa: E402
 
 
 def main():
@@ -33,26 +35,15 @@ def main():
     gone = C.remove_bones(dst, lambda n: "_leaf" in n)
     C.log("removed leaf bones:", len(gone))
 
-    # The sources: UAL 1 (Rigify names) and UAL 2 (Unreal names), imported again as sources.
-    sources, maps = {}, {}
-    for lib, info in cfg["libraries"].items():
-        objs = C.import_glb(C.REPO / info["file"])
-        arm = C.armature_of(objs)
-        C.delete_objects([o for o in objs if o.type == "MESH"])
-        acts = C.actions_by_name(arm)
-        C.clear_animation(arm)
-        sources[lib] = (arm, acts)
-        if info["naming"] == "rigify":
-            maps[lib] = {u: r for r, u in C.RIGIFY_TO_UNREAL.items()}
-        else:
-            maps[lib] = {u: u for u in C.UNREAL_BONES}
-
-    clips = C.build_clips(
-        dst, cfg["clips"], sources, maps, hips="pelvis", root="root",
-        strafe_args={"pelvis": "pelvis",
-                     "spine_weights": [("spine_01", 0.35), ("spine_02", 0.35),
-                                       ("spine_03", 0.30)]},
-        align_rest=False)
+    # The sources: UAL 1 Pro and UAL 2, imported again as sources.
+    sources = C.load_sources(cfg)
+    maps = {lib: C.bone_map(dst, arm, cfg["libraries"][lib]["naming"])
+            for lib, (arm, _) in sources.items()}
+    clips = C.build_clips(dst, cfg["clips"], sources, maps, hips="pelvis", root="root",
+                          retarget=C.retarget_options(dst))
+    idle = next(a for a in clips if a.name == "idle")
+    result = posture.check(dst, idle, "mannequin idle")
+    C.write_report(result, "art/out/posture/mannequin-idle.json")
 
     for arm, _ in sources.values():
         C.delete_objects([arm])

@@ -21,7 +21,42 @@
       "unpackTo": "ual1",
       "used": [
         "Animation Library[Standard]/Godot/AnimationLibrary_Godot_Standard.glb (45 clips; the licence file inside says CC0)"
-      ]
+      ],
+      "status": "Replaced on 24 October 2026 by ual1_pro, which holds the same clips and more; no output uses it now. Kept so the earlier files can be rebuilt."
+    },
+    {
+      "id": "ual1_pro",
+      "name": "Universal Animation Library 1, Pro and Source versions (in-place glTF, root-motion glTF, Unity FBX and the .blend source)",
+      "author": "Quaternius",
+      "licence": "CC0-1.0 (License.txt in the pack)",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://quaternius.com/packs/universalanimationlibrary.html",
+      "obtained": "2026-10-24",
+      "obtainedHow": "Bought by the owner and copied by hand to art/cache/ual1-pro-source/. It cannot be downloaded by script; fetch_sources.py skips it.",
+      "fetch": false,
+      "files": [
+        {
+          "path": "art/cache/ual1-pro-source/Unreal-Godot/UAL1.glb",
+          "sha256": "d1cb4537efa4c06a953ca951e5935062f88c2580ac68e45045592d587bddb43d",
+          "used": "every UAL 1 clip (in-place version)"
+        },
+        {
+          "path": "art/cache/ual1-pro-source/Unreal-Godot/UAL1_RM.glb",
+          "sha256": "9caacb49bc1bf22457d9152288f2e5c37ff52e6546706bdf7755102108c55a53",
+          "used": "not used (root motion)"
+        },
+        {
+          "path": "art/cache/ual1-pro-source/UAL1.blend",
+          "sha256": "7f37b87e27a55705d32f8e5f186e5855781e97626db7abb85ce6936ecfff08ae",
+          "used": "not used (source file; never opened)"
+        },
+        {
+          "path": "art/cache/ual1-pro-source/License.txt",
+          "sha256": "6d01f55c6e4c49a2c9963e147e561945ae2c83958c8ca667d90a6bffdbfac061",
+          "used": "the licence"
+        }
+      ],
+      "note": "The pack's root_motion_toggle.py (a Blender add-on) is not run."
     },
     {
       "id": "ual2",
@@ -173,13 +208,26 @@
       ]
     },
     {
-      "name": "matcreator_mc-skinsuit_2022",
+      "name": "thegreatengineer_galactic_warrior_uniform",
       "type": "clothes",
-      "author": "MatCreator",
+      "author": "TheGreatEngineer",
       "licence": "CC0",
       "source": "mh_suits02",
-      "page": "http://www.makehumancommunity.org/node/2991",
-      "file": "art/cache/makehuman/suits02/clothes/matcreator_mc-skinsuit_2022/matcreator_mc-skinsuit_2022.mhclo",
+      "page": "http://www.makehumancommunity.org/node/2884",
+      "file": "art/cache/makehuman/suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
+      "usedBy": [
+        "hero-man.glb",
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "shoes03",
+      "type": "clothes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/clothes/shoes03/shoes03.mhclo",
       "usedBy": [
         "hero-man.glb",
         "hero-woman.glb"
@@ -259,11 +307,14 @@
       "data/targets/arms/l-upperarm-fat-decr.target.gz",
       "data/targets/arms/l-upperarm-fat-incr.target.gz",
       "data/targets/arms/l-upperarm-muscle-incr.target.gz",
+      "data/targets/arms/l-upperarm-shoulder-muscle-incr.target.gz",
       "data/targets/arms/r-lowerarm-fat-decr.target.gz",
       "data/targets/arms/r-lowerarm-muscle-incr.target.gz",
       "data/targets/arms/r-upperarm-fat-decr.target.gz",
       "data/targets/arms/r-upperarm-fat-incr.target.gz",
       "data/targets/arms/r-upperarm-muscle-incr.target.gz",
+      "data/targets/arms/r-upperarm-shoulder-muscle-incr.target.gz",
+      "data/targets/buttocks/buttocks-volume-decr.target.gz",
       "data/targets/cheek/l-cheek-bones-incr.target.gz",
       "data/targets/cheek/l-cheek-volume-incr.target.gz",
       "data/targets/cheek/r-cheek-bones-incr.target.gz",
@@ -277,6 +328,7 @@
       "data/targets/eyes/r-eye-scale-incr.target.gz",
       "data/targets/forehead/forehead-nubian-incr.target.gz",
       "data/targets/head/head-round.target.gz",
+      "data/targets/hip/hip-scale-depth-decr.target.gz",
       "data/targets/hip/hip-scale-horiz-decr.target.gz",
       "data/targets/hip/hip-scale-horiz-incr.target.gz",
       "data/targets/legs/l-lowerleg-fat-decr.target.gz",
@@ -312,47 +364,47 @@
   "outputs": [
     {
       "path": "public/assets/characters/hero-man.glb",
-      "bytes": 4591804,
-      "sha256": "b1b6676cb4225b221684e8845000f01a3108523213fb68bac9cf7404c1f56917",
+      "bytes": 4621792,
+      "sha256": "e19d9b5ff80a3b82c7a4ee219630f39d65afc267113abb233dfc234cec9f92b7",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
         "mh_system_assets",
         "mh_suits02",
-        "ual1",
+        "ual1_pro",
         "ual2"
       ],
       "licence": "CC0-1.0 inputs only; no attribution is required"
     },
     {
       "path": "public/assets/characters/hero-woman.glb",
-      "bytes": 5066868,
-      "sha256": "a0c08e3875a16bec105a77855036d9042f456ea79159af29f4384dcf48c1594a",
+      "bytes": 4907984,
+      "sha256": "f86ab4e85c5bf9ba4af3d41fdb1ad1d4b84da2e4e8c15b2fc537c4fad3c68a34",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
         "mh_system_assets",
         "mh_suits02",
-        "ual1",
+        "ual1_pro",
         "ual2"
       ],
       "licence": "CC0-1.0 inputs only; no attribution is required"
     },
     {
       "path": "public/assets/characters/heroes.json",
-      "bytes": 61826,
-      "sha256": "12a30b9357bae36767285cce96e5b2fdef5764c3836cd1d5505e6286924cfc19",
+      "bytes": 52572,
+      "sha256": "e8d30fbf272a54b4242e0ac10016ce02965f4a1e9a97a97e5d78971968a6bb25",
       "madeBy": "scripts/art/hero.py",
       "from": [],
       "licence": "CC0-1.0 inputs only; no attribution is required"
     },
     {
       "path": "public/assets/characters/mannequin.glb",
-      "bytes": 1084928,
-      "sha256": "d9049f1e0e966626ac5bd1f9011475c48a3b6f8b737ba9c0cdeee46b31d983dc",
+      "bytes": 2005092,
+      "sha256": "f6e7a4a3190936fc2d7aa52a115e94888ddb29add46bbe2846aff27e33317a78",
       "madeBy": "scripts/art/mannequin.py",
       "from": [
-        "ual1",
+        "ual1_pro",
         "ual2"
       ],
       "licence": "CC0-1.0 inputs only; no attribution is required"

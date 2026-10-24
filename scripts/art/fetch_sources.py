@@ -6,6 +6,7 @@
 Uses only Python's standard library (3.9 or newer). Every file is checked against the SHA-256
 in art/records.json; a file that does not match is deleted and the script stops. Nothing that
 is downloaded is run: the archives hold models, textures and MakeHuman text files only.
+Bought packs (UAL 1 Pro) cannot be downloaded; the script checks that they are in place.
 MPFB itself is installed with Blender's own command (see docs/ART_PIPELINE.md).
 """
 
@@ -65,11 +66,25 @@ def fetch(source):
         print(f"unpacked to {dest.relative_to(REPO)}")
 
 
+def check_by_hand(source):
+    """Sources that cannot be downloaded (bought packs) are only checked."""
+    for f in source.get("files", []):
+        path = REPO / f["path"]
+        if not path.exists():
+            print(f"missing {f['path']} ({source['name']}): {source.get('obtainedHow', '')}")
+        elif sha256(path) != f["sha256"]:
+            sys.exit(f"SHA-256 mismatch for {f['path']}")
+        else:
+            print(f"have {f['path']}")
+
+
 def main():
     records = json.loads((REPO / "art" / "records.json").read_text(encoding="utf-8"))
     wanted = set(sys.argv[1:])
     for source in records["sources"]:
-        if "url" not in source or "sha256" not in source or "file" not in source:
+        if source.get("fetch") is False or "url" not in source or "file" not in source:
+            if source.get("fetch") is False:
+                check_by_hand(source)
             continue
         if wanted and source["id"] not in wanted:
             continue

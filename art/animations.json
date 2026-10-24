@@ -1,10 +1,11 @@
 {
-  "about": "The animation set every character .glb carries. Each clip is taken from Quaternius's Universal Animation Library (UAL, CC0) and renamed. 'derived' clips are made by scripts/art/common.py from another clip, because the free libraries do not include them. Read by scripts/art/mannequin.py and scripts/art/hero.py.",
+  "about": "The animation set every character .glb carries. Clips come from Quaternius's Universal Animation Library (UAL, CC0): Library 1 Pro (bought by the owner) and Library 2 Standard. 'upright' clips are rebuilt as an upright stance on the source skeleton before retargeting (common.make_upright); 'straighten' takes that share of the spine's average forward bend out of a clip (common.straighten). 'derived' clips are made from another clip on each character (common.derive_clip): played backwards, slowed, or softened towards the idle. Read by scripts/art/mannequin.py and scripts/art/hero.py.",
   "fps": 30,
   "libraries": {
     "ual1": {
-      "file": "art/cache/ual1/Animation Library[Standard]/Godot/AnimationLibrary_Godot_Standard.glb",
-      "naming": "rigify"
+      "file": "art/cache/ual1-pro-source/Unreal-Godot/UAL1.glb",
+      "naming": "unreal",
+      "note": "UAL 1 Pro, in-place version (no root motion)"
     },
     "ual2": {
       "file": "art/cache/ual2/Universal Animation Library 2 [Standard]/Unreal-Godot/UAL2_Standard.glb",
@@ -12,35 +13,373 @@
     }
   },
   "clips": [
-    { "name": "idle", "library": "ual1", "source": "Idle_Loop", "loop": true },
-    { "name": "idle_talk", "library": "ual1", "source": "Idle_Talking_Loop", "loop": true },
-    { "name": "walk", "library": "ual1", "source": "Walk_Loop", "loop": true },
-    { "name": "jog", "library": "ual1", "source": "Jog_Fwd_Loop", "loop": true },
-    { "name": "sprint", "library": "ual1", "source": "Sprint_Loop", "loop": true },
-    { "name": "strafe_left", "derived": "strafe", "from": "walk", "side": "left", "loop": true },
-    { "name": "strafe_right", "derived": "strafe", "from": "walk", "side": "right", "loop": true },
-    { "name": "crouch_idle", "library": "ual1", "source": "Crouch_Idle_Loop", "loop": true, "note": "also the cover idle until a dedicated one exists" },
-    { "name": "crouch_walk", "library": "ual1", "source": "Crouch_Fwd_Loop", "loop": true },
-    { "name": "roll", "library": "ual1", "source": "Roll", "loop": false },
-    { "name": "jump_start", "library": "ual1", "source": "Jump_Start", "loop": false },
-    { "name": "jump_loop", "library": "ual1", "source": "Jump_Loop", "loop": true },
-    { "name": "jump_land", "library": "ual1", "source": "Jump_Land", "loop": false },
-    { "name": "pistol_idle", "library": "ual1", "source": "Pistol_Idle_Loop", "loop": true },
-    { "name": "pistol_aim", "library": "ual1", "source": "Pistol_Aim_Neutral", "loop": true },
-    { "name": "pistol_aim_up", "library": "ual1", "source": "Pistol_Aim_Up", "loop": true },
-    { "name": "pistol_aim_down", "library": "ual1", "source": "Pistol_Aim_Down", "loop": true },
-    { "name": "pistol_shoot", "library": "ual1", "source": "Pistol_Shoot", "loop": false },
-    { "name": "pistol_reload", "library": "ual1", "source": "Pistol_Reload", "loop": false },
-    { "name": "power_ready", "library": "ual1", "source": "Spell_Simple_Idle_Loop", "loop": true, "note": "a tech power held ready" },
-    { "name": "power_cast", "library": "ual1", "source": "Spell_Simple_Shoot", "loop": false, "note": "a tech power released" },
-    { "name": "punch_jab", "library": "ual1", "source": "Punch_Jab", "loop": false },
-    { "name": "punch_cross", "library": "ual1", "source": "Punch_Cross", "loop": false },
-    { "name": "melee_hook", "library": "ual2", "source": "Melee_Hook", "loop": false },
-    { "name": "melee_combo", "library": "ual2", "source": "Sword_Regular_Combo", "loop": false, "note": "a three-strike blade combo" },
-    { "name": "hit_chest", "library": "ual1", "source": "Hit_Chest", "loop": false },
-    { "name": "hit_head", "library": "ual1", "source": "Hit_Head", "loop": false },
-    { "name": "hit_knockback", "library": "ual2", "source": "Hit_Knockback", "loop": false },
-    { "name": "death", "library": "ual1", "source": "Death01", "loop": false },
-    { "name": "interact", "library": "ual1", "source": "Interact", "loop": false }
+    {
+      "name": "idle",
+      "library": "ual1",
+      "source": "Idle_Loop",
+      "loop": true,
+      "upright": {
+        "lean_back_deg": 3.0,
+        "sway": 0.5
+      },
+      "note": "UAL's idle made upright: feet under the hips, knees nearly straight, chest up"
+    },
+    {
+      "name": "idle_talk",
+      "library": "ual1",
+      "source": "Idle_Talking_Loop",
+      "loop": true,
+      "upright": {
+        "lean_back_deg": 3.0,
+        "sway": 0.5
+      }
+    },
+    {
+      "name": "walk",
+      "library": "ual1",
+      "source": "Walk_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "walk_back",
+      "derived": "reverse",
+      "from": "walk",
+      "reverse": true,
+      "loop": true,
+      "note": "UAL has no backward walk; this is the walk played backwards"
+    },
+    {
+      "name": "strafe_left",
+      "derived": "soften",
+      "from": "jog_left",
+      "toward": "idle",
+      "amount": 0.45,
+      "stretch": 1.45,
+      "loop": true,
+      "note": "UAL has no side walk; this is the real side jog, slowed and softened towards the idle"
+    },
+    {
+      "name": "strafe_right",
+      "derived": "soften",
+      "from": "jog_right",
+      "toward": "idle",
+      "amount": 0.45,
+      "stretch": 1.45,
+      "loop": true
+    },
+    {
+      "name": "jog",
+      "library": "ual1",
+      "source": "Jog_Fwd_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_back",
+      "library": "ual1",
+      "source": "Jog_Bwd_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_left",
+      "library": "ual1",
+      "source": "Jog_Left_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_right",
+      "library": "ual1",
+      "source": "Jog_Right_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_fwd_left",
+      "library": "ual1",
+      "source": "Jog_Fwd_L_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_fwd_right",
+      "library": "ual1",
+      "source": "Jog_Fwd_R_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_back_left",
+      "library": "ual1",
+      "source": "Jog_Bwd_L_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "jog_back_right",
+      "library": "ual1",
+      "source": "Jog_Bwd_R_Loop",
+      "loop": true,
+      "straighten": 0.5
+    },
+    {
+      "name": "sprint",
+      "library": "ual1",
+      "source": "Sprint_Loop",
+      "loop": true
+    },
+    {
+      "name": "turn_left",
+      "library": "ual1",
+      "source": "Turn90_L",
+      "loop": false,
+      "note": "turns 90 degrees on the spot; the game turns the character to match"
+    },
+    {
+      "name": "turn_right",
+      "library": "ual1",
+      "source": "Turn90_R",
+      "loop": false
+    },
+    {
+      "name": "crouch_idle",
+      "library": "ual1",
+      "source": "Crouch_Idle_Loop",
+      "loop": true,
+      "note": "also the cover idle until a dedicated one exists"
+    },
+    {
+      "name": "crouch_enter",
+      "library": "ual1",
+      "source": "Crouch_Enter",
+      "loop": false,
+      "note": "into cover"
+    },
+    {
+      "name": "crouch_exit",
+      "library": "ual1",
+      "source": "Crouch_Exit",
+      "loop": false,
+      "note": "out of cover"
+    },
+    {
+      "name": "crouch_walk",
+      "library": "ual1",
+      "source": "Crouch_Fwd_Loop",
+      "loop": true
+    },
+    {
+      "name": "crouch_back",
+      "library": "ual1",
+      "source": "Crouch_Bwd_Loop",
+      "loop": true
+    },
+    {
+      "name": "crouch_left",
+      "library": "ual1",
+      "source": "Crouch_Left_Loop",
+      "loop": true,
+      "note": "moving along cover"
+    },
+    {
+      "name": "crouch_right",
+      "library": "ual1",
+      "source": "Crouch_Right_Loop",
+      "loop": true
+    },
+    {
+      "name": "dodge_left",
+      "library": "ual1",
+      "source": "Dodge_Left",
+      "loop": false
+    },
+    {
+      "name": "dodge_right",
+      "library": "ual1",
+      "source": "Dodge_Right",
+      "loop": false
+    },
+    {
+      "name": "roll",
+      "library": "ual1",
+      "source": "Roll",
+      "loop": false
+    },
+    {
+      "name": "jump_start",
+      "library": "ual1",
+      "source": "Jump_Start",
+      "loop": false
+    },
+    {
+      "name": "jump_loop",
+      "library": "ual1",
+      "source": "Jump_Loop",
+      "loop": true
+    },
+    {
+      "name": "jump_land",
+      "library": "ual1",
+      "source": "Jump_Land",
+      "loop": false
+    },
+    {
+      "name": "climb_ledge",
+      "library": "ual1",
+      "source": "ClimbLedge",
+      "loop": false,
+      "note": "over a low wall or cover"
+    },
+    {
+      "name": "pistol_idle",
+      "library": "ual1",
+      "source": "Pistol_Idle_Loop",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim",
+      "library": "ual1",
+      "source": "Pistol_Aim_Neutral",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim_up",
+      "library": "ual1",
+      "source": "Pistol_Aim_Up",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim_down",
+      "library": "ual1",
+      "source": "Pistol_Aim_Down",
+      "loop": true
+    },
+    {
+      "name": "pistol_shoot",
+      "library": "ual1",
+      "source": "Pistol_Shoot",
+      "loop": false
+    },
+    {
+      "name": "pistol_reload",
+      "library": "ual1",
+      "source": "Pistol_Reload",
+      "loop": false
+    },
+    {
+      "name": "power_ready",
+      "library": "ual1",
+      "source": "Spell_Simple_Idle_Loop",
+      "loop": true,
+      "note": "a tech power held ready in one hand"
+    },
+    {
+      "name": "power_cast",
+      "library": "ual1",
+      "source": "Spell_Simple_Shoot",
+      "loop": false,
+      "note": "a one-handed tech power released"
+    },
+    {
+      "name": "power_both_ready",
+      "library": "ual1",
+      "source": "Spell_Double_Idle_Loop",
+      "loop": true,
+      "note": "a stronger power held ready in both hands"
+    },
+    {
+      "name": "power_both_cast",
+      "library": "ual1",
+      "source": "Spell_Double_Shoot_Loop",
+      "loop": false,
+      "note": "a two-handed power released"
+    },
+    {
+      "name": "punch_jab",
+      "library": "ual1",
+      "source": "Punch_Jab",
+      "loop": false
+    },
+    {
+      "name": "punch_cross",
+      "library": "ual1",
+      "source": "Punch_Cross",
+      "loop": false
+    },
+    {
+      "name": "kick",
+      "library": "ual1",
+      "source": "Kick",
+      "loop": false
+    },
+    {
+      "name": "melee_hook",
+      "library": "ual2",
+      "source": "Melee_Hook",
+      "loop": false
+    },
+    {
+      "name": "melee_combo",
+      "library": "ual2",
+      "source": "Sword_Regular_Combo",
+      "loop": false,
+      "note": "a three-strike blade combo"
+    },
+    {
+      "name": "hit_chest",
+      "library": "ual1",
+      "source": "Hit_Chest",
+      "loop": false
+    },
+    {
+      "name": "hit_head",
+      "library": "ual1",
+      "source": "Hit_Head",
+      "loop": false
+    },
+    {
+      "name": "hit_stomach",
+      "library": "ual1",
+      "source": "Hit_Stomach",
+      "loop": false
+    },
+    {
+      "name": "hit_shoulder_left",
+      "library": "ual1",
+      "source": "Hit_Shoulder_L",
+      "loop": false
+    },
+    {
+      "name": "hit_shoulder_right",
+      "library": "ual1",
+      "source": "Hit_Shoulder_R",
+      "loop": false
+    },
+    {
+      "name": "hit_knockback",
+      "library": "ual2",
+      "source": "Hit_Knockback",
+      "loop": false
+    },
+    {
+      "name": "death",
+      "library": "ual1",
+      "source": "Death01",
+      "loop": false
+    },
+    {
+      "name": "death_alt",
+      "library": "ual1",
+      "source": "Death02",
+      "loop": false
+    },
+    {
+      "name": "interact",
+      "library": "ual1",
+      "source": "Interact",
+      "loop": false
+    }
   ]
 }

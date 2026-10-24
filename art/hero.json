@@ -1,5 +1,5 @@
 {
-  "about": "Settings for scripts/art/hero.py: how the two hero bodies are built with MPFB 2, and the morph targets (character-creator sliders) baked into them. Asset paths are relative to art/cache/makehuman/. Targets are MPFB's bundled targets (CC0), named <folder>/<target>.",
+  "about": "Settings for scripts/art/hero.py: how the two hero bodies are built with MPFB 2, and the morph targets (character-creator sliders) baked into them. Asset paths are relative to art/cache/makehuman/. Targets are MPFB's bundled targets (CC0), named <folder>/<target>. A body's 'targets' shape it before the skeleton is fitted (an athletic build, not MakeHuman's default curves). A clothes entry is a path or {file, name, roughness, tint (multiplies the colour), textureSize}.",
   "rig": "game_engine",
   "textureSize": 1024,
   "smallTextureSize": 512,
@@ -7,9 +7,32 @@
     "man": {
       "output": "public/assets/characters/hero-man.glb",
       "phenotype": {
-        "gender": 1.0, "age": 0.5, "muscle": 0.6, "weight": 0.5, "proportions": 0.7, "height": 0.55,
-        "cupsize": 0.5, "firmness": 0.5,
-        "race": { "african": 0.34, "asian": 0.33, "caucasian": 0.33 }
+        "gender": 1.0,
+        "age": 0.5,
+        "muscle": 0.7,
+        "weight": 0.5,
+        "proportions": 0.6,
+        "height": 0.55,
+        "cupsize": 0.5,
+        "firmness": 0.5,
+        "race": {
+          "african": 0.34,
+          "asian": 0.33,
+          "caucasian": 0.33
+        }
+      },
+      "targets": {
+        "buttocks/buttocks-volume-decr": 0.4,
+        "arms/l-upperarm-muscle-incr": 0.4,
+        "arms/r-upperarm-muscle-incr": 0.4,
+        "arms/l-upperarm-shoulder-muscle-incr": 0.4,
+        "arms/r-upperarm-shoulder-muscle-incr": 0.4,
+        "arms/l-lowerarm-muscle-incr": 0.3,
+        "arms/r-lowerarm-muscle-incr": 0.3,
+        "torso/torso-vshape-incr": 0.25,
+        "torso/torso-muscle-pectoral-incr": 0.3,
+        "legs/l-upperleg-muscle-incr": 0.3,
+        "legs/r-upperleg-muscle-incr": 0.3
       },
       "skin": "system_assets/skins/young_african_male/young_african_male.mhmat",
       "eyes": "system_assets/eyes/high-poly/high-poly.mhclo",
@@ -17,14 +40,56 @@
       "eyebrows": "system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
       "eyelashes": "system_assets/eyelashes/eyelashes02/eyelashes02.mhclo",
       "hair": "system_assets/hair/short04/short04.mhclo",
-      "clothes": ["suits02/clothes/matcreator_mc-skinsuit_2022/matcreator_mc-skinsuit_2022.mhclo"]
+      "clothes": [
+        {
+          "file": "suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
+          "roughness": 0.75,
+          "tint": [
+            0.3,
+            0.33,
+            0.38
+          ],
+          "note": "TheGreatEngineer's Galactic Warrior uniform (CC0), darkened to slate grey, matte",
+          "name": "suit"
+        },
+        {
+          "file": "system_assets/clothes/shoes03/shoes03.mhclo",
+          "roughness": 0.55,
+          "textureSize": 512,
+          "note": "MakeHuman's black boots (CC0)",
+          "name": "boots"
+        }
+      ]
     },
     "woman": {
       "output": "public/assets/characters/hero-woman.glb",
       "phenotype": {
-        "gender": 0.0, "age": 0.5, "muscle": 0.55, "weight": 0.45, "proportions": 0.7, "height": 0.55,
-        "cupsize": 0.5, "firmness": 0.6,
-        "race": { "african": 0.33, "asian": 0.34, "caucasian": 0.33 }
+        "gender": 0.0,
+        "age": 0.5,
+        "muscle": 0.6,
+        "weight": 0.45,
+        "proportions": 0.6,
+        "height": 0.55,
+        "cupsize": 0.45,
+        "firmness": 0.6,
+        "race": {
+          "african": 0.33,
+          "asian": 0.34,
+          "caucasian": 0.33
+        }
+      },
+      "targets": {
+        "hip/hip-scale-horiz-decr": 0.35,
+        "hip/hip-scale-depth-decr": 0.25,
+        "buttocks/buttocks-volume-decr": 0.5,
+        "stomach/stomach-pregnant-decr": 0.3,
+        "torso/torso-vshape-incr": 0.15,
+        "arms/l-upperarm-muscle-incr": 0.3,
+        "arms/r-upperarm-muscle-incr": 0.3,
+        "arms/l-upperarm-shoulder-muscle-incr": 0.3,
+        "arms/r-upperarm-shoulder-muscle-incr": 0.3,
+        "legs/l-upperleg-muscle-incr": 0.2,
+        "legs/r-upperleg-muscle-incr": 0.2
       },
       "skin": "system_assets/skins/young_asian_female/young_asian_female.mhmat",
       "eyes": "system_assets/eyes/high-poly/high-poly.mhclo",
@@ -32,56 +97,225 @@
       "eyebrows": "system_assets/eyebrows/eyebrow006/eyebrow006.mhclo",
       "eyelashes": "system_assets/eyelashes/eyelashes01/eyelashes01.mhclo",
       "hair": "system_assets/hair/ponytail01/ponytail01.mhclo",
-      "clothes": ["suits02/clothes/matcreator_mc-skinsuit_2022/matcreator_mc-skinsuit_2022.mhclo"]
+      "clothes": [
+        {
+          "file": "suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
+          "roughness": 0.75,
+          "tint": [
+            0.3,
+            0.33,
+            0.38
+          ],
+          "note": "TheGreatEngineer's Galactic Warrior uniform (CC0), darkened to slate grey, matte",
+          "name": "suit"
+        },
+        {
+          "file": "system_assets/clothes/shoes03/shoes03.mhclo",
+          "roughness": 0.55,
+          "textureSize": 512,
+          "note": "MakeHuman's black boots (CC0)",
+          "name": "boots"
+        }
+      ]
     }
   },
   "morphs": [
-    { "name": "body_heavy", "group": "body", "label": "Heavier", "macro": { "weight": 0.9 } },
-    { "name": "body_slim", "group": "body", "label": "Slimmer", "macro": { "weight": 0.15 } },
-    { "name": "body_muscular", "group": "body", "label": "More muscle", "macro": { "muscle": 1.0 } },
-    { "name": "body_soft", "group": "body", "label": "Less muscle", "macro": { "muscle": 0.15 } },
     {
-      "name": "body_lean", "group": "body", "label": "Long and lean (proportions)",
+      "name": "body_heavy",
+      "group": "body",
+      "label": "Heavier",
+      "macro": {
+        "weight": 0.9
+      }
+    },
+    {
+      "name": "body_slim",
+      "group": "body",
+      "label": "Slimmer",
+      "macro": {
+        "weight": 0.15
+      }
+    },
+    {
+      "name": "body_muscular",
+      "group": "body",
+      "label": "More muscle",
+      "macro": {
+        "muscle": 1.0
+      }
+    },
+    {
+      "name": "body_soft",
+      "group": "body",
+      "label": "Less muscle",
+      "macro": {
+        "muscle": 0.15
+      }
+    },
+    {
+      "name": "body_lean",
+      "group": "body",
+      "label": "Long and lean (proportions)",
       "targets": {
-        "torso/torso-scale-horiz-decr": 0.3, "torso/torso-scale-depth-decr": 0.5,
+        "torso/torso-scale-horiz-decr": 0.3,
+        "torso/torso-scale-depth-decr": 0.5,
         "hip/hip-scale-horiz-decr": 0.2,
-        "neck/neck-scale-horiz-decr": 0.4, "neck/neck-scale-depth-decr": 0.4,
-        "arms/l-upperarm-fat-decr": 0.7, "arms/r-upperarm-fat-decr": 0.7,
-        "arms/l-lowerarm-fat-decr": 0.6, "arms/r-lowerarm-fat-decr": 0.6,
-        "legs/l-upperleg-fat-decr": 0.6, "legs/r-upperleg-fat-decr": 0.6,
-        "legs/l-lowerleg-fat-decr": 0.6, "legs/r-lowerleg-fat-decr": 0.6,
+        "neck/neck-scale-horiz-decr": 0.4,
+        "neck/neck-scale-depth-decr": 0.4,
+        "arms/l-upperarm-fat-decr": 0.7,
+        "arms/r-upperarm-fat-decr": 0.7,
+        "arms/l-lowerarm-fat-decr": 0.6,
+        "arms/r-lowerarm-fat-decr": 0.6,
+        "legs/l-upperleg-fat-decr": 0.6,
+        "legs/r-upperleg-fat-decr": 0.6,
+        "legs/l-lowerleg-fat-decr": 0.6,
+        "legs/r-lowerleg-fat-decr": 0.6,
         "stomach/stomach-pregnant-decr": 0.4
       }
     },
     {
-      "name": "body_stocky", "group": "body", "label": "Short and dense (proportions)",
+      "name": "body_stocky",
+      "group": "body",
+      "label": "Short and dense (proportions)",
       "targets": {
-        "torso/torso-scale-horiz-incr": 0.3, "torso/torso-scale-depth-incr": 0.5,
-        "neck/neck-scale-horiz-incr": 0.6, "neck/neck-scale-depth-incr": 0.5,
-        "arms/l-upperarm-muscle-incr": 0.6, "arms/r-upperarm-muscle-incr": 0.6,
-        "arms/l-upperarm-fat-incr": 0.3, "arms/r-upperarm-fat-incr": 0.3,
-        "arms/l-lowerarm-muscle-incr": 0.6, "arms/r-lowerarm-muscle-incr": 0.6,
-        "legs/l-upperleg-muscle-incr": 0.6, "legs/r-upperleg-muscle-incr": 0.6,
-        "legs/l-upperleg-fat-incr": 0.3, "legs/r-upperleg-fat-incr": 0.3,
-        "legs/l-lowerleg-muscle-incr": 0.6, "legs/r-lowerleg-muscle-incr": 0.6
+        "torso/torso-scale-horiz-incr": 0.3,
+        "torso/torso-scale-depth-incr": 0.5,
+        "neck/neck-scale-horiz-incr": 0.6,
+        "neck/neck-scale-depth-incr": 0.5,
+        "arms/l-upperarm-muscle-incr": 0.6,
+        "arms/r-upperarm-muscle-incr": 0.6,
+        "arms/l-upperarm-fat-incr": 0.3,
+        "arms/r-upperarm-fat-incr": 0.3,
+        "arms/l-lowerarm-muscle-incr": 0.6,
+        "arms/r-lowerarm-muscle-incr": 0.6,
+        "legs/l-upperleg-muscle-incr": 0.6,
+        "legs/r-upperleg-muscle-incr": 0.6,
+        "legs/l-upperleg-fat-incr": 0.3,
+        "legs/r-upperleg-fat-incr": 0.3,
+        "legs/l-lowerleg-muscle-incr": 0.6,
+        "legs/r-lowerleg-muscle-incr": 0.6
       }
     },
-    { "name": "body_shoulders_broad", "group": "body", "label": "Broad shoulders", "targets": { "torso/torso-vshape-incr": 1.0 } },
-    { "name": "body_hips_wide", "group": "body", "label": "Wide hips", "targets": { "hip/hip-scale-horiz-incr": 0.7 } },
     {
-      "name": "body_chest", "group": "body", "label": "Chest",
-      "man": { "targets": { "torso/torso-muscle-pectoral-incr": 1.0 } },
-      "woman": { "macro": { "cupsize": 1.0 } }
+      "name": "body_shoulders_broad",
+      "group": "body",
+      "label": "Broad shoulders",
+      "targets": {
+        "torso/torso-vshape-incr": 1.0
+      }
     },
-    { "name": "body_neck_thick", "group": "body", "label": "Thick neck", "targets": { "neck/measure-neck-circ-incr": 1.0 } },
-    { "name": "face_jaw_wide", "group": "face", "label": "Wide jaw", "targets": { "chin/chin-width-incr": 1.0, "chin/chin-bones-incr": 0.6 } },
-    { "name": "face_chin_strong", "group": "face", "label": "Strong chin", "targets": { "chin/chin-prominent-incr": 1.0, "chin/chin-height-incr": 0.4 } },
-    { "name": "face_cheekbones", "group": "face", "label": "High cheekbones", "targets": { "cheek/l-cheek-bones-incr": 1.0, "cheek/r-cheek-bones-incr": 1.0 } },
-    { "name": "face_nose_wide", "group": "face", "label": "Wide nose", "targets": { "nose/nose-scale-horiz-incr": 0.8, "nose/nose-flaring-incr": 0.6 } },
-    { "name": "face_nose_long", "group": "face", "label": "Long nose", "targets": { "nose/nose-scale-vert-incr": 0.8, "nose/nose-point-down": 0.3 } },
-    { "name": "face_lips_full", "group": "face", "label": "Full lips", "targets": { "mouth/mouth-upperlip-volume-incr": 1.0, "mouth/mouth-lowerlip-volume-incr": 1.0 } },
-    { "name": "face_eyes_large", "group": "face", "label": "Large eyes", "targets": { "eyes/l-eye-scale-incr": 0.6, "eyes/r-eye-scale-incr": 0.6 } },
-    { "name": "face_brow_heavy", "group": "face", "label": "Heavy brow", "targets": { "forehead/forehead-nubian-incr": 0.8, "eyebrows/eyebrows-trans-down": 0.4 } },
-    { "name": "face_round", "group": "face", "label": "Round face", "targets": { "head/head-round": 0.7, "cheek/l-cheek-volume-incr": 0.6, "cheek/r-cheek-volume-incr": 0.6 } }
+    {
+      "name": "body_hips_wide",
+      "group": "body",
+      "label": "Wide hips",
+      "targets": {
+        "hip/hip-scale-horiz-incr": 0.7
+      }
+    },
+    {
+      "name": "body_chest",
+      "group": "body",
+      "label": "Chest",
+      "man": {
+        "targets": {
+          "torso/torso-muscle-pectoral-incr": 1.0
+        }
+      },
+      "woman": {
+        "macro": {
+          "cupsize": 1.0
+        }
+      }
+    },
+    {
+      "name": "body_neck_thick",
+      "group": "body",
+      "label": "Thick neck",
+      "targets": {
+        "neck/measure-neck-circ-incr": 1.0
+      }
+    },
+    {
+      "name": "face_jaw_wide",
+      "group": "face",
+      "label": "Wide jaw",
+      "targets": {
+        "chin/chin-width-incr": 1.0,
+        "chin/chin-bones-incr": 0.6
+      }
+    },
+    {
+      "name": "face_chin_strong",
+      "group": "face",
+      "label": "Strong chin",
+      "targets": {
+        "chin/chin-prominent-incr": 1.0,
+        "chin/chin-height-incr": 0.4
+      }
+    },
+    {
+      "name": "face_cheekbones",
+      "group": "face",
+      "label": "High cheekbones",
+      "targets": {
+        "cheek/l-cheek-bones-incr": 1.0,
+        "cheek/r-cheek-bones-incr": 1.0
+      }
+    },
+    {
+      "name": "face_nose_wide",
+      "group": "face",
+      "label": "Wide nose",
+      "targets": {
+        "nose/nose-scale-horiz-incr": 0.8,
+        "nose/nose-flaring-incr": 0.6
+      }
+    },
+    {
+      "name": "face_nose_long",
+      "group": "face",
+      "label": "Long nose",
+      "targets": {
+        "nose/nose-scale-vert-incr": 0.8,
+        "nose/nose-point-down": 0.3
+      }
+    },
+    {
+      "name": "face_lips_full",
+      "group": "face",
+      "label": "Full lips",
+      "targets": {
+        "mouth/mouth-upperlip-volume-incr": 1.0,
+        "mouth/mouth-lowerlip-volume-incr": 1.0
+      }
+    },
+    {
+      "name": "face_eyes_large",
+      "group": "face",
+      "label": "Large eyes",
+      "targets": {
+        "eyes/l-eye-scale-incr": 0.6,
+        "eyes/r-eye-scale-incr": 0.6
+      }
+    },
+    {
+      "name": "face_brow_heavy",
+      "group": "face",
+      "label": "Heavy brow",
+      "targets": {
+        "forehead/forehead-nubian-incr": 0.8,
+        "eyebrows/eyebrows-trans-down": 0.4
+      }
+    },
+    {
+      "name": "face_round",
+      "group": "face",
+      "label": "Round face",
+      "targets": {
+        "head/head-round": 0.7,
+        "cheek/l-cheek-volume-incr": 0.6,
+        "cheek/r-cheek-volume-incr": 0.6
+      }
+    }
   ]
 }

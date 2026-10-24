@@ -2,8 +2,10 @@
 
     blender -b --factory-startup --python scripts/art/preview.py
 
-Makes, for each hero body, a sheet of the three lineage presets (art/lineages.json) side by
-side, a sheet of face close-ups, and a sheet of animation poses. Uses Blender's EEVEE renderer.
+Makes posture-before-after.png (the old and new standing idle from the side, if the old files
+were kept in art/out/posture/, then the new bodies from the front, side and back and in
+mid-stride); and, for each hero body, a sheet of the three lineage presets (art/lineages.json),
+a sheet of face close-ups and a sheet of animation poses. Uses Blender's EEVEE renderer.
 """
 
 import math
@@ -19,9 +21,10 @@ from mathutils import Vector  # noqa: E402
 import common as C  # noqa: E402
 
 PREVIEWS = C.ART / "out" / "previews"
-POSES = ["idle:0", "walk:8", "jog:5", "strafe_left:8", "crouch_idle:0", "pistol_aim:0",
-         "pistol_shoot:3", "power_cast:6", "melee_combo:30", "hit_knockback:6", "death:50",
-         "roll:15"]
+POSES = ["idle:10", "walk:8", "jog:5", "strafe_left:8", "jog_back:8", "crouch_left:10",
+         "pistol_aim:0", "pistol_shoot:3", "power_both_ready:10", "kick:12", "melee_combo:30",
+         "dodge_left:12", "hit_knockback:6", "death:50", "climb_ledge:10", "turn_left:30",
+         "roll:15", "walk_back:8"]
 
 
 def setup_scene(width, height):
@@ -139,8 +142,77 @@ def pose_sheet(name, path):
     save_sheet(tiles, 6, PREVIEWS / f"{name}-poses.png")
 
 
+def _label(scene, cam, text):
+    """Put a caption at the top of the camera's view."""
+    curve = bpy.data.curves.new("Label", "FONT")
+    curve.body = text
+    curve.size = 0.09
+    curve.align_x = "CENTER"
+    obj = bpy.data.objects.new("Label", curve)
+    mat = bpy.data.materials.new("Label")
+    mat.use_nodes = True
+    emit = mat.node_tree.nodes.new("ShaderNodeEmission")
+    emit.inputs["Color"].default_value = (0.02, 0.02, 0.03, 1)
+    mat.node_tree.links.new(emit.outputs[0], mat.node_tree.nodes["Material Output"].inputs[0])
+    curve.materials.append(mat)
+    scene.collection.objects.link(obj)
+    obj.matrix_world = cam.matrix_world
+    obj.location = cam.matrix_world @ Vector((0, 1.0, -3.0))
+    return obj
+
+
+def _stance_tile(path, clip, view, caption, frame=None):
+    """One orthographic view of a clip, with a plumb line through the middle of the ankles."""
+    scene, cam = setup_scene(400, 700)
+    arm, _, clips = load_character(path)
+    action = clips[clip]
+    C.assign_action(arm, action)
+    if frame is None:  # mid-stride: the frame with the feet furthest apart
+        best = (-1, 0)
+        for f in C.frame_span(action):
+            scene.frame_set(f)
+            gap = (arm.pose.bones["foot_l"].head - arm.pose.bones["foot_r"].head).length
+            best = max(best, (gap, f))
+        frame = best[1]
+    scene.frame_set(frame)
+    mw = arm.matrix_world
+    ankle = (mw @ arm.pose.bones["foot_l"].head + mw @ arm.pose.bones["foot_r"].head) / 2
+    angle = {"front": 0, "side": 90, "back": 180}[view]
+    cam.data.type = "ORTHO"
+    cam.data.ortho_scale = 2.3
+    a = math.radians(angle)
+    target = Vector((ankle.x, ankle.y, 0.98))
+    cam.location = target + Vector((4 * math.sin(a), -4 * math.cos(a), 0))
+    cam.rotation_euler = (math.radians(90), 0, a)
+    if view == "side":
+        bpy.ops.mesh.primitive_cylinder_add(radius=0.003, depth=2.1, location=(ankle.x, ankle.y, 1.05))
+    bpy.context.view_layer.update()
+    _label(scene, cam, caption)
+    return render_tile(scene, PREVIEWS / "tile.png")
+
+
+def posture_sheet():
+    """art/out/previews/posture-before-after.png: the old and new idle from the side, then the
+    new bodies from the front, side and back, and mid-stride in the walk."""
+    before = C.ART / "out" / "posture"
+    tiles = []
+    for body in ("man", "woman"):
+        old = before / f"before-hero-{body}.glb"
+        if old.exists():
+            tiles.append(_stance_tile(old, "idle", "side", f"{body}: old idle", 10))
+        tiles.append(_stance_tile(C.OUT_CHARACTERS / f"hero-{body}.glb", "idle", "side",
+                                  f"{body}: new idle", 10))
+    for body in ("man", "woman"):
+        path = C.OUT_CHARACTERS / f"hero-{body}.glb"
+        for view in ("front", "side", "back"):
+            tiles.append(_stance_tile(path, "idle", view, f"{body}: {view}", 10))
+        tiles.append(_stance_tile(path, "walk", "side", f"{body}: walk"))
+    save_sheet(tiles, 4, PREVIEWS / "posture-before-after.png")
+
+
 def main():
     PREVIEWS.mkdir(parents=True, exist_ok=True)
+    posture_sheet()
     lineages = C.load_json("art/lineages.json")["presets"]
     morphs = [m["name"] for m in C.load_json("art/hero.json")["morphs"]]
     for body in ("man", "woman"):

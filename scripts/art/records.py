@@ -45,7 +45,8 @@ def items_used(hero, meta, source_of_pack):
     items = {}
     for body_name, body in hero["bodies"].items():
         paths = [body[k] for k in ("skin", "eyes", "eyeMaterial", "eyebrows", "eyelashes", "hair")
-                 if body.get(k)] + body.get("clothes", [])
+                 if body.get(k)] + [c if isinstance(c, str) else c["file"]
+                                    for c in body.get("clothes", [])]
         for rel in paths:
             pack_dir = rel.split("/")[0]
             p = Path(rel)
@@ -93,7 +94,8 @@ def main():
     records["items"] = items_used(hero, pack_metadata(), source_of_pack)
     targets = sorted({t for m in hero["morphs"]
                       for spec in [m] + [m[b] for b in ("man", "woman") if b in m]
-                      for t in spec.get("targets", {})})
+                      for t in spec.get("targets", {})}
+                     | {t for body in hero["bodies"].values() for t in body.get("targets", {})})
     records["mpfbData"] = {
         "source": "mpfb",
         "licence": "CC0-1.0 (MakeHuman core assets)",
@@ -104,11 +106,11 @@ def main():
                 + [f"data/targets/{t}.target.gz" for t in targets],
     }
     made_by = {
-        "mannequin.glb": {"script": "scripts/art/mannequin.py", "from": ["ual1", "ual2"]},
+        "mannequin.glb": {"script": "scripts/art/mannequin.py", "from": ["ual1_pro", "ual2"]},
         "hero-man.glb": {"script": "scripts/art/hero.py",
-                         "from": ["mpfb", "mh_system_assets", "mh_suits02", "ual1", "ual2"]},
+                         "from": ["mpfb", "mh_system_assets", "mh_suits02", "ual1_pro", "ual2"]},
         "hero-woman.glb": {"script": "scripts/art/hero.py",
-                           "from": ["mpfb", "mh_system_assets", "mh_suits02", "ual1", "ual2"]},
+                           "from": ["mpfb", "mh_system_assets", "mh_suits02", "ual1_pro", "ual2"]},
         "heroes.json": {"script": "scripts/art/hero.py", "from": []},
     }
     records["outputs"] = outputs(made_by)

@@ -15,16 +15,18 @@ its source, its licence with a link, and what we changed, as the licence asks.
 **Characters and animation**
 
 - **[Quaternius](https://quaternius.com)**: the
-  [Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html) and
+  [Universal Animation Library](https://quaternius.com/packs/universalanimationlibrary.html)
+  (Pro version, bought by the owner, CC0) and
   [Universal Animation Library 2](https://opengameart.org/content/universal-animation-library-2)
-  (free Standard versions, CC0), for the mannequin and every animation clip.
+  (free Standard version, CC0), for the mannequin and every animation clip.
 - **The [MakeHuman Community](http://www.makehumancommunity.org)** (Data Collection AB, Joel
   Palmius, Jonas Hauquier and contributors): MPFB's base mesh, body and face targets, skeleton
   and weights, and the
   [system assets](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html)
-  used for the heroes' skin, eyes, eyebrows, eyelashes and hair (CC0).
-- **MatCreator**: *MC-SkinSuit 2022*, the heroes' suit, from the MakeHuman
-  [Suits 02](https://static.makehumancommunity.org/assets/assetpacks/suits02.html) pack (CC0).
+  used for the heroes' skin, eyes, eyebrows, eyelashes, hair and boots (CC0).
+- **TheGreatEngineer**: the *Galactic Warrior* uniform, the heroes' suit (recoloured), from the
+  MakeHuman [Suits 02](https://static.makehumancommunity.org/assets/assetpacks/suits02.html)
+  pack (CC0).
 
 **Materials**
 

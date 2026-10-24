@@ -7,7 +7,8 @@ What is here:
 - importing the Universal Animation Library (UAL) files;
 - a retargeter that copies animation from one skeleton to another by world-space rotation,
   so it works when the two skeletons have different bone names, rolls and rest poses;
-- a "strafe" clip made from a walk, because the free UAL files have no sideways walk;
+- make_upright(), which straightens UAL's relaxed standing clips, and derive_clip(), which
+  makes clips from others (played backwards, slowed, softened);
 - glTF export, and finish_glb(), which strips rest-pose channels and, with glTF-Transform from
   node_modules, resamples, quantizes and stores morph targets sparsely;
 - a reader that reports triangles, bones, clips and morph targets of a .glb.
@@ -243,14 +244,28 @@ def frame_span(action):
 class Retargeter:
     """Copies motion from a source armature to a target armature.
 
-    For each mapped bone the target takes the source bone's world-space rotation change from
-    its rest pose. With align_rest=True the target's rest bones are first turned to point the
-    same way as the source's (for example an A-pose onto a T-pose), so the change is measured
-    from matching postures. The hips (and root) also take the source's movement, scaled by the
-    ratio of hip heights. Unmapped target bones keep their rest pose relative to their parent.
+    Every mapped target bone takes the source bone's change of world-space rotation from its
+    rest pose. How the two rest poses are matched depends on the bone:
+
+    - Arms, hands and fingers (align_rest): the target's rest bone is first turned to point
+      the same way as the source's, so an A-pose arm follows a T-pose arm.
+    - Thighs and shins (side_only): only their sideways spread is matched, so an A-pose's
+      spread legs stand under the hips, while the knees and ankles keep the target's own
+      upright stance from the side.
+    - The pelvis, spine, neck, head, collarbones and feet (no_align): their bone directions
+      are rig conventions (one rig's pelvis bone points forward, the other's backward), so
+      they take the rotation change alone: when the source's pelvis tips 5 degrees, so does
+      the target's, from its own upright rest, and a flat foot stays flat.
+    - The trunk (trunk): the spine, neck and head also turn together, once, so that the line
+      from the target's pelvis to its head leans as the source's does at rest. Then a clip
+      leans the trunk exactly as much on both.
+
+    The hips (and root) also take the source's movement, scaled by the ratio of hip heights.
+    Unmapped target bones keep their rest pose relative to their parent.
     """
 
-    def __init__(self, src, dst, dst_to_src, hips="pelvis", root=None, align_rest=True):
+    def __init__(self, src, dst, dst_to_src, hips="pelvis", root=None, align_rest=True,
+                 no_align=(), trunk=(), side_only=()):
         self.src, self.dst = src, dst
         self.map = {d: s for d, s in dst_to_src.items()
                     if d in dst.data.bones and s in src.data.bones}
@@ -262,12 +277,32 @@ class Retargeter:
         self.rest_d = {b.name: b.matrix_local.copy() for b in dst.data.bones}
         self.rest_dw = {n: dw @ m for n, m in self.rest_d.items()}
         self.rest_sw = {b.name: sw @ b.matrix_local for b in src.data.bones}
+        no_align = {n.lower() for n in no_align}
+        side_only = {n.lower() for n in side_only}
+        trunk = [n for n in trunk if n in self.map]
+        self.trunk = trunk
+        self.trunk_tree = []
+        if trunk:
+            first = dst.data.bones[trunk[0]]
+            self.trunk_tree = [first.name] + [c.name for c in first.children_recursive]
+        trunk_turn = self._trunk_turn(trunk) if trunk else Quaternion()
+        self.trunk_turn_deg = math.degrees(trunk_turn.angle) * (1 if trunk_turn.x >= 0 else -1)
         self.offset = {}
         for d, s in self.map.items():
             qd = self.rest_dw[d].to_quaternion()
             qs = self.rest_sw[s].to_quaternion()
             align = Quaternion()
-            if align_rest:
+            if d in trunk:
+                align = trunk_turn
+            elif align_rest and d.lower() in side_only:
+                # Only the sideways angle seen from the front: an A-pose's spread legs come
+                # together, while the knees and ankles keep the target's own upright stance.
+                yd = self.rest_dw[d].to_3x3() @ Vector((0, 1, 0))
+                ys = self.rest_sw[s].to_3x3() @ Vector((0, 1, 0))
+                spread_d = math.atan2(yd.x, -yd.z)
+                spread_s = math.atan2(ys.x, -ys.z)
+                align = Quaternion((0, 1, 0), spread_d - spread_s)
+            elif align_rest and d.lower() not in no_align:
                 yd = (self.rest_dw[d].to_3x3() @ Vector((0, 1, 0))).normalized()
                 ys = (self.rest_sw[s].to_3x3() @ Vector((0, 1, 0))).normalized()
                 align = yd.rotation_difference(ys)
@@ -278,6 +313,25 @@ class Retargeter:
         self.move_scale = hd / hs if hs > 1e-6 else 1.0
         for pb in dst.pose.bones:
             pb.rotation_mode = "QUATERNION"
+
+    def _trunk_turn(self, trunk):
+        """The turn about the side-to-side axis that makes the target's rest line from pelvis
+        to head lean as the source's does."""
+        def lean(v):
+            return math.atan2(-v.y, v.z)
+
+        top_d, top_s = trunk[-1], self.map[trunk[-1]]
+        pelvis_d, pelvis_s = self.rest_dw[self.hips].translation, \
+            self.rest_sw[self.map[self.hips]].translation
+        want = lean(self.rest_sw[top_s].translation - pelvis_s)
+        pivot = self.rest_dw[trunk[0]].translation
+        arm = self.rest_dw[top_d].translation - pivot
+        theta = want - lean(arm + pivot - pelvis_d)
+        for _ in range(8):  # the pivot is not the pelvis, so refine
+            q = Quaternion((1, 0, 0), theta)
+            got = lean(pivot + q @ arm - pelvis_d)
+            theta += want - got
+        return Quaternion((1, 0, 0), theta)
 
     def target_worlds(self):
         """World matrices for every target bone for the source's current frame."""
@@ -306,7 +360,29 @@ class Retargeter:
             else:
                 pos = follow.translation
             worlds[n] = Matrix.Translation(pos) @ rot.to_matrix().to_4x4()
+        if self.trunk:
+            self._match_trunk(worlds)
         return worlds
+
+    def _match_trunk(self, worlds):
+        """Turn the spine (and all it carries) about its base so that the line from the
+        target's pelvis to its head points exactly as the source's does. The bones keep the
+        source's rotation changes; this only removes the lean that different spine
+        proportions add when the spine bends."""
+        sw, sp = self.src.matrix_world, self.src.pose.bones
+        v_s = (sw @ sp[self.map[self.trunk[-1]]].matrix).translation \
+            - (sw @ sp[self.map[self.hips]].matrix).translation
+        pelvis = worlds[self.hips].translation
+        pivot = worlds[self.trunk[0]].translation.copy()
+        for _ in range(3):
+            head = worlds[self.trunk[-1]].translation
+            want = pelvis + v_s.normalized() * (head - pelvis).length
+            turn = (head - pivot).rotation_difference(want - pivot)
+            if turn.angle < 1e-5:
+                break
+            m = Matrix.Translation(pivot) @ turn.to_matrix().to_4x4() @ Matrix.Translation(-pivot)
+            for n in self.trunk_tree:
+                worlds[n] = m @ worlds[n]
 
     def bake(self, src_action, name, loop):
         assign_action(self.src, src_action)
@@ -341,78 +417,308 @@ def current_worlds(arm, order):
     return {b.name: mw @ arm.pose.bones[b.name].matrix for b in order}
 
 
-def make_strafe(arm, walk_action, name, side, pelvis, spine_weights, yaw_deg=80.0):
-    """A sideways walk made from a forward walk.
+def _find(arm, name):
+    low = name.lower()
+    for b in arm.data.bones:
+        if b.name.lower() == low:
+            return b.name
+    raise KeyError(name)
 
-    The pelvis (and so the legs) turns towards the side of travel, and the spine turns back
-    so the chest, head and arms still face forward. The legs then step sideways. It is a
-    stand-in until a captured strafe exists (the paid UAL versions have one).
+
+def _mean_quat(quats):
+    """The average of nearby rotations (sum and normalise; mathutils' 4D Vector.normalized()
+    leaves the fourth value alone, so the sum is normalised as a Quaternion)."""
+    ref = quats[0]
+    acc = [0.0, 0.0, 0.0, 0.0]
+    for q in quats:
+        sign = 1.0 if ref.dot(q) >= 0 else -1.0
+        for k in range(4):
+            acc[k] += sign * q[k]
+    return Quaternion(acc).normalized()
+
+
+def make_upright(arm, action, name, *, lean_back_deg=2.5, sway=0.5, bob=0.1, toe_out_deg=5.0,
+                 knee_bend_deg=1.5, knee_room=0.0005, loop=True):
+    """A standing clip made upright, for an armature with Unreal-style bone names.
+
+    UAL's standing idles are relaxed: head forward, knees bent, one foot well ahead of the
+    other. This keeps the clip's small movements (breathing, weight shifts, the arms and the
+    head) but removes its average lean:
+    - the pelvis keeps only its movement around its average, from the upright rest pose; its
+      sway is scaled by `sway`, and its rise and fall by `sway * bob`;
+    - the spine, neck and head keep only their movement around their average, and the spine
+      leans back by `lean_back_deg` from the T-pose's slight forward lean;
+    - the feet stand flat under the hips, turned out a little, and the legs reach them with a
+      two-bone solve; at each frame the hips rise just enough that neither knee bends more than
+      `knee_bend_deg`.
     """
+    scene = bpy.context.scene
     order = bones_in_order(arm)
     rest = {b.name: b.matrix_local.copy() for b in arm.data.bones}
-    arm_inv = arm.matrix_world.inverted()
-    yaw = math.radians(yaw_deg if side == "left" else -yaw_deg)
-    assign_action(arm, walk_action)
-    scene = bpy.context.scene
-    frames = frame_span(walk_action)
-    turned_by = {pelvis: 1.0}
-    acc = 1.0
-    for bone_name, w in spine_weights:
-        acc -= w
-        turned_by[bone_name] = acc
-    per_frame = []
+    pelvis = _find(arm, "pelvis")
+    trunk = [_find(arm, n) for n in ("spine_01", "spine_02", "spine_03", "neck_01", "head")]
+    legs = [[_find(arm, f"{part}_{s}") for part in ("thigh", "calf", "foot", "ball")]
+            for s in ("l", "r")]
+    leg_bones = {n for leg in legs for n in leg}
+    for leg in legs:
+        leg_bones.update(c.name for c in arm.data.bones[leg[0]].children_recursive)
+    assign_action(arm, action)
+    frames = frame_span(action)
+    pose = arm.pose.bones
+    basis_q = {b.name: [] for b in order}
+    pel_q, pel_t = [], []
     for f in frames:
         scene.frame_set(f)
-        old = current_worlds(arm, order)
-        new = {}
+        for b in order:
+            basis_q[b.name].append(pose[b.name].matrix_basis.to_quaternion())
+        pel_q.append(pose[pelvis].matrix.to_quaternion())
+        pel_t.append(pose[pelvis].matrix.translation.copy())
+    mean_pel_q = _mean_quat(pel_q)
+    mean_pel_t = sum(pel_t, Vector()) / len(pel_t)
+    mean_trunk = {n: _mean_quat(basis_q[n]) for n in trunk}
+    back = Quaternion((1, 0, 0), -math.radians(lean_back_deg))
+    leg_len = []
+    for thigh, calf, foot, _ball in legs:
+        l1 = (rest[calf].translation - rest[thigh].translation).length
+        l2 = (rest[foot].translation - rest[calf].translation).length
+        reach = math.sqrt(l1 * l1 + l2 * l2 + 2 * l1 * l2 * math.cos(math.radians(knee_bend_deg)))
+        leg_len.append(reach)
+
+    def local(n):
+        p = arm.data.bones[n].parent
+        return rest[p.name].inverted() @ rest[n] if p else rest[n]
+
+    per_frame = []
+    for i, _f in enumerate(frames):
+        N = {}
         for b in order:
             n = b.name
-            if b.parent is None:
-                new[n] = old[n]
+            p = b.parent.name if b.parent else None
+            if p is None:
+                N[n] = rest[n].copy()
                 continue
-            p = b.parent.name
-            follow = new[p] @ (old[p].inverted() @ old[n])
-            if n in turned_by:
-                t = turned_by[n]
-                rot = Quaternion((0, 0, 1), yaw * t) @ old[n].to_quaternion()
-                pos = old[n].translation if n == pelvis else follow.translation
-                new[n] = Matrix.Translation(pos) @ rot.to_matrix().to_4x4()
+            if n == pelvis:
+                rot = (pel_q[i] @ mean_pel_q.inverted()) @ rest[n].to_quaternion()
+                move = (pel_t[i] - mean_pel_t) * sway
+                move.z *= bob  # the hips barely rise and fall, so the knees stay straight
+                pos = rest[n].translation + move
+                m = Matrix.Translation(pos) @ rot.to_matrix().to_4x4()
+                # Raise the hips just enough that neither knee bends more than knee_bend_deg
+                # (the other leg straightens, as when weight shifts onto it).
+                lift = 0.0
+                for (thigh, _c, foot, _b), reach in zip(legs, leg_len):
+                    d = (m @ local(thigh)).translation - rest[foot].translation
+                    need = math.sqrt(max(0.0, reach * reach - d.x * d.x - d.y * d.y)) - d.z
+                    lift = max(lift, need)
+                N[n] = Matrix.Translation((0, 0, lift)) @ m
+                continue
+            if n in leg_bones:
+                continue  # solved below, after the pelvis
+            if n in mean_trunk:
+                q = mean_trunk[n].inverted() @ basis_q[n][i]
             else:
-                new[n] = follow
-        per_frame.append(worlds_to_basis(arm, order, rest, new, arm_inv))
+                q = basis_q[n][i]
+            m = N[p] @ local(n) @ q.to_matrix().to_4x4()
+            if n == trunk[0]:
+                h = m.translation.copy()
+                m = Matrix.Translation(h) @ back.to_matrix().to_4x4() @ Matrix.Translation(-h) @ m
+            N[n] = m
+        for side, (thigh, calf, foot, ball) in zip((1, -1), legs):
+            hip = (N[pelvis] @ local(thigh)).translation
+            l1 = (rest[calf].translation - rest[thigh].translation).length
+            l2 = (rest[foot].translation - rest[calf].translation).length
+            ankle = rest[foot].translation.copy()
+            d = ankle - hip
+            dist = min(d.length, l1 + l2 - knee_room)
+            dirn = d.normalized()
+            turn = Quaternion((0, 0, 1), side * math.radians(toe_out_deg))
+            pole = turn @ Vector((0, -1, 0))
+            pole = (pole - dirn * pole.dot(dirn)).normalized()
+            cos_a = max(-1.0, min(1.0, (l1 * l1 + dist * dist - l2 * l2) / (2 * l1 * dist)))
+            a = math.acos(cos_a)
+            knee = hip + dirn * math.cos(a) * l1 + pole * math.sin(a) * l1
+            ankle = hip + dirn * dist
+            for bone, head, tail in ((thigh, hip, knee), (calf, knee, ankle)):
+                # turn the leg out with the foot first, so the knee faces the way the toes do
+                turned = turn @ rest[bone].to_quaternion()
+                rest_dir = turned @ Vector((0, 1, 0))
+                q = rest_dir.rotation_difference(tail - head) @ turned
+                N[bone] = Matrix.Translation(head) @ q.to_matrix().to_4x4()
+            fq = turn @ rest[foot].to_quaternion()
+            N[foot] = Matrix.Translation(ankle) @ fq.to_matrix().to_4x4()
+            N[ball] = N[foot] @ local(ball)
+            for child in arm.data.bones[ball].children_recursive:
+                N[child.name] = N[child.parent.name] @ local(child.name)
+        per_frame.append(worlds_to_basis(arm, order, rest, N, Matrix.Identity(4)))
     start = frames[0]
-    return store_pose_track(arm, name, [f - start for f in frames], per_frame, True)
+    act = store_pose_track(arm, name, [f - start for f in frames], per_frame, loop)
+    assign_action(arm, None)
+    return act
 
 
-def build_clips(dst, clips, sources, dst_to_src_for, hips, root, strafe_args, align_rest):
+def straighten(arm, action, name, amount=0.5, loop=True):
+    """A clip with part of the spine's average forward bend taken out (amount 0 to 1), for
+    an armature with Unreal-style names. UAL's walks and jogs lean well forward; the legs,
+    arms and every movement are kept."""
+    scene = bpy.context.scene
+    trunk = [_find(arm, n) for n in ("spine_01", "spine_02", "spine_03", "neck_01", "head")]
+    assign_action(arm, action)
+    frames = frame_span(action)
+    rows = []
+    for f in frames:
+        scene.frame_set(f)
+        rows.append({pb.name: pb.matrix_basis.copy() for pb in arm.pose.bones})
+    for n in trunk:
+        mean = _mean_quat([r[n].to_quaternion() for r in rows])
+        fix = Quaternion().slerp(mean.inverted(), amount)
+        for r in rows:
+            q = fix @ r[n].to_quaternion()
+            r[n] = Matrix.Translation(r[n].translation) @ q.to_matrix().to_4x4()
+    act = store_pose_track(arm, name, [f - frames[0] for f in frames], rows, loop)
+    assign_action(arm, None)
+    return act
+
+
+def sample_basis(arm, action):
+    """Each bone's matrix_basis at every frame of an action."""
+    scene = bpy.context.scene
+    assign_action(arm, action)
+    frames = frame_span(action)
+    rows = []
+    for f in frames:
+        scene.frame_set(f)
+        rows.append({pb.name: pb.matrix_basis.copy() for pb in arm.pose.bones})
+    assign_action(arm, None)
+    return rows
+
+
+def _blend(a, b, t):
+    qa, qb = a.to_quaternion(), b.to_quaternion()
+    if qa.dot(qb) < 0:
+        qb.negate()
+    q = qa.slerp(qb, t)
+    loc = a.translation.lerp(b.translation, t)
+    return Matrix.Translation(loc) @ q.to_matrix().to_4x4()
+
+
+def derive_clip(arm, base, name, *, reverse=False, stretch=1.0, toward=None, amount=0.0,
+                loop=True):
+    """A clip made from another on the same skeleton: played backwards, slowed or sped up
+    (stretch), and/or blended part of the way (amount) towards the first frame of another
+    clip (toward), which softens a movement, for example a side jog into a side walk."""
+    rows = sample_basis(arm, base)
+    if reverse:
+        rows = rows[::-1]
+    if toward is not None and amount > 0:
+        target = sample_basis(arm, toward)[0]
+        rows = [{n: _blend(m, target[n], amount) for n, m in row.items()} for row in rows]
+    if abs(stretch - 1.0) > 1e-6:
+        count = int(round((len(rows) - 1) * stretch)) + 1
+        out = []
+        for k in range(count):
+            t = k / stretch
+            i = min(int(t), len(rows) - 2)
+            frac = max(0.0, min(1.0, t - i))
+            out.append({n: _blend(rows[i][n], rows[i + 1][n], frac) for n in rows[i]})
+        rows = out
+    return store_pose_track(arm, name, list(range(len(rows))), rows, loop)
+
+
+# How each part of the skeleton is matched between rest poses (see Retargeter): the trunk
+# and collarbones by rotation change alone (their bone directions are rig conventions), the
+# feet the same (so a flat foot stays flat), the legs by their sideways spread only, and the
+# arms, hands and fingers by direction (an A-pose arm onto a T-pose arm).
+NO_ALIGN = ("root", "pelvis", "spine_01", "spine_02", "spine_03", "neck_01", "head",
+            "clavicle_l", "clavicle_r", "foot_l", "foot_r", "ball_l", "ball_r")
+SIDE_ONLY = ("thigh_l", "thigh_r", "calf_l", "calf_r")
+TRUNK = ("spine_01", "spine_02", "spine_03", "neck_01", "head")
+
+
+def retarget_options(dst):
+    """Retargeter settings with the trunk's bone names spelt as dst spells them."""
+    names = {b.name.lower(): b.name for b in dst.data.bones}
+    return {"align_rest": True, "no_align": NO_ALIGN, "side_only": SIDE_ONLY,
+            "trunk": [names[n] for n in TRUNK if n in names]}
+
+
+def bone_map(dst, src, naming):
+    """{dst bone: src bone} for a source with Unreal-style or Rigify-style names."""
+    if naming == "rigify":
+        by_lower = {u.lower(): r for r, u in RIGIFY_TO_UNREAL.items()}
+    else:
+        by_lower = {b.name.lower(): b.name for b in src.data.bones}
+    return {b.name: by_lower[b.name.lower()] for b in dst.data.bones
+            if b.name.lower() in by_lower}
+
+
+def load_sources(cfg):
+    """Import each animation library once: {library: (armature, {clip: action})}."""
+    sources = {}
+    for lib, info in cfg["libraries"].items():
+        objs = import_glb(REPO / info["file"])
+        arm = armature_of(objs)
+        delete_objects([o for o in objs if o is not arm])
+        acts = actions_by_name(arm)
+        clear_animation(arm)
+        arm.location = (0.0, 2.0, 0.0)  # out of the way; motion is measured from rest
+        sources[lib] = (arm, acts)
+    return sources
+
+
+def build_clips(dst, clips, sources, dst_to_src_for, hips, root, retarget):
     """Bake every clip listed in art/animations.json onto dst.
 
     sources: {library: (armature, {clip name: action})}
     dst_to_src_for: {library: {dst bone: src bone}}
+    retarget: keyword arguments for Retargeter (align_rest, no_align, trunk)
+    Clips with "upright" are first made upright on the source (make_upright), and clips with
+    "straighten" have part of their forward bend removed (straighten), so every character gets
+    the same corrected clip. Clips with "derived" are made on dst afterwards.
     """
     made = {}
     retargeters = {}
+    upright_cache = {}
     for clip in clips:
         if "derived" in clip:
             continue
         lib = clip["library"]
+        src_arm, acts = sources[lib]
         if lib not in retargeters:
-            src_arm, _ = sources[lib]
             retargeters[lib] = Retargeter(src_arm, dst, dst_to_src_for[lib], hips=hips,
-                                          root=root, align_rest=align_rest)
-        _, acts = sources[lib]
+                                          root=root, **retarget)
+            log(f"retargeting from {lib}: trunk turned {retargeters[lib].trunk_turn_deg:.1f}"
+                " degrees to match the source's rest lean")
         if clip["source"] not in acts:
             raise RuntimeError(f"{lib} has no clip {clip['source']}")
-        log("retarget", clip["name"], "<-", lib, clip["source"])
-        made[clip["name"]] = retargeters[lib].bake(acts[clip["source"]], clip["name"],
-                                                   clip["loop"])
+        action = acts[clip["source"]]
+        if "upright" in clip:
+            key = (lib, clip["source"], json.dumps(clip["upright"], sort_keys=True))
+            if key not in upright_cache:
+                upright_cache[key] = make_upright(src_arm, action, f"__upright_{clip['name']}",
+                                                  loop=clip["loop"], **clip["upright"])
+            action = upright_cache[key]
+        elif "straighten" in clip:
+            key = (lib, clip["source"], "straighten", clip["straighten"])
+            if key not in upright_cache:
+                upright_cache[key] = straighten(src_arm, action, f"__straight_{clip['name']}",
+                                                clip["straighten"], loop=clip["loop"])
+            action = upright_cache[key]
+        log("retarget", clip["name"], "<-", lib, clip["source"],
+            "(made upright)" if "upright" in clip else
+            "(straightened)" if "straighten" in clip else "")
+        made[clip["name"]] = retargeters[lib].bake(action, clip["name"], clip["loop"])
     for clip in clips:
-        if clip.get("derived") == "strafe":
-            log("derive", clip["name"], "from", clip["from"])
-            made[clip["name"]] = make_strafe(dst, made[clip["from"]], clip["name"],
-                                             clip["side"], **strafe_args)
+        if "derived" not in clip:
+            continue
+        log("derive", clip["name"], "from", clip["from"])
+        made[clip["name"]] = derive_clip(
+            dst, made[clip["from"]], clip["name"], reverse=clip.get("reverse", False),
+            stretch=clip.get("stretch", 1.0), toward=made.get(clip.get("toward")),
+            amount=clip.get("amount", 0.0), loop=clip["loop"])
     # Keep the order of the JSON list.
     assign_action(dst, None)
+    for act in upright_cache.values():
+        bpy.data.actions.remove(act)
     return [made[c["name"]] for c in clips]
 
 
@@ -561,34 +867,71 @@ _COMPONENT = {5120: "<i1", 5121: "<u1", 5122: "<i2", 5123: "<u2", 5125: "<u4", 5
 _COMPONENTS = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
 
 
-def sparsify_morphs(src, dst, ratio=1 / 3):
-    """Store morph target accessors that are mostly zero as sparse accessors, then repack the
-    binary buffer so the dense copies are dropped. Returns how many accessors changed."""
+def _accessor_array(gltf, bin_chunk, acc):
+    import numpy as np
+    dtype = np.dtype(_COMPONENT[acc["componentType"]])
+    comps = _COMPONENTS[acc["type"]]
+    elem = dtype.itemsize * comps
+    view = gltf["bufferViews"][acc["bufferView"]]
+    stride = view.get("byteStride", elem)
+    start = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
+    count = acc["count"]
+    raw = np.frombuffer(bin_chunk, dtype=np.uint8, count=stride * (count - 1) + elem, offset=start)
+    rows = np.lib.stride_tricks.as_strided(raw, shape=(count, elem), strides=(stride, 1))
+    return np.ascontiguousarray(rows).view(dtype).reshape(count, comps)
+
+
+def shrink_glb(src, dst, ratio=1 / 3):
+    """The last size savings, then a repack of the binary buffer so replaced data is dropped:
+    - morph target accessors that are mostly zero become sparse accessors;
+    - clip rotations are stored as 16-bit normalised numbers (allowed by core glTF 2.0);
+    - clip output accessors lose their optional min and max.
+    Returns (morph accessors made sparse, rotation accessors made 16-bit)."""
     import numpy as np
     gltf, bin_chunk = _read_glb(src)
     accessors, views = gltf["accessors"], gltf["bufferViews"]
+    # New data goes into three shared buffer views (few views keep the JSON small).
+    pools = {k: bytearray() for k in ("rotations", "sparse_indices", "sparse_values")}
+    pool_view = {k: len(views) + i for i, k in enumerate(pools)}
+
+    def put(pool, blob):
+        data = pools[pool]
+        data += b"\0" * ((-len(data)) % 4)
+        offset = len(data)
+        data += blob
+        return {"bufferView": pool_view[pool], "byteOffset": offset}
+
+    rotations = set()
+    for anim in gltf.get("animations", []):
+        for ch in anim["channels"]:
+            out = anim["samplers"][ch["sampler"]]["output"]
+            accessors[out].pop("min", None)
+            accessors[out].pop("max", None)
+            if ch["target"]["path"] == "rotation":
+                rotations.add(out)
+    shortened = 0
+    for ai in sorted(rotations):
+        acc = accessors[ai]
+        if acc["componentType"] != 5126 or "bufferView" not in acc or "sparse" in acc:
+            continue
+        values = _accessor_array(gltf, bin_chunk, acc)
+        packed = np.round(np.clip(values, -1.0, 1.0) * 32767.0).astype("<i2")
+        acc.update(put("rotations", packed.tobytes()))
+        acc["componentType"] = 5122
+        acc["normalized"] = True
+        shortened += 1
     targets = set()
     for mesh in gltf.get("meshes", []):
         for prim in mesh["primitives"]:
             for t in prim.get("targets", []):
                 targets.update(t.values())
-    extra = []  # (bytes) for new buffer views, indexed from len(views)
     changed = 0
     for ai in sorted(targets):
         acc = accessors[ai]
         if "sparse" in acc or "bufferView" not in acc:
             continue
-        dtype = np.dtype(_COMPONENT[acc["componentType"]])
-        comps = _COMPONENTS[acc["type"]]
-        elem = dtype.itemsize * comps
-        view = views[acc["bufferView"]]
-        stride = view.get("byteStride", elem)
-        start = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
         count = acc["count"]
-        raw = np.frombuffer(bin_chunk, dtype=np.uint8, count=stride * (count - 1) + elem,
-                            offset=start)
-        rows = np.lib.stride_tricks.as_strided(raw, shape=(count, elem), strides=(stride, 1))
-        values = np.ascontiguousarray(rows).view(dtype).reshape(count, comps)
+        values = _accessor_array(gltf, bin_chunk, acc)
         nonzero = np.any(values != 0, axis=1)
         n = int(nonzero.sum())
         if n / count >= ratio:
@@ -605,13 +948,10 @@ def sparsify_morphs(src, dst, ratio=1 / 3):
             idx_type, idx_ct = np.dtype("<u2"), 5123
         else:
             idx_type, idx_ct = np.dtype("<u4"), 5125
-        extra.append(idx.astype(idx_type).tobytes())
-        iv = len(views) + len(extra) - 1
-        extra.append(np.ascontiguousarray(values[idx]).tobytes())
-        vv = len(views) + len(extra) - 1
-        acc["sparse"] = {"count": n,
-                         "indices": {"bufferView": iv, "componentType": idx_ct},
-                         "values": {"bufferView": vv}}
+        indices = put("sparse_indices", idx.astype(idx_type).tobytes())
+        indices["componentType"] = idx_ct
+        acc["sparse"] = {"count": n, "indices": indices,
+                         "values": put("sparse_values", np.ascontiguousarray(values[idx]).tobytes())}
     # Repack: keep only buffer views that something still uses.
     used = set()
     for acc in accessors:
@@ -631,7 +971,7 @@ def sparsify_morphs(src, dst, ratio=1 / 3):
             data = bin_chunk[v.get("byteOffset", 0):v.get("byteOffset", 0) + v["byteLength"]]
         else:
             v = {"buffer": 0}
-            data = extra[old - len(views)]
+            data = bytes(list(pools.values())[old - len(views)])
         out += b"\0" * ((-len(out)) % 8)
         v["byteOffset"] = len(out)
         v["byteLength"] = len(data)
@@ -650,7 +990,7 @@ def sparsify_morphs(src, dst, ratio=1 / 3):
     gltf["bufferViews"] = new_views
     gltf["buffers"] = [{"byteLength": len(out)}]
     _write_glb(dst, gltf, bytes(out))
-    return changed
+    return changed, shortened
 
 
 def gltf_transform():
@@ -661,8 +1001,8 @@ def gltf_transform():
 
 def finish_glb(raw, out):
     """Strip unused channels; then, if glTF-Transform is installed, resample the clips, prune,
-    quantize (KHR_mesh_quantization, which Babylon.js reads without a decoder) and store the
-    morph targets sparsely."""
+    quantize (KHR_mesh_quantization, which Babylon.js reads without a decoder; normals in 8
+    bits), store the morph targets sparsely and the clip rotations in 16 bits."""
     import shutil
     import subprocess
     out = Path(out)
@@ -685,17 +1025,19 @@ def finish_glb(raw, out):
          "--simplify", "false", "--instance", "false", "--join", "false", "--flatten", "false",
          "--palette", "false", "--weld", "false", "--prune", "true",
          "--prune-solid-textures", "false", "--resample", "true", "--sparse", "false"],
+        # Share identical keyframe times and values between tracks.
+        ["dedup", tidy, tidy],
         # 16- and 8-bit vertex data (KHR_mesh_quantization; no decoder needed). One buffer
-        # view per accessor, so sparsify_morphs() can drop the dense morph data.
-        ["quantize", tidy, quant, "--vertex-layout", "separate"],
+        # view per accessor, so shrink_glb() can drop the dense morph data.
+        ["quantize", tidy, quant, "--vertex-layout", "separate", "--quantize-normal", "8"],
     ]
     for step in steps:
         subprocess.run([str(cli)] + [str(a) for a in step], check=True, env=env, cwd=str(REPO),
                        stdout=subprocess.DEVNULL)
     # glTF-Transform 4.5.1's own "sparse" step writes zeros for normalised (quantised)
     # accessors, so morph targets are made sparse here instead.
-    converted = sparsify_morphs(quant, out)
-    log(f"  stored {converted} morph target accessors sparsely")
+    converted, shortened = shrink_glb(quant, out)
+    log(f"  stored {converted} morph targets sparsely and {shortened} rotation tracks in 16 bits")
     return True
 
 
