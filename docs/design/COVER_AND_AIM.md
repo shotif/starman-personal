@@ -38,3 +38,21 @@ and heat, companions taking cover or orders (D-16), and sound. They follow, in t
 | Controls | Right mouse and left mouse on a desktop (with the pointer captured); *Aim* and *Fire* buttons on a phone, above *Run* | `src/game/input.ts`, `src/ui/TouchControls.tsx` |
 
 The pure rules have unit tests; a browser journey aims and fires on a phone and a desktop.
+
+## Since it was built
+
+The owner's phone showed two faults on 24 October 2026; both are fixed, and the cover journey now
+checks them.
+
+- **Feet on air.** The hero and Ren stood about 10 cm above the floor. The hero stood on the bottom
+  of Havok's character capsule, which the controller keeps a few centimetres clear of every surface;
+  Ren stood on the navigation mesh, which lies up to a voxel (10 cm) above the floor. Both now stand
+  on the floor found by a short ray straight down (`groundUnder` in `src/game/game.ts`).
+- **A face without hair or eyes.** Crouched in cover, with the camera close, the hair, eyes, brows
+  and lashes vanished. A skinned mesh is culled by the box of its bind pose, which the animation
+  does not move; crouched, the head drops half a metre below those boxes. Every part of a character
+  now has the box of the whole figure in any pose (`fitFigureBounds` in `src/game/characters.ts`).
+- **The camera at the face.** The camera could not come nearer than 0.9 m to its pivot, so with a
+  wall closer than that it sat inside the wall, against the hero's face. It now stops just short of
+  any wall, however near, and the hero fades out as it comes within 0.75 m of the head, and is gone
+  within 0.35 m (`closeFade` in `src/game/motion.ts`).

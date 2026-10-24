@@ -155,6 +155,7 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
     for (const n of part.transformNodes) n.dispose();
     part.meshes.find((m) => m.name === '__root__')?.dispose();
     worn = hair;
+    character.fitBounds(worn);
     bakeSliders(worn, sliders);
   };
 

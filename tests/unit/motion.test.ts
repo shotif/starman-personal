@@ -3,6 +3,7 @@ import {
   cameraDistance,
   cameraFraming,
   cameraRelative,
+  closeFade,
   foldMissing,
   keysToVector,
   locomotionWeights,
@@ -102,6 +103,16 @@ describe('cameraFraming', () => {
     const phone = cameraFraming(390 / 844);
     expect(phone.distance).toBeCloseTo(4.8);
     expect(phone.shoulder).toBeCloseTo(0.15);
+  });
+});
+
+describe('closeFade', () => {
+  it('shows the hero wholly at a normal distance, and hides them with the camera at the face', () => {
+    expect(closeFade(1.2)).toBe(1);
+    expect(closeFade(0.75)).toBe(1);
+    expect(closeFade(0.55)).toBeCloseTo(0.5);
+    expect(closeFade(0.35)).toBe(0);
+    expect(closeFade(0.1)).toBe(0);
   });
 });
 

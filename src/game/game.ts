@@ -29,6 +29,7 @@ import {
   cameraDistance,
   cameraFraming,
   cameraRelative,
+  closeFade,
   SPEED,
   targetSpeed,
   turnTowards,
@@ -96,7 +97,7 @@ const GRAVITY = new Vector3(0, -18, 0);
 const TALK_REACH = 3;
 const UP = Vector3.Up();
 const DOWN = Vector3.Down();
-const CAMERA = { minDistance: 0.9, eye: 1.55, coverEye: 1.05, minBeta: 0.55, maxBeta: 1.85, fov: 0.95, aimFov: 0.72 };
+const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, maxBeta: 1.85, fov: 0.95, aimFov: 0.72 };
 /** Seconds between shots, and how long the shooting clip shows after each. */
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
@@ -163,13 +164,23 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         }
       : null;
   };
+  /**
+   * The height of the ground under a point near it, or null with none within reach (falling).
+   * Havok's character controller keeps its capsule a few centimetres clear of every surface, and the
+   * navigation mesh lies up to a voxel above the floor: either alone left the characters standing
+   * on air (seen on the owner's phone, 24 October 2026). The feet are put on the floor itself.
+   */
+  const groundUnder = (at: Vector3) => {
+    const hit = cast(new Vector3(at.x, at.y + 0.25, at.z), new Vector3(at.x, at.y - 0.3, at.z));
+    return hit ? hit.point.y : null;
+  };
 
   const ren = await spawnCompanion(
     scene,
     level.navigationMeshes,
     companion,
     level.companionStart,
-    { range, cast },
+    { range, cast, groundUnder },
     (line) => options.onSay('Ren', line),
   );
   let commanding = false;
@@ -343,7 +354,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     heroForward.set(Math.sin(heroYaw), 0, Math.cos(heroYaw));
 
     const position = controller.getPosition();
-    hero.root.position.set(position.x, position.y - CAPSULE_HEIGHT / 2, position.z);
+    const bottom = position.subtract(new Vector3(0, CAPSULE_HEIGHT / 2, 0));
+    hero.root.position.set(position.x, groundUnder(bottom) ?? bottom.y, position.z);
     hero.root.rotation.y = heroYaw;
 
     // Shoot: where the crosshair points, or at the nearest drone near it with aim assist.
@@ -386,6 +398,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // stood, turning it a little every frame, and the hero, walking "forward", would drift.
     camera.setTarget(pivot, false, false, true);
     camera.radius = cameraDistance(hit, distance, CAMERA.minDistance);
+    hero.setFade(closeFade(Vector3.Distance(pivot.add(back.scale(camera.radius)), head)));
   });
 
   scene.onAfterPhysicsObservable.add(() => {
@@ -403,6 +416,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const facing = () => ({ x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) });
     Object.assign(window, {
       lightkeeper: {
+        /** The scene itself, for measuring in the browser (where the feet meet the floor, bounds). */
+        scene,
         state: () => ({
           feet: hero.root.position.asArray(),
           cover,

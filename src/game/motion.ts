@@ -138,3 +138,12 @@ export function cameraDistance(hit: number | null, desired: number, min: number,
   if (hit === null) return desired;
   return Math.max(min, Math.min(desired, hit - padding));
 }
+
+/**
+ * How visible the hero is with the camera this far from their head: wholly from `far` out, fading
+ * nearer, and gone within `near`. A camera pressed close (a wall behind it, the player looking back
+ * at the hero) would otherwise fill the screen with the inside of a face.
+ */
+export function closeFade(distance: number, near = 0.35, far = 0.75): number {
+  return Math.min(1, Math.max(0, (distance - near) / (far - near)));
+}

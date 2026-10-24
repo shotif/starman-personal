@@ -1,6 +1,7 @@
 import { CreateNavigationPluginAsync } from '@babylonjs/addons/navigation';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { PhysicsBody } from '@babylonjs/core/Physics/v2/physicsBody';
 import type { Scene } from '@babylonjs/core/scene';
 import * as RecastCore from '@recast-navigation/core';
@@ -33,6 +34,8 @@ export interface World {
   range: Range;
   /** The first thing a ray meets, or null. */
   cast(from: Vector3, to: Vector3): { point: Vector3; body: PhysicsBody | null | undefined } | null;
+  /** The height of the floor under a point near it, or null (see `groundUnder` in game.ts). */
+  groundUnder(at: Vector3): number | null;
 }
 
 const EYE = 1.5;
@@ -73,6 +76,10 @@ export async function spawnCompanion(
       detailSampleMaxError: 1,
     });
     const crowd = navigation.createCrowd(4, 0.5, scene);
+    // The crowd moves this stand-in for her; she stands on the floor under it, since the navigation
+    // mesh lies up to a voxel above the floor.
+    const anchor = new TransformNode(`${character.root.name}-agent`, scene);
+    anchor.position.copyFrom(start);
     const agent = crowd.addAgent(
       navigation.getClosestPoint(start),
       {
@@ -84,8 +91,9 @@ export async function spawnCompanion(
         pathOptimizationRange: 4,
         separationWeight: 1,
       },
-      character.root,
+      anchor,
     );
+    const stand = (here: Vector3) => character.root.position.set(here.x, world.groundUnder(here) ?? here.y, here.z);
 
     let sinceDecision = DECIDE_EVERY;
     let goal: Vector3 | null = null;
@@ -144,6 +152,7 @@ export async function spawnCompanion(
       },
       update(dt, heroFeet, heroForward) {
         const here = crowd.getAgentPosition(agent);
+        stand(here);
         if (talking) {
           const towards = talking.facing.subtract(here);
           yaw = turnTowards(yaw, yawOf(towards), 8 * dt);

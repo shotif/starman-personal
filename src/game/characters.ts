@@ -3,7 +3,9 @@ import type { AnimationGroup } from '@babylonjs/core/Animations/animationGroup';
 import { AnimationGroupMask, AnimationGroupMaskMode } from '@babylonjs/core/Animations/animationGroupMask';
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import type { Skeleton } from '@babylonjs/core/Bones/skeleton';
+import { BoundingInfo } from '@babylonjs/core/Culling/boundingInfo';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
+import { Material } from '@babylonjs/core/Materials/material';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
@@ -37,6 +39,71 @@ export interface Character {
   skeleton: Skeleton | null;
   /** The node the model's meshes hang from, for parts added later. */
   model: TransformNode | null;
+  /** Gives parts added later (hair) the whole figure's bounds, as `spawnCharacter` gives its own. */
+  fitBounds(parts: readonly AbstractMesh[]): void;
+  /** Fades the whole figure: 1 drawn as usual, 0 hidden. */
+  setFade(visibility: number): void;
+}
+
+/** Fades every mesh under a node; while faded, each draws only its nearest surface. */
+function fader(node: TransformNode): (visibility: number) => void {
+  let current = 1;
+  /** Each material's own transparency, put back when the figure is whole again. */
+  const own = new Map<Material, number | null>();
+  return (visibility) => {
+    if (visibility === current) return;
+    const fading = visibility < 1;
+    current = visibility;
+    for (const mesh of node.getChildMeshes(false)) {
+      mesh.visibility = visibility;
+      mesh.isVisible = visibility > 0.02;
+      const material = mesh.material;
+      if (!material) continue;
+      // The model's materials say they are opaque, and an opaque material ignores the mesh's
+      // visibility: it blends only while the figure fades.
+      if (!own.has(material)) own.set(material, material.transparencyMode);
+      const mode = own.get(material) ?? null;
+      material.transparencyMode = !fading
+        ? mode
+        : mode === Material.MATERIAL_ALPHATEST
+          ? Material.MATERIAL_ALPHATESTANDBLEND
+          : Material.MATERIAL_ALPHABLEND;
+      // Without a depth pass first, a faded face shows the eyes and mouth through the skin.
+      material.needDepthPrePass = fading;
+    }
+  };
+}
+
+/**
+ * Gives each part a box around the whole figure in any pose, as seen from `root`. A skinned mesh is
+ * culled by the box of its bind pose, which the animation does not move: crouched in cover the head
+ * drops half a metre below the boxes of the hair and the eyes, and a camera close to the face culled
+ * them (seen on the owner's phone, 24 October 2026).
+ */
+function fitFigureBounds(root: TransformNode, figure: { min: Vector3; max: Vector3 }, parts: readonly AbstractMesh[]) {
+  root.computeWorldMatrix(true);
+  const corners = [0, 1, 2, 3, 4, 5, 6, 7].map((i) =>
+    Vector3.TransformCoordinates(
+      new Vector3(
+        i & 1 ? figure.max.x : figure.min.x,
+        i & 2 ? figure.max.y : figure.min.y,
+        i & 4 ? figure.max.z : figure.min.z,
+      ),
+      root.getWorldMatrix(),
+    ),
+  );
+  for (const part of parts) {
+    if (part.getTotalVertices() === 0) continue;
+    const toLocal = part.computeWorldMatrix(true).clone().invert();
+    const min = new Vector3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+    const max = min.scale(-1);
+    for (const corner of corners) {
+      const local = Vector3.TransformCoordinates(corner, toLocal);
+      min.minimizeInPlace(local);
+      max.maximizeInPlace(local);
+    }
+    part.setBoundingInfo(new BoundingInfo(min, max));
+  }
 }
 
 /** Loads a character model once, to be placed many times. Null when it cannot be loaded. */
@@ -88,6 +155,14 @@ export function spawnCharacter(
     model.scaling.setAll(scale);
     model.position.y = -min.y * scale;
   }
+  // The figure's box as seen from the root, which stands at the origin until it is placed: the
+  // standing body, with room around it for arms reaching out and below it for the feet.
+  const size = Number.isFinite(modelHeight) && modelHeight > 0 ? modelHeight * model.scaling.y : 1.8;
+  const figure = {
+    min: new Vector3(-0.45 * size, -0.1 * size, -0.45 * size),
+    max: new Vector3(0.45 * size, 1.1 * size, 0.45 * size),
+  };
+  fitFigureBounds(root, figure, meshes);
 
   if (options.tint) {
     for (const mesh of meshes) {
@@ -150,6 +225,8 @@ export function spawnCharacter(
     animated: lower.size > 0,
     skeleton: entries.skeletons[0] ?? null,
     model,
+    fitBounds: (parts) => fitFigureBounds(root, figure, parts),
+    setFade: fader(model),
     setPose(pose, dt) {
       const t = Math.min(1, dt * 12);
       const legWeights = withIdle(pose.lower, lower);
@@ -191,6 +268,8 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     animated: false,
     skeleton: null,
     model: null,
+    fitBounds() {},
+    setFade: fader(root),
     setPose() {},
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),

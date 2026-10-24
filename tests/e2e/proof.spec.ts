@@ -94,13 +94,38 @@ test('walking into the corridor crate takes cover', async ({ page }, testInfo) =
   test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
   // The software renderer is slow: a small window at low quality keeps the frames coming.
   await page.setViewportSize({ width: 800, height: 500 });
-  await page.goto('./?play&quality=low');
+  await page.goto('./?play&debug&quality=low');
   await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
   await page.keyboard.down('KeyW');
   await expect(page.getByText(/In cover/)).toBeVisible({ timeout: 60_000 });
   await page.keyboard.up('KeyW');
   await page.waitForTimeout(800);
   await page.screenshot({ path: testInfo.outputPath('cover.png') });
+  // Crouched, every part's bounds still hold the lowered head (the hair and eyes were culled by
+  // their standing bounds), and the feet stand on the floor, not on air.
+  const fit = await page.evaluate(() => {
+    type Box = { minimumWorld: { y: number }; maximumWorld: { y: number } };
+    type Node = { name: string; getAbsolutePosition(): { y: number }; position: { y: number } };
+    type MeshLike = Node & { getTotalVertices(): number; getBoundingInfo(): { boundingBox: Box } };
+    const { scene } = (window as unknown as { lightkeeper: { scene: { meshes: MeshLike[]; transformNodes: Node[] } } })
+      .lightkeeper;
+    const head = scene.transformNodes.find((n) => n.name === 'hero-head')?.getAbsolutePosition().y ?? Number.NaN;
+    const parts = scene.meshes.filter((m) => m.name.startsWith('hero-') && m.getTotalVertices() > 0);
+    const root = scene.transformNodes.find((n) => n.name === 'hero');
+    return {
+      head,
+      parts: parts.length,
+      holding: parts.filter((m) => {
+        const box = m.getBoundingInfo().boundingBox;
+        return box.minimumWorld.y < head && box.maximumWorld.y > head + 0.25;
+      }).length,
+      feet: root?.position.y ?? Number.NaN,
+    };
+  });
+  expect(fit.head).toBeLessThan(1.2);
+  expect(fit.parts).toBeGreaterThan(3);
+  expect(fit.holding).toBe(fit.parts);
+  expect(Math.abs(fit.feet)).toBeLessThan(0.02);
 });
 
 const said = (page: import('@playwright/test').Page) => page.locator('body').getAttribute('data-said');
@@ -119,8 +144,10 @@ test('orders: the command view opens, and Ren answers each order', async ({ page
     await page.keyboard.press('Digit3');
   }
   await expect(dialog).toBeHidden();
-  await expect.poll(() => said(page)).toBe('With you.');
-  await expect(page.getByRole('status')).toContainText('Ren:');
+  // The line shows for under three seconds, so it is looked for on screen first: on a slow software
+  // renderer, waiting for the page attribute first could find it gone.
+  await expect(page.getByRole('status')).toContainText('Ren: With you.');
+  expect(await said(page)).toBe('With you.');
 });
 
 test('orders: Ren attacks a drone until it is down', async ({ page }, testInfo) => {
