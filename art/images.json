@@ -1,0 +1,1051 @@
+{
+  "about": "The game's 2D pictures, made by scripts/art/images.ts (docs/assets/IMAGES.md). Each generated picture's prompt is its own prompt, then the named parts, then its style. Words are never left to the image model: signs, posters and screens are lettered by scripts/art/drawings.ts. Everything shown is fiction except Ross 128 and its planet b, which are real. The records at the end are written by the script.",
+  "model": "gemini-nano-banana-2.1",
+  "imageSize": "2K",
+  "webpQuality": 82,
+  "parts": {
+    "station": "The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground.",
+    "star": "Its sun, the red dwarf Ross 128, hangs low on the horizon as a dim, deep red-orange disc that glows softly from within, brighter than the sky around it yet faint enough to look at, with a softly mottled surface; the sky is a dusky gradient from deep blue-grey overhead to a murky rust-orange glow along the horizon.",
+    "swarm": "A thin ring of countless tiny points of light circles the star a little way out from its disc, like a faint necklace of sparks: a swarm of machines, seen only as points of light."
+  },
+  "styles": {
+    "painting": "Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+    "plate": "Style: a straight-on, perfectly flat, evenly lit photograph of the surface, filling the whole picture edge to edge, with no perspective, no background, no shadow and no frame. The surface is completely blank: no text, no letters, no numbers, no symbols, no logos, no stickers, no labels.",
+    "poster": "Style: a printed poster illustration from a fictional future, in the manner of a mid-century screen print: a limited palette, bold simple shapes, flat colour areas with soft gradients, gentle paper grain. Illustration only: no text, no letters, no numbers, no logos, no insignia, no border, no frame.",
+    "surface": "Style: a seamless, tileable game texture photographed straight down from directly above, flat and evenly lit under an overcast sky, with no shadows, no perspective and no horizon. Uniform density across the whole picture with no large single features in it. No text, no plants, no footprints, no tyre tracks.",
+    "cutout": "Style: a painterly-realistic matte painting element for a game, softened by atmospheric haze. The subject sits in front of a perfectly flat, uniform, pure bright green (#00FF00) backdrop that fills the whole sky area above it, like a green screen: no gradient, no clouds, no stars, no sun, no haze in the backdrop. No text, no frame."
+  },
+  "images": [
+    {
+      "id": "keyart-wide",
+      "kind": "keyart",
+      "width": 1920,
+      "height": 1080,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "station",
+        "star",
+        "swarm"
+      ],
+      "prompt": "Wide cinematic key art for the title screen of a game. A lone figure in a plain dark-blue station work uniform with a single orange stripe across the shoulders, seen from behind and small in the frame, stands at the railing of an outside metal catwalk in the right half of the picture, looking out towards the red star. The catwalk runs along the outside of a weathered station module with pipes, a caged lamp and worn hazard stripes. Beside the catwalk rises the dark silhouette of a tall lattice relay mast with small dish antennas and one red warning light at its top. The star sits low on the horizon right of centre, seen through a long lens so its disc looks large. Below, a dusty rust-brown rocky plain falls away to distant low ridges. The left third of the picture is calm, open, uncluttered dusky sky and soft haze over the plain, with nothing important in it, leaving room for the game's title."
+    },
+    {
+      "id": "keyart-tall",
+      "kind": "keyart",
+      "width": 1080,
+      "height": 1920,
+      "treatment": "cover",
+      "aspect": "9:16",
+      "style": "painting",
+      "with": [
+        "station",
+        "star",
+        "swarm"
+      ],
+      "prompt": "Tall portrait key art for the title screen of a game on a phone. The top third of the picture is calm, open, uncluttered dusky sky with nothing important in it, leaving room for the game's title. In the middle of the picture the red star sits low over a distant horizon of low ridges, seen through a long lens so its disc looks large. In the lower third, a lone figure in a plain dark-blue station work uniform with a single orange stripe across the shoulders, seen from behind and small in the frame, stands at the railing of an outside metal catwalk, looking out towards the star. The catwalk runs along the outside of a weathered station module with pipes, a caged lamp and worn hazard stripes. At one side rises the dark silhouette of a tall lattice relay mast with small dish antennas and one red warning light at its top. A dusty rust-brown rocky plain lies below."
+    },
+    {
+      "id": "screen-light-curve",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "light-curve"
+    },
+    {
+      "id": "screen-station-map",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "station-map"
+    },
+    {
+      "id": "screen-sensor-sweep",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "sensor-sweep"
+    },
+    {
+      "id": "screen-comms-static",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "comms-static"
+    },
+    {
+      "id": "screen-power-doors",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "power-doors"
+    },
+    {
+      "id": "screen-navigation",
+      "kind": "screen",
+      "width": 1024,
+      "height": 512,
+      "treatment": "screen",
+      "design": "navigation"
+    },
+    {
+      "id": "sign-calder-station",
+      "kind": "sign",
+      "width": 512,
+      "height": 512,
+      "treatment": "sign",
+      "design": "calder",
+      "aspect": "1:1",
+      "style": "plate",
+      "prompt": "A square steel wall plate painted dark slate blue-grey, with a round bolt in each corner, fine scratches, scuffs, a few chips in the paint along the edges showing bare metal, and faint streaks of grime running down from the top bolts.",
+      "inset": [
+        0.02,
+        0.02
+      ]
+    },
+    {
+      "id": "sign-concourse-hangar",
+      "kind": "sign",
+      "width": 1024,
+      "height": 256,
+      "treatment": "sign",
+      "design": "concourse-hangar",
+      "aspect": "4:1",
+      "style": "plate",
+      "prompt": "A long rectangular steel direction-sign plate painted deep navy blue, with a small bolt near each end, fine scratches, light scuffs, a few chips showing bare metal along the edges, and faint dusty grime collecting along the bottom edge.",
+      "inset": [
+        0.015,
+        0.06
+      ]
+    },
+    {
+      "id": "sign-clinic",
+      "kind": "sign",
+      "width": 1024,
+      "height": 256,
+      "treatment": "sign",
+      "design": "clinic",
+      "aspect": "4:1",
+      "style": "plate",
+      "prompt": "A long rectangular steel sign plate with an off-white enamel finish, slightly yellowed with age, with a small bolt near each end, fine scratches, a few small chips showing dark metal, and soft grey smudges from hands near the edges.",
+      "inset": [
+        0.015,
+        0.06
+      ]
+    },
+    {
+      "id": "sign-airlock",
+      "kind": "sign",
+      "width": 1024,
+      "height": 256,
+      "treatment": "sign",
+      "design": "airlock",
+      "aspect": "4:1",
+      "style": "plate",
+      "prompt": "A long rectangular heavy steel plate with dark charcoal paint, heavily worn: dense fine scratches, scuffed patches, chipped edges showing bright bare steel, small dents, and dusty grime collecting along the bottom edge.",
+      "inset": [
+        0.015,
+        0.06
+      ]
+    },
+    {
+      "id": "poster-cooperative",
+      "kind": "poster",
+      "width": 512,
+      "height": 768,
+      "treatment": "poster",
+      "design": "cooperative",
+      "aspect": "5:4",
+      "style": "poster",
+      "prompt": "A recruitment poster picture for a fictional future survey service: a small, sturdy survey ship with its floodlights on flies low over a vast dark plain towards a large, dim red sun on the horizon, while in the foreground a surveyor in a practical suit stands on a rocky ridge beside a tripod instrument, looking up at a sky full of stars. Palette: deep blues, teal and cream, with a single orange accent on the sun. Hopeful, adventurous and calm."
+    },
+    {
+      "id": "poster-authority",
+      "kind": "poster",
+      "width": 512,
+      "height": 768,
+      "treatment": "poster",
+      "design": "authority",
+      "aspect": "5:4",
+      "style": "poster",
+      "prompt": "A workplace safety poster picture for a fictional future transport authority: a wide hangar floor with two painted yellow lines marking a walkway; a worker in a hard hat and overalls walks safely between the yellow lines holding a tablet, while a heavy, boxy cargo loader vehicle with a raised fork rolls past just outside the lines. Plain, unmarked machines and walls with no symbols, signs or emblems anywhere. Palette: deep greens, cream, grey and safety yellow. Clear, calm and instructive."
+    },
+    {
+      "id": "ground-regolith",
+      "kind": "ground",
+      "width": 1024,
+      "height": 1024,
+      "treatment": "tile",
+      "aspect": "1:1",
+      "style": "surface",
+      "prompt": "The dusty, rocky ground of a barren alien planet: fine rust-brown dust and grit, scattered small angular stones and flat chips of dark basalt and iron-stained reddish rock, a few half-buried larger stones, faint hairline cracks in a crust of packed dust."
+    },
+    {
+      "id": "ridge-horizon",
+      "kind": "ridge",
+      "width": 2048,
+      "height": 256,
+      "treatment": "ridge",
+      "aspect": "8:1",
+      "style": "cutout",
+      "prompt": "A long panoramic strip of distant mountains on a barren rust-brown planet, seen from far away across a dry plain: one low, eroded, jagged range of bare rock, with two or three fainter ridgelines behind it fading into dusty haze, in muted rust-browns and dusky violet-greys, softened by dusty haze, lit softly from the front by a dim red-orange light low in the sky. The ridges fill the lower half of the strip and run across its whole width, rising and falling, with the highest peaks reaching about halfway up. The bottom edge of the strip is solid ground in shadow. Dry land only: no water, no lake, no reflections, no snow, no clouds."
+    },
+    {
+      "id": "loading-lounge",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "station",
+        "star"
+      ],
+      "prompt": "Interior of the station's small crew lounge during the night shift: worn modular sofas with grey upholstery, a low table with mugs, a tablet and a deck of cards, a kitchenette counter with a kettle, warm dim lamps and the cool blue glow of a wall screen with no readable writing. A wide window shows the dusky rust-brown plain outside and the dim red dwarf low on the horizon. One crew member in a plain dark-blue station uniform sits reading, relaxed and half in shadow. Quiet, lived-in and a little melancholy."
+    },
+    {
+      "id": "loading-concourse",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "station"
+      ],
+      "prompt": "The station's concourse during a power failure: a two-storey industrial hall with a mezzanine walkway, closed kiosk shutters, benches and planters, the whole hall bathed in deep red emergency light from red lamps along the walls, with turning amber warning beacons and deep shadows, haze hanging in the air, an overturned cart and scattered papers on the floor, a heavy blast door half closed at the far end. Empty, tense and quiet."
+    },
+    {
+      "id": "loading-mast",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "station",
+        "star",
+        "swarm"
+      ],
+      "prompt": "Outside the station: a narrow metal catwalk with railings runs along the outside wall of a station module towards the foot of a tall lattice relay mast with dish antennas and a ladder climbing it. The red dwarf hangs low on the horizon behind the mast. Dusty rust-brown rocky ground lies below the catwalk, wind-blown dust drifts past, and a caged work lamp glows on the catwalk. No people."
+    },
+    {
+      "id": "loading-hangar",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "station"
+      ],
+      "prompt": "Inside the station's large, worn hangar: a long-haul survey ship stands on its landing legs, a blunt, boxy, practical working vessel about sixty metres long with heavy radiator panels along its flanks, a slim sensor mast on its nose carrying a small dish and instrument pods (it carries no guns), and off-white and grey hull plates with orange hazard markings; its boarding ramp is down and lit. Work lights on gantries, stacked cargo crates, painted yellow walkway lines on the floor, and small silhouettes of evacuees with bags walking up the ramp. Red emergency light mixes with cold white work lights."
+    }
+  ],
+  "records": {
+    "keyart-wide": {
+      "kind": "keyart",
+      "file": "public/assets/textures/keyart-wide.webp",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 74742,
+      "sha256": "4806017a903d5f30400029319335577665fafcf7cba92bcd067607dcf0bf37a1",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Wide cinematic key art for the title screen of a game. A lone figure in a plain dark-blue station work uniform with a single orange stripe across the shoulders, seen from behind and small in the frame, stands at the railing of an outside metal catwalk in the right half of the picture, looking out towards the red star. The catwalk runs along the outside of a weathered station module with pipes, a caged lamp and worn hazard stripes. Beside the catwalk rises the dark silhouette of a tall lattice relay mast with small dish antennas and one red warning light at its top. The star sits low on the horizon right of centre, seen through a long lens so its disc looks large. Below, a dusty rust-brown rocky plain falls away to distant low ridges. The left third of the picture is calm, open, uncluttered dusky sky and soft haze over the plain, with nothing important in it, leaving room for the game's title. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Its sun, the red dwarf Ross 128, hangs low on the horizon as a dim, deep red-orange disc, faint enough to look at, with a softly mottled surface; the sky is a dusky gradient from deep blue-grey overhead to a murky rust-orange glow along the horizon. A thin ring of countless tiny points of light circles the star a little way out from its disc, like a faint necklace of sparks: a swarm of machines, seen only as points of light. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:16:18.619Z",
+        "candidate": 1,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "b65c3bf947e23ce44ba187a287e2070047627d23cab6bceae9169f3c901e83f6"
+      }
+    },
+    "keyart-tall": {
+      "kind": "keyart",
+      "file": "public/assets/textures/keyart-tall.webp",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 52740,
+      "sha256": "cc656eaeaa3bc7120bbd4ff175a2b01a6a64b44f4b2a287cf4d180391085552b",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Tall portrait key art for the title screen of a game on a phone. The top third of the picture is calm, open, uncluttered dusky sky with nothing important in it, leaving room for the game's title. In the middle of the picture the red star sits low over a distant horizon of low ridges, seen through a long lens so its disc looks large. In the lower third, a lone figure in a plain dark-blue station work uniform with a single orange stripe across the shoulders, seen from behind and small in the frame, stands at the railing of an outside metal catwalk, looking out towards the star. The catwalk runs along the outside of a weathered station module with pipes, a caged lamp and worn hazard stripes. At one side rises the dark silhouette of a tall lattice relay mast with small dish antennas and one red warning light at its top. A dusty rust-brown rocky plain lies below. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Its sun, the red dwarf Ross 128, hangs low on the horizon as a dim, deep red-orange disc, faint enough to look at, with a softly mottled surface; the sky is a dusky gradient from deep blue-grey overhead to a murky rust-orange glow along the horizon. A thin ring of countless tiny points of light circles the star a little way out from its disc, like a faint necklace of sparks: a swarm of machines, seen only as points of light. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:16:16.517Z",
+        "candidate": 1,
+        "candidateSize": "1536x2752",
+        "candidateSha256": "fb3540c7d303c2a487ef43d133dc1babff2ac4c927a861841b107b17da3b1c5a"
+      }
+    },
+    "screen-light-curve": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-light-curve.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 29088,
+      "sha256": "e7969bcb04e45746abd1e96a6e973bc9f22b6fb764b1d92c1e7d8605bfa87f1f",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "light-curve"
+      }
+    },
+    "screen-station-map": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-station-map.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 33178,
+      "sha256": "8cf4bc120cf59706f0461090f90cd898da02c8b8e15296919545e63da9b0798f",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "station-map"
+      }
+    },
+    "screen-sensor-sweep": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-sensor-sweep.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 41472,
+      "sha256": "5c7374171737cfa0d033c8245cb22301dd22a7cba9004da636881b9eb6aa21f9",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "sensor-sweep"
+      }
+    },
+    "screen-comms-static": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-comms-static.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 79166,
+      "sha256": "44b1d9a295d62f69b65448d591907f85be3d56b79e6530434a260a425ea735b0",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "comms-static"
+      }
+    },
+    "screen-power-doors": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-power-doors.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 32822,
+      "sha256": "4d3d204d8b06d1cc32e98101963513a4d33dfed0d159835228c03139d189c3ae",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "power-doors"
+      }
+    },
+    "screen-navigation": {
+      "kind": "screen",
+      "file": "public/assets/textures/screen-navigation.webp",
+      "width": 1024,
+      "height": 512,
+      "bytes": 30916,
+      "sha256": "bebe6969a992f6dd60079df829379295a3a435dd34a9e65bc6442d19cb3c7979",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper (drawn by script); shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "drawn",
+        "script": "scripts/art/drawings.ts",
+        "design": "navigation"
+      }
+    },
+    "sign-calder-station": {
+      "kind": "sign",
+      "file": "public/assets/textures/sign-calder-station.webp",
+      "width": 512,
+      "height": 512,
+      "bytes": 23966,
+      "sha256": "d60882cc7b94ce199cffed0b4bbdb7154c18a40c509347d2620aa9bf1d3b7314",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A square steel wall plate painted dark slate blue-grey, with a round bolt in each corner, fine scratches, scuffs, a few chips in the paint along the edges showing bare metal, and faint streaks of grime running down from the top bolts. Style: a straight-on, perfectly flat, evenly lit photograph of the surface, filling the whole picture edge to edge, with no perspective, no background, no shadow and no frame. The surface is completely blank: no text, no letters, no numbers, no symbols, no logos, no stickers, no labels.",
+        "date": "2026-10-24T20:16:15.123Z",
+        "candidate": 1,
+        "candidateSize": "2048x2048",
+        "candidateSha256": "4af99b6841975be42eb19bd8955819b8b957068374d31bea89609a366f1a92b5",
+        "inset": [
+          0.02,
+          0.02
+        ],
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "calder"
+      }
+    },
+    "sign-concourse-hangar": {
+      "kind": "sign",
+      "file": "public/assets/textures/sign-concourse-hangar.webp",
+      "width": 1024,
+      "height": 256,
+      "bytes": 13018,
+      "sha256": "3e55983d1c4292a0f0384f9cd67699ec29ac8a73b6d39bfb757df1506e7b3d5b",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A long rectangular steel direction-sign plate painted deep navy blue, with a small bolt near each end, fine scratches, light scuffs, a few chips showing bare metal along the edges, and faint dusty grime collecting along the bottom edge. Style: a straight-on, perfectly flat, evenly lit photograph of the surface, filling the whole picture edge to edge, with no perspective, no background, no shadow and no frame. The surface is completely blank: no text, no letters, no numbers, no symbols, no logos, no stickers, no labels.",
+        "date": "2026-10-24T20:16:16.010Z",
+        "candidate": 1,
+        "candidateSize": "4128x1024",
+        "candidateSha256": "10d15ce208310bd3f0b6c5372eb2b99f11b1110c26530b4bdbbe2c78dab70b88",
+        "inset": [
+          0.015,
+          0.06
+        ],
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "concourse-hangar"
+      }
+    },
+    "sign-clinic": {
+      "kind": "sign",
+      "file": "public/assets/textures/sign-clinic.webp",
+      "width": 1024,
+      "height": 256,
+      "bytes": 8892,
+      "sha256": "8469e32fcdeb49fd71aee239648bcc0a7878b3d5ccd811239238af105529054e",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A long rectangular steel sign plate with an off-white enamel finish, slightly yellowed with age, with a small bolt near each end, fine scratches, a few small chips showing dark metal, and soft grey smudges from hands near the edges. Style: a straight-on, perfectly flat, evenly lit photograph of the surface, filling the whole picture edge to edge, with no perspective, no background, no shadow and no frame. The surface is completely blank: no text, no letters, no numbers, no symbols, no logos, no stickers, no labels.",
+        "date": "2026-10-24T20:16:37.183Z",
+        "candidate": 1,
+        "candidateSize": "4128x1024",
+        "candidateSha256": "a6a769ca06f50b7016f5fdb525f1e4c0bb6ea3c8b85f14e6a41b7a2645d22f1e",
+        "inset": [
+          0.015,
+          0.06
+        ],
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "clinic"
+      }
+    },
+    "sign-airlock": {
+      "kind": "sign",
+      "file": "public/assets/textures/sign-airlock.webp",
+      "width": 1024,
+      "height": 256,
+      "bytes": 34892,
+      "sha256": "9b0b9366b23bf936201d74dd83537bdbf228dc34477c69e417a10b220a43f6f2",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A long rectangular heavy steel plate with dark charcoal paint, heavily worn: dense fine scratches, scuffed patches, chipped edges showing bright bare steel, small dents, and dusty grime collecting along the bottom edge. Style: a straight-on, perfectly flat, evenly lit photograph of the surface, filling the whole picture edge to edge, with no perspective, no background, no shadow and no frame. The surface is completely blank: no text, no letters, no numbers, no symbols, no logos, no stickers, no labels.",
+        "date": "2026-10-24T20:16:36.617Z",
+        "candidate": 1,
+        "candidateSize": "4128x1024",
+        "candidateSha256": "6428db772edf7b80459b306bdb88d82afffa6979ad8f74ff5bc13e242081b920",
+        "inset": [
+          0.015,
+          0.06
+        ],
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "airlock"
+      }
+    },
+    "poster-cooperative": {
+      "kind": "poster",
+      "file": "public/assets/textures/poster-cooperative.webp",
+      "width": 512,
+      "height": 768,
+      "bytes": 70588,
+      "sha256": "d9d2275488dc99fabb2b8c203a5c47cb2b420f4d711e02fa36776d4f8caa6ab3",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A recruitment poster picture for a fictional future survey service: a small, sturdy survey ship with its floodlights on flies low over a vast dark plain towards a large, dim red sun on the horizon, while in the foreground a surveyor in a practical suit stands on a rocky ridge beside a tripod instrument, looking up at a sky full of stars. Palette: deep blues, teal and cream, with a single orange accent on the sun. Hopeful, adventurous and calm. Style: a printed poster illustration from a fictional future, in the manner of a mid-century screen print: a limited palette, bold simple shapes, flat colour areas with soft gradients, gentle paper grain. Illustration only: no text, no letters, no numbers, no logos, no insignia, no border, no frame.",
+        "date": "2026-10-24T20:16:46.743Z",
+        "candidate": 1,
+        "candidateSize": "2304x1856",
+        "candidateSha256": "0c5965d718ab822dad5befde814afc68a5872b2231ee27c07a450a708b4974fa",
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "cooperative"
+      }
+    },
+    "poster-authority": {
+      "kind": "poster",
+      "file": "public/assets/textures/poster-authority.webp",
+      "width": 512,
+      "height": 768,
+      "bytes": 72668,
+      "sha256": "85b6dcf4af1126312291dc99a51667d720bd88e70085f1407c2b05dff14a863e",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "fonts": {
+        "licence": "SIL Open Font License 1.1",
+        "files": [
+          {
+            "font": "Barlow 500",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E3_-gc4A.ttf"
+          },
+          {
+            "font": "Barlow 600",
+            "url": "https://fonts.gstatic.com/s/barlow/v13/7cHqv4kjgoGqM7E30-8c4A.ttf"
+          },
+          {
+            "font": "Barlow Condensed 500",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4-Lw_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 600",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 700",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2_3E.ttf"
+          },
+          {
+            "font": "Barlow Condensed 800",
+            "url": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B47b1_3E.ttf"
+          },
+          {
+            "font": "Share Tech Mono 400",
+            "url": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf"
+          }
+        ]
+      },
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A workplace safety poster picture for a fictional future transport authority: a wide hangar floor with two painted yellow lines marking a walkway; a worker in a hard hat and overalls walks safely between the yellow lines holding a tablet, while a heavy, boxy cargo loader vehicle with a raised fork rolls past just outside the lines. Plain, unmarked machines and walls with no symbols, signs or emblems anywhere. Palette: deep greens, cream, grey and safety yellow. Clear, calm and instructive. Style: a printed poster illustration from a fictional future, in the manner of a mid-century screen print: a limited palette, bold simple shapes, flat colour areas with soft gradients, gentle paper grain. Illustration only: no text, no letters, no numbers, no logos, no insignia, no border, no frame.",
+        "date": "2026-10-24T20:22:06.508Z",
+        "candidate": 2,
+        "candidateSize": "2304x1856",
+        "candidateSha256": "d6250c66a232c445b2eb6d96b4ecb54e51c90c369f8124662eb3d1b44e818df3",
+        "drawnOver": "scripts/art/drawings.ts",
+        "design": "authority"
+      }
+    },
+    "ground-regolith": {
+      "kind": "ground",
+      "file": "public/assets/textures/ground-regolith.webp",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 428900,
+      "sha256": "3bac3ae611182e72b682439b37eb7eee034704cce7b3a93ee04df4bb3c2d6aac",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "The dusty, rocky ground of a barren alien planet: fine rust-brown dust and grit, scattered small angular stones and flat chips of dark basalt and iron-stained reddish rock, a few half-buried larger stones, faint hairline cracks in a crust of packed dust. Style: a seamless, tileable game texture photographed straight down from directly above, flat and evenly lit under an overcast sky, with no shadows, no perspective and no horizon. Uniform density across the whole picture with no large single features in it. No text, no plants, no footprints, no tyre tracks.",
+        "date": "2026-10-24T20:17:06.066Z",
+        "candidate": 1,
+        "candidateSize": "2048x2048",
+        "candidateSha256": "a4abf9b1bd567cafacca9c5ed27cff6f36bd9c55e8c8328fe57e7df3b0e194a1"
+      }
+    },
+    "ridge-horizon": {
+      "kind": "ridge",
+      "file": "public/assets/textures/ridge-horizon.webp",
+      "width": 2048,
+      "height": 256,
+      "bytes": 44082,
+      "sha256": "c7cd564fe94d7a92ca689e44d691f5fab21597248677405c4ebd41c0f83e2216",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "A long panoramic strip of distant mountains on a barren rust-brown planet, seen from far away across a dry plain: one low, eroded, jagged range of bare rock, with two or three fainter ridgelines behind it fading into dusty haze, in muted rust-browns and dusky violet-greys, softened by dusty haze, lit softly from the front by a dim red-orange light low in the sky. The ridges fill the lower half of the strip and run across its whole width, rising and falling, with the highest peaks reaching about halfway up. The bottom edge of the strip is solid ground in shadow. Dry land only: no water, no lake, no reflections, no snow, no clouds. Style: a painterly-realistic matte painting element for a game, softened by atmospheric haze. The subject sits in front of a perfectly flat, uniform, pure bright green (#00FF00) backdrop that fills the whole sky area above it, like a green screen: no gradient, no clouds, no stars, no sun, no haze in the backdrop. No text, no frame.",
+        "date": "2026-10-24T20:21:59.969Z",
+        "candidate": 2,
+        "candidateSize": "5856x704",
+        "candidateSha256": "a24c38efece0f78910b77670aedb6779bb1e3b7127e3a2f02eac9baaa5b83371"
+      }
+    },
+    "loading-lounge": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-lounge.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 62642,
+      "sha256": "d3c5d52c4e808145ebf1cb9bc32cf7ac6fbd94d42c88945dba0904e58cdf6d21",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Interior of the station's small crew lounge during the night shift: worn modular sofas with grey upholstery, a low table with mugs, a tablet and a deck of cards, a kitchenette counter with a kettle, warm dim lamps and the cool blue glow of a wall screen with no readable writing. A wide window shows the dusky rust-brown plain outside and the dim red dwarf low on the horizon. One crew member in a plain dark-blue station uniform sits reading, relaxed and half in shadow. Quiet, lived-in and a little melancholy. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Its sun, the red dwarf Ross 128, hangs low on the horizon as a dim, deep red-orange disc, faint enough to look at, with a softly mottled surface; the sky is a dusky gradient from deep blue-grey overhead to a murky rust-orange glow along the horizon. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:17:02.547Z",
+        "candidate": 1,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "89d241bfb3c517672ca176d35a0f27b573ed94deadfbe40bc2edc1d77c2543be"
+      }
+    },
+    "loading-concourse": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-concourse.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 83436,
+      "sha256": "4a5e22c3144ae581388442ca6f13722aca2701de13f4d40a3daf0ec87d7fd6f3",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "The station's concourse during a power failure: a two-storey industrial hall with a mezzanine walkway, closed kiosk shutters, benches and planters, the whole hall bathed in deep red emergency light from red lamps along the walls, with turning amber warning beacons and deep shadows, haze hanging in the air, an overturned cart and scattered papers on the floor, a heavy blast door half closed at the far end. Empty, tense and quiet. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:22:05.222Z",
+        "candidate": 2,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "08da22176aa5d6f134203160b2568d4a00f1baafc5358fdbe48411e437cadcb3"
+      }
+    },
+    "loading-mast": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-mast.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 62378,
+      "sha256": "4d52a6b9ae65a6395e854a3a34c1b2b61b345b21d67eb3c522db417d62f4178a",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Outside the station: a narrow metal catwalk with railings runs along the outside wall of a station module towards the foot of a tall lattice relay mast with dish antennas and a ladder climbing it. The red dwarf hangs low on the horizon behind the mast. Dusty rust-brown rocky ground lies below the catwalk, wind-blown dust drifts past, and a caged work lamp glows on the catwalk. No people. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Its sun, the red dwarf Ross 128, hangs low on the horizon as a dim, deep red-orange disc that glows softly from within, brighter than the sky around it yet faint enough to look at, with a softly mottled surface; the sky is a dusky gradient from deep blue-grey overhead to a murky rust-orange glow along the horizon. A thin ring of countless tiny points of light circles the star a little way out from its disc, like a faint necklace of sparks: a swarm of machines, seen only as points of light. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:22:04.811Z",
+        "candidate": 2,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "8954697641145346b4de6cc01a3b9c80497da64dc8a161d98e2cc4d58561f41d"
+      }
+    },
+    "loading-hangar": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-hangar.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 85710,
+      "sha256": "516a73736795f4808af9c14a206e98bc7c796ee6644a9536aec07c30c95774e9",
+      "built": "2026-10-24",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Inside the station's large, worn hangar: a long-haul survey ship stands on its landing legs, a blunt, boxy, practical working vessel about sixty metres long with heavy radiator panels along its flanks, a slim sensor mast on its nose carrying a small dish and instrument pods (it carries no guns), and off-white and grey hull plates with orange hazard markings; its boarding ramp is down and lit. Work lights on gantries, stacked cargo crates, painted yellow walkway lines on the floor, and small silhouettes of evacuees with bags walking up the ramp. Red emergency light mixes with cold white work lights. The place is Calder Station, a small, remote research-and-beacon outpost of weathered industrial modules, pipes and walkways on Ross 128 b, a rocky planet with thin, dusty air and a rust-brown, stony ground. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-24T20:22:17.524Z",
+        "candidate": 2,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "2d5d31383380a9c5e8257146550306417c75757addb35bd90a68dba606d38ff7"
+      }
+    }
+  }
+}

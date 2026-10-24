@@ -361,7 +361,11 @@ script makes them sparse itself.
 ## 12. Materials and models from pictures
 
 - **Materials:** `npm run art:materials` fetches the station's Poly Haven materials (CC0) at 1k,
-  checks each file against Poly Haven's MD5, and records them in `art/materials.json`.
+  checks each file against Poly Haven's MD5, and records them in `art/materials.json`. Which
+  material is for what: [assets/IMAGES.md](assets/IMAGES.md) §3.
+- **2D pictures:** `npm run art:images -- generate|build|sheet` makes the key art, console screens,
+  signs, posters, ground, horizon and loading pictures in `public/assets/textures/`, with every
+  word drawn from open fonts rather than generated; see [assets/IMAGES.md](assets/IMAGES.md).
 - **Models from pictures:** `npm run art:trellis -- <picture.png> <name>` turns a concept picture
   into a 3D candidate with trellis.cpp on the owner's Mac, with network access denied, and writes
   a record beside it in `art/out/`. The install and its licences are in

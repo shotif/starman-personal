@@ -141,6 +141,289 @@
           "sha256": "2982943ffe3273a65bf788b77fc0c7a4fd8227824386d065d13a8c8c0e07db10"
         }
       ]
+    },
+    {
+      "id": "blue_metal_plate",
+      "name": "Blue Metal Plate",
+      "use": "clean painted wall panels",
+      "page": "https://polyhaven.com/a/blue_metal_plate",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/blue_metal_plate/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_diff_1k.jpg",
+          "bytes": 395923,
+          "sha256": "a0162bffce47d4a35613a12af22571b28c18412dc5805cbb69eac343554ef750"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/blue_metal_plate/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_nor_gl_1k.jpg",
+          "bytes": 238025,
+          "sha256": "970f0273c9e2e3b4fc8338bfd58a28c413b70ac4d1734d9dc8a136724bde56e6"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/blue_metal_plate/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_arm_1k.jpg",
+          "bytes": 419910,
+          "sha256": "9321b539fe9cf0136ea04c3405b95ae82383f31c258b9c0e37ff8a1e577b637f"
+        }
+      ]
+    },
+    {
+      "id": "rubber_tiles",
+      "name": "Rubber Tiles",
+      "use": "dark rubber deck floors",
+      "page": "https://polyhaven.com/a/rubber_tiles",
+      "authors": [
+        "Amal Kumar"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/rubber_tiles/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rubber_tiles/rubber_tiles_diff_1k.jpg",
+          "bytes": 351085,
+          "sha256": "07c66caf17f14b1eae8a60bfd11a3b00a88af0101d51aab370609a2f13bb8c04"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/rubber_tiles/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rubber_tiles/rubber_tiles_nor_gl_1k.jpg",
+          "bytes": 477716,
+          "sha256": "9d030b6b52c039af437e5bd58590bf0b8abfbead85c02567211a341d292e5aa5"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/rubber_tiles/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rubber_tiles/rubber_tiles_arm_1k.jpg",
+          "bytes": 639130,
+          "sha256": "b4fdb4b7c569a114ccc353c1c2a01f2266412aa244d10a61026df94547d33439"
+        }
+      ]
+    },
+    {
+      "id": "concrete_floor_worn_001",
+      "name": "Concrete Floor Worn 001",
+      "use": "concrete floors and walls",
+      "page": "https://polyhaven.com/a/concrete_floor_worn_001",
+      "authors": [
+        "Dimitrios Savva",
+        "Rico Cilliers"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/concrete_floor_worn_001/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_floor_worn_001/concrete_floor_worn_001_diff_1k.jpg",
+          "bytes": 118806,
+          "sha256": "6e40c0fc908f4d66431836f5abe203f3a4eb064e88824378a91a46a26e2f464c"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/concrete_floor_worn_001/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_floor_worn_001/concrete_floor_worn_001_nor_gl_1k.jpg",
+          "bytes": 110906,
+          "sha256": "523bd94a1be5dd2f11c2ae2b7d7c77445cf5bd9e41604db515a7c8364dcba067"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/concrete_floor_worn_001/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_floor_worn_001/concrete_floor_worn_001_arm_1k.jpg",
+          "bytes": 152919,
+          "sha256": "b21e63637d04b969894bd40a45df185d77671ed74b8955cd6e403c34ed465043"
+        }
+      ]
+    },
+    {
+      "id": "metal_grate_rusty",
+      "name": "Metal Grate Rusty",
+      "use": "grated metal floors and catwalks (a solid grate pattern, no see-through)",
+      "page": "https://polyhaven.com/a/metal_grate_rusty",
+      "authors": [
+        "Rob Tuytel",
+        "Dimitrios Savva"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/metal_grate_rusty/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_grate_rusty/metal_grate_rusty_diff_1k.jpg",
+          "bytes": 929481,
+          "sha256": "dc24176c7cdc8f526611fca206e852179b5fe2be157eea8a180ddd8985347df8"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/metal_grate_rusty/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_grate_rusty/metal_grate_rusty_nor_gl_1k.jpg",
+          "bytes": 878053,
+          "sha256": "3bb15a5408a33b6291a7d6ded358c1426d4d3d166bd0ff43c14c4102e1638483"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/metal_grate_rusty/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_grate_rusty/metal_grate_rusty_arm_1k.jpg",
+          "bytes": 966761,
+          "sha256": "d75ec65ba553a53faa8a16ba2a02dff1095d162f951d1ddd7566d4272ebf643b"
+        }
+      ]
+    },
+    {
+      "id": "fabric_leather_02",
+      "name": "Fabric Leather 02",
+      "use": "upholstery: the lounge seats",
+      "page": "https://polyhaven.com/a/fabric_leather_02",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/fabric_leather_02/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_leather_02/fabric_leather_02_diff_1k.jpg",
+          "bytes": 663390,
+          "sha256": "97ba9480c7619efc9b8c08202c3e3773d1dd532dacce4dfe97f86e95339cf132"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/fabric_leather_02/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_leather_02/fabric_leather_02_nor_gl_1k.jpg",
+          "bytes": 170918,
+          "sha256": "2652ece55bd2780be1e16fb5ebc4171b139da45bcf9839a161b9ae236534e471"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/fabric_leather_02/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/fabric_leather_02/fabric_leather_02_arm_1k.jpg",
+          "bytes": 353873,
+          "sha256": "f382e758ffe898725a8df81b8a244461889bca24592a909c7ad7196368e0c67e"
+        }
+      ]
+    },
+    {
+      "id": "interior_tiles",
+      "name": "Interior Tiles",
+      "use": "the clinic floor tiles",
+      "page": "https://polyhaven.com/a/interior_tiles",
+      "authors": [
+        "Charlotte Baglioni"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/interior_tiles/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/interior_tiles/interior_tiles_diff_1k.jpg",
+          "bytes": 694562,
+          "sha256": "f267c4357e629f5ca2ab86f30da4fb0ae8c655a566cec6d81278df8d78dcca4a"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/interior_tiles/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/interior_tiles/interior_tiles_nor_gl_1k.jpg",
+          "bytes": 414639,
+          "sha256": "fdfb9fe192d438176508290fe873e181d88c5e6444a43bbab2ec156c9a78aa33"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/interior_tiles/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/interior_tiles/interior_tiles_arm_1k.jpg",
+          "bytes": 564996,
+          "sha256": "e21a6758bb84ffce7baf0dd5937f77fa9e40c94d4d6b779097b1c5dd6189d81b"
+        }
+      ]
+    },
+    {
+      "id": "corrugated_iron_02",
+      "name": "Corrugated Iron 02",
+      "use": "corrugated metal cladding",
+      "page": "https://polyhaven.com/a/corrugated_iron_02",
+      "authors": [
+        "Jenelle van Heerden",
+        "Sergej Majboroda"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/corrugated_iron_02/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/corrugated_iron_02/corrugated_iron_02_diff_1k.jpg",
+          "bytes": 568492,
+          "sha256": "7a7b43099d015c1b08ebb175da5965caeae44b86de65a727b3fffa20a7c69a93"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/corrugated_iron_02/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/corrugated_iron_02/corrugated_iron_02_nor_gl_1k.jpg",
+          "bytes": 489773,
+          "sha256": "9743c93668689c36a67e9c4dc8d6a0870fe91202f82dcdaf70ddc330c12f9ecb"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/corrugated_iron_02/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/corrugated_iron_02/corrugated_iron_02_arm_1k.jpg",
+          "bytes": 904443,
+          "sha256": "da4197f5b3e199ef693082836ca803f9d5cad2b4998a1c1c3dc4ac384f93a890"
+        }
+      ]
+    },
+    {
+      "id": "cracked_red_ground",
+      "name": "Cracked Red Ground",
+      "use": "the rocky ground outside, on Ross 128 b",
+      "page": "https://polyhaven.com/a/cracked_red_ground",
+      "authors": [
+        "Amal Kumar"
+      ],
+      "licence": "CC0 1.0",
+      "resolution": "1k",
+      "fetched": "2026-10-24",
+      "files": [
+        {
+          "map": "Diffuse",
+          "path": "public/assets/materials/cracked_red_ground/albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_red_ground/cracked_red_ground_diff_1k.jpg",
+          "bytes": 720673,
+          "sha256": "36f41dc2e889c5473c784f3316baf6ac0d4f4e6ad21205781c60e767aa640644"
+        },
+        {
+          "map": "nor_gl",
+          "path": "public/assets/materials/cracked_red_ground/normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_red_ground/cracked_red_ground_nor_gl_1k.jpg",
+          "bytes": 1105496,
+          "sha256": "2ca767265e31ee3be95c82ee8892cc1e278ce6655026915678c01aa58894c199"
+        },
+        {
+          "map": "arm",
+          "path": "public/assets/materials/cracked_red_ground/arm.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/cracked_red_ground/cracked_red_ground_arm_1k.jpg",
+          "bytes": 729394,
+          "sha256": "86b45929c4d42909912fc73ac84cd9db1e4f7f40bb71733b9c60ab88d0cd060d"
+        }
+      ]
     }
   ]
 }

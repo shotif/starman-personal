@@ -24,6 +24,8 @@
     "art:concepts": "node scripts/art/concepts.ts",
     "art:meshy": "node scripts/art/meshy.ts",
     "art:props": "node scripts/art/props.ts",
+    "art:models": "node scripts/art/models.ts",
+    "art:images": "node scripts/art/images.ts",
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {

@@ -8,9 +8,8 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { requireKey } from './env.ts';
+import { meshyBalance, meshyImageTo3d } from './services.ts';
 
-const API = 'https://api.meshy.ai/openapi/v1/image-to-3d';
 /** For props a phone can carry: remeshed to triangles near the style test's budget, with PBR maps. */
 const SETTINGS = {
   ai_model: 'latest',
@@ -24,59 +23,24 @@ const SETTINGS = {
   origin_at: 'bottom',
 } as const;
 
-const key = requireKey('MESHY_API_KEY');
-const headers = { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
 const concepts = JSON.parse(await readFile(join('art', 'concepts.json'), 'utf8')) as { subjects: { id: string }[] };
 const wanted = process.argv.slice(2);
 const ids = concepts.subjects.map((s) => s.id).filter((id) => wanted.length === 0 || wanted.includes(id));
 const folder = join('art', 'out', 'meshy');
 await mkdir(folder, { recursive: true });
 
-interface Task {
-  status: 'PENDING' | 'IN_PROGRESS' | 'SUCCEEDED' | 'FAILED' | 'CANCELED';
-  progress: number;
-  consumed_credits?: number;
-  model_urls?: { glb?: string };
-  task_error?: { message?: string };
-}
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/** The credits left (D-22: Meshy first while the credits last, then trellis.cpp on the Mac). */
-async function balance(): Promise<number | null> {
-  const response = await fetch('https://api.meshy.ai/openapi/v1/balance', { headers });
-  if (!response.ok) return null;
-  return ((await response.json()) as { balance?: number }).balance ?? null;
-}
-
-const before = await balance();
+const before = await meshyBalance();
 console.log(`Meshy credits before: ${before ?? 'unknown'}`);
 
 await Promise.all(
   ids.map(async (id) => {
     const picture = await readFile(join('art', 'out', 'concepts', `${id}.jpg`));
-    const started = Date.now();
-    const created = await fetch(API, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ image_url: `data:image/jpeg;base64,${picture.toString('base64')}`, ...SETTINGS }),
-    });
-    if (!created.ok) throw new Error(`${id}: HTTP ${created.status} ${await created.text()}`);
-    const { result: taskId } = (await created.json()) as { result: string };
-    console.log(`${id}: task ${taskId}`);
-
-    let task: Task;
-    for (;;) {
-      await sleep(10_000);
-      const polled = await fetch(`${API}/${taskId}`, { headers });
-      if (!polled.ok) throw new Error(`${id}: HTTP ${polled.status} while polling`);
-      task = (await polled.json()) as Task;
-      if (['SUCCEEDED', 'FAILED', 'CANCELED'].includes(task.status)) break;
-    }
-    if (task.status !== 'SUCCEEDED' || !task.model_urls?.glb) {
-      throw new Error(`${id}: ${task.status} ${task.task_error?.message ?? ''}`);
-    }
-    const model = Buffer.from(await (await fetch(task.model_urls.glb)).arrayBuffer());
+    const made = await meshyImageTo3d([picture], SETTINGS, (task) => console.log(`${id}: task ${task}`)).catch(
+      (error: Error) => {
+        throw new Error(`${id}: ${error.message}`);
+      },
+    );
+    const model = made.glb;
     await writeFile(join(folder, `${id}-meshy.glb`), model);
     await writeFile(
       join(folder, `${id}-meshy.json`),
@@ -84,10 +48,10 @@ await Promise.all(
         {
           id: `${id}-meshy`,
           service: 'Meshy image-to-3D',
-          task: taskId,
+          task: made.task,
           settings: SETTINGS,
-          credits: task.consumed_credits,
-          seconds: Math.round((Date.now() - started) / 1000),
+          credits: made.credits,
+          seconds: made.seconds,
           made: new Date().toISOString(),
           input: { file: `art/out/concepts/${id}.jpg`, sha256: createHash('sha256').update(picture).digest('hex') },
           output: { bytes: model.length, sha256: createHash('sha256').update(model).digest('hex') },
@@ -97,11 +61,11 @@ await Promise.all(
         2,
       )}\n`,
     );
-    console.log(`${id}: ${(model.length / 1e6).toFixed(1)} MB, ${task.consumed_credits} credits`);
+    console.log(`${id}: ${(model.length / 1e6).toFixed(1)} MB, ${made.credits} credits`);
   }),
 );
 
-const after = await balance();
+const after = await meshyBalance();
 console.log(
   `Meshy credits after: ${after ?? 'unknown'}${before !== null && after !== null ? ` (used ${before - after})` : ''}`,
 );

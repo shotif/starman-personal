@@ -44,6 +44,17 @@ its source, its licence with a link, and what we changed, as the licence asks.
 
 - **[Poly Haven](https://polyhaven.com)**: *Metal Plate*, *Metal Plate 02* and *Rusty Metal 02*
   by Rob Tuytel, and *Container Side* by Dimitrios Savva (CC0).
+- **[Poly Haven](https://polyhaven.com)**: *Blue Metal Plate* and *Fabric Leather 02* by Rob
+  Tuytel; *Metal Grate Rusty* by Rob Tuytel and Dimitrios Savva; *Concrete Floor Worn 001* by
+  Dimitrios Savva and Rico Cilliers; *Rubber Tiles* and *Cracked Red Ground* by Amal Kumar;
+  *Interior Tiles* by Charlotte Baglioni; *Corrugated Iron 02* by Jenelle van Heerden and Sergej
+  Majboroda (CC0). How they are used: [docs/assets/IMAGES.md](docs/assets/IMAGES.md).
+
+**Lettering in the pictures**
+
+- **Barlow** and **Barlow Condensed** by Jeremy Tribby, and **Share Tech Mono** by Carrois
+  Apostrophe, under the [SIL Open Font License 1.1](https://openfontlicense.org). Only pictures
+  set with them are shipped, not the fonts.
 
 ## Made for this game with generative tools
 
@@ -53,7 +64,15 @@ commercial use; the records say how each file was made.
 - **Voices:** generated with ElevenLabs text to speech (model eleven_v4) from the game's own
   script, in ElevenLabs' premade voices, on a paid plan. Records in
   [art/voices.json](art/voices.json); how in [docs/assets/VOICES.md](docs/assets/VOICES.md).
-- **The sidearm:** generated with Meshy from the game's own concept drawing.
+- **3D models** (the swarm's machines, the surveyor, the station's furniture and props, the
+  sidearm, helmet, locker and terminal): generated with Meshy (image-to-3D, multi-image-to-3D and
+  remesh) from the game's own concept pictures, made with Google Gemini (gemini-nano-banana-2.1),
+  on paid plans. Records in [art/models.json](art/models.json); how in
+  [docs/assets/MODELS.md](docs/assets/MODELS.md).
+- **Pictures:** the key art, loading pictures, sign plates, poster art, the ground of Ross 128 b
+  and its horizon, generated with Google Gemini (gemini-nano-banana-2.1) from the game's own
+  prompts; all words on them, and the console screens, drawn by our scripts. Records in
+  [art/images.json](art/images.json); how in [docs/assets/IMAGES.md](docs/assets/IMAGES.md).
 
 ## Tools used to make the assets
 

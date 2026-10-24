@@ -1,0 +1,343 @@
+{
+  "about": "Every model faces +z and stands at y = 0; sizes in metres (docs/assets/MODELS.md).",
+  "models": {
+    "mote": {
+      "file": "mote.glb",
+      "size": 0.6,
+      "dimensions": [
+        0.37,
+        0.334,
+        0.6
+      ],
+      "triangles": 1984,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 233308
+    },
+    "lattice": {
+      "file": "lattice.glb",
+      "size": 2.2,
+      "dimensions": [
+        2.2,
+        2.004,
+        0.78
+      ],
+      "triangles": 3999,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 721972
+    },
+    "tender": {
+      "file": "tender.glb",
+      "size": 4,
+      "dimensions": [
+        3.686,
+        1.811,
+        4
+      ],
+      "triangles": 8000,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 780664
+    },
+    "surveyor": {
+      "file": "surveyor.glb",
+      "size": 24,
+      "dimensions": [
+        6.83,
+        8.978,
+        24
+      ],
+      "triangles": 15000,
+      "texture": 2048,
+      "front": "+z",
+      "bytes": 2409176
+    },
+    "bunk": {
+      "file": "bunk.glb",
+      "size": 2.1,
+      "dimensions": [
+        2.1,
+        1.638,
+        1.033
+      ],
+      "triangles": 2452,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 441940
+    },
+    "sofa": {
+      "file": "sofa.glb",
+      "size": 2.2,
+      "dimensions": [
+        2.2,
+        0.978,
+        0.912
+      ],
+      "triangles": 1992,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 407600
+    },
+    "galley": {
+      "file": "galley.glb",
+      "size": 2.6,
+      "dimensions": [
+        2.6,
+        1.454,
+        0.995
+      ],
+      "triangles": 3306,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 564876
+    },
+    "table": {
+      "file": "table.glb",
+      "size": 2.8,
+      "dimensions": [
+        2.8,
+        0.884,
+        1.888
+      ],
+      "triangles": 1883,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 500836
+    },
+    "medbed": {
+      "file": "medbed.glb",
+      "size": 2.1,
+      "dimensions": [
+        2.1,
+        1.58,
+        1.119
+      ],
+      "triangles": 2901,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 577084
+    },
+    "console": {
+      "file": "console.glb",
+      "size": 1.9,
+      "dimensions": [
+        1.9,
+        1.596,
+        1.098
+      ],
+      "triangles": 2505,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 534972
+    },
+    "relay": {
+      "file": "relay.glb",
+      "size": 1.6,
+      "dimensions": [
+        1.186,
+        1.6,
+        0.856
+      ],
+      "triangles": 2857,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 561184
+    },
+    "planter": {
+      "file": "planter.glb",
+      "size": 2.6,
+      "dimensions": [
+        2.6,
+        0.972,
+        0.751
+      ],
+      "triangles": 3390,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 667628
+    },
+    "bench": {
+      "file": "bench.glb",
+      "size": 2.4,
+      "dimensions": [
+        2.4,
+        1.051,
+        0.732
+      ],
+      "triangles": 1220,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 171716
+    },
+    "container": {
+      "file": "container.glb",
+      "size": 6,
+      "dimensions": [
+        6,
+        2.492,
+        2.181
+      ],
+      "triangles": 1130,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 368500
+    },
+    "crate": {
+      "file": "crate.glb",
+      "size": 1.2,
+      "dimensions": [
+        1.2,
+        0.687,
+        0.706
+      ],
+      "triangles": 930,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 181152
+    },
+    "chair": {
+      "file": "chair.glb",
+      "size": 1.3,
+      "dimensions": [
+        0.904,
+        1.3,
+        0.759
+      ],
+      "triangles": 3000,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 504812
+    },
+    "dish": {
+      "file": "dish.glb",
+      "size": 3,
+      "dimensions": [
+        2.433,
+        3,
+        2.031
+      ],
+      "triangles": 2891,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 615600
+    },
+    "drone": {
+      "file": "drone.glb",
+      "size": 0.7,
+      "dimensions": [
+        0.7,
+        0.578,
+        0.698
+      ],
+      "triangles": 1499,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 209160
+    },
+    "cylinders": {
+      "file": "cylinders.glb",
+      "size": 1.8,
+      "dimensions": [
+        1.732,
+        1.8,
+        0.876
+      ],
+      "triangles": 1680,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 229528
+    },
+    "vending": {
+      "file": "vending.glb",
+      "size": 2,
+      "dimensions": [
+        1.506,
+        2,
+        1.163
+      ],
+      "triangles": 1689,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 193636
+    },
+    "cart": {
+      "file": "cart.glb",
+      "size": 2.4,
+      "dimensions": [
+        1.285,
+        1.217,
+        2.4
+      ],
+      "triangles": 2841,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 596604
+    },
+    "bridgeconsole": {
+      "file": "bridgeconsole.glb",
+      "size": 1.6,
+      "dimensions": [
+        1.381,
+        1.6,
+        1.423
+      ],
+      "triangles": 2390,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 493632
+    },
+    "locker": {
+      "file": "locker.glb",
+      "size": 1.25,
+      "dimensions": [
+        0.973,
+        1.25,
+        0.778
+      ],
+      "triangles": 3000,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 516792
+    },
+    "terminal": {
+      "file": "terminal.glb",
+      "size": 0.8,
+      "dimensions": [
+        0.471,
+        0.8,
+        0.352
+      ],
+      "triangles": 2999,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 592676
+    },
+    "helmet": {
+      "file": "helmet.glb",
+      "size": 0.32,
+      "dimensions": [
+        0.316,
+        0.32,
+        0.319
+      ],
+      "triangles": 5000,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 623340
+    },
+    "sidearm": {
+      "file": "sidearm.glb",
+      "size": 0.24,
+      "dimensions": [
+        0.042,
+        0.177,
+        0.24
+      ],
+      "triangles": 3999,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 525704
+    }
+  }
+}

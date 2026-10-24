@@ -1,0 +1,2200 @@
+{
+  "about": "The game's 3D models (docs/assets/MODELS.md). Each model starts as a Gemini concept picture (its prompt, its style line and the framing line), becomes a 3D model with Meshy, and is prepared for phones by scripts/art/models.ts into public/assets/models/. 'size' is the real size in metres along the longest side, 'triangles' the budget, 'texture' the largest texture side in pixels, 'turn' the degrees about +Y that make the model face +Z (found by looking at the previews). Optional: 'views' (extra views of the same object drawn by Gemini from the concept, so Meshy builds from several pictures), 'keep' (a box in Meshy's own axes; what lies outside is cut away), 'source' (a Meshy model made before this list, from the style test, remeshed to the budget). 'record' is written by the script (D-28): the concept's prompt and SHA-256, the Meshy task, settings, credits and dates, and every discarded attempt with why. Concepts are the owner's to use under Google's terms; Meshy models are made on the owner's paid plan, which leaves them the owner's.",
+  "conceptModel": "gemini-nano-banana-2.1",
+  "styles": {
+    "station": "Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents.",
+    "swarm": "Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision.",
+    "frame": "A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+    "sameObject": "Turn this object around: draw the very same object as in the picture, identical in shape, parts, proportions, colours and wear, from the opposite side, as if the camera had walked half-way round it, so that the parts facing the viewer in the picture now face away and are hidden. Now it is seen",
+    "viewFrame": "The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+    "styleTest": "(The style test's own style line, in art/concepts.json.)"
+  },
+  "meshy": {
+    "ai_model": "latest",
+    "should_remesh": true,
+    "topology": "triangle",
+    "should_texture": true,
+    "enable_pbr": true,
+    "texture_resolution": "2k",
+    "target_formats": [
+      "glb"
+    ],
+    "note": "target_polycount is each model's triangle budget"
+  },
+  "models": [
+    {
+      "id": "mote",
+      "style": "swarm",
+      "size": 0.6,
+      "triangles": 2000,
+      "texture": 512,
+      "turn": 90,
+      "prompt": "A small hovering hunter machine about the size of a football, menacing and insect-like but wholly mechanical: a compact armoured body of overlapping dark rust-red metal plates, shaped like a wasp's thorax; a single round glowing white-gold emitter eye set deep in a socket in the middle of its blunt front face, so the front is unmistakable; four short angled fins swept back around its rear. No legs, no wings, no propellers, no mouth.",
+      "views": [
+        "in a three-quarter view from the rear-right and slightly above, so its back end and right side are visible. Its rear is closed, dark armour plating tapering between the fins: no light, no eye, no engine glow, no opening at the back."
+      ],
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A small hovering hunter machine about the size of a football, menacing and insect-like but wholly mechanical: a compact armoured body of overlapping dark rust-red metal plates, shaped like a wasp's thorax; a single round glowing white-gold emitter eye set deep in a socket in the middle of its blunt front face, so the front is unmistakable; four short angled fins swept back around its rear. No legs, no wings, no propellers, no mouth. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/mote.jpg",
+          "sha256": "94168e37714684fe936b6178d675f1ffa97e1809e6b6d46ffe3ef04b8615926d",
+          "bytes": 1376080,
+          "made": "2026-10-24T20:07:03.730Z",
+          "approxCostUsd": 0.1,
+          "views": [
+            {
+              "prompt": "The very same machine as in the picture, identical in shape, plates, colours and wear, now seen in a three-quarter view from the rear-right and slightly above, so its back end and right side are visible. Its rear is closed, dark armour plating tapering between the fins: no light, no eye, no engine glow, no opening at the back. On a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos.",
+              "file": "art/out/models/concepts/mote-view1.jpg",
+              "sha256": "6179fa103c551e4d2acee48dd03b71512d81d7947105f4389900478c07fbab6a",
+              "made": "2026-10-24T20:25:19Z",
+              "approxCostUsd": 0.1,
+              "note": "drawn with a first wording of the turn-around prompt, kept because its fins match the concept"
+            }
+          ]
+        },
+        "meshy": {
+          "service": "Meshy multi-image-to-3d",
+          "task": "01a16f9a-e1e9-70ca-874c-b5167a8a5852",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 150,
+          "made": "2026-10-24T20:32:13.846Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/mote.jpg",
+              "sha256": "94168e37714684fe936b6178d675f1ffa97e1809e6b6d46ffe3ef04b8615926d"
+            },
+            {
+              "file": "art/out/models/concepts/mote-view1.jpg",
+              "sha256": "6179fa103c551e4d2acee48dd03b71512d81d7947105f4389900478c07fbab6a"
+            }
+          ],
+          "output": {
+            "bytes": 9538312,
+            "sha256": "36085100b99479582c535dd3231db0ebad5131fe390941b66cfc0e91bcc79a26"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "discarded": [
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "A small hovering hunter machine about the size of a football, menacing and insect-like but wholly mechanical: a compact armoured body of overlapping dark rust-red metal plates, shaped like a wasp's thorax; a single round glowing white-gold emitter eye set deep in a socket in the middle of its blunt front face, so the front is unmistakable; four short angled fins swept back around its rear. No legs, no wings, no propellers, no mouth. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/mote.jpg",
+              "sha256": "94168e37714684fe936b6178d675f1ffa97e1809e6b6d46ffe3ef04b8615926d",
+              "bytes": 1376080,
+              "made": "2026-10-24T20:07:03.730Z",
+              "approxCostUsd": 0.1,
+              "views": [
+                {
+                  "prompt": "The very same object as in the picture, identical in shape, parts, proportions, colours and wear, now seen in a three-quarter view from the rear-right and slightly above, so its back end and right side are visible. Its rear is closed, dark armour plating tapering between the fins: no light, no eye, no engine glow and no opening at the back. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/mote-view1.jpg",
+                  "sha256": "f5eefadae5b31582ac7831ae99f68121472ff9785a28a92b6a9002822f40a896",
+                  "made": "2026-10-24T20:28:17.593Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:28:44.414Z",
+            "why": "a first rear view kept the front angle and was redrawn"
+          },
+          {
+            "concept": {
+              "views": [
+                {
+                  "prompt": "Turn this object around: draw the very same object as in the picture, identical in shape, parts, proportions, colours and wear, from the opposite side, as if the camera had walked half-way round it, so that the parts facing the viewer in the picture now face away and are hidden. Now it is seen in a three-quarter view from the rear-right and slightly above, so its back end and right side are visible. Its rear is closed, dark armour plating tapering between the fins: no light, no eye, no engine glow and no opening at the back. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/mote-view1.jpg",
+                  "sha256": "fd119511e48cc69de322e10f7e4be5d8f8101a78e6909d8d9350829fba3d0795",
+                  "made": "2026-10-24T20:29:15.410Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:29:36.160442Z",
+            "why": "this rear view showed six fins, not four; an earlier draw of the same view (below) is used instead"
+          },
+          {
+            "meshy": {
+              "service": "Meshy image-to-3d",
+              "task": "01a16f88-6689-71bc-9f59-fa0e7b1751de",
+              "settings": {
+                "ai_model": "latest",
+                "should_remesh": true,
+                "topology": "triangle",
+                "should_texture": true,
+                "enable_pbr": true,
+                "texture_resolution": "2k",
+                "target_formats": [
+                  "glb"
+                ],
+                "target_polycount": 2000
+              },
+              "credits": 30,
+              "seconds": 202,
+              "made": "2026-10-24T20:12:54.614Z",
+              "input": [
+                {
+                  "file": "art/out/models/concepts/mote.jpg",
+                  "sha256": "94168e37714684fe936b6178d675f1ffa97e1809e6b6d46ffe3ef04b8615926d"
+                }
+              ],
+              "output": {
+                "bytes": 9855184,
+                "sha256": "ab9a5b84f14f475e56290fefb11e0f5cb461ed43a03b958f6d6685b1665cab2d"
+              },
+              "licence": "Meshy paid plan: private, the owner's to use commercially"
+            },
+            "replaced": "2026-10-24T20:32:13.846Z",
+            "why": "built from the front picture alone, Meshy gave the mote a second glowing disc at its tail, so its front was unclear; rebuilt from a front and a rear view"
+          }
+        ],
+        "output": {
+          "file": "public/assets/models/mote.glb",
+          "bytes": 233308,
+          "sha256": "5e2c553b689bef6d617a663741f2472bed62331182d9454e505ddd707a9d2337",
+          "triangles": {
+            "made": 1984,
+            "shipped": 1984
+          },
+          "textures": "512 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.37,
+            0.334,
+            0.6
+          ],
+          "made": "2026-10-24T20:33:35.617Z"
+        }
+      }
+    },
+    {
+      "id": "lattice",
+      "style": "swarm",
+      "size": 2.2,
+      "triangles": 4000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "Six identical small hunter machines (each a compact body of dark rust-red armour plates with short swept-back fins) locked into a rigid upright hexagonal ring-frame around a larger central core, the whole assembly standing upright like a wheel about two metres across and facing the viewer; the core in the middle carries one large glowing white-gold emitter lens pointing straight forward; thick dark struts join each small machine to the core and to its neighbours.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "Six identical small hunter machines (each a compact body of dark rust-red armour plates with short swept-back fins) locked into a rigid upright hexagonal ring-frame around a larger central core, the whole assembly standing upright like a wheel about two metres across and facing the viewer; the core in the middle carries one large glowing white-gold emitter lens pointing straight forward; thick dark struts join each small machine to the core and to its neighbours. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/lattice.jpg",
+          "sha256": "ec3a1429fd489a5064c49ef4ea1825a7ae9f26cdea0d2f436086dca5bb0ed9a9",
+          "bytes": 2388080,
+          "made": "2026-10-24T20:07:07.357Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f88-67db-7381-b9fa-722ad21bd98b",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 4000
+          },
+          "credits": 30,
+          "seconds": 150,
+          "made": "2026-10-24T20:12:02.366Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/lattice.jpg",
+              "sha256": "ec3a1429fd489a5064c49ef4ea1825a7ae9f26cdea0d2f436086dca5bb0ed9a9"
+            }
+          ],
+          "output": {
+            "bytes": 12539424,
+            "sha256": "704eb99ef42cbff11074a3cffd46b5c9c01b1b0f57423a6cac1376e91fc0d258"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "discarded": [
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "Six identical small hunter machines (each a compact body of dark rust-red armour plates with short swept-back fins) locked into a rigid upright hexagonal ring-frame around a larger central core, the whole assembly standing upright like a wheel about two metres across and facing the viewer; the core in the middle carries one large glowing white-gold emitter lens pointing straight forward; thick dark struts join each small machine to the core and to its neighbours. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/lattice.jpg",
+              "sha256": "ec3a1429fd489a5064c49ef4ea1825a7ae9f26cdea0d2f436086dca5bb0ed9a9",
+              "bytes": 2388080,
+              "made": "2026-10-24T20:07:07.357Z",
+              "approxCostUsd": 0.1,
+              "views": [
+                {
+                  "prompt": "The very same object as in the picture, identical in shape, parts, proportions, colours and wear, now seen in a three-quarter view from the rear-right and slightly above, so the back of the ring and of the core are visible. The core's back is closed, dark armour plating: no lens, no light and no opening at the back; the emitter faces only forward. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/lattice-view1.jpg",
+                  "sha256": "26788ad41414af4d18ef37437b0b052103a94097d17f9ae9ff8fb849ebcb04c9",
+                  "made": "2026-10-24T20:28:21.960Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:28:44.415Z",
+            "why": "two attempts at a rear view (this one, then a second with the turn-around wording) both came out from the front angle, so the lattice was not rebuilt; its first model is kept, with a lens on the back of its core as well as the front"
+          }
+        ],
+        "output": {
+          "file": "public/assets/models/lattice.glb",
+          "bytes": 721972,
+          "sha256": "91107bac2c9ed981d3199317ab80c794ba8b754e64f0bb2a1e286e760f60aed2",
+          "triangles": {
+            "made": 4123,
+            "shipped": 3999
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.2,
+            2.004,
+            0.78
+          ],
+          "made": "2026-10-24T20:33:35.811Z"
+        }
+      }
+    },
+    {
+      "id": "tender",
+      "style": "swarm",
+      "size": 4,
+      "triangles": 8000,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A large, slow, heavy machine the size of a delivery van: a broad flattened hull shaped like a thick lens, made of dark charcoal and rust-red armour plates; a ring of eight bulbous launch pods set around its rim, two of them open showing empty cradles inside; a thick raised structural ring around the hull; one wide dim white-gold emitter slit across its front; three short stubby landing pads underneath. Nothing else in the picture: no second machine, no reflection, no blurred background shapes.",
+      "views": [
+        "in a three-quarter view from the rear-right and slightly above, so its back and right side are visible. The emitter slit is only at the front: the back of the hull is closed plating and launch pods, with no slit, no light and no opening."
+      ],
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A large, slow, heavy machine the size of a delivery van: a broad flattened hull shaped like a thick lens, made of dark charcoal and rust-red armour plates; a ring of eight bulbous launch pods set around its rim, two of them open showing empty cradles inside; a thick raised structural ring around the hull; one wide dim white-gold emitter slit across its front; three short stubby landing pads underneath. Nothing else in the picture: no second machine, no reflection, no blurred background shapes. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/tender.jpg",
+          "sha256": "e766dbf0ce38f4a48725397ead9c3b2d3681ef8e94341ce898bec28c004cea30",
+          "bytes": 1744329,
+          "made": "2026-10-24T20:09:20.449Z",
+          "approxCostUsd": 0.1,
+          "views": [
+            {
+              "prompt": "Turn this object around: draw the very same object as in the picture, identical in shape, parts, proportions, colours and wear, from the opposite side, as if the camera had walked half-way round it, so that the parts facing the viewer in the picture now face away and are hidden. Now it is seen in a three-quarter view from the rear-right and slightly above, so its back and right side are visible. The emitter slit is only at the front: the back of the hull is closed plating and launch pods, with no slit, no light and no opening. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/tender-view1.jpg",
+              "sha256": "12fc349dd45c4224dfd5bbd546d98354635570c909d20852df8ac8639866683e",
+              "made": "2026-10-24T20:29:02.595Z",
+              "approxCostUsd": 0.1
+            }
+          ]
+        },
+        "discarded": [
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "A large, slow, heavy machine the size of a delivery van, hovering low: a broad flattened hull like a thick lens or a turtle's shell made of dark charcoal and rust-red armour plates; a ring of eight bulbous launch pods set around its rim, two of them open showing empty cradles inside; a thick raised structural ring around the hull; one wide dim white-gold emitter slit across its front. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/tender.jpg",
+              "sha256": "28bde7960d3ca4bc3a3c466664a934bd7716d45b20877d659ece1c208f3c48d0",
+              "bytes": 2300252,
+              "made": "2026-10-24T20:07:05.394Z",
+              "approxCostUsd": 0.1
+            },
+            "replaced": "2026-10-24T20:08:53.073Z",
+            "why": "the picture showed two machines, one cropped"
+          },
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "One large, slow, heavy machine the size of a delivery van, shown alone, hovering just above the ground: a broad flattened hull like a thick lens or a turtle's shell made of dark charcoal and rust-red armour plates; a ring of eight bulbous launch pods set around its rim, two of them open showing empty cradles inside; a thick raised structural ring around the hull; one wide dim white-gold emitter slit across its front. Only this one machine in the picture, whole and uncropped. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/tender.jpg",
+              "sha256": "69a347714831baf0eb335529bbf6ab01eace811efe2affab387ce1e3ee61a139",
+              "bytes": 2281936,
+              "made": "2026-10-24T20:08:53.075Z",
+              "approxCostUsd": 0.1
+            },
+            "replaced": "2026-10-24T20:09:20.447Z",
+            "why": "a blurred second machine behind it"
+          },
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "A large, slow, heavy machine the size of a delivery van: a broad flattened hull shaped like a thick lens, made of dark charcoal and rust-red armour plates; a ring of eight bulbous launch pods set around its rim, two of them open showing empty cradles inside; a thick raised structural ring around the hull; one wide dim white-gold emitter slit across its front; three short stubby landing pads underneath. Nothing else in the picture: no second machine, no reflection, no blurred background shapes. Semi-realistic hard-surface render of an ancient machine built by a long-vanished alien civilisation, for a grounded science-fiction game: precise, purposeful mechanical engineering, not organic, not magical, unlike anything human-made; old, pitted, dark and weathered, its plates fitted with inhuman precision. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/tender.jpg",
+              "sha256": "e766dbf0ce38f4a48725397ead9c3b2d3681ef8e94341ce898bec28c004cea30",
+              "bytes": 1744329,
+              "made": "2026-10-24T20:09:20.449Z",
+              "approxCostUsd": 0.1,
+              "views": [
+                {
+                  "prompt": "The very same object as in the picture, identical in shape, parts, proportions, colours and wear, now seen in a three-quarter view from the rear-right and slightly above, so its back and right side are visible. The emitter slit is only at the front: the back of the hull is closed plating and launch pods, with no slit, no light and no opening. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/tender-view1.jpg",
+                  "sha256": "7f066a2834f49ac3847276a69a34573a4c9296d916c25291081ba63ec6f93726",
+                  "made": "2026-10-24T20:28:20.316Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:28:44.415Z",
+            "why": "a first rear view kept the front angle and was redrawn"
+          },
+          {
+            "meshy": {
+              "service": "Meshy image-to-3d",
+              "task": "01a16f88-67e6-717f-85d8-f583d1026619",
+              "settings": {
+                "ai_model": "latest",
+                "should_remesh": true,
+                "topology": "triangle",
+                "should_texture": true,
+                "enable_pbr": true,
+                "texture_resolution": "2k",
+                "target_formats": [
+                  "glb"
+                ],
+                "target_polycount": 8000
+              },
+              "credits": 30,
+              "seconds": 140,
+              "made": "2026-10-24T20:11:51.974Z",
+              "input": [
+                {
+                  "file": "art/out/models/concepts/tender.jpg",
+                  "sha256": "e766dbf0ce38f4a48725397ead9c3b2d3681ef8e94341ce898bec28c004cea30"
+                }
+              ],
+              "output": {
+                "bytes": 11544184,
+                "sha256": "2b2808fc7544a9d689550b1ad628895b0cf14854333a7b424f6b206210f6769c"
+              },
+              "licence": "Meshy paid plan: private, the owner's to use commercially"
+            },
+            "replaced": "2026-10-24T20:32:03.957Z",
+            "why": "built from the front picture alone, Meshy put an emitter slit on both sides; rebuilt from a front and a rear view"
+          }
+        ],
+        "meshy": {
+          "service": "Meshy multi-image-to-3d",
+          "task": "01a16f9a-e33e-70e8-b8de-64dcb841e59e",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 8000
+          },
+          "credits": 30,
+          "seconds": 140,
+          "made": "2026-10-24T20:32:03.957Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/tender.jpg",
+              "sha256": "e766dbf0ce38f4a48725397ead9c3b2d3681ef8e94341ce898bec28c004cea30"
+            },
+            {
+              "file": "art/out/models/concepts/tender-view1.jpg",
+              "sha256": "12fc349dd45c4224dfd5bbd546d98354635570c909d20852df8ac8639866683e"
+            }
+          ],
+          "output": {
+            "bytes": 11638292,
+            "sha256": "7efad3caba0b8ad1cbdf0cc3050d5590be0963c1211730800b81de7419282214"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/tender.glb",
+          "bytes": 780664,
+          "sha256": "1425c0dcf0bbb3606180f0e0eade6a3e17c92729c642bc33b433b1a4e6a8636f",
+          "triangles": {
+            "made": 8164,
+            "shipped": 8000
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            3.686,
+            1.811,
+            4
+          ],
+          "made": "2026-10-24T20:33:35.996Z"
+        }
+      }
+    },
+    {
+      "id": "surveyor",
+      "style": "station",
+      "size": 24,
+      "triangles": 15000,
+      "texture": 2048,
+      "turn": 90,
+      "prompt": "A small long-haul survey spaceship about 24 metres long, standing on four sturdy landing legs: a boxy, practical, slab-sided hull of grey-blue painted panels; a cockpit with a wide angular window band at the front; two large cylindrical engines side by side at the back; sensor masts and a small dish on top; and a crude twin-barrelled gun turret bolted onto the top of the rear hull as a later addition, its mounting plates and cables still visible; bold orange maker's stripes along the hull's flanks.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A small long-haul survey spaceship about 24 metres long, standing on four sturdy landing legs: a boxy, practical, slab-sided hull of grey-blue painted panels; a cockpit with a wide angular window band at the front; two large cylindrical engines side by side at the back; sensor masts and a small dish on top; and a crude twin-barrelled gun turret bolted onto the top of the rear hull as a later addition, its mounting plates and cables still visible; bold orange maker's stripes along the hull's flanks. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/surveyor.jpg",
+          "sha256": "03f25b2a6293b428fad0b6db06de21994e6c6d9f0a2e80805aa26f6aaa0ff08c",
+          "bytes": 1938898,
+          "made": "2026-10-24T20:07:15.868Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f88-67ed-7326-9b04-097cd09a1a41",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 15000
+          },
+          "credits": 30,
+          "seconds": 140,
+          "made": "2026-10-24T20:11:52.792Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/surveyor.jpg",
+              "sha256": "03f25b2a6293b428fad0b6db06de21994e6c6d9f0a2e80805aa26f6aaa0ff08c"
+            }
+          ],
+          "output": {
+            "bytes": 13454916,
+            "sha256": "dbce4299ca2259c648a6a68c8dd9878423809efffe995d8712488b5adb11360f"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/surveyor.glb",
+          "bytes": 2409176,
+          "sha256": "634230bb6db76ced1fa49b6f726d4b3e4d17b2d508e0b1d4f587bf0291a1f517",
+          "triangles": {
+            "made": 15104,
+            "shipped": 15000
+          },
+          "textures": "2048 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            6.83,
+            8.978,
+            24
+          ],
+          "made": "2026-10-24T20:33:36.375Z"
+        }
+      }
+    },
+    {
+      "id": "bunk",
+      "style": "station",
+      "size": 2.1,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A two-tier crew bunk bed from a space station's quarters, about two metres long: a sturdy grey-blue painted steel frame, two thin grey mattresses with rumpled dark blue blankets and flat pillows, a short steel ladder at one end with orange hazard tape on its rungs, storage drawers under the lower bunk.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A two-tier crew bunk bed from a space station's quarters, about two metres long: a sturdy grey-blue painted steel frame, two thin grey mattresses with rumpled dark blue blankets and flat pillows, a short steel ladder at one end with orange hazard tape on its rungs, storage drawers under the lower bunk. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/bunk.jpg",
+          "sha256": "620922eb91bf406fb4b122e6a7e651cd98a425466d8b24d4f65aabd8d2ec6910",
+          "bytes": 2471455,
+          "made": "2026-10-24T20:07:06.442Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f88-67e5-74d7-867e-3dc30150874f",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 171,
+          "made": "2026-10-24T20:12:23.318Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/bunk.jpg",
+              "sha256": "620922eb91bf406fb4b122e6a7e651cd98a425466d8b24d4f65aabd8d2ec6910"
+            }
+          ],
+          "output": {
+            "bytes": 9131572,
+            "sha256": "a63648d08ff0344e4762468fbaef3d0fa0f9157d9c210c8fb7d43ed694c43ff9"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/bunk.glb",
+          "bytes": 441940,
+          "sha256": "33bc6a07f72a296a18bf8a264eeb8234fcac9a26f9eca44c4b3540a663f89421",
+          "triangles": {
+            "made": 2452,
+            "shipped": 2452
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.1,
+            1.638,
+            1.033
+          ],
+          "made": "2026-10-24T20:33:36.539Z"
+        }
+      }
+    },
+    {
+      "id": "sofa",
+      "style": "station",
+      "size": 2.2,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A worn three-seat sofa from a space station's crew lounge: a simple modular frame of grey painted steel, square cushions in faded slate-blue fabric, sagging and scuffed, one cushion patched with a darker square of cloth, low armrests.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A worn three-seat sofa from a space station's crew lounge: a simple modular frame of grey painted steel, square cushions in faded slate-blue fabric, sagging and scuffed, one cushion patched with a darker square of cloth, low armrests. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/sofa.jpg",
+          "sha256": "3ef5f86aa886672b59bdc57f33c63b73995423cda792b0a37ab728fb9eb0cecb",
+          "bytes": 2496745,
+          "made": "2026-10-24T20:07:04.078Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8a-87d4-732c-8303-fbb48efa3e70",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 128,
+          "made": "2026-10-24T20:13:59.562Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/sofa.jpg",
+              "sha256": "3ef5f86aa886672b59bdc57f33c63b73995423cda792b0a37ab728fb9eb0cecb"
+            }
+          ],
+          "output": {
+            "bytes": 9929064,
+            "sha256": "0e7350dbd749985b638e749d2a2350b82a0cb68490f0caba5043f34dbddd28fa"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/sofa.glb",
+          "bytes": 407600,
+          "sha256": "614ca1c90e4060e472961f56ddf5c2c61240fb14fb270e4cd02d76b612a7a786",
+          "triangles": {
+            "made": 1992,
+            "shipped": 1992
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.2,
+            0.978,
+            0.912
+          ],
+          "made": "2026-10-24T20:33:36.705Z"
+        }
+      }
+    },
+    {
+      "id": "galley",
+      "style": "station",
+      "size": 2.6,
+      "triangles": 4000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A space station's galley counter about 2.6 metres long: a scratched stainless-steel worktop with a small sink and a built-in two-plate cooker, grey-blue cupboards with recessed handles below, a low splashback panel at the back, worn and stained from use.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A space station's galley counter about 2.6 metres long: a scratched stainless-steel worktop with a small sink and a built-in two-plate cooker, grey-blue cupboards with recessed handles below, a low splashback panel at the back, worn and stained from use. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/galley.jpg",
+          "sha256": "3f8706fb21869b56291eaa8004cce26236c26e50fd218ab69c814c4ecb85d226",
+          "bytes": 2210846,
+          "made": "2026-10-24T20:07:24.279Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8a-8b05-7023-8867-3c362cb2f022",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 4000
+          },
+          "credits": 30,
+          "seconds": 137,
+          "made": "2026-10-24T20:14:09.926Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/galley.jpg",
+              "sha256": "3f8706fb21869b56291eaa8004cce26236c26e50fd218ab69c814c4ecb85d226"
+            }
+          ],
+          "output": {
+            "bytes": 10364840,
+            "sha256": "44aa9e03588d61fe1dff6e4f6d29be9d86b9da1f572de7e6b2c20b013ec3e714"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/galley.glb",
+          "bytes": 564876,
+          "sha256": "bded872f8a02d2aa43f03ac05827c84be9de939aff74fe57a0797babfe240c4d",
+          "triangles": {
+            "made": 3306,
+            "shipped": 3306
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.6,
+            1.454,
+            0.995
+          ],
+          "made": "2026-10-24T20:33:36.870Z"
+        }
+      }
+    },
+    {
+      "id": "table",
+      "style": "station",
+      "size": 2.8,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A canteen mess table with a long bench on each side, all joined on one shared steel frame as a single rigid unit, about 2.8 metres long: a scratched light grey composite tabletop and bench seats, slate-blue painted legs and cross-rails, orange edge strips at the bench ends.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A canteen mess table with a long bench on each side, all joined on one shared steel frame as a single rigid unit, about 2.8 metres long: a scratched light grey composite tabletop and bench seats, slate-blue painted legs and cross-rails, orange edge strips at the bench ends. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/table.jpg",
+          "sha256": "2363edd45c16e4f05b1304a2e1c4004e54c0ec4e75a918f0d275246574f5da04",
+          "bytes": 1585656,
+          "made": "2026-10-24T20:07:24.604Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8a-b0f4-7263-925e-1d4fef7295e8",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 86,
+          "made": "2026-10-24T20:13:28.148Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/table.jpg",
+              "sha256": "2363edd45c16e4f05b1304a2e1c4004e54c0ec4e75a918f0d275246574f5da04"
+            }
+          ],
+          "output": {
+            "bytes": 10443856,
+            "sha256": "48a9ed8dbbba7f29d92e60e49baf053b19b6295da9bdf7775929d1464cd0eb1e"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/table.glb",
+          "bytes": 500836,
+          "sha256": "9c0c49ae9c2fc9be9083c43ab0c7379e41607c89898f066cbc9dc65480e77fd2",
+          "triangles": {
+            "made": 1883,
+            "shipped": 1883
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.8,
+            0.884,
+            1.888
+          ],
+          "made": "2026-10-24T20:33:37.035Z"
+        }
+      }
+    },
+    {
+      "id": "medbed",
+      "style": "station",
+      "size": 2.1,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A clinic bed from a space station's small medical bay: an adjustable bed on a sturdy pedestal base, a thin pale grey padded mattress, folding side rails, and a small articulated monitor arm rising from the head end holding a compact screen that shows only abstract green lines.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A clinic bed from a space station's small medical bay: an adjustable bed on a sturdy pedestal base, a thin pale grey padded mattress, folding side rails, and a small articulated monitor arm rising from the head end holding a compact screen that shows only abstract green lines. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/medbed.jpg",
+          "sha256": "f5b307689161ecae1e4cd8680555f675a178a70a067edcc355b291ca80b7eeae",
+          "bytes": 1657967,
+          "made": "2026-10-24T20:07:25.654Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8b-0243-774e-87ef-0b648908ffa5",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 159,
+          "made": "2026-10-24T20:15:02.646Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/medbed.jpg",
+              "sha256": "f5b307689161ecae1e4cd8680555f675a178a70a067edcc355b291ca80b7eeae"
+            }
+          ],
+          "output": {
+            "bytes": 10502596,
+            "sha256": "27e67de5b161e34890757628e80827c52b304ef3a2238f3441baf3293ad482ac"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/medbed.glb",
+          "bytes": 577084,
+          "sha256": "cf9db8fd6147341476b56668ddcf867762154120fe5408d95cb4dc5feb6824b4",
+          "triangles": {
+            "made": 2901,
+            "shipped": 2901
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.1,
+            1.58,
+            1.119
+          ],
+          "made": "2026-10-24T20:33:37.208Z"
+        }
+      }
+    },
+    {
+      "id": "console",
+      "style": "station",
+      "size": 1.9,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "An operator's workstation desk from a station control room, about 1.9 metres wide: a heavy grey-blue steel desk with a rounded, padded front edge, a built-in keyboard panel, two flat monitors on short stands showing only abstract blue charts, cable trays underneath. No chair.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "An operator's workstation desk from a station control room, about 1.9 metres wide: a heavy grey-blue steel desk with a rounded, padded front edge, a built-in keyboard panel, two flat monitors on short stands showing only abstract blue charts, cable trays underneath. No chair. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/console.jpg",
+          "sha256": "e58bfdb3810eb96916a2dd95d90f67a9b691def54a34240bf8d20aa50f31172c",
+          "bytes": 2093529,
+          "made": "2026-10-24T20:07:25.639Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8b-7d0d-7066-8601-c381ef4740a7",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 149,
+          "made": "2026-10-24T20:15:23.740Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/console.jpg",
+              "sha256": "e58bfdb3810eb96916a2dd95d90f67a9b691def54a34240bf8d20aa50f31172c"
+            }
+          ],
+          "output": {
+            "bytes": 10215960,
+            "sha256": "14650d5eb8782118d3c86f10d29f887e8db926f235af6ca1f1c8c814b026c1fe"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/console.glb",
+          "bytes": 534972,
+          "sha256": "471d0d6870a166d004e1f1b43a3959a13fe24a292340e4daee40ae8fa2dea5af",
+          "triangles": {
+            "made": 2505,
+            "shipped": 2505
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.9,
+            1.596,
+            1.098
+          ],
+          "made": "2026-10-24T20:33:37.378Z"
+        }
+      }
+    },
+    {
+      "id": "relay",
+      "style": "station",
+      "size": 1.6,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "An outdoor comms relay console from a planetary outpost: a weatherproof grey-blue metal cabinet on a single thick steel post set into a square base plate, a small hooded screen, chunky toggle switches, and a large manual hand wheel on its right side for turning an antenna by hand, the wheel painted orange; dusty and weather-worn.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "An outdoor comms relay console from a planetary outpost: a weatherproof grey-blue metal cabinet on a single thick steel post set into a square base plate, a small hooded screen, chunky toggle switches, and a large manual hand wheel on its right side for turning an antenna by hand, the wheel painted orange; dusty and weather-worn. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/relay.jpg",
+          "sha256": "4d2b7ad2550cad2c242b81f788b9d7f7de8737066d3a9e2d04cb54a1c03f99e4",
+          "bytes": 1648546,
+          "made": "2026-10-24T20:07:26.533Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8b-ff85-705d-9733-1a3d734ad98d",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 126,
+          "made": "2026-10-24T20:15:34.489Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/relay.jpg",
+              "sha256": "4d2b7ad2550cad2c242b81f788b9d7f7de8737066d3a9e2d04cb54a1c03f99e4"
+            }
+          ],
+          "output": {
+            "bytes": 10911576,
+            "sha256": "321ed28410d286255b682f46b8af15d7730ed6bbc248269903141f339cdca7d6"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/relay.glb",
+          "bytes": 561184,
+          "sha256": "4e212eb2bc604d5f68eb0e25035c717cf57f147e9ae0b071f581dfae37951aed",
+          "triangles": {
+            "made": 2857,
+            "shipped": 2857
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.186,
+            1.6,
+            0.856
+          ],
+          "made": "2026-10-24T20:33:37.547Z"
+        }
+      }
+    },
+    {
+      "id": "planter",
+      "style": "station",
+      "size": 2.6,
+      "triangles": 4000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A long hydroponic planter trough from a space station's garden deck, about 2.6 metres long: a grey-blue metal tank on short legs, nutrient pipes and a small pump box at one end, a dense row of leafy green plants (lettuces, herbs and small bushy greens) growing out of it.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A long hydroponic planter trough from a space station's garden deck, about 2.6 metres long: a grey-blue metal tank on short legs, nutrient pipes and a small pump box at one end, a dense row of leafy green plants (lettuces, herbs and small bushy greens) growing out of it. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/planter.jpg",
+          "sha256": "c8149f34aa792a07693cc4cbb8895d5d7c4563e9d1a7981deda6a6ef282385bf",
+          "bytes": 2305799,
+          "made": "2026-10-24T20:07:36.610Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8c-7a3a-75ea-a5e9-505e5f2d32f1",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 4000
+          },
+          "credits": 30,
+          "seconds": 379,
+          "made": "2026-10-24T20:20:18.839Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/planter.jpg",
+              "sha256": "c8149f34aa792a07693cc4cbb8895d5d7c4563e9d1a7981deda6a6ef282385bf"
+            }
+          ],
+          "output": {
+            "bytes": 11558192,
+            "sha256": "56567ff54bb72519ac447c4ce554660dd869818e4f584df1aea8c1c4b8b27b33"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/planter.glb",
+          "bytes": 667628,
+          "sha256": "6c6322768d8712f70361730d1136f8fb8d4607f814dd651b7ee9c9dc87cb6dcf",
+          "triangles": {
+            "made": 3390,
+            "shipped": 3390
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.6,
+            0.972,
+            0.751
+          ],
+          "made": "2026-10-24T20:33:37.727Z"
+        }
+      }
+    },
+    {
+      "id": "bench",
+      "style": "station",
+      "size": 2.4,
+      "triangles": 1500,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A public bench from a space station's concourse, about 2.4 metres long: a slatted seat and backrest of grey composite on a heavy slate-blue steel frame with two broad pedestal feet and armrests at both ends, worn smooth where people sit.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A public bench from a space station's concourse, about 2.4 metres long: a slatted seat and backrest of grey composite on a heavy slate-blue steel frame with two broad pedestal feet and armrests at both ends, worn smooth where people sit. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/bench.jpg",
+          "sha256": "5c726fc8451c8e7ab9404bede75f04b8da3295d1144c5956e1db992ac248df09",
+          "bytes": 2096407,
+          "made": "2026-10-24T20:07:44.403Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8c-a2b8-7580-b715-f88befcd53f3",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 74,
+          "made": "2026-10-24T20:15:24.289Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/bench.jpg",
+              "sha256": "5c726fc8451c8e7ab9404bede75f04b8da3295d1144c5956e1db992ac248df09"
+            }
+          ],
+          "output": {
+            "bytes": 9480564,
+            "sha256": "1632fe07c2d6e0023e23398598db4779c11d5508083ea136dd94bf4323db06e0"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/bench.glb",
+          "bytes": 171716,
+          "sha256": "33905aa3bb261d100d6623b6df4e0086694da3d28bcf8ac55a80e4689fcf45aa",
+          "triangles": {
+            "made": 1220,
+            "shipped": 1220
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.4,
+            1.051,
+            0.732
+          ],
+          "made": "2026-10-24T20:33:37.843Z"
+        }
+      }
+    },
+    {
+      "id": "container",
+      "style": "station",
+      "size": 6,
+      "triangles": 1500,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A six-metre steel cargo container from a spaceport hangar: corrugated walls painted faded slate blue, heavy corner castings, double doors at one end with vertical locking bars, orange hazard stripes on the corner posts, dents and rust streaks.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A six-metre steel cargo container from a spaceport hangar: corrugated walls painted faded slate blue, heavy corner castings, double doors at one end with vertical locking bars, orange hazard stripes on the corner posts, dents and rust streaks. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/container.jpg",
+          "sha256": "909d278b4370c9ffc2dbca8b2a4374f7da3a193a5d79264deb9350e79b8f9b3e",
+          "bytes": 2378586,
+          "made": "2026-10-24T20:07:44.279Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8d-709e-75cd-8474-478d7243a79b",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 211,
+          "made": "2026-10-24T20:18:33.848Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/container.jpg",
+              "sha256": "909d278b4370c9ffc2dbca8b2a4374f7da3a193a5d79264deb9350e79b8f9b3e"
+            }
+          ],
+          "output": {
+            "bytes": 8538548,
+            "sha256": "b30c3a482304d2168a4ea915991906b0f4a2cd4b4869ef8472cdd8a40960613a"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/container.glb",
+          "bytes": 368500,
+          "sha256": "e11bb72252e8b3b068a035967c8fbd1188b3862529701c6e3343e6ff45739397",
+          "triangles": {
+            "made": 1130,
+            "shipped": 1130
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            6,
+            2.492,
+            2.181
+          ],
+          "made": "2026-10-24T20:33:38.003Z"
+        }
+      }
+    },
+    {
+      "id": "crate",
+      "style": "station",
+      "size": 1.2,
+      "triangles": 1000,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A rugged supply crate about 1.2 metres long and waist-high: slate-grey composite panels with steel corner guards, recessed carrying handles, four heavy latches, orange hazard edges along the lid, scuffed and dented.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A rugged supply crate about 1.2 metres long and waist-high: slate-grey composite panels with steel corner guards, recessed carrying handles, four heavy latches, orange hazard edges along the lid, scuffed and dented. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/crate.jpg",
+          "sha256": "dab32b46a64cac655f10a76195eee40fd6325ef6d28d3eb24a17c82b4ac3a16c",
+          "bytes": 2098869,
+          "made": "2026-10-24T20:07:44.312Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8d-c39d-70ec-92cc-5797510459a7",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1000
+          },
+          "credits": 30,
+          "seconds": 211,
+          "made": "2026-10-24T20:18:54.802Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/crate.jpg",
+              "sha256": "dab32b46a64cac655f10a76195eee40fd6325ef6d28d3eb24a17c82b4ac3a16c"
+            }
+          ],
+          "output": {
+            "bytes": 10560472,
+            "sha256": "48e02aa18cc1446df9d1043bcba12986c8aad8293e0e2ddf59005266279ab045"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/crate.glb",
+          "bytes": 181152,
+          "sha256": "17d688b6bc009eb817d586e746a28dd251af12573be37db7326c0fc30289b615",
+          "triangles": {
+            "made": 930,
+            "shipped": 930
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.2,
+            0.687,
+            0.706
+          ],
+          "made": "2026-10-24T20:33:38.117Z"
+        }
+      }
+    },
+    {
+      "id": "chair",
+      "style": "station",
+      "size": 1.3,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A spaceship captain's chair for a small ship's bridge: a high-backed padded seat in worn dark grey-blue upholstery with a headrest, on a heavy swivel pedestal, broad armrests each carrying a small control pad with a few glowing buttons, shoulder harness straps.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A spaceship captain's chair for a small ship's bridge: a high-backed padded seat in worn dark grey-blue upholstery with a headrest, on a heavy swivel pedestal, broad armrests each carrying a small control pad with a few glowing buttons, shoulder harness straps. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/chair.jpg",
+          "sha256": "58978d9a744380e3d87ebd56321a44dc307ba237fda29c91b7ed23c5739d57aa",
+          "bytes": 2235005,
+          "made": "2026-10-24T20:07:44.581Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8d-c52e-74c3-8769-a153a897bce8",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 179,
+          "made": "2026-10-24T20:18:23.241Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/chair.jpg",
+              "sha256": "58978d9a744380e3d87ebd56321a44dc307ba237fda29c91b7ed23c5739d57aa"
+            }
+          ],
+          "output": {
+            "bytes": 10339208,
+            "sha256": "9f8b19bebae8843bb4aac85e5387bd0d7549f3b256a8cc882f9496aec310a9ee"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/chair.glb",
+          "bytes": 504812,
+          "sha256": "35957909aa1b7bd2046079dd4f1079ec58236f9467f533d8130ff10fd57e73c8",
+          "triangles": {
+            "made": 3024,
+            "shipped": 3000
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.904,
+            1.3,
+            0.759
+          ],
+          "made": "2026-10-24T20:33:38.286Z"
+        }
+      }
+    },
+    {
+      "id": "dish",
+      "style": "station",
+      "size": 3,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A communications dish antenna for the top of an outpost mast: a three-metre parabolic dish of grey metal panels with a feed horn held on three struts in front of it, mounted on a motorised yoke on a short round base, orange warning bands on the yoke.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A communications dish antenna for the top of an outpost mast: a three-metre parabolic dish of grey metal panels with a feed horn held on three struts in front of it, mounted on a motorised yoke on a short round base, orange warning bands on the yoke. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/dish.jpg",
+          "sha256": "feddb763f367c1d4f23b58fee5b341902c750793be4a8766e900a4925ff07fe9",
+          "bytes": 2475745,
+          "made": "2026-10-24T20:07:48.450Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f8d-ed0a-7178-a091-af54990457b7",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 285,
+          "made": "2026-10-24T20:20:19.361Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/dish.jpg",
+              "sha256": "feddb763f367c1d4f23b58fee5b341902c750793be4a8766e900a4925ff07fe9"
+            }
+          ],
+          "output": {
+            "bytes": 11972612,
+            "sha256": "c7a416e264ee20f6fcab508536c609643af1bbe5372faa4c19a6224e134a730f"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/dish.glb",
+          "bytes": 615600,
+          "sha256": "e83117d397658d8ac5e635fc896512c4058b289c80d7a648454fde5e385a68ea",
+          "triangles": {
+            "made": 2891,
+            "shipped": 2891
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2.433,
+            3,
+            2.031
+          ],
+          "made": "2026-10-24T20:33:38.459Z"
+        }
+      }
+    },
+    {
+      "id": "drone",
+      "style": "station",
+      "size": 0.7,
+      "triangles": 1500,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A practice target drone for a firing range: a matte grey sphere the size of a beach ball, a slim flat ring around its middle joined to it by two short struts, one glowing cyan camera eye on its front, a few orange hit-marker patches, dents and scuffs from training rounds.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A practice target drone for a firing range: a matte grey sphere the size of a beach ball, a slim flat ring around its middle joined to it by two short struts, one glowing cyan camera eye on its front, a few orange hit-marker patches, dents and scuffs from training rounds. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/drone.jpg",
+          "sha256": "54753dbf8d539a526f5bcb567f949b702356860e29a7cbc352bb16641b3be4f4",
+          "bytes": 1902475,
+          "made": "2026-10-24T20:07:56.461Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f90-8031-76cf-9634-de524cc22440",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 137,
+          "made": "2026-10-24T20:20:40.187Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/drone.jpg",
+              "sha256": "54753dbf8d539a526f5bcb567f949b702356860e29a7cbc352bb16641b3be4f4"
+            }
+          ],
+          "output": {
+            "bytes": 10896336,
+            "sha256": "02e99b372c401a366e3110ae8ea6c9fb3e3ae76f6540eb5c41ab7414c47e3c10"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/drone.glb",
+          "bytes": 209160,
+          "sha256": "c4ee49c97821860c0e8cf162442a2df9a339513d8106161e5b162bb72e7f307c",
+          "triangles": {
+            "made": 1545,
+            "shipped": 1499
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.7,
+            0.578,
+            0.698
+          ],
+          "made": "2026-10-24T20:33:38.578Z"
+        },
+        "discarded": [
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "A practice target drone for a firing range: a matte grey sphere the size of a beach ball, a slim flat ring around its middle joined to it by two short struts, one glowing cyan camera eye on its front, a few orange hit-marker patches, dents and scuffs from training rounds. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/drone.jpg",
+              "sha256": "54753dbf8d539a526f5bcb567f949b702356860e29a7cbc352bb16641b3be4f4",
+              "bytes": 1902475,
+              "made": "2026-10-24T20:07:56.461Z",
+              "approxCostUsd": 0.1,
+              "views": [
+                {
+                  "prompt": "The very same object as in the picture, identical in shape, parts, proportions, colours and wear, now seen in a three-quarter view from the rear-right and slightly above, so its back is visible. The camera eye is only on the front: the back of the sphere is plain dented grey plating with orange hit-marker patches, no eye, no lens and no light. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/drone-view1.jpg",
+                  "sha256": "085006801ccf6b9b2f91f63d2df7b69810b8dfe413afa54c7f5274d3ace60a3f",
+                  "made": "2026-10-24T20:28:08.736Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:28:44.415Z",
+            "why": "a first rear view kept the front angle and was redrawn"
+          },
+          {
+            "meshy": {
+              "service": "Meshy multi-image-to-3d",
+              "task": "01a16f9a-e344-7664-b5b7-ad963f32da81",
+              "settings": {
+                "ai_model": "latest",
+                "should_remesh": true,
+                "topology": "triangle",
+                "should_texture": true,
+                "enable_pbr": true,
+                "texture_resolution": "2k",
+                "target_formats": [
+                  "glb"
+                ],
+                "target_polycount": 1500
+              },
+              "credits": 30,
+              "seconds": 109,
+              "made": "2026-10-24T20:31:32.667Z",
+              "input": [
+                {
+                  "file": "art/out/models/concepts/drone.jpg",
+                  "sha256": "54753dbf8d539a526f5bcb567f949b702356860e29a7cbc352bb16641b3be4f4"
+                },
+                {
+                  "file": "art/out/models/concepts/drone-view1.jpg",
+                  "sha256": "1951a67d62f1a99f94b26916767242529df579f6be9804449947892863ee9179"
+                }
+              ],
+              "output": {
+                "bytes": 9724604,
+                "sha256": "686a00a2790b428672c3e1b43fb884b558567570842a5818f8d9d707a6c66a6e"
+              },
+              "licence": "Meshy paid plan: private, the owner's to use commercially"
+            },
+            "concept": {
+              "views": [
+                {
+                  "prompt": "Turn this object around: draw the very same object as in the picture, identical in shape, parts, proportions, colours and wear, from the opposite side, as if the camera had walked half-way round it, so that the parts facing the viewer in the picture now face away and are hidden. Now it is seen in a three-quarter view from the rear-right and slightly above, so its back is visible. The camera eye is only on the front: the back of the sphere is plain dented grey plating with orange hit-marker patches, no eye, no lens and no light. The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+                  "file": "art/out/models/concepts/drone-view1.jpg",
+                  "sha256": "1951a67d62f1a99f94b26916767242529df579f6be9804449947892863ee9179",
+                  "made": "2026-10-24T20:29:06.170Z",
+                  "approxCostUsd": 0.1
+                }
+              ]
+            },
+            "replaced": "2026-10-24T20:33:06.000Z",
+            "why": "built from the front and a rear view, it came out with an eye on each side and lost the cyan glow; the first model (one eye at the front, one at the back) is kept"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cylinders",
+      "style": "station",
+      "size": 1.8,
+      "triangles": 2000,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A steel rack holding a row of four tall industrial gas cylinders upright, a safety chain across their front, cylinders painted muted grey and slate blue with orange shoulder bands and steel valve caps on top.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A steel rack holding a row of four tall industrial gas cylinders upright, a safety chain across their front, cylinders painted muted grey and slate blue with orange shoulder bands and steel valve caps on top. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/cylinders.jpg",
+          "sha256": "40f921de1421829002351b35ef4731667712079ff5b1027d4fd561d3b27f29d3",
+          "bytes": 2312309,
+          "made": "2026-10-24T20:08:00.429Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f90-a9aa-74b6-a8e3-e83275d5f8c6",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 189,
+          "made": "2026-10-24T20:21:43.069Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/cylinders.jpg",
+              "sha256": "40f921de1421829002351b35ef4731667712079ff5b1027d4fd561d3b27f29d3"
+            }
+          ],
+          "output": {
+            "bytes": 10722316,
+            "sha256": "e6cb46886220831f710685360918a6d57ee487f6e42285950ce79a633a1ebf86"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/cylinders.glb",
+          "bytes": 229528,
+          "sha256": "b424c9460cd73ec1e9d9ed8f1d6470c0431bc7cf850276e6c8b702fc93837061",
+          "triangles": {
+            "made": 1680,
+            "shipped": 1680
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.732,
+            1.8,
+            0.876
+          ],
+          "made": "2026-10-24T20:33:38.702Z"
+        }
+      }
+    },
+    {
+      "id": "vending",
+      "style": "station",
+      "size": 2,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A food vending machine from a space station concourse: a tall boxy grey-blue cabinet, a glass front showing rows of plain foil food packets without any printing, a small keypad and card panel at the side, a delivery hatch near the bottom, scuffed and dented.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A food vending machine from a space station concourse: a tall boxy grey-blue cabinet, a glass front showing rows of plain foil food packets without any printing, a small keypad and card panel at the side, a delivery hatch near the bottom, scuffed and dented. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/vending.jpg",
+          "sha256": "eb9e192617425a2d07923449c35b19735a4b4cd11fb46eb05006682d590813fb",
+          "bytes": 2287089,
+          "made": "2026-10-24T20:08:02.823Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f90-fb7f-74db-a5e8-799be1a0731b",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 231,
+          "made": "2026-10-24T20:22:46.288Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/vending.jpg",
+              "sha256": "eb9e192617425a2d07923449c35b19735a4b4cd11fb46eb05006682d590813fb"
+            }
+          ],
+          "output": {
+            "bytes": 3051564,
+            "sha256": "c4751e79163c47202f5ea2cc909b9165d4c4c8233518c0320bd48beed83723c6"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/vending.glb",
+          "bytes": 193636,
+          "sha256": "2a75dcae84aa70c1dd3b25e4b272d886810fcc52393a7866a2d76f801bafff6d",
+          "triangles": {
+            "made": 1689,
+            "shipped": 1689
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.506,
+            2,
+            1.163
+          ],
+          "made": "2026-10-24T20:33:38.796Z"
+        }
+      }
+    },
+    {
+      "id": "cart",
+      "style": "station",
+      "size": 2.4,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A hangar cargo cart: a low flatbed electric tug with four chunky rubber tyres, a low rail around its empty steel deck, a small driver's step and a T-shaped steering handle at the front end, slate-blue paint with orange hazard stripes, worn and oily.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A hangar cargo cart: a low flatbed electric tug with four chunky rubber tyres, a low rail around its empty steel deck, a small driver's step and a T-shaped steering handle at the front end, slate-blue paint with orange hazard stripes, worn and oily. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/cart.jpg",
+          "sha256": "f9ed807b8d56eb3197752d7541cb14276e5030353ad0da2ea644b0e152cd05e6",
+          "bytes": 2385701,
+          "made": "2026-10-24T20:08:06.313Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f92-43cf-7300-a9b9-fd7155a572c6",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 179,
+          "made": "2026-10-24T20:23:18.156Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/cart.jpg",
+              "sha256": "f9ed807b8d56eb3197752d7541cb14276e5030353ad0da2ea644b0e152cd05e6"
+            }
+          ],
+          "output": {
+            "bytes": 11411728,
+            "sha256": "c8433c8ee9ec59ec55f35b351b2a002f7b01439dd1dcabcf9d6c56ea19633083"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/cart.glb",
+          "bytes": 596604,
+          "sha256": "690e7cca5edc597a5d380fff54db439d42eefb72b997b7f17bc4e088b175e9b5",
+          "triangles": {
+            "made": 2841,
+            "shipped": 2841
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            1.285,
+            1.217,
+            2.4
+          ],
+          "made": "2026-10-24T20:33:38.971Z"
+        }
+      }
+    },
+    {
+      "id": "bridgeconsole",
+      "style": "station",
+      "size": 1.6,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A spaceship bridge console: a compact angled station with a large sloped glass touchscreen showing only abstract blue lines, a narrow ledge of physical switches and dials below it, a dark grey-blue housing on a solid plinth, edges worn bright.",
+      "keep": {
+        "min": [
+          -10,
+          -10,
+          -0.12
+        ],
+        "why": "Meshy added a cable trailing about a metre across the floor behind the console; it is cut off here"
+      },
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A spaceship bridge console: a compact angled station with a large sloped glass touchscreen showing only abstract blue lines, a narrow ledge of physical switches and dials below it, a dark grey-blue housing on a solid plinth, edges worn bright. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/bridgeconsole.jpg",
+          "sha256": "08c7f713f7d7184541c75f359852bd77e232e4ebbb4c2d69fa2dd721ef397c7a",
+          "bytes": 2499247,
+          "made": "2026-10-24T20:08:04.326Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16f92-45d6-756e-bd82-6a332ad62a29",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 116,
+          "made": "2026-10-24T20:22:15.371Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/bridgeconsole.jpg",
+              "sha256": "08c7f713f7d7184541c75f359852bd77e232e4ebbb4c2d69fa2dd721ef397c7a"
+            }
+          ],
+          "output": {
+            "bytes": 9950180,
+            "sha256": "3e1747bba6442e39d42c5eaee83548f385c17262aa64cd2ead35032994b39407"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/bridgeconsole.glb",
+          "bytes": 493632,
+          "sha256": "ed56f411b3561ca4386259849c8a57fbb8b2fab2ac053b783f67ffd2cab7426e",
+          "triangles": {
+            "made": 2465,
+            "shipped": 2390
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.381,
+            1.6,
+            1.423
+          ],
+          "made": "2026-10-24T20:42:55.217Z"
+        }
+      }
+    },
+    {
+      "id": "locker",
+      "style": "styleTest",
+      "size": 1.25,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A rugged freestanding supply locker for a space station, about chest height: dented grey-green painted metal panels, two heavy latches, reinforced corners, stencilled panel lines without any letters, chipped paint.",
+      "source": "art/out/meshy/locker-meshy.glb",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A rugged freestanding supply locker for a space station, about chest height: dented grey-green painted metal panels, two heavy latches, reinforced corners, stencilled panel lines without any letters, chipped paint. Semi-realistic hard-surface product render for a grounded near-future science-fiction game. A single object, whole and centred, three-quarter view from slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. Practical, worn and believable, as if made and used by people. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/concepts/locker.jpg",
+          "sha256": "7942af05494e621cfab43ccbc9c7a327c19c91b74016aec17b058687dcb4d192",
+          "bytes": 2528487,
+          "made": "2026-10-24T16:07:17.706Z",
+          "approxCostUsd": 0.1,
+          "note": "made for the style test (docs/design/STYLE_TEST.md, art/concepts.json)"
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16eab-2c4f-7520-a4d0-a4034f6fc1ac",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "target_polycount": 15000,
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "origin_at": "bottom"
+          },
+          "credits": 30,
+          "seconds": 172,
+          "made": "2026-10-24T16:10:45.218Z",
+          "input": [
+            {
+              "file": "art/out/concepts/locker.jpg",
+              "sha256": "7942af05494e621cfab43ccbc9c7a327c19c91b74016aec17b058687dcb4d192"
+            }
+          ],
+          "output": {
+            "bytes": 9004120,
+            "sha256": "7d27e1f88d04b3d51891b76e2c60885dc61ee8216371cf7b0392854392f88734"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially",
+          "note": "made for the style test; reused here, no new credits"
+        },
+        "output": {
+          "file": "public/assets/models/locker.glb",
+          "bytes": 516792,
+          "sha256": "f2200fcac69a1af323eb8469ef6f255f8979d7ccdff5b6477f6bb3c926c62527",
+          "triangles": {
+            "made": 3045,
+            "shipped": 3000
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.973,
+            1.25,
+            0.778
+          ],
+          "made": "2026-10-24T20:39:45.023Z"
+        },
+        "remesh": {
+          "service": "Meshy remesh",
+          "task": "01a16fa0-c417-73f3-9e43-4a9ac601bf0f",
+          "input": "01a16eab-2c4f-7520-a4d0-a4034f6fc1ac",
+          "settings": {
+            "topology": "triangle",
+            "target_polycount": 3000
+          },
+          "credits": 5,
+          "made": "2026-10-24T20:37:36.000Z",
+          "output": {
+            "bytes": 21468504,
+            "sha256": "881eb58442ae71bff8270371df03348ec2e3eed01306f984062590f9bf3a9a5b"
+          }
+        }
+      }
+    },
+    {
+      "id": "terminal",
+      "style": "styleTest",
+      "size": 0.8,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A wall-mounted maintenance terminal from a space station: a squat industrial housing in dark grey metal, a small glowing blue-green screen showing only abstract bars, a chunky keypad below it, cable conduits leaving the bottom.",
+      "source": "art/out/meshy/terminal-meshy.glb",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A wall-mounted maintenance terminal from a space station: a squat industrial housing in dark grey metal, a small glowing blue-green screen showing only abstract bars, a chunky keypad below it, cable conduits leaving the bottom. Semi-realistic hard-surface product render for a grounded near-future science-fiction game. A single object, whole and centred, three-quarter view from slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. Practical, worn and believable, as if made and used by people. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/concepts/terminal.jpg",
+          "sha256": "a032efcdace74ecf59e2f34ca1c30ed6daa05f195cc205c37640a8771b5bd021",
+          "bytes": 1705267,
+          "made": "2026-10-24T16:07:16.819Z",
+          "approxCostUsd": 0.1,
+          "note": "made for the style test (docs/design/STYLE_TEST.md, art/concepts.json)"
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16eab-2c4f-717b-beab-6894cc1c718f",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "target_polycount": 15000,
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "origin_at": "bottom"
+          },
+          "credits": 30,
+          "seconds": 151,
+          "made": "2026-10-24T16:10:24.295Z",
+          "input": [
+            {
+              "file": "art/out/concepts/terminal.jpg",
+              "sha256": "a032efcdace74ecf59e2f34ca1c30ed6daa05f195cc205c37640a8771b5bd021"
+            }
+          ],
+          "output": {
+            "bytes": 11703924,
+            "sha256": "ec16f01063a853bcbc5d8e077bf0a9a79eba2ea10a12cff62476a19249d19909"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially",
+          "note": "made for the style test; reused here, no new credits"
+        },
+        "output": {
+          "file": "public/assets/models/terminal.glb",
+          "bytes": 592676,
+          "sha256": "e176e29d5b39141d57c68efd703b38461ee9814c93d0ba7b9acc44a287255d51",
+          "triangles": {
+            "made": 3082,
+            "shipped": 2999
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.471,
+            0.8,
+            0.352
+          ],
+          "made": "2026-10-24T20:39:45.368Z"
+        },
+        "remesh": {
+          "service": "Meshy remesh",
+          "task": "01a16fa2-9a64-74d5-a0c5-d22304ae69d0",
+          "input": "01a16eab-2c4f-717b-beab-6894cc1c718f",
+          "settings": {
+            "topology": "triangle",
+            "target_polycount": 3000
+          },
+          "credits": 5,
+          "seconds": 88,
+          "made": "2026-10-24T20:39:37.149Z",
+          "output": {
+            "bytes": 23263060,
+            "sha256": "237d6a4f20147ee17ab694e4c0dee76a98fd04f403ae8273dba310fdacefa226"
+          }
+        }
+      }
+    },
+    {
+      "id": "helmet",
+      "style": "styleTest",
+      "size": 0.32,
+      "triangles": 5000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A sealed spacesuit (EVA) helmet: a scuffed off-white hard shell with faded orange hazard stripes, a wide dark-tinted curved visor, a small lamp on one side, a ribbed neck ring at the base.",
+      "source": "art/out/meshy/helmet-meshy.glb",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A sealed spacesuit (EVA) helmet: a scuffed off-white hard shell with faded orange hazard stripes, a wide dark-tinted curved visor, a small lamp on one side, a ribbed neck ring at the base. Semi-realistic hard-surface product render for a grounded near-future science-fiction game. A single object, whole and centred, three-quarter view from slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. Practical, worn and believable, as if made and used by people. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/concepts/helmet.jpg",
+          "sha256": "7eb94d30c38f4035aef420560fb1fd38bd5ecc9b96b49d3c61305d7fa8b25918",
+          "bytes": 1913908,
+          "made": "2026-10-24T16:07:19.224Z",
+          "approxCostUsd": 0.1,
+          "note": "made for the style test (docs/design/STYLE_TEST.md, art/concepts.json)"
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16eab-2c4d-757c-91ce-661db2f5c3d7",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "target_polycount": 15000,
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "origin_at": "bottom"
+          },
+          "credits": 30,
+          "seconds": 151,
+          "made": "2026-10-24T16:10:24.264Z",
+          "input": [
+            {
+              "file": "art/out/concepts/helmet.jpg",
+              "sha256": "7eb94d30c38f4035aef420560fb1fd38bd5ecc9b96b49d3c61305d7fa8b25918"
+            }
+          ],
+          "output": {
+            "bytes": 12675972,
+            "sha256": "88a1d6a41c1154934292bf77627b0fa2ab9ebba84938aa25dd47777335b97b4c"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially",
+          "note": "made for the style test; reused here, no new credits"
+        },
+        "output": {
+          "file": "public/assets/models/helmet.glb",
+          "bytes": 623340,
+          "sha256": "7158a79a6bb81bdb0631f65c4d7d092cd082af9fd263be1cc1a834a130ca0ed1",
+          "triangles": {
+            "made": 5134,
+            "shipped": 5000
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.316,
+            0.32,
+            0.319
+          ],
+          "made": "2026-10-24T20:39:45.699Z"
+        },
+        "remesh": {
+          "service": "Meshy remesh",
+          "task": "01a16fa2-9a62-74ef-b515-817674d51e3b",
+          "input": "01a16eab-2c4d-757c-91ce-661db2f5c3d7",
+          "settings": {
+            "topology": "triangle",
+            "target_polycount": 5000
+          },
+          "credits": 5,
+          "seconds": 87,
+          "made": "2026-10-24T20:39:36.719Z",
+          "output": {
+            "bytes": 22680580,
+            "sha256": "d26d3bf9b76f69e685bfc063d5b8f89b60b587ba359684c2cdbab34b756fc28f"
+          }
+        }
+      }
+    },
+    {
+      "id": "sidearm",
+      "style": "styleTest",
+      "size": 0.24,
+      "triangles": 4000,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A compact station-security sidearm (an energy pistol): matte gunmetal frame with worn olive-green polymer grip panels, a short squared barrel shroud, a small glowing amber charge light above the grip, scuffs on the edges.",
+      "source": "art/out/meshy/sidearm-meshy.glb",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A compact station-security sidearm (an energy pistol): matte gunmetal frame with worn olive-green polymer grip panels, a short squared barrel shroud, a small glowing amber charge light above the grip, scuffs on the edges. Semi-realistic hard-surface product render for a grounded near-future science-fiction game. A single object, whole and centred, three-quarter view from slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. Practical, worn and believable, as if made and used by people. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/concepts/sidearm.jpg",
+          "sha256": "ed301924782f1bd134e664af15c61c985b7d5185d4721f4b303faaa7146888cd",
+          "bytes": 2088194,
+          "made": "2026-10-24T16:07:19.454Z",
+          "approxCostUsd": 0.1,
+          "note": "made for the style test (docs/design/STYLE_TEST.md, art/concepts.json)"
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a16eab-2c4f-751f-8948-97737fc0577f",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "target_polycount": 15000,
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "origin_at": "bottom"
+          },
+          "credits": 30,
+          "seconds": 119,
+          "made": "2026-10-24T16:09:52.487Z",
+          "input": [
+            {
+              "file": "art/out/concepts/sidearm.jpg",
+              "sha256": "ed301924782f1bd134e664af15c61c985b7d5185d4721f4b303faaa7146888cd"
+            }
+          ],
+          "output": {
+            "bytes": 10438104,
+            "sha256": "cafe90a673aebc99abe9bb022f4720be2f272e880478b0a40e2739287651dd0e"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially",
+          "note": "made for the style test; reused here, no new credits"
+        },
+        "output": {
+          "file": "public/assets/models/sidearm.glb",
+          "bytes": 525704,
+          "sha256": "12f4fd1af88bd6bb4c8cfba3102ca1805d7c36d555ddcdc9d099fb1b51e1c456",
+          "triangles": {
+            "made": 4093,
+            "shipped": 3999
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.042,
+            0.177,
+            0.24
+          ],
+          "made": "2026-10-24T20:39:58.877Z"
+        },
+        "remesh": {
+          "service": "Meshy remesh",
+          "task": "01a16fa2-9a5c-7225-be5c-f64573b18175",
+          "input": "01a16eab-2c4f-751f-8948-97737fc0577f",
+          "settings": {
+            "topology": "triangle",
+            "target_polycount": 4000
+          },
+          "credits": 5,
+          "seconds": 78,
+          "made": "2026-10-24T20:39:27.431Z",
+          "output": {
+            "bytes": 20826192,
+            "sha256": "717a49c53c0814091b653deb1339d3db0f42bb12827688a095f52179cae4e7dc"
+          }
+        }
+      }
+    }
+  ]
+}

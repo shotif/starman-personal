@@ -1,0 +1,122 @@
+{
+  "keyart-wide": {
+    "file": "keyart-wide.webp",
+    "width": 1920,
+    "height": 1080,
+    "kind": "keyart"
+  },
+  "keyart-tall": {
+    "file": "keyart-tall.webp",
+    "width": 1080,
+    "height": 1920,
+    "kind": "keyart"
+  },
+  "screen-light-curve": {
+    "file": "screen-light-curve.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "screen-station-map": {
+    "file": "screen-station-map.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "screen-sensor-sweep": {
+    "file": "screen-sensor-sweep.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "screen-comms-static": {
+    "file": "screen-comms-static.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "screen-power-doors": {
+    "file": "screen-power-doors.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "screen-navigation": {
+    "file": "screen-navigation.webp",
+    "width": 1024,
+    "height": 512,
+    "kind": "screen"
+  },
+  "sign-calder-station": {
+    "file": "sign-calder-station.webp",
+    "width": 512,
+    "height": 512,
+    "kind": "sign"
+  },
+  "sign-concourse-hangar": {
+    "file": "sign-concourse-hangar.webp",
+    "width": 1024,
+    "height": 256,
+    "kind": "sign"
+  },
+  "sign-clinic": {
+    "file": "sign-clinic.webp",
+    "width": 1024,
+    "height": 256,
+    "kind": "sign"
+  },
+  "sign-airlock": {
+    "file": "sign-airlock.webp",
+    "width": 1024,
+    "height": 256,
+    "kind": "sign"
+  },
+  "poster-cooperative": {
+    "file": "poster-cooperative.webp",
+    "width": 512,
+    "height": 768,
+    "kind": "poster"
+  },
+  "poster-authority": {
+    "file": "poster-authority.webp",
+    "width": 512,
+    "height": 768,
+    "kind": "poster"
+  },
+  "ground-regolith": {
+    "file": "ground-regolith.webp",
+    "width": 1024,
+    "height": 1024,
+    "kind": "ground"
+  },
+  "ridge-horizon": {
+    "file": "ridge-horizon.webp",
+    "width": 2048,
+    "height": 256,
+    "kind": "ridge"
+  },
+  "loading-lounge": {
+    "file": "loading-lounge.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
+  },
+  "loading-concourse": {
+    "file": "loading-concourse.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
+  },
+  "loading-mast": {
+    "file": "loading-mast.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
+  },
+  "loading-hangar": {
+    "file": "loading-hangar.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
+  }
+}
