@@ -41,8 +41,8 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-27 | Reuse open source | Decided 2026-10-24 (owner's direction) | Look for open-source and CC0 work first; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) |
 | D-28 | What may go into the public repository | Assumed 2026-10-24 | Only files whose licence lets us share them, each recorded with its source |
 | D-29 | Real sideways walks: buy UAL Pro? | Decided 2026-10-24 | **A, buy UAL Pro** ($9.99, bought by the owner) |
-| D-30 | Which skins, hair and faces the character creator offers | Open | |
-| D-31 | Lip sync for the voiced lines | Open | |
+| D-30 | Which skins, hair and faces the character creator offers | Decided 2026-10-24 | **As recommended**: six skin tones, six to eight hair styles and five eye colours per body, with the 19 sliders |
+| D-31 | Lip sync for the voiced lines | Decided 2026-10-24 | **As recommended**: MakeHuman's CC0 mouth shapes, timed from each voiced line |
 | D-32 | The heroes' new look: uniform, colour, boots, proportions | Decided 2026-10-24 (owner's choice) | **Approved for now** |
 
 ## Decided from the owner's brief, 24 October 2026
@@ -476,7 +476,7 @@ bone's direction; `idle` and `idle_talk` are corrected from the library's calmes
 the feet within 2 cm, lean under 3°, feet flat under the hips); and a posture check
 (`scripts/art/posture.py`) stops the art build if a hero leans again.
 
-### D-30 · Which skins, hair and faces the creator offers — **Open**
+### D-30 · Which skins, hair and faces the creator offers — **Decided**
 
 The placeholders are one skin, one hair style and one eye colour for each body (in
 `art/hero.json`). Each extra skin or hair style costs about 0.1–0.3 MB.
@@ -486,12 +486,17 @@ styles each (short, cropped, shaved, long, tied back, braided), five eye colours
 sliders, all from the CC0 MakeHuman assets. The owner may want particular looks for the cover of
 the game; say so here.
 
-### D-31 · Lip sync for the voiced lines — **Open**
+**Decided:** as recommended, 24 October 2026 ("You can go on with the recommended answers for
+D-30 and D-31").
+
+### D-31 · Lip sync for the voiced lines — **Decided**
 
 Every line is voiced (D-23), and the MPFB people have no facial rig yet: no jaw or eye bones and no
 mouth shapes. **Recommendation:** add MakeHuman's CC0 mouth shapes (visemes) and face units to
 the heroes, and drive them from the timing of each voiced line, which ElevenLabs can provide. It
 costs a little size per character and makes every conversation look alive.
+
+**Decided:** as recommended, 24 October 2026.
 
 ### D-32 · The heroes' new look — **Decided**
 
