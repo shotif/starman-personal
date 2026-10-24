@@ -47,12 +47,17 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-33 | The six classes and their powers | Decided 2026-10-24 | **As recommended**: Breacher, Rigger, Fieldwright, Shade, Striker, Warden ([CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md)) |
 | D-34 | Where you are from: the origins | Decided 2026-10-24 | **As recommended**: Ringborn, Steader, Den-raised, Laneborn, Beltborn, Borderer |
 | D-35 | The moment that made you | Decided 2026-10-24 | **As recommended**: the survivor, the hero of the line, the hard call, the one who lost someone |
-| D-36 | What the Quench is | Open | proposal in [STORY.md](design/STORY.md) |
-| D-37 | The face of the enemy | Open | proposal in [STORY.md](design/STORY.md) |
-| D-38 | The shape of the story | Open | proposal in [STORY.md](design/STORY.md) |
-| D-39 | The eight companions | Open | proposal in [STORY.md](design/STORY.md) |
-| D-40 | The ship's name | Open | proposal in [STORY.md](design/STORY.md) |
-| D-41 | The rule for side stories | Open | proposal in [STORY.md](design/STORY.md) |
+| D-36 | What the Quench is | Decided 2026-10-24 | **As recommended**: the Absent's lifeboat, swarm engines banking the stars' light ([STORY.md](design/STORY.md)) |
+| D-37 | The face of the enemy | Decided 2026-10-24 | **As recommended**: Lightkeeper Ansa Varro, and the Banked ([STORY.md](design/STORY.md)) |
+| D-38 | The shape of the story | Decided 2026-10-24 | **As recommended**: a prologue at Ross 128, three acts, a finale built from preparation ([STORY.md](design/STORY.md)) |
+| D-39 | The eight companions | Decided 2026-10-24 | **As recommended**: Ren Okafor, Jo Rook, Corin Ash, Doctor Mira Achterberg, Low Ember, Fair Weather, Unit Seventy, Wren of the Seventh Ark ([STORY.md](design/STORY.md)) |
+| D-40 | The ship's name | Decided 2026-10-24 | **As recommended**: *Lantern* ([STORY.md](design/STORY.md)) |
+| D-41 | The rule for side stories | Decided 2026-10-24 | **As recommended**: people with reasons, a choice that costs, a consequence seen later ([STORY.md](design/STORY.md)) |
+| D-42 | Defences and health | Open | proposal in [COMBAT.md](design/COMBAT.md) |
+| D-43 | When the hero falls | Open | proposal in [COMBAT.md](design/COMBAT.md) |
+| D-44 | The slice's side story | Open | proposal in [SLICE.md](design/SLICE.md) |
+| D-45 | Where sound and music come from | Open | see round 6 below |
+| D-46 | Difficulty | Open | proposal in [COMBAT.md](design/COMBAT.md) |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -544,13 +549,76 @@ recommended").
 - **D-35 · The moment that made you — Decided.** Recommended: the survivor, the hero of the line,
   the hard call, the one who lost someone.
 
-## Round 5: the story — open
+## Round 5: the story — decided 24 October 2026
 
 The proposal, with options and a recommendation for each, is [design/STORY.md](design/STORY.md):
 the Quench as the Absent's lifeboat engines waking and banking the stars' light (D-36); Lightkeeper
 Ansa Varro, a fallen Authority Lightkeeper, as its face (D-37); a prologue at Ross 128, three acts
 and a finale built from preparation (D-38); eight companions (D-39); the ship *Lantern* (D-40); and
 the rule for side stories, with three examples (D-41).
+
+**Decided:** all six as recommended, 24 October 2026 ("Everything else is as recommended, so
+continue"). The prologue is the playable slice of D-20: [design/SLICE.md](design/SLICE.md).
+
+## Round 6: the slice — open
+
+The prologue is the playable slice ([design/SLICE.md](design/SLICE.md)); its fights are in
+[design/COMBAT.md](design/COMBAT.md). Its first increment, enemies that shoot back, needs none of
+these and is being built.
+
+### D-42 · Defences and health — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Shield, plate and health** (recommended) | Three coloured layers: a shield that recharges and stops field powers, plate that blunts every hit and breaks to blast, and health beneath. The hero has a shield and health: the shield returns after four seconds untouched, health only to the next quarter unless a *Repair Drone* or a med-patch mends it. Enemies mix the layers, so powers and weapons matter |
+| B. Health only, recovering | Simple and readable; the classes' powers matter less |
+| C. Health and med-patches only | As in the first *Mass Effect*; slower and more punishing |
+
+**Recommendation: A.**
+
+### D-43 · When the hero falls — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Down, then a companion's hand** (recommended) | The hero goes down; for ten seconds a standing companion can bring them up, once per fight. Otherwise the fight starts again from a checkpoint a few seconds before it |
+| B. Straight back to the checkpoint | Simpler; companions matter less |
+| C. Back to the last save | The old way; loses minutes of play |
+
+**Recommendation: A.**
+
+### D-44 · The slice's side story — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. The mast and the *Merrow*** (recommended) | Climb the relay mast to warn an inbound hauler, at the cost of a night-shift colleague the hero met an hour before; or leave it and the hauler goes silent. The hauler's call, or its silence, ends the slice ([SLICE.md](design/SLICE.md), beat 6) |
+| B. A trapped section | Open a sealed section to save the people in it, letting the swarm deeper into the station |
+| C. The chief's files | Steal the sealed Varro files before they are wiped, leaving Ren to hold the control room alone |
+
+**Recommendation: A.** All three keep D-41; A has the clearest cost and the consequence nearest the
+end.
+
+### D-45 · Where sound and music come from — **Open**
+
+The slice needs sound: shots, bolts, the swarm, footsteps, the station's hum, and music for fights
+and quiet moments.
+
+| Option | What it means |
+| --- | --- |
+| **A. CC0 libraries first, made where nothing fits** (recommended) | Sound effects from CC0 libraries (Kenney, OpenGameArt's and Freesound's CC0 parts), each recorded with its source (D-28; royalty-free packs that forbid passing the files on cannot go in the public repository); ElevenLabs' sound effects for what they lack, on the owner's existing account. Music made with Google's Lyria on the Gemini key, as Control does |
+| B. All made | Every sound and the music generated; one voice, more cost |
+| C. A composer and a sound designer | The best, and outside the budget (D-24) |
+
+**Recommendation: A.**
+
+### D-46 · Difficulty — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Story, Standard and Hard** (recommended) | Changeable at any time; *Story* for those who came for the story, *Hard* with enemies that flank. Nothing in the story depends on it |
+| B. One level | Simpler to tune; shuts some players out |
+| C. Fine sliders | Damage taken, aim assist, enemy numbers, each on its own |
+
+**Recommendation: A.**
 
 ## Made without waiting
 

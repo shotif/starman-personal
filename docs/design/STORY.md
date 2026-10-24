@@ -2,8 +2,10 @@
 
 *Written 24 October 2026 for the owner's decisions D-36 to D-41. It fills in D-07 (the stars are
 going out, with a villain who has a face) on the Starman canon (research/STARMAN_UNIVERSE.md).
-Everything here is fiction, labelled so in the game; the stars and planets named are real. Nothing
-is written in ink until the owner answers.*
+Everything here is fiction, labelled so in the game; the stars and planets named are real.*
+
+**Decided:** all six as recommended, 24 October 2026. The prologue is built first, as the playable
+slice: [SLICE.md](SLICE.md).
 
 ## 1. The premise in a paragraph
 
@@ -93,7 +95,7 @@ finished. Three examples:
   dimming stars, for a price. A smuggling job turns out to be a family the den is selling to the
   Banked as engine crews. Free them, buy them, or bring the den to the hero's side for Act 3.
 
-## 8. The decisions
+## 8. The decisions (all decided as recommended, 24 October 2026)
 
 - **D-36** What the Quench is: **A, the Absent's lifeboat** (recommended).
 - **D-37** The face of the enemy: **A, Lightkeeper Ansa Varro** (recommended).

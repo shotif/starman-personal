@@ -50,7 +50,9 @@ Every push to `main` is published to GitHub Pages by `.github/workflows/pages.ym
 | [docs/design/DIALOGUE.md](docs/design/DIALOGUE.md) | The fourth proof: conversations written in ink, on a phone and a desktop |
 | [docs/design/CREATOR.md](docs/design/CREATOR.md) | The character creator |
 | [docs/design/CLASSES_AND_ORIGINS.md](docs/design/CLASSES_AND_ORIGINS.md) | Classes, powers and origins |
-| [docs/design/STORY.md](docs/design/STORY.md) | The story: a proposal, awaiting the owner (D-36 to D-41) |
+| [docs/design/STORY.md](docs/design/STORY.md) | The story: the Quench, Ansa Varro, the shape, the companions (decided) |
+| [docs/design/SLICE.md](docs/design/SLICE.md) | The playable slice: the prologue at Ross 128, beat by beat, and how it is built |
+| [docs/design/COMBAT.md](docs/design/COMBAT.md) | The slice's fights: the swarm, defences, powers, falling and difficulty |
 | [docs/design/STYLE_TEST.md](docs/design/STYLE_TEST.md) | Where the hard-surface art comes from: Meshy against trellis.cpp |
 | [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md) | How people, animations and models are made, recorded and licensed |
 | [docs/research/OPEN_SOURCE.md](docs/research/OPEN_SOURCE.md) | Open-source models, animations, generators and code we can reuse, with their licences |
