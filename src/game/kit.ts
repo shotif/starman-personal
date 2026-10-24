@@ -1,8 +1,10 @@
 import '@babylonjs/core/Lights/Clustered/clusteredLightingSceneComponent';
 import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
+import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { ClusteredLightContainer } from '@babylonjs/core/Lights/Clustered/clusteredLightContainer';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
+import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -10,6 +12,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { PhysicsMotionType, PhysicsShapeType } from '@babylonjs/core/Physics/v2/IPhysicsEnginePlugin';
 import { PhysicsAggregate } from '@babylonjs/core/Physics/v2/physicsAggregate';
 import type { Scene } from '@babylonjs/core/scene';
@@ -53,6 +56,27 @@ export interface RoomSpec {
   gaps?: Gap[];
   /** Sides with no wall (another room's wall stands there, or it is open). */
   open?: Side[];
+}
+
+/** A piece of furniture or a machine part that a model will take the place of (MODELS.md). */
+interface Prop {
+  model: string;
+  /** Where its base stands, and which way it faces (radians about y; 0 faces north, +z). */
+  at: Vector3;
+  yaw: number;
+  /** The space it fills: width (x), height, depth (z), before turning. */
+  size: [number, number, number];
+  /** Keep its proportions and fit its longest side (most things), or stretch to the box (crates). */
+  fit: 'longest' | 'box';
+  /** The boxes shown until the model is there. */
+  standIn: TransformNode;
+  /** A node the model belongs to (it moves with it: the ship), or none. */
+  parent: TransformNode | null;
+}
+
+/** The models the asset scripts made (public/assets/models/models.json). */
+interface ModelManifest {
+  models: Record<string, { file: string; size?: number; front?: string }>;
 }
 
 export interface Door {
@@ -184,6 +208,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
   const navigationMeshes: Mesh[] = [];
   const doors: Door[] = [];
   const lights: { light: PointLight; emergency: boolean; base: number; zone: string }[] = [];
+  const props: Prop[] = [];
   let count = 0;
   /** The part of the place being built: pieces and lights are grouped by it. */
   let zone = 'outside';
@@ -225,6 +250,125 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     mesh.rotation.y = rotY;
     keep(mesh, look);
     return mesh;
+  };
+
+  /**
+   * A prop: an invisible collider (physics and the navigation mesh, as a solid box would be), and
+   * stand-in boxes drawn by `build` until the model arrives. Coordinates given to `build` are the
+   * prop's own: x across, y up from its base, z towards its front.
+   */
+  const prop = (
+    model: string,
+    at: [number, number, number],
+    yaw: number,
+    size: [number, number, number],
+    build: (box: (size: [number, number, number], at: [number, number, number], look: Surface) => void) => void,
+    options: { fit?: 'longest' | 'box'; solid?: boolean; parent?: TransformNode; standIn?: TransformNode } = {},
+  ) => {
+    const base = new Vector3(at[0], at[1], at[2]);
+    if (options.solid !== false) {
+      const collider = CreateBox(
+        `prop-${model}-${count++}`,
+        { width: size[0], height: size[1], depth: size[2] },
+        scene,
+      );
+      collider.position = base.add(new Vector3(0, size[1] / 2, 0));
+      collider.rotation.y = yaw;
+      collider.isVisible = false;
+      collider.computeWorldMatrix(true);
+      new PhysicsAggregate(collider, PhysicsShapeType.BOX, { mass: 0, friction: 0.8 }, scene);
+      navigationMeshes.push(collider);
+    }
+    const standIn = options.standIn ?? new TransformNode(`stand-in-${model}-${count++}`, scene);
+    if (!options.standIn) {
+      standIn.position.copyFrom(base);
+      standIn.rotation.y = yaw;
+    }
+    build((s, p, look) => {
+      const mesh = CreateBox(`stand-in-${count++}`, { width: s[0], height: s[1], depth: s[2] }, scene);
+      mesh.position.set(p[0], p[1], p[2]);
+      mesh.parent = standIn;
+      boxProjectUVs(mesh, look.tile);
+      mesh.material = look.material;
+      mesh.isPickable = false;
+      mesh.receiveShadows = q.shadowMapSize > 0;
+    });
+    props.push({ model, at: base, yaw, size, fit: options.fit ?? 'longest', standIn, parent: options.parent ?? null });
+  };
+
+  /**
+   * Puts the models in place of their stand-ins, where the asset scripts have made them: each model
+   * file loaded once, an instance per prop, fitted to its space. A model that is missing or fails to
+   * load leaves its stand-ins as they are.
+   */
+  const furnish = async (extra: Record<string, AssetContainer | null> = {}) => {
+    let manifest: ModelManifest | null = null;
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}assets/models/models.json`);
+      manifest = response.ok ? ((await response.json()) as ModelManifest) : null;
+    } catch {
+      manifest = null;
+    }
+    const containers = new Map<string, Promise<AssetContainer | null>>();
+    const load = (id: string) => {
+      if (id in extra) return Promise.resolve(extra[id] ?? null);
+      let c = containers.get(id);
+      if (!c) {
+        const entry = manifest?.models[id];
+        c = entry
+          ? LoadAssetContainerAsync(`${import.meta.env.BASE_URL}assets/models/${entry.file}`, scene).catch(() => null)
+          : Promise.resolve(null);
+        containers.set(id, c);
+      }
+      return c;
+    };
+    await Promise.all(
+      props.map(async (p) => {
+        const container = await load(p.model);
+        if (!container) return;
+        const holder = new TransformNode(`model-${p.model}`, scene);
+        const entries = container.instantiateModelsToScene((n) => `${p.model}-${n}`, false, {
+          doNotInstantiate: false,
+        });
+        for (const node of entries.rootNodes) node.parent = holder;
+        // Measure the model as it stands, then fit it to the prop's space.
+        const meshes = holder.getChildMeshes(false);
+        const min = new Vector3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+        const max = min.scale(-1);
+        for (const m of meshes) {
+          m.computeWorldMatrix(true);
+          min.minimizeInPlace(m.getBoundingInfo().boundingBox.minimumWorld);
+          max.maximizeInPlace(m.getBoundingInfo().boundingBox.maximumWorld);
+        }
+        const extent = max.subtract(min);
+        if (!Number.isFinite(extent.x) || extent.x <= 0) {
+          holder.dispose();
+          return;
+        }
+        if (p.fit === 'box') {
+          holder.scaling.set(p.size[0] / extent.x, p.size[1] / extent.y, p.size[2] / extent.z);
+        } else {
+          const k = Math.max(p.size[0], p.size[2]) / Math.max(extent.x, extent.z);
+          holder.scaling.setAll(k);
+        }
+        const centre = min.add(max).scale(0.5);
+        const placed = new TransformNode(`placed-${p.model}`, scene);
+        holder.parent = placed;
+        holder.position.set(-centre.x * holder.scaling.x, -min.y * holder.scaling.y, -centre.z * holder.scaling.z);
+        placed.parent = p.parent;
+        placed.position.copyFrom(p.at);
+        placed.rotation.y = p.yaw;
+        placed.computeWorldMatrix(true);
+        holder.computeWorldMatrix(true);
+        for (const m of meshes) {
+          m.isPickable = false;
+          m.receiveShadows = q.shadowMapSize > 0;
+          // A model that moves with its parent (the ship) keeps a live world matrix.
+          if (!p.parent) m.freezeWorldMatrix();
+        }
+        p.standIn.setEnabled(false);
+      }),
+    );
   };
 
   /** An upright cylinder, solid or not. */
@@ -425,6 +569,8 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     door,
     lightsOut,
     finish,
+    prop,
+    furnish,
     navigationMeshes,
     doors,
   };

@@ -75,6 +75,8 @@ export function buildStation(scene: Scene, q: QualitySettings): Place {
   const ship = hangar(kit, scene);
   bridge(kit);
   kit.finish();
+  // The models take the place of their stand-ins as they arrive; the game does not wait for them.
+  void kit.furnish();
 
   // Light: the star's low red light from the west, a cool fill, and the station's own lamps.
   const fill = new HemisphericLight('fill', new Vector3(0, 1, 0), scene);
@@ -175,16 +177,19 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
     wall: s.warm,
     gaps: [{ side: 'e', from: 5, to: 6.8 }],
   });
-  for (const [x, z] of [
-    [-10.8, 1.1],
-    [-7.6, 1.1],
-    [-10.8, 6.9],
+  // Two-tier bunks along the walls, their open sides to the room.
+  for (const [x, z, yaw] of [
+    [-10.8, 1.1, 0],
+    [-7.6, 1.1, 0],
+    [-10.8, 6.9, Math.PI],
   ] as const) {
-    kit.solid([2.1, 0.5, 1], [x, 0.25, z], s.hullDark);
-    kit.deco([2, 0.15, 0.9], [x, 0.58, z], s.fabric);
-    kit.deco([2.1, 0.08, 1], [x, 1.7, z], s.hullDark);
-    kit.deco([2, 0.15, 0.9], [x, 1.82, z], s.fabric);
-    kit.deco([0.08, 2.2, 1], [x - 1.05, 1.1, z], s.trim);
+    kit.prop('bunk', [x, 0, z], yaw, [2.1, 2.1, 1], (box) => {
+      box([2.1, 0.5, 1], [0, 0.25, 0], s.hullDark);
+      box([2, 0.15, 0.9], [0, 0.58, 0], s.fabric);
+      box([2.1, 0.08, 1], [0, 1.7, 0], s.hullDark);
+      box([2, 0.15, 0.9], [0, 1.82, 0], s.fabric);
+      box([0.08, 2.2, 1], [-1.05, 1.1, 0], s.trim);
+    });
   }
   for (let i = 0; i < 4; i++) kit.solid([0.7, 2, 0.55], [-11.6, 1, 3 + i * 0.75], s.panel, { nav: true });
   kit.light([-8, 2.85, 4], new Color3(1, 0.86, 0.72), 6, 9);
@@ -208,16 +213,34 @@ function quarters(kit: Kit, addDoor: (d: Door) => void) {
   });
   addDoor(kit.door('range_door', [1, 0, 14], 2, true));
   addDoor(kit.door('east_door', [12, 0, 7], 2, false));
-  // The galley, a table and benches, a sofa facing the south window.
-  kit.solid([5.5, 1, 0.8], [8.4, 0.5, 13.4], s.hull);
-  kit.deco([5.5, 0.06, 0.85], [8.4, 1.03, 13.4], s.dark);
+  // The galley along the north wall, a mess table and benches, a sofa facing the room.
+  kit.prop(
+    'galley',
+    [8.4, 0, 13.4],
+    Math.PI,
+    [5.5, 1.1, 0.8],
+    (box) => {
+      box([5.5, 1, 0.8], [0, 0.5, 0], s.hull);
+      box([5.5, 0.06, 0.85], [0, 1.03, 0], s.dark);
+    },
+    { fit: 'box' },
+  );
   kit.solid([0.8, 1, 3.2], [11.4, 0.5, 11.8], s.hull);
-  kit.solid([2.8, 0.75, 1.2], [5.2, 0.375, 7], s.wood);
-  kit.solid([2.8, 0.45, 0.5], [5.2, 0.225, 5.9], s.hullDark);
-  kit.solid([2.8, 0.45, 0.5], [5.2, 0.225, 8.1], s.hullDark);
-  kit.solid([3, 0.5, 1], [1.2, 0.25, 2.2], s.fabric);
-  kit.deco([3, 0.7, 0.25], [1.2, 0.6, 1.6], s.fabric);
+  kit.prop('table', [5.2, 0, 7], 0, [2.8, 0.8, 2.6], (box) => {
+    box([2.8, 0.75, 1.2], [0, 0.375, 0], s.wood);
+    box([2.8, 0.45, 0.5], [0, 0.225, -1.1], s.hullDark);
+    box([2.8, 0.45, 0.5], [0, 0.225, 1.1], s.hullDark);
+  });
+  kit.prop('sofa', [1.2, 0, 2.1], 0, [3, 0.95, 1.2], (box) => {
+    box([3, 0.5, 1], [0, 0.25, 0.1], s.fabric);
+    box([3, 0.7, 0.25], [0, 0.6, -0.5], s.fabric);
+  });
   kit.solid([1.2, 0.4, 0.8], [1.2, 0.2, 4.4], s.wood);
+  // A vending machine by the galley, and a rack of cylinders by the bunk room's door.
+  kit.prop('vending', [11.4, 0, 2], -Math.PI / 2, [1.1, 2, 0.8], (box) => {
+    box([1.1, 2, 0.8], [0, 1, 0], s.panel);
+    box([0.8, 1.2, 0.05], [0, 1.2, 0.42], s.screenWarm);
+  });
   // Planters by the west window.
   for (const z of [9.2, 12.8]) {
     kit.solid([0.8, 0.6, 0.8], [-3.4, 0.3, z], s.hullDark);
@@ -265,7 +288,18 @@ function range(kit: Kit) {
     [0, 29.2, 1.2, 1.6],
     [5, 29.8, 1.2, 1.6],
   ];
-  for (const [x, z, w, h] of crates) kit.solid([w, h, 1.2], [x, h / 2, z], h > 1.2 ? s.crateBlue : s.crate);
+  for (const [x, z, w, h] of crates) {
+    kit.prop(
+      'crate',
+      [x, 0, z],
+      0,
+      [w, h, 1.2],
+      (box) => box([w, h, 1.2], [0, h / 2, 0], h > 1.2 ? s.crateBlue : s.crate),
+      {
+        fit: 'box',
+      },
+    );
+  }
   // Range markings on the far wall.
   for (const x of [-3, 1.5, 6]) kit.deco([1.2, 1.2, 0.04], [x, 2, 33.85], s.screen);
   for (const [x, z] of [
@@ -315,15 +349,20 @@ function control(kit: Kit, addDoor: (d: Door) => void) {
   });
   addDoor(kit.door('concourse_door', [29, 0, 16], 2, true));
   // The ring of desks facing the window, the chief's table, the comms console, the big screen.
+  // Operators stand west of the desks, facing them and the window beyond.
   for (let i = 0; i < 5; i++) {
     const z = 3.6 + i * 2.2;
-    kit.solid([0.9, 0.95, 1.9], [33.8, 0.475, z], s.hull);
-    kit.deco([0.05, 0.6, 1.5], [33.4, 1.3, z], i % 2 ? s.screen : s.screenWarm);
+    kit.prop('console', [33.8, 0, z], -Math.PI / 2, [1.9, 1.4, 0.9], (box) => {
+      box([1.9, 0.95, 0.9], [0, 0.475, 0], s.hull);
+      box([1.5, 0.6, 0.05], [0, 1.3, -0.2], i % 2 ? s.screen : s.screenWarm);
+    });
   }
   kit.solid([3.4, 0.95, 2], [28.4, 0.475, 9.5], s.hullDark);
   kit.deco([3, 0.04, 1.6], [28.4, 0.97, 9.5], s.screen);
-  kit.solid([2.2, 1, 0.8], [33.4, 0.5, 2.4], s.hull);
-  kit.deco([2.2, 0.8, 0.05], [33.4, 1.5, 2.05], s.screenWarm);
+  kit.prop('console', [33.4, 0, 2.4], 0, [2.2, 1.4, 0.8], (box) => {
+    box([2.2, 1, 0.8], [0, 0.5, 0], s.hull);
+    box([2.2, 0.8, 0.05], [0, 1.5, -0.35], s.screenWarm);
+  });
   kit.deco([6, 2.4, 0.06], [29, 2.3, 15.85], s.screen);
   for (const [x, z] of [
     [25, 4],
@@ -385,23 +424,53 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
     [24.5, 42.5, 2.6],
     [35.5, 42.5, 2.6],
   ] as const) {
-    kit.solid([w, 0.95, 1.2], [x, 0.475, z], s.hullDark);
-    kit.deco([w - 0.3, 0.5, 0.9], [x, 1.2, z], s.plant);
+    kit.prop(
+      'planter',
+      [x, 0, z],
+      0,
+      [w, 1.45, 1.2],
+      (box) => {
+        box([w, 0.95, 1.2], [0, 0.475, 0], s.hullDark);
+        box([w - 0.3, 0.5, 0.9], [0, 1.2, 0], s.plant);
+      },
+      { fit: 'box' },
+    );
   }
   for (const [x, z] of [
     [20.5, 34],
     [40, 36.5],
     [20.5, 26],
   ] as const) {
-    kit.solid([0.6, 0.5, 2.4], [x, 0.25, z], s.wood);
+    kit.prop('bench', [x, 0, z], Math.PI / 2, [2.4, 0.55, 0.6], (box) => box([2.4, 0.5, 0.6], [0, 0.25, 0], s.wood));
+  }
+  // Vending machines against the side walls.
+  for (const [x, z, yaw] of [
+    [16.55, 24.4, Math.PI / 2],
+    [43.45, 39.6, -Math.PI / 2],
+  ] as const) {
+    kit.prop('vending', [x, 0, z], yaw, [1.1, 2, 0.8], (box) => {
+      box([1.1, 2, 0.8], [0, 1, 0], s.panel);
+      box([0.8, 1.2, 0.05], [0, 1.2, 0.42], s.screenWarm);
+    });
   }
   // The café counter (north-west), and the comms booth (north-east), which is Pell's later.
-  kit.solid([5, 1.05, 1], [21, 0.525, 45.6], s.warm);
-  kit.deco([5, 0.06, 1.05], [21, 1.08, 45.6], s.dark);
+  kit.prop(
+    'galley',
+    [21, 0, 45.6],
+    Math.PI,
+    [5, 1.1, 1],
+    (box) => {
+      box([5, 1.05, 1], [0, 0.525, 0], s.warm);
+      box([5, 0.06, 1.05], [0, 1.08, 0], s.dark);
+    },
+    { fit: 'box' },
+  );
   kit.solid([0.2, 2.6, 4.6], [38.2, 1.3, 45.3], s.hull);
   kit.solid([5.6, 2.6, 0.2], [41, 1.3, 43], s.hull, { nav: true });
-  kit.solid([2, 1, 0.7], [41.8, 0.5, 46.9], s.hullDark);
-  kit.deco([2, 0.7, 0.05], [41.8, 1.4, 47.3], s.screen);
+  kit.prop('console', [41.8, 0, 46.9], Math.PI, [2, 1.4, 0.7], (box) => {
+    box([2, 1, 0.7], [0, 0.5, 0], s.hullDark);
+    box([2, 0.7, 0.05], [0, 1.4, -0.4], s.screen);
+  });
   // A gallery round the hall's upper level, seen, not walked.
   kit.deco([28, 0.3, 2], [30, 4, 47], s.hullDark);
   kit.deco([2, 0.3, 26], [17, 4, 35], s.hullDark);
@@ -429,8 +498,10 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
   kit.room({ name: 'clinic', x: [8, 16], z: [34, 44], height: 3.2, floor: s.deck, wall: s.warm, open: ['e'] });
   addDoor(kit.door('clinic_door', [16, 0, 38], 2, false, true));
   for (const z of [35.4, 38, 40.6]) {
-    kit.solid([2, 0.6, 0.9], [9.4, 0.3, z], s.hull);
-    kit.deco([1.9, 0.12, 0.85], [9.4, 0.66, z], s.fabric);
+    kit.prop('medbed', [9.4, 0, z], 0, [2, 1.1, 0.9], (box) => {
+      box([2, 0.6, 0.9], [0, 0.3, 0], s.hull);
+      box([1.9, 0.12, 0.85], [0, 0.66, 0], s.fabric);
+    });
   }
   kit.solid([0.6, 2, 2.4], [15.4, 1, 42.4], s.panel);
   kit.deco([0.05, 0.6, 1], [8.15, 1.8, 38], s.screen);
@@ -508,11 +579,22 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
     kit.deco([0.12, 0.12, 2.3], [96.5, y + 1.5, 31.5], s.trim);
     kit.deco([0.12, 0.12, 2.3], [98.5, y + 1.5, 31.5], s.trim);
   }
-  kit.deco([3.2, 0.3, 3.2], [97.5, rise + 30, 31.5], s.hull);
+  kit.prop(
+    'dish',
+    [97.5, rise + 30, 31.5],
+    -Math.PI / 2,
+    [3.2, 2.6, 3.2],
+    (box) => box([3.2, 0.3, 3.2], [0, 0.15, 0], s.hull),
+    {
+      solid: false,
+    },
+  );
   kit.deco([0.4, 0.4, 0.4], [97.5, rise + 30.6, 31.5], s.red);
-  // The relay console.
-  kit.solid([1, 1.1, 1.6], [93.8, rise + 0.55, 31], s.hull);
-  kit.deco([0.05, 0.6, 1.2], [94.32, rise + 1.3, 31], s.screenWarm);
+  // The relay console, its wheel to the west, where the ramp comes up.
+  kit.prop('relay', [93.8, rise, 31], -Math.PI / 2, [1.6, 1.6, 1], (box) => {
+    box([1.6, 1.1, 1], [0, 0.55, 0], s.hull);
+    box([1.2, 0.6, 0.05], [0, 1.3, 0.52], s.screenWarm);
+  });
   kit.light([94, rise + 2.6, 31], new Color3(1, 0.7, 0.45), 6, 8);
 }
 
@@ -545,13 +627,16 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
   kit.solid([8, 0.4, 20], [14, 16.2, 72], s.hullDark, { nav: false });
   kit.solid([8, 0.4, 20], [46, 16.2, 72], s.hullDark, { nav: false });
   // Containers and crates: cover for the last stand.
-  for (const [x, z, rot, look] of [
-    [16, 60, 0, s.crate],
-    [44, 62, 0, s.crateBlue],
-    [15, 82, 0, s.crateOrange],
-    [45, 84, 0, s.crate],
+  // Containers lie with their length north to south.
+  for (const [x, z, look] of [
+    [16, 60, s.crate],
+    [44, 62, s.crateBlue],
+    [15, 82, s.crateOrange],
+    [45, 84, s.crate],
   ] as const) {
-    kit.solid([2.4, 2.6, 6], [x, 1.3, z], look, { rotY: rot });
+    kit.prop('container', [x, 0, z], Math.PI / 2, [6, 2.6, 2.4], (box) => box([6, 2.6, 2.4], [0, 1.3, 0], look), {
+      fit: 'box',
+    });
   }
   for (const [x, z, w] of [
     [22, 58, 2.4],
@@ -562,7 +647,23 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
     [36, 84, 2.4],
     [30, 60, 1.6],
   ] as const) {
-    kit.solid([w, 1, 1.2], [x, 0.5, z], s.crate);
+    kit.prop('crate', [x, 0, z], 0, [w, 1, 1.2], (box) => box([w, 1, 1.2], [0, 0.5, 0], s.crate), { fit: 'box' });
+  }
+  // Carts and gas cylinders by the walls.
+  for (const [x, z, yaw] of [
+    [35, 66, 0.3],
+    [21, 79, -0.4],
+  ] as const) {
+    kit.prop('cart', [x, 0, z], yaw, [2.4, 1.1, 1.3], (box) => {
+      box([2.4, 0.5, 1.3], [0, 0.55, 0], s.hullDark);
+      box([2.2, 0.3, 1.1], [0, 0.95, 0], s.crateOrange);
+    });
+  }
+  for (const [x, z, yaw] of [
+    [11, 66, Math.PI / 2],
+    [49, 78, -Math.PI / 2],
+  ] as const) {
+    kit.prop('cylinders', [x, 0, z], yaw, [1.8, 1.9, 0.7], (box) => box([1.8, 1.8, 0.6], [0, 0.9, 0], s.stripe));
   }
   // Gantries along the walls, and floor markings round the pad.
   for (const x of [11, 49]) kit.deco([1.5, 0.3, 38], [x, 8, 72], s.hullDark);
@@ -585,16 +686,28 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
   // The surveyor: a Halden long-hauler, nose to the east, armed after the fact (STORY.md).
   const ship = new TransformNode('surveyor', scene);
   ship.position.set(30, 0, 75);
-  const part = (size: [number, number, number], at: [number, number, number], look: typeof s.hull, isSolid = false) => {
-    const mesh = CreateBox(`surveyor-part`, { width: size[0], height: size[1], depth: size[2] }, scene);
+  // What is seen until the model is there; the bodies people bump into stay either way.
+  const look = new TransformNode('surveyor-stand-in', scene);
+  look.parent = ship;
+  const part = (
+    size: [number, number, number],
+    at: [number, number, number],
+    surface: typeof s.hull,
+    isSolid = false,
+  ) => {
+    const mesh = CreateBox('surveyor-part', { width: size[0], height: size[1], depth: size[2] }, scene);
     mesh.position.set(at[0], at[1], at[2]);
-    mesh.material = look.material;
-    mesh.parent = ship;
+    mesh.material = surface.material;
+    mesh.parent = look;
     if (isSolid) {
-      mesh.computeWorldMatrix(true);
-      new PhysicsAggregate(mesh, PhysicsShapeType.BOX, { mass: 0 }, scene);
+      const body = CreateBox('surveyor-body', { width: size[0], height: size[1], depth: size[2] }, scene);
+      body.position.set(at[0], at[1], at[2]);
+      body.parent = ship;
+      body.isVisible = false;
+      body.computeWorldMatrix(true);
+      new PhysicsAggregate(body, PhysicsShapeType.BOX, { mass: 0 }, scene);
       // The hull stands in the navigation mesh, so a companion walks round it.
-      kit.navigationMeshes.push(mesh);
+      kit.navigationMeshes.push(body);
     }
     return mesh;
   };
@@ -609,18 +722,18 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
     engine.rotation.z = Math.PI / 2;
     engine.position.set(-12.4, 3.6, z);
     engine.material = s.hullDark.material;
-    engine.parent = ship;
+    engine.parent = look;
     const glow = CreateCylinder('surveyor-glow', { diameter: 1.8, height: 0.2, tessellation: 16 }, scene);
     glow.rotation.z = Math.PI / 2;
     glow.position.set(-14.45, 3.6, z);
     glow.material = s.screenWarm.material;
-    glow.parent = ship;
+    glow.parent = look;
   }
   // A turret on the back, the "armed after the fact".
   const turret = CreateSphere('surveyor-turret', { diameter: 1.8, segments: 12 }, scene);
   turret.position.set(-3, 6.1, 0);
   turret.material = s.hullDark.material;
-  turret.parent = ship;
+  turret.parent = look;
   part([3.2, 0.3, 0.3], [-1.4, 6.3, 0], s.hullDark);
   // Landing legs.
   for (const [x, z] of [
@@ -643,6 +756,12 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
   ramp.computeWorldMatrix(true);
   new PhysicsAggregate(ramp, PhysicsShapeType.BOX, { mass: 0 }, scene);
   kit.navigationMeshes.push(ramp);
+  // The surveyor's model, nose to the east, takes the place of the boxes and moves with the ship.
+  kit.prop('surveyor', [0, 0, 0], Math.PI / 2, [7.2, 6.6, 28.5], () => {}, {
+    solid: false,
+    parent: ship,
+    standIn: look,
+  });
   return ship;
 }
 
@@ -660,16 +779,21 @@ function bridge(kit: Kit) {
     wall: s.hullDark,
     gaps: [{ side: 'w', from: z0 - 4, to: z0 + 4, bottom: 0.7, top: 3, glass: true }],
   });
-  kit.solid([0.9, 0.6, 0.9], [0.6, 0.3, z0 + 0.5], s.hullDark);
-  kit.deco([0.9, 1, 0.15], [1.05, 1.1, z0 + 0.5], s.fabric, Math.PI / 2);
-  for (const [x, z, look] of [
-    [-3.6, z0 + 3, s.screen],
-    [-3.6, z0 - 2.5, s.screenWarm],
-    [2.5, z0 + 4, s.screen],
-    [2.5, z0 - 4, s.screen],
+  // The captain's chair faces the window; the stations face their screens.
+  kit.prop('chair', [0.6, 0, z0 + 0.5], -Math.PI / 2, [0.9, 1.3, 0.9], (box) => {
+    box([0.9, 0.6, 0.9], [0, 0.3, 0], s.hullDark);
+    box([0.9, 1, 0.15], [0, 1.1, -0.4], s.fabric);
+  });
+  for (const [x, z, look, yaw] of [
+    [-3.6, z0 + 3, s.screen, -Math.PI / 2],
+    [-3.6, z0 - 2.5, s.screenWarm, -Math.PI / 2],
+    [2.5, z0 + 4, s.screen, 0],
+    [2.5, z0 - 4, s.screen, Math.PI],
   ] as const) {
-    kit.solid([1.6, 0.95, 0.9], [x, 0.475, z], s.hull);
-    kit.deco([1.4, 0.04, 0.7], [x, 0.97, z], look);
+    kit.prop('bridgeconsole', [x, 0, z], yaw, [1.6, 1.3, 0.9], (box) => {
+      box([1.6, 0.95, 0.9], [0, 0.475, 0], s.hull);
+      box([1.4, 0.04, 0.7], [0, 0.97, 0], look);
+    });
   }
   kit.deco([0.06, 1.2, 6], [5.85, 1.8, z0], s.screen);
   kit.light([0, 3.25, z0 - 2], new Color3(0.8, 0.88, 1), 5, 9);

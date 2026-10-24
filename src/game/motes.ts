@@ -1,4 +1,5 @@
 import '@babylonjs/core/Rendering/outlineRenderer';
+import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
@@ -243,6 +244,53 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
   const machines: Machine[] = (['mote', 'lattice', 'tender'] as MachineKind[]).flatMap((kind) =>
     Array.from({ length: POOL[kind] }, () => machine(kind)),
   );
+
+  // The machines' models (MODELS.md), where made: each replaces the simple shapes but the glowing
+  // eye, which shows a shot coming. Until then, or without them, the shapes stay.
+  void (async () => {
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}assets/models/models.json`);
+      if (!response.ok) return;
+      const manifest = (await response.json()) as { models: Record<string, { file: string }> };
+      for (const kind of ['mote', 'lattice', 'tender'] as MachineKind[]) {
+        const entry = manifest.models[kind];
+        if (!entry) continue;
+        const container = await LoadAssetContainerAsync(
+          `${import.meta.env.BASE_URL}assets/models/${entry.file}`,
+          scene,
+        );
+        for (const m of machines.filter((x) => x.kind === kind)) {
+          const holder = new TransformNode(`${kind}-model`, scene);
+          const made = container.instantiateModelsToScene((n) => `${kind}-${n}`, false, { doNotInstantiate: false });
+          for (const node of made.rootNodes) node.parent = holder;
+          const meshes = holder.getChildMeshes(false);
+          const min = new Vector3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+          const max = min.scale(-1);
+          for (const mesh of meshes) {
+            mesh.computeWorldMatrix(true);
+            min.minimizeInPlace(mesh.getBoundingInfo().boundingBox.minimumWorld);
+            max.maximizeInPlace(mesh.getBoundingInfo().boundingBox.maximumWorld);
+            mesh.isPickable = false;
+          }
+          const extent = max.subtract(min);
+          const size = Math.max(extent.x, extent.y, extent.z);
+          if (!(size > 0)) continue;
+          // Fitted to the machine's size, centred on its body, facing its front (+z).
+          const k = (MACHINES[kind].radius * 2.2) / size;
+          holder.scaling.setAll(k);
+          const centre = min.add(max).scale(0.5);
+          holder.position.set(-centre.x * k, -centre.y * k, -centre.z * k);
+          holder.parent = m.shell;
+          if (kind === 'tender') holder.scaling.y = k / 0.55;
+          // The simple shapes go, but the eye.
+          m.shell.isVisible = false;
+          m.spin.setEnabled(false);
+        }
+      }
+    } catch {
+      // No models: the simple shapes serve.
+    }
+  })();
 
   const boltGlow = glowing('bolt-glow', new Color3(1, 0.45, 0.25));
   const sparkGlow = glowing('bolt-spark-glow', new Color3(1, 0.6, 0.3));

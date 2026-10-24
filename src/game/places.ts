@@ -50,7 +50,7 @@ export const MARKS: Record<string, MarkData> = {
   ilya: { x: 1.2, z: 3.2, yaw: 180 * DEG },
   drill: { x: 1, z: 24, yaw: 0 },
   hale: { x: 31.2, z: 9.5, yaw: -90 * DEG },
-  pell: { x: 33.4, z: 3.6, yaw: 90 * DEG },
+  pell: { x: 33.4, z: 3.7, yaw: 180 * DEG },
   control: { x: 25, z: 7, yaw: 90 * DEG },
   concourse: { x: 29, z: 24, yaw: 0 },
   booth: { x: 40.5, z: 44.2, yaw: -90 * DEG },
