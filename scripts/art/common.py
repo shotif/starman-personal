@@ -745,7 +745,8 @@ def push_to_nla(arm, actions):
 # Export and reporting
 
 
-def export_glb(path, objects, morphs=True, copyright_text=""):
+def export_glb(path, objects, morphs=True, copyright_text="", image_format="AUTO",
+               morph_normals=True):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.object.select_all(action="DESELECT")
@@ -771,12 +772,13 @@ def export_glb(path, objects, morphs=True, copyright_text=""):
         export_skins=True,
         export_influence_nb=4,
         export_morph=morphs,
-        export_morph_normal=morphs,
+        export_morph_normal=morphs and morph_normals,
         export_morph_tangent=False,
         export_morph_animation=False,
         export_try_sparse_sk=True,
-        export_image_format="AUTO",
+        export_image_format=image_format,
         export_jpeg_quality=85,
+        export_image_quality=85,
         export_materials="EXPORT",
         export_cameras=False,
         export_lights=False,
@@ -868,21 +870,48 @@ _COMPONENTS = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
 
 
 def _accessor_array(gltf, bin_chunk, acc):
+    """An accessor's values as a (count, components) array, sparse accessors included."""
     import numpy as np
     dtype = np.dtype(_COMPONENT[acc["componentType"]])
     comps = _COMPONENTS[acc["type"]]
     elem = dtype.itemsize * comps
-    view = gltf["bufferViews"][acc["bufferView"]]
-    stride = view.get("byteStride", elem)
-    start = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
     count = acc["count"]
-    raw = np.frombuffer(bin_chunk, dtype=np.uint8, count=stride * (count - 1) + elem, offset=start)
-    rows = np.lib.stride_tricks.as_strided(raw, shape=(count, elem), strides=(stride, 1))
-    return np.ascontiguousarray(rows).view(dtype).reshape(count, comps)
+
+    def read(view_index, offset, n, dt, k):
+        view = gltf["bufferViews"][view_index]
+        size = dt.itemsize * k
+        stride = view.get("byteStride", size)
+        start = view.get("byteOffset", 0) + offset
+        raw = np.frombuffer(bin_chunk, dtype=np.uint8, count=stride * (n - 1) + size, offset=start)
+        rows = np.lib.stride_tricks.as_strided(raw, shape=(n, size), strides=(stride, 1))
+        return np.ascontiguousarray(rows).view(dt).reshape(n, k)
+
+    if "bufferView" in acc:
+        values = read(acc["bufferView"], acc.get("byteOffset", 0), count, dtype, comps).copy()
+    else:
+        values = np.zeros((count, comps), dtype=dtype)
+    sparse = acc.get("sparse")
+    if sparse and sparse["count"] > 0:
+        it = np.dtype(_COMPONENT[sparse["indices"]["componentType"]])
+        idx = read(sparse["indices"]["bufferView"], sparse["indices"].get("byteOffset", 0),
+                   sparse["count"], it, 1).ravel()
+        vals = read(sparse["values"]["bufferView"], sparse["values"].get("byteOffset", 0),
+                    sparse["count"], dtype, comps)
+        values[idx] = vals
+    return values
+
+
+# Every character file stores vertex positions as 16-bit numbers on the same fixed grid
+# (POSITION_RANGE metres either side of the origin, steps of 0.08 mm), and folds that one
+# scale into the skin's inverse bind matrices. So the hero and every hair part share exactly
+# the same inverse bind matrices and the game can bind any part to the hero's skeleton.
+POSITION_RANGE = 2.5
 
 
 def shrink_glb(src, dst, ratio=1 / 3):
     """The last size savings, then a repack of the binary buffer so replaced data is dropped:
+    - vertex and morph positions become 16-bit numbers on a fixed grid (POSITION_RANGE), with
+      the scale folded into the inverse bind matrices (KHR_mesh_quantization);
     - morph target accessors that are mostly zero become sparse accessors;
     - clip rotations are stored as 16-bit normalised numbers (allowed by core glTF 2.0);
     - clip output accessors lose their optional min and max.
@@ -890,17 +919,49 @@ def shrink_glb(src, dst, ratio=1 / 3):
     import numpy as np
     gltf, bin_chunk = _read_glb(src)
     accessors, views = gltf["accessors"], gltf["bufferViews"]
-    # New data goes into three shared buffer views (few views keep the JSON small).
-    pools = {k: bytearray() for k in ("rotations", "sparse_indices", "sparse_values")}
-    pool_view = {k: len(views) + i for i, k in enumerate(pools)}
+    # New data goes into a few shared buffer views (few views keep the JSON small).
+    names = ("vertex8", "matrices", "rotations", "sparse_indices", "sparse_values")
+    pools = {k: bytearray() for k in names}
+    pool_view = {k: len(views) + i for i, k in enumerate(names)}
+    fresh = {}  # accessor index -> new values not yet written
 
     def put(pool, blob):
         data = pools[pool]
-        data += b"\0" * ((-len(data)) % 4)
+        data += b"\0" * ((-len(data)) % 8)
         offset = len(data)
         data += blob
         return {"bufferView": pool_view[pool], "byteOffset": offset}
 
+    def values_of(ai):
+        return fresh[ai] if ai in fresh else _accessor_array(gltf, bin_chunk, accessors[ai])
+
+    # Positions on the fixed grid, for skinned meshes.
+    skinned = {n["mesh"] for n in gltf.get("nodes", []) if "mesh" in n and "skin" in n}
+    for mi in sorted(skinned):
+        for prim in gltf["meshes"][mi]["primitives"]:
+            for ai in [prim["attributes"]["POSITION"]] + \
+                    [t["POSITION"] for t in prim.get("targets", []) if "POSITION" in t]:
+                acc = accessors[ai]
+                if acc["componentType"] != 5126 or ai in fresh:
+                    continue
+                v = values_of(ai) / POSITION_RANGE
+                if np.abs(v).max() > 1.0:
+                    raise ValueError("a vertex lies outside the fixed position grid")
+                q = np.round(v * 32767.0).astype("<i2")
+                fresh[ai] = q
+                acc.pop("sparse", None)
+                acc.pop("bufferView", None)
+                acc.pop("byteOffset", None)
+                acc["componentType"] = 5122
+                acc["normalized"] = True
+                acc["min"] = [int(x) for x in q.min(axis=0)]
+                acc["max"] = [int(x) for x in q.max(axis=0)]
+    for skin in gltf.get("skins", []):
+        ai = skin["inverseBindMatrices"]
+        m = values_of(ai).astype("<f4").copy()
+        m[:, 0:12] *= POSITION_RANGE  # column-major: scale the first three columns
+        fresh[ai] = m
+    # Clip rotations as 16-bit numbers; clip outputs lose min and max.
     rotations = set()
     for anim in gltf.get("animations", []):
         for ch in anim["channels"]:
@@ -914,12 +975,11 @@ def shrink_glb(src, dst, ratio=1 / 3):
         acc = accessors[ai]
         if acc["componentType"] != 5126 or "bufferView" not in acc or "sparse" in acc:
             continue
-        values = _accessor_array(gltf, bin_chunk, acc)
-        packed = np.round(np.clip(values, -1.0, 1.0) * 32767.0).astype("<i2")
-        acc.update(put("rotations", packed.tobytes()))
+        fresh[ai] = np.round(np.clip(values_of(ai), -1.0, 1.0) * 32767.0).astype("<i2")
         acc["componentType"] = 5122
         acc["normalized"] = True
         shortened += 1
+    # Mostly-zero morph targets become sparse.
     targets = set()
     for mesh in gltf.get("meshes", []):
         for prim in mesh["primitives"]:
@@ -928,15 +988,16 @@ def shrink_glb(src, dst, ratio=1 / 3):
     changed = 0
     for ai in sorted(targets):
         acc = accessors[ai]
-        if "sparse" in acc or "bufferView" not in acc:
+        if "sparse" in acc or ("bufferView" not in acc and ai not in fresh):
             continue
         count = acc["count"]
-        values = _accessor_array(gltf, bin_chunk, acc)
+        values = values_of(ai)
         nonzero = np.any(values != 0, axis=1)
         n = int(nonzero.sum())
         if n / count >= ratio:
             continue
-        del acc["bufferView"]
+        fresh.pop(ai, None)
+        acc.pop("bufferView", None)
         acc.pop("byteOffset", None)
         changed += 1
         if n == 0:
@@ -952,6 +1013,18 @@ def shrink_glb(src, dst, ratio=1 / 3):
         indices["componentType"] = idx_ct
         acc["sparse"] = {"count": n, "indices": indices,
                          "values": put("sparse_values", np.ascontiguousarray(values[idx]).tobytes())}
+    # Write the remaining new values.
+    for ai, arr in fresh.items():
+        acc = accessors[ai]
+        if acc["type"] == "VEC3" and arr.dtype.itemsize == 2:
+            # vertex data: each element padded to 8 bytes, as glTF asks of vertex attributes
+            padded = np.zeros((arr.shape[0], 4), dtype=arr.dtype)
+            padded[:, :3] = arr
+            acc.update(put("vertex8", padded.tobytes()))
+        elif acc["type"] == "MAT4":
+            acc.update(put("matrices", arr.tobytes()))
+        else:
+            acc.update(put("rotations", np.ascontiguousarray(arr).tobytes()))
     # Repack: keep only buffer views that something still uses.
     used = set()
     for acc in accessors:
@@ -970,8 +1043,12 @@ def shrink_glb(src, dst, ratio=1 / 3):
             v = dict(views[old])
             data = bin_chunk[v.get("byteOffset", 0):v.get("byteOffset", 0) + v["byteLength"]]
         else:
+            name = names[old - len(views)]
             v = {"buffer": 0}
-            data = bytes(list(pools.values())[old - len(views)])
+            if name == "vertex8":
+                v["byteStride"] = 8
+                v["target"] = 34962
+            data = bytes(pools[name])
         out += b"\0" * ((-len(out)) % 8)
         v["byteOffset"] = len(out)
         v["byteLength"] = len(data)
@@ -989,6 +1066,10 @@ def shrink_glb(src, dst, ratio=1 / 3):
             img["bufferView"] = remap[img["bufferView"]]
     gltf["bufferViews"] = new_views
     gltf["buffers"] = [{"byteLength": len(out)}]
+    if any(acc.get("normalized") and acc["componentType"] == 5122 for acc in accessors):
+        for key in ("extensionsUsed", "extensionsRequired"):
+            if "KHR_mesh_quantization" not in gltf.setdefault(key, []):
+                gltf[key].append("KHR_mesh_quantization")
     _write_glb(dst, gltf, bytes(out))
     return changed, shortened
 
@@ -1029,7 +1110,9 @@ def finish_glb(raw, out):
         ["dedup", tidy, tidy],
         # 16- and 8-bit vertex data (KHR_mesh_quantization; no decoder needed). One buffer
         # view per accessor, so shrink_glb() can drop the dense morph data.
-        ["quantize", tidy, quant, "--vertex-layout", "separate", "--quantize-normal", "8"],
+        # Positions are left to shrink_glb(), which puts every file on the same grid.
+        ["quantize", tidy, quant, "--vertex-layout", "separate", "--quantize-normal", "8",
+         "--pattern", "{NORMAL,TANGENT,TEXCOORD_*,JOINTS_*,WEIGHTS_*,COLOR_*}"],
     ]
     for step in steps:
         subprocess.run([str(cli)] + [str(a) for a in step], check=True, env=env, cwd=str(REPO),

@@ -41,46 +41,87 @@ def pack_metadata():
     return meta
 
 
+def file_licence(path):
+    """The licence line written in a MakeHuman file itself, if it has one."""
+    try:
+        for line in Path(path).read_text(encoding="utf-8", errors="replace").splitlines()[:40]:
+            low = line.lower()
+            if "released as cc0" in low:
+                return "CC0 (released as CC0 in September 2020)"
+            if "licen" in low and ("cc" in low or "gpl" in low):
+                return line.lstrip("#/ ").strip()
+    except OSError:
+        pass
+    return ""
+
+
 def items_used(hero, meta, source_of_pack):
-    items = {}
+    paths = {}  # relative path -> set of uses
+    looks = hero.get("looks", {})
+
+    def use(rel, what):
+        paths.setdefault(rel, set()).add(what)
+
     for body_name, body in hero["bodies"].items():
-        paths = [body[k] for k in ("skin", "eyes", "eyeMaterial", "eyebrows", "eyelashes", "hair")
-                 if body.get(k)] + [c if isinstance(c, str) else c["file"]
-                                    for c in body.get("clothes", [])]
-        for rel in paths:
-            pack_dir = rel.split("/")[0]
-            p = Path(rel)
-            name = p.stem if p.parent.name == "materials" else p.parent.name
-            info = meta.get((pack_dir, name), {})
-            key = (pack_dir, name)
-            if key not in items:
-                items[key] = {
-                    "name": name,
-                    "type": info.get("type", p.parent.parent.name),
-                    "author": info.get("author", "unknown"),
-                    "licence": info.get("license", "unknown"),
-                    "source": source_of_pack.get(pack_dir, pack_dir),
-                    "page": info.get("source", ""),
-                    "file": f"art/cache/makehuman/{rel}",
-                    "usedBy": [],
-                }
-            items[key]["usedBy"].append(f"hero-{body_name}.glb")
-    return list(items.values())
+        for k in ("eyes", "eyebrows", "eyelashes"):
+            if body.get(k):
+                use(body[k], f"hero-{body_name}.glb")
+        for c in body.get("clothes", []):
+            use(c if isinstance(c, str) else c["file"], f"hero-{body_name}.glb")
+        for skin in looks.get("skins", {}).get(body_name, []):
+            for rel in ([skin["mhmat"]] if "mhmat" in skin else [b[0] for b in skin["blend"]]):
+                use(rel, f"looks/{body_name}/skin-{skin['id']}")
+    for k in ("teeth", "tongue"):
+        if hero.get(k):
+            use(hero[k], "hero-man.glb, hero-woman.glb")
+    for hair in looks.get("hair", []):
+        if hair.get("file"):
+            use(hair["file"], f"looks/*/hair-{hair['id']}.glb")
+    for eyes in looks.get("eyes", []):
+        use(eyes["mhmat"], f"looks/eyes-{eyes['id']}")
+    items = []
+    for rel, uses in sorted(paths.items()):
+        pack_dir = rel.split("/")[0]
+        p = Path(rel)
+        name = p.stem if p.parent.name == "materials" else p.parent.name
+        info = meta.get((pack_dir, name), {})
+        items.append({
+            "name": name,
+            "type": info.get("type", p.parent.parent.name),
+            "author": info.get("author", "unknown"),
+            "licence": info.get("license", "unknown"),
+            "fileLicence": file_licence(MH / rel),
+            "source": source_of_pack.get(pack_dir, pack_dir),
+            "page": info.get("source", ""),
+            "file": f"art/cache/makehuman/{rel}",
+            "usedBy": sorted(uses),
+        })
+    visemes = sorted({t for m in hero["morphs"] for t in m.get("targets", {})
+                      if t.startswith("mh:visemes02/")})
+    if visemes:
+        info = meta.get(("visemes02", "viseme_aa"), {})
+        items.append({"name": "visemes02 (15 viseme targets)", "type": "target",
+                      "author": info.get("author", "unknown"), "licence": info.get("license", "unknown"),
+                      "source": source_of_pack.get("visemes02", "visemes02"),
+                      "file": "art/cache/makehuman/visemes02/targets/visemes/",
+                      "usedBy": ["hero-man.glb", "hero-woman.glb"]})
+    return items
 
 
 def outputs(made_by):
     out = []
-    for path in sorted(CHARACTERS.glob("*")):
-        if path.suffix not in (".glb", ".json"):
+    for path in sorted(CHARACTERS.rglob("*")):
+        if path.suffix not in (".glb", ".json", ".webp"):
             continue
-        info = made_by.get(path.name, {})
+        info = made_by.get(path.name, made_by.get("looks" if "looks" in path.parts else "", {}))
         out.append({
             "path": str(path.relative_to(REPO)),
             "bytes": path.stat().st_size,
             "sha256": sha256(path),
             "madeBy": info.get("script", ""),
             "from": info.get("from", []),
-            "licence": "CC0-1.0 inputs only; no attribution is required",
+            "licence": ("CC0-1.0 and CC BY inputs; see CREDITS.md" if "bun" in path.name
+                        else "CC0-1.0 inputs only; no attribution is required"),
         })
     return out
 
@@ -92,10 +133,12 @@ def main():
     source_of_pack = {s["unpackTo"].split("/")[-1]: s["id"] for s in records["sources"]
                       if s.get("unpackTo", "").startswith("makehuman/")}
     records["items"] = items_used(hero, pack_metadata(), source_of_pack)
-    targets = sorted({t for m in hero["morphs"]
-                      for spec in [m] + [m[b] for b in ("man", "woman") if b in m]
-                      for t in spec.get("targets", {})}
-                     | {t for body in hero["bodies"].values() for t in body.get("targets", {})})
+    names = ({t for m in hero["morphs"]
+              for spec in [m] + [m[b] for b in ("man", "woman") if b in m]
+              for t in spec.get("targets", {})}
+             | {t for body in hero["bodies"].values() for t in body.get("targets", {})})
+    targets = sorted({t.replace("{race}", race) for t in names if not t.startswith("mh:")
+                      for race in (("african", "asian", "caucasian") if "{race}" in t else ("",))})
     records["mpfbData"] = {
         "source": "mpfb",
         "licence": "CC0-1.0 (MakeHuman core assets)",
@@ -112,6 +155,8 @@ def main():
         "hero-woman.glb": {"script": "scripts/art/hero.py",
                            "from": ["mpfb", "mh_system_assets", "mh_suits02", "ual1_pro", "ual2"]},
         "heroes.json": {"script": "scripts/art/hero.py", "from": []},
+        "looks": {"script": "scripts/art/hero.py",
+                  "from": ["mpfb", "mh_system_assets", "mh_skins01", "mh_skins02", "mh_hair01"]},
     }
     records["outputs"] = outputs(made_by)
     records["updated"] = date.today().isoformat()

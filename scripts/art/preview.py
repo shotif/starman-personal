@@ -8,6 +8,7 @@ mid-stride); and, for each hero body, a sheet of the three lineage presets (art/
 a sheet of face close-ups and a sheet of animation poses. Uses Blender's EEVEE renderer.
 """
 
+import json
 import math
 import sys
 from pathlib import Path
@@ -128,6 +129,89 @@ def face_sheet(body, path, morphs):
     save_sheet(tiles, 6, PREVIEWS / f"{body}-faces.png")
 
 
+def _material(name):
+    return bpy.data.materials.get(name) or next(
+        (m for m in bpy.data.materials if m.name.startswith(name + ".")), None)
+
+
+def _base_image_node(mat):
+    for node in mat.node_tree.nodes:
+        if node.type == "TEX_IMAGE":
+            return node
+    return None
+
+
+def _hide_material(mat):
+    """Make a material invisible (to hide the hero's default hair)."""
+    bsdf = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    for link in list(bsdf.inputs["Alpha"].links):
+        mat.node_tree.links.remove(link)
+    bsdf.inputs["Alpha"].default_value = 0.0
+    mat.surface_render_method = "BLENDED"
+
+
+def looks_sheet(body, path, manifest):
+    """art/out/previews/looks-<body>.png: every skin, every hair style and every eye colour."""
+    looks = manifest["looks"][body]
+    scene, cam = setup_scene(360, 400)
+    arm, meshes, _ = load_character(path)
+    head = arm.matrix_world @ arm.pose.bones["head"].head + Vector((0, 0, 0.06))
+    tmp = PREVIEWS / "tile.png"
+    tiles = []
+    skin_mat = _material(f"{body}_skin")
+    skin_node = _base_image_node(skin_mat)
+    default_skin = skin_node.image
+    for skin in looks["skins"]:
+        skin_node.image = bpy.data.images.load(str(C.OUT_CHARACTERS / skin["file"]))
+        aim(cam, head, 20, 0.75)
+        label = _label(scene, cam, f"skin: {skin['label']}")
+        tiles.append(render_tile(scene, tmp))
+        bpy.data.objects.remove(label)
+    skin_node.image = default_skin
+    hair_mat = _material(f"{body}_hair")
+    _hide_material(hair_mat)
+    for hair in looks["hair"]:
+        added = []
+        if hair["file"]:
+            added = C.import_glb(C.OUT_CHARACTERS / hair["file"])
+        for angle in (20, 160):
+            aim(cam, head, angle, 0.9)
+            label = _label(scene, cam, f"hair: {hair['label']}")
+            tiles.append(render_tile(scene, tmp))
+            bpy.data.objects.remove(label)
+        C.delete_objects(added)
+    eye_node = _base_image_node(_material(f"{body}_eyes"))
+    eye_target = arm.matrix_world @ arm.pose.bones["head"].head + Vector((0, -0.06, 0.04))
+    for eyes in looks["eyes"]:
+        eye_node.image = bpy.data.images.load(str(C.OUT_CHARACTERS / eyes["file"]))
+        aim(cam, eye_target, 0, 0.32)
+        label = _label(scene, cam, f"eyes: {eyes['label']}")
+        tiles.append(render_tile(scene, tmp))
+        bpy.data.objects.remove(label)
+    save_sheet(tiles, 6, PREVIEWS / f"looks-{body}.png")
+
+
+def visemes_sheet(body, path, morphs):
+    """art/out/previews/visemes.png: the 15 visemes, the blinks and the eye turns, close up."""
+    scene, cam = setup_scene(360, 360)
+    arm, meshes, _ = load_character(path)
+    target = arm.matrix_world @ arm.pose.bones["head"].head + Vector((0, -0.02, 0.0))
+    tmp = PREVIEWS / "tile.png"
+    tiles = []
+    names = [m for m in morphs if m.startswith(("viseme_", "blink_", "look_"))]
+    for name in names:
+        set_morphs(meshes, {name: 1.0})
+        aim(cam, target, 15, 0.42)
+        label = _label(scene, cam, name)
+        tiles.append(render_tile(scene, tmp))
+        bpy.data.objects.remove(label)
+    set_morphs(meshes, {"viseme_aa": 1.0})
+    aim(cam, target, 70, 0.42)
+    label = _label(scene, cam, "viseme_aa (side)")
+    tiles.append(render_tile(scene, tmp))
+    save_sheet(tiles, 6, PREVIEWS / "visemes.png")
+
+
 def pose_sheet(name, path):
     scene, cam = setup_scene(320, 440)
     arm, _, clips = load_character(path)
@@ -144,9 +228,10 @@ def pose_sheet(name, path):
 
 def _label(scene, cam, text):
     """Put a caption at the top of the camera's view."""
+    bpy.context.view_layer.update()
     curve = bpy.data.curves.new("Label", "FONT")
     curve.body = text
-    curve.size = 0.09
+    curve.size = 0.006
     curve.align_x = "CENTER"
     obj = bpy.data.objects.new("Label", curve)
     mat = bpy.data.materials.new("Label")
@@ -157,7 +242,8 @@ def _label(scene, cam, text):
     curve.materials.append(mat)
     scene.collection.objects.link(obj)
     obj.matrix_world = cam.matrix_world
-    obj.location = cam.matrix_world @ Vector((0, 1.0, -3.0))
+    # close to the camera, so it is never behind the subject
+    obj.location = cam.matrix_world @ Vector((0, 0.0575, -0.2))
     return obj
 
 
@@ -215,10 +301,15 @@ def main():
     posture_sheet()
     lineages = C.load_json("art/lineages.json")["presets"]
     morphs = [m["name"] for m in C.load_json("art/hero.json")["morphs"]]
+    manifest = json.loads((C.OUT_CHARACTERS / "heroes.json").read_text())
     for body in ("man", "woman"):
         path = C.OUT_CHARACTERS / f"hero-{body}.glb"
         if not path.exists():
             continue
+        if body in manifest.get("looks", {}):
+            looks_sheet(body, path, manifest)
+        if body == "woman":
+            visemes_sheet(body, path, morphs)
         lineage_sheet(body, path, lineages)
         face_sheet(body, path, morphs)
         pose_sheet(f"hero-{body}", path)

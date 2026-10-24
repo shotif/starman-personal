@@ -119,6 +119,62 @@
       "sha256": "437f4d7ab92b698c1fb1047e7d62b22c11f195b2473e936118661dc8e6b7eb7a",
       "downloaded": "2026-10-24",
       "unpackTo": "makehuman/suits02"
+    },
+    {
+      "id": "mh_visemes02",
+      "name": "MakeHuman functional pack Visemes 02 (Meta/Oculus-style visemes)",
+      "author": "Mika Suominen",
+      "licence": "CC0-1.0 (the pack's metadata, item by item)",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/visemes02.html",
+      "url": "https://files.makehumancommunity.org/functional/visemes02.zip",
+      "file": "visemes02.zip",
+      "bytes": 130733,
+      "sha256": "a69ab6fb95ddd5f56f70acc7e859f5f9c6ae613c527d577ea1571eff2183d29e",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/visemes02"
+    },
+    {
+      "id": "mh_skins01",
+      "name": "MakeHuman asset pack Skins 01 (natural female skins)",
+      "author": "Several community authors (see 'items')",
+      "licence": "CC0-1.0 per the pack's metadata; items whose own file says otherwise are not used",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/skins01.html",
+      "url": "https://files.makehumancommunity.org/asset_packs/skins01/skins01_cc0.zip",
+      "file": "skins01_cc0.zip",
+      "bytes": 104227958,
+      "sha256": "7495ab99287053bd19ff1636114e64b608994d9f7437fea6cc75ea387f96dba9",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/skins01"
+    },
+    {
+      "id": "mh_skins02",
+      "name": "MakeHuman asset pack Skins 02 (natural male skins)",
+      "author": "Several community authors (see 'items')",
+      "licence": "CC0-1.0 per the pack's metadata; items whose own file says otherwise are not used",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/skins02.html",
+      "url": "https://files.makehumancommunity.org/asset_packs/skins02/skins02_cc0.zip",
+      "file": "skins02_cc0.zip",
+      "bytes": 76112708,
+      "sha256": "1613f1ef3afca53094511d26620ed7cf1d2dedc29ed3d384d60bdebe250698ae",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/skins02"
+    },
+    {
+      "id": "mh_hair01",
+      "name": "MakeHuman asset pack Hair 01",
+      "author": "Several community authors (see 'items')",
+      "licence": "CC0-1.0 per the pack's metadata, but several files carry their own AGPL3 or CC BY licence line; only the bun is used, credited under CC BY as its file says",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/hair01.html",
+      "url": "https://files.makehumancommunity.org/asset_packs/hair01/hair01_cc0.zip",
+      "file": "hair01_cc0.zip",
+      "bytes": 227775853,
+      "sha256": "49445d69848a313ec41a9970f6a0fe4bcf925c9f1c6ef40a76f119c2e07940c9",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/hair01"
     }
   ],
   "tools": [
@@ -135,76 +191,57 @@
   ],
   "items": [
     {
-      "name": "young_african_male",
-      "type": "skins",
-      "author": "makehuman_system",
+      "name": "elvs_reverse_french_braid_bun",
+      "type": "clothes",
+      "author": "Elvaerwyn",
       "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/skins/young_african_male/young_african_male.mhmat",
+      "fileLicence": "license CC_by",
+      "source": "mh_hair01",
+      "page": "http://www.makehumancommunity.org/node/1337",
+      "file": "art/cache/makehuman/hair01/hair/elvs_reverse_french_braid_bun/elvs_reverse_french_braid_bun.mhclo",
       "usedBy": [
-        "hero-man.glb"
+        "looks/*/hair-bun.glb"
       ]
     },
     {
-      "name": "high-poly",
-      "type": "eyes",
-      "author": "makehuman_system",
+      "name": "bobby_03_young_female_hairless",
+      "type": "skin",
+      "author": "bobby_03",
       "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/eyes/high-poly/high-poly.mhclo",
+      "fileLicence": "",
+      "source": "mh_skins01",
+      "page": "http://www.makehumancommunity.org/node/2346",
+      "file": "art/cache/makehuman/skins01/skins/bobby_03_young_female_hairless/bobby_03_young_female_hairless.mhmat",
       "usedBy": [
-        "hero-man.glb",
-        "hero-woman.glb"
+        "looks/woman/skin-tone2"
       ]
     },
     {
-      "name": "brown",
-      "type": "eyes",
-      "author": "makehuman_system",
+      "name": "cutoff3d_indian_female_skin",
+      "type": "skin",
+      "author": "CutOff3D",
       "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/eyes/materials/brown.mhmat",
+      "fileLicence": "",
+      "source": "mh_skins01",
+      "page": "http://www.makehumancommunity.org/node/3013",
+      "file": "art/cache/makehuman/skins01/skins/cutoff3d_indian_female_skin/cutoff3d_indian_female_skin.mhmat",
       "usedBy": [
-        "hero-man.glb"
+        "looks/woman/skin-tone3"
       ]
     },
     {
-      "name": "eyebrow001",
-      "type": "eyebrows",
-      "author": "makehuman_system",
+      "name": "toigo_light_skin_male_bronze",
+      "type": "skin",
+      "author": "MargaretToigo",
       "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
+      "fileLicence": "",
+      "source": "mh_skins02",
+      "page": "http://www.makehumancommunity.org/node/1136",
+      "file": "art/cache/makehuman/skins02/skins/toigo_light_skin_male_bronze/toigo_light_skin_male_bronze.mhmat",
       "usedBy": [
-        "hero-man.glb"
-      ]
-    },
-    {
-      "name": "eyelashes02",
-      "type": "eyelashes",
-      "author": "makehuman_system",
-      "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/eyelashes/eyelashes02/eyelashes02.mhclo",
-      "usedBy": [
-        "hero-man.glb"
-      ]
-    },
-    {
-      "name": "short04",
-      "type": "hair",
-      "author": "makehuman_system",
-      "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/hair/short04/short04.mhclo",
-      "usedBy": [
-        "hero-man.glb"
+        "looks/man/skin-tone3",
+        "looks/man/skin-tone4",
+        "looks/man/skin-tone5"
       ]
     },
     {
@@ -212,6 +249,7 @@
       "type": "clothes",
       "author": "TheGreatEngineer",
       "licence": "CC0",
+      "fileLicence": "license: CC0",
       "source": "mh_suits02",
       "page": "http://www.makehumancommunity.org/node/2884",
       "file": "art/cache/makehuman/suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
@@ -225,6 +263,7 @@
       "type": "clothes",
       "author": "makehuman_system",
       "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
       "source": "mh_system_assets",
       "page": "http://www.makehumancommunity.org",
       "file": "art/cache/makehuman/system_assets/clothes/shoes03/shoes03.mhclo",
@@ -234,27 +273,16 @@
       ]
     },
     {
-      "name": "young_asian_female",
-      "type": "skins",
+      "name": "eyebrow001",
+      "type": "eyebrows",
       "author": "makehuman_system",
       "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
       "source": "mh_system_assets",
       "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/skins/young_asian_female/young_asian_female.mhmat",
+      "file": "art/cache/makehuman/system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
       "usedBy": [
-        "hero-woman.glb"
-      ]
-    },
-    {
-      "name": "brownlight",
-      "type": "eyes",
-      "author": "makehuman_system",
-      "licence": "CC0",
-      "source": "mh_system_assets",
-      "page": "http://www.makehumancommunity.org",
-      "file": "art/cache/makehuman/system_assets/eyes/materials/brownlight.mhmat",
-      "usedBy": [
-        "hero-woman.glb"
+        "hero-man.glb"
       ]
     },
     {
@@ -262,6 +290,7 @@
       "type": "eyebrows",
       "author": "makehuman_system",
       "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
       "source": "mh_system_assets",
       "page": "http://www.makehumancommunity.org",
       "file": "art/cache/makehuman/system_assets/eyebrows/eyebrow006/eyebrow006.mhclo",
@@ -274,6 +303,7 @@
       "type": "eyelashes",
       "author": "makehuman_system",
       "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
       "source": "mh_system_assets",
       "page": "http://www.makehumancommunity.org",
       "file": "art/cache/makehuman/system_assets/eyelashes/eyelashes01/eyelashes01.mhclo",
@@ -282,14 +312,269 @@
       ]
     },
     {
+      "name": "eyelashes02",
+      "type": "eyelashes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyelashes/eyelashes02/eyelashes02.mhclo",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "high-poly",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/high-poly/high-poly.mhclo",
+      "usedBy": [
+        "hero-man.glb",
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "blue",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/blue.mhmat",
+      "usedBy": [
+        "looks/eyes-blue"
+      ]
+    },
+    {
+      "name": "brownlight",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/brownlight.mhmat",
+      "usedBy": [
+        "looks/eyes-brown",
+        "looks/eyes-hazel"
+      ]
+    },
+    {
+      "name": "green",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/green.mhmat",
+      "usedBy": [
+        "looks/eyes-green"
+      ]
+    },
+    {
+      "name": "grey",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/grey.mhmat",
+      "usedBy": [
+        "looks/eyes-grey"
+      ]
+    },
+    {
+      "name": "afro01",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/afro01/afro01.mhclo",
+      "usedBy": [
+        "looks/*/hair-afro.glb"
+      ]
+    },
+    {
+      "name": "braid01",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/braid01/braid01.mhclo",
+      "usedBy": [
+        "looks/*/hair-braid.glb"
+      ]
+    },
+    {
+      "name": "long01",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/long01/long01.mhclo",
+      "usedBy": [
+        "looks/*/hair-long.glb"
+      ]
+    },
+    {
       "name": "ponytail01",
       "type": "hair",
       "author": "makehuman_system",
       "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
       "source": "mh_system_assets",
       "page": "http://www.makehumancommunity.org",
       "file": "art/cache/makehuman/system_assets/hair/ponytail01/ponytail01.mhclo",
       "usedBy": [
+        "looks/*/hair-ponytail.glb"
+      ]
+    },
+    {
+      "name": "short02",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/short02/short02.mhclo",
+      "usedBy": [
+        "looks/*/hair-short.glb"
+      ]
+    },
+    {
+      "name": "short04",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/short04/short04.mhclo",
+      "usedBy": [
+        "looks/*/hair-cropped.glb"
+      ]
+    },
+    {
+      "name": "young_african_female",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_african_female/young_african_female.mhmat",
+      "usedBy": [
+        "looks/woman/skin-tone4",
+        "looks/woman/skin-tone5",
+        "looks/woman/skin-tone6"
+      ]
+    },
+    {
+      "name": "young_african_male",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_african_male/young_african_male.mhmat",
+      "usedBy": [
+        "looks/man/skin-tone4",
+        "looks/man/skin-tone5",
+        "looks/man/skin-tone6"
+      ]
+    },
+    {
+      "name": "young_asian_female",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_asian_female/young_asian_female.mhmat",
+      "usedBy": [
+        "looks/woman/skin-tone1",
+        "looks/woman/skin-tone4",
+        "looks/woman/skin-tone5"
+      ]
+    },
+    {
+      "name": "young_asian_male",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_asian_male/young_asian_male.mhmat",
+      "usedBy": [
+        "looks/man/skin-tone2"
+      ]
+    },
+    {
+      "name": "young_caucasian_male",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_caucasian_male/young_caucasian_male.mhmat",
+      "usedBy": [
+        "looks/man/skin-tone1"
+      ]
+    },
+    {
+      "name": "teeth_base",
+      "type": "teeth",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/teeth/teeth_base/teeth_base.mhclo",
+      "usedBy": [
+        "hero-man.glb, hero-woman.glb"
+      ]
+    },
+    {
+      "name": "tongue01",
+      "type": "tongue",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "fileLicence": "CC0 (released as CC0 in September 2020)",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/tongue/tongue01/tongue01.mhclo",
+      "usedBy": [
+        "hero-man.glb, hero-woman.glb"
+      ]
+    },
+    {
+      "name": "visemes02 (15 viseme targets)",
+      "type": "target",
+      "author": "Mika Suominen",
+      "licence": "CC0",
+      "source": "mh_visemes02",
+      "file": "art/cache/makehuman/visemes02/targets/visemes/",
+      "usedBy": [
+        "hero-man.glb",
         "hero-woman.glb"
       ]
     }
@@ -323,6 +608,12 @@
       "data/targets/chin/chin-height-incr.target.gz",
       "data/targets/chin/chin-prominent-incr.target.gz",
       "data/targets/chin/chin-width-incr.target.gz",
+      "data/targets/expression/units/african/eye-left-closure.target.gz",
+      "data/targets/expression/units/african/eye-right-closure.target.gz",
+      "data/targets/expression/units/asian/eye-left-closure.target.gz",
+      "data/targets/expression/units/asian/eye-right-closure.target.gz",
+      "data/targets/expression/units/caucasian/eye-left-closure.target.gz",
+      "data/targets/expression/units/caucasian/eye-right-closure.target.gz",
       "data/targets/eyebrows/eyebrows-trans-down.target.gz",
       "data/targets/eyes/l-eye-scale-incr.target.gz",
       "data/targets/eyes/r-eye-scale-incr.target.gz",
@@ -364,8 +655,8 @@
   "outputs": [
     {
       "path": "public/assets/characters/hero-man.glb",
-      "bytes": 4621792,
-      "sha256": "e19d9b5ff80a3b82c7a4ee219630f39d65afc267113abb233dfc234cec9f92b7",
+      "bytes": 5092136,
+      "sha256": "93a4438d28fd441d86f4dd5c0d1b63c19ba34ab30dfe0edfb4c2ccdc107ca1c7",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
@@ -378,8 +669,8 @@
     },
     {
       "path": "public/assets/characters/hero-woman.glb",
-      "bytes": 4907984,
-      "sha256": "f86ab4e85c5bf9ba4af3d41fdb1ad1d4b84da2e4e8c15b2fc537c4fad3c68a34",
+      "bytes": 5326312,
+      "sha256": "11d93fe2705cc1f072b572a9a74fd106cd5de19f3b3f4ea36382340f0285a847",
       "madeBy": "scripts/art/hero.py",
       "from": [
         "mpfb",
@@ -392,16 +683,450 @@
     },
     {
       "path": "public/assets/characters/heroes.json",
-      "bytes": 52572,
-      "sha256": "e8d30fbf272a54b4242e0ac10016ce02965f4a1e9a97a97e5d78971968a6bb25",
+      "bytes": 76829,
+      "sha256": "3369aa91cbba048ea534899fa1b0765baa4fb5812fc226ad19857a5ad60d67c1",
       "madeBy": "scripts/art/hero.py",
       "from": [],
       "licence": "CC0-1.0 inputs only; no attribution is required"
     },
     {
+      "path": "public/assets/characters/looks/eyes-blue.webp",
+      "bytes": 12194,
+      "sha256": "cf1cfc00461c210dda165f9304d0fa324f0f493d4ea2539c41ee8a2b92b6ca29",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/eyes-brown.webp",
+      "bytes": 10912,
+      "sha256": "fc4fddb0ed8624cd9f9423ebadffa878a0e668e7de02bbc77dc53ac66697a958",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/eyes-green.webp",
+      "bytes": 11164,
+      "sha256": "a5e32cc1f3e35194b64ac9afb8fd993553b7794ed07c5047a87afcab7c91590f",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/eyes-grey.webp",
+      "bytes": 10368,
+      "sha256": "be4244904c1aa9e54bc4903cc72df95ad5b7640801f2a63d4db33c0e7858f219",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/eyes-hazel.webp",
+      "bytes": 13330,
+      "sha256": "67cd2616bb87ad322f4e5712f077c7132f04c65585a0f84864b8f450c8264cc2",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-afro.glb",
+      "bytes": 279484,
+      "sha256": "f9237194929fde8efef1ced884c064d5a2f59149da27f445ec1c1c1e8d9b2a65",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-braid.glb",
+      "bytes": 375032,
+      "sha256": "652464ea4f9f7de792c9a8c21f49018981fbc2c583523c839ca192365390d054",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-bun.glb",
+      "bytes": 457764,
+      "sha256": "0c2a792438b0e0e50f4a93ce8843352e3c8e44ba5cd745fed56e97bec00f8671",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 and CC BY inputs; see CREDITS.md"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-cropped.glb",
+      "bytes": 147552,
+      "sha256": "8d4a12bd4dc4218de5fe31e5fc775e8701e844cadc05d24ac8f34c41377fe057",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-long.glb",
+      "bytes": 310440,
+      "sha256": "1bfcdcc95a5e53f0319555f30823d8d6febbc0d7014e7cab8f357282419de69d",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-ponytail.glb",
+      "bytes": 356520,
+      "sha256": "0fb4f3d79f9815022dcbda861483738c0b105ea9b82a19458c65b52095a21c9c",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/hair-short.glb",
+      "bytes": 179296,
+      "sha256": "755880361b7f895b1e05abad97cac099316aa81a3b043c6b1880b7a96d2a3135",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone1.webp",
+      "bytes": 39252,
+      "sha256": "08e1c367463d6979b2c16fa31fcc2b87eb3d090938fe6ac92044bf5672e08b2d",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone2.webp",
+      "bytes": 41422,
+      "sha256": "05320ef620cb3b836baacd81e1a37e6200154694ea70c9f41a9021429a6066d0",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone3.webp",
+      "bytes": 43032,
+      "sha256": "b335337689c785022bf1e365faafc7b149225b12bff290f9ae2a17947dbccab9",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone4.webp",
+      "bytes": 37226,
+      "sha256": "67b5928f228d6cc193b8a6290317e014b0673098ea20b41d7d56e0a0012daef0",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone5.webp",
+      "bytes": 33348,
+      "sha256": "241ddb748dd7cb84691b587ced95bb40092c667e4e06078b115db1dd0f38e9a6",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/man/skin-tone6.webp",
+      "bytes": 36636,
+      "sha256": "d388344dedcabcacc84c92776f3ee7cac21e3693338aa7ed679ff6d2ae209b95",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-afro.glb",
+      "bytes": 278396,
+      "sha256": "1f33c4102542e72627d1ead4d738913355b7ecb30c9d1b8385edd3c65b51067c",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-braid.glb",
+      "bytes": 306912,
+      "sha256": "d3348b54d7f5851dfcf82908fb78f50ee0cd8aa2aca0bc65d7d14f2d82e28b58",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-bun.glb",
+      "bytes": 451360,
+      "sha256": "b9a0d27982cc8b11f45fc1003157c95724d3fe3a09964fd4efa578c54c8d1e51",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 and CC BY inputs; see CREDITS.md"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-cropped.glb",
+      "bytes": 146312,
+      "sha256": "b61c41ccf2819b295ac1e71a5ab23eb6761dd47e5ba243a39fa1aa659362fa53",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-long.glb",
+      "bytes": 329476,
+      "sha256": "1ca78b670ba09b2672d32b63ec67943d72867c89fe609f04697d98834dd9d024",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-ponytail.glb",
+      "bytes": 349944,
+      "sha256": "dbb3b75362455070662a5381de2ef0d8278b908bf3bb048b7e97073aa3ef9003",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/hair-short.glb",
+      "bytes": 178084,
+      "sha256": "e6e67c2a03cc0965c1092b997054c0b22fb4d37a30e8be12869a57097e54f538",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone1.webp",
+      "bytes": 40334,
+      "sha256": "0caf7661db7dbe8aec4bf2a360fd9ce58ed96daf53e81ae9bdfccb7a8b65e8b4",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone2.webp",
+      "bytes": 28018,
+      "sha256": "bdbf075018880810e1fc5dedd6ad05f7dfc7c07598d97f02401fda692d9f1300",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone3.webp",
+      "bytes": 61744,
+      "sha256": "6104711f421a1a5522879607166366da35967f3e61a085aadf582c979f62aef2",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone4.webp",
+      "bytes": 35298,
+      "sha256": "aa1f2961553717715449521f1cbdb18334fd2e164145e40e2c3bf9c9735a29fe",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone5.webp",
+      "bytes": 32460,
+      "sha256": "18fab59cd2d9a52a402bc96cd7ce0042c85b06eddf0ba59b219a7efe1f2535b1",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/looks/woman/skin-tone6.webp",
+      "bytes": 34190,
+      "sha256": "d57a9c59f0f4bef924c1e67bba0684ba2048f266f4bda1cccbd762f97622be37",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_skins01",
+        "mh_skins02",
+        "mh_hair01"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
       "path": "public/assets/characters/mannequin.glb",
-      "bytes": 2005092,
-      "sha256": "f6e7a4a3190936fc2d7aa52a115e94888ddb29add46bbe2846aff27e33317a78",
+      "bytes": 2005004,
+      "sha256": "9071737db13c272225e041467e4292ef527658ff88b5786e8835a85dfa576efb",
       "madeBy": "scripts/art/mannequin.py",
       "from": [
         "ual1_pro",

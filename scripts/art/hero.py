@@ -24,6 +24,7 @@ For each body it:
 
 import importlib
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -96,8 +97,8 @@ def bone_heads(rig):
 
 
 class Human:
-    def __init__(self, mp, name, body):
-        self.mp, self.name, self.body = mp, name, body
+    def __init__(self, mp, name, body, cfg):
+        self.mp, self.name, self.body, self.cfg = mp, name, body, cfg
         self.assets = []  # (kind, object, mhclo)
         self.targets_dir = Path(mp.Location.get_mpfb_data("targets"))
 
@@ -116,10 +117,18 @@ class Human:
                                   name="base_" + tname.replace("/", "_"))
         self.rig = mp.Human.add_builtin_rig(self.basemesh, rig_name)
         self.rig.name = self.rig.data.name = f"{self.name}_rig"
-        for kind, key in (("Eyes", "eyes"), ("Eyebrows", "eyebrows"),
-                          ("Eyelashes", "eyelashes"), ("Hair", "hair")):
+        for kind, key in (("Eyes", "eyes"), ("Eyebrows", "eyebrows"), ("Eyelashes", "eyelashes")):
             if self.body.get(key):
                 self.add_asset(kind, MH / self.body[key])
+        for kind, key in (("Teeth", "teeth"), ("Tongue", "tongue")):
+            if self.cfg.get(key):
+                self.add_asset(kind, MH / self.cfg[key])
+        # Every hair style is fitted, so each gets the morphs; only the default stays on the
+        # hero, the others become separate parts (export_hair_parts).
+        for style in self.cfg["looks"]["hair"]:
+            if style.get("file"):
+                obj = self.add_asset("Hair", MH / style["file"])
+                obj["hair_id"] = style["id"]
         for item in self.body.get("clothes", []):
             item = {"file": item} if isinstance(item, str) else item
             obj = self.add_asset("Clothes", MH / item["file"])
@@ -150,13 +159,28 @@ class Human:
             mp.Target.reapply_macro_details(bm, remove_zero_weight_targets=False)
             undo.append(("macro", old))
         for tname, weight in spec.get("targets", {}).items():
-            path = self.targets_dir / f"{tname}.target.gz"
-            if not path.exists():
-                raise RuntimeError(f"no MPFB target {tname}")
-            key_name = "__morph_" + tname.replace("/", "_")
-            mp.Target.load_target(bm, str(path), weight=weight, name=key_name)
-            undo.append(("key", key_name))
+            for path, w in self.target_files(tname, weight):
+                key_name = f"__morph_{len(undo)}"
+                mp.Target.load_target(bm, str(path), weight=w, name=key_name)
+                undo.append(("key", key_name))
         return undo
+
+    def target_files(self, tname, weight):
+        """[(file, weight)] for a target name: an MPFB target, 'mh:<file>' in the MakeHuman
+        cache, and '{race}' expanded over the body's races, weighted by its phenotype."""
+        if "{race}" in tname:
+            out = []
+            for race, share in self.body["phenotype"]["race"].items():
+                if share > 0:
+                    out += self.target_files(tname.replace("{race}", race), weight * share)
+            return out
+        if tname.startswith("mh:"):
+            path = MH / tname[3:]
+        else:
+            path = self.targets_dir / f"{tname}.target.gz"
+        if not path.exists():
+            raise RuntimeError(f"no target {tname}")
+        return [(path, weight)]
 
     def revert_morph(self, undo):
         mp, bm = self.mp, self.basemesh
@@ -180,16 +204,36 @@ class Human:
             "bones": bone_heads(self.rig),
         }
 
+    def turned_eyes(self, base, yaw=0.0, pitch=0.0):
+        """The baseline with each eyeball turned about its own centre (degrees; yaw turns the
+        gaze to the character's left, pitch turns it up)."""
+        from mathutils import Euler
+        turn = np.array(Euler((math.radians(-pitch), 0.0, math.radians(yaw)), "ZXY").to_matrix())
+        shot = {"body": base["body"], "bones": base["bones"], "assets": list(base["assets"])}
+        for i, (kind, _, _) in enumerate(self.assets):
+            if kind != "Eyes":
+                continue
+            co = base["assets"][i].copy()
+            for side in (co[:, 0] >= 0, co[:, 0] < 0):
+                part = co[side]
+                centre = (part.min(axis=0) + part.max(axis=0)) / 2
+                co[side] = (part - centre) @ turn.T + centre
+            shot["assets"][i] = co
+        return shot
+
     def bake_morphs(self, morphs):
         """Measure every morph against the baseline, then store them as plain shape keys."""
         base = self.capture()
         deltas = []
         for morph in morphs:
             t = time.time()
-            undo = self.apply_morph(morph)
-            self.refit()
-            shot = self.capture()
-            self.revert_morph(undo)
+            if "eyes_turn" in morph:
+                shot = self.turned_eyes(base, **morph["eyes_turn"])
+            else:
+                undo = self.apply_morph(morph)
+                self.refit()
+                shot = self.capture()
+                self.revert_morph(undo)
             d_bones = {n: shot["bones"][n] - base["bones"][n] for n in base["bones"]}
             shift = max(float(np.linalg.norm(v)) for v in d_bones.values())
             deltas.append({
@@ -224,7 +268,7 @@ class Human:
 # Clean-up, materials and textures
 
 
-def delete_hidden_body(basemesh, clothes=(), reach=0.05):
+def delete_hidden_body(basemesh, clothes=(), reach=0.05, keep_groups=()):
     """Delete MPFB's helper geometry and the skin hidden under clothes (keeps shape keys).
 
     Skin is hidden when the clothes' own list says so (MakeHuman's delete groups), or when a
@@ -236,7 +280,7 @@ def delete_hidden_body(basemesh, clothes=(), reach=0.05):
     trees = [BVHTree.FromObject(o, depsgraph) for o in clothes]
     vg = basemesh.vertex_groups
     body = vg["body"].index
-    hidden = {g.index for g in vg if g.name.startswith("Delete.")}
+    hidden = {g.index for g in vg if g.name.startswith("Delete.") and g.name not in keep_groups}
     me = basemesh.data
     bm = bmesh.new()
     bm.from_mesh(me)
@@ -292,39 +336,96 @@ def mhmat_texture(info, key):
     return p if p.exists() else None
 
 
-def load_scaled(path, size, out_dir, colour=True, keep_alpha=False, tint=None, name=None):
-    """Load an image, scale it to at most size x size and save it as JPEG (or PNG with alpha).
-    tint multiplies the colour channels (values above 1 lighten)."""
-    out_dir.mkdir(parents=True, exist_ok=True)
+def load_pixels(path, size):
+    """An image scaled to at most size x size, as (width, height, RGBA float array)."""
     src = bpy.data.images.load(str(path), check_existing=False)
     w, h = src.size
     scale = min(1.0, size / max(w, h))
     if scale < 1.0:
-        src.scale(max(1, int(w * scale)), max(1, int(h * scale)))
-    if tint is not None or not keep_alpha:
-        px = np.array(src.pixels[:], dtype=np.float32).reshape(-1, 4)
-        if not keep_alpha and colour:
-            # Unused, see-through parts of an opaque texture are often white, and show at
-            # the edges of cuffs and seams; fill them with the texture's average colour.
-            clear = px[:, 3] < 0.5
-            if clear.any() and (~clear).any():
-                px[clear, :3] = px[~clear, :3].mean(axis=0)
-        if tint is not None:
-            px[:, :3] = np.clip(px[:, :3] * np.array(tint[:3], dtype=np.float32), 0.0, 1.0)
-        src.pixels.foreach_set(px.ravel())
-    ext = "png" if keep_alpha else "jpg"
-    dest = out_dir / f"{name or Path(path).stem}.{ext}"
+        w, h = max(1, int(w * scale)), max(1, int(h * scale))
+        src.scale(w, h)
+    px = np.array(src.pixels[:], dtype=np.float32).reshape(-1, 4)
+    bpy.data.images.remove(src)
+    return w, h, px
+
+
+def save_pixels(w, h, px, dest, fmt):
+    """Write RGBA pixels as JPEG, PNG or WEBP (WEBP and PNG keep the alpha)."""
+    dest = Path(dest)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    img = bpy.data.images.new(dest.stem, w, h, alpha=True)
+    img.pixels.foreach_set(px.ravel())
     scene = bpy.context.scene
     settings = scene.render.image_settings
-    settings.file_format = "PNG" if keep_alpha else "JPEG"
-    settings.color_mode = "RGBA" if keep_alpha else "RGB"
-    settings.quality = 88
-    settings.compression = 90
-    src.save_render(str(dest), scene=scene)
-    bpy.data.images.remove(src)
+    settings.file_format = fmt
+    settings.color_mode = "RGB" if fmt == "JPEG" else "RGBA"
+    settings.quality = 85
+    if fmt == "PNG":
+        settings.compression = 90
+    img.save_render(str(dest), scene=scene)
+    bpy.data.images.remove(img)
+    return dest
+
+
+def grade(px, keep_alpha, tint=None, desaturate=False):
+    """Fill see-through parts of opaque textures, then grey and/or tint the colour."""
+    px = px.copy()
+    if not keep_alpha:
+        # Unused, see-through parts of an opaque texture are often white, and show at the
+        # edges of cuffs and seams; fill them with the texture's average colour.
+        clear = px[:, 3] < 0.5
+        if clear.any() and (~clear).any():
+            px[clear, :3] = px[~clear, :3].mean(axis=0)
+        px[:, 3] = 1.0
+    if desaturate:
+        lum = px[:, :3] @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+        px[:, :3] = lum[:, None]
+    if tint is not None:
+        px[:, :3] = np.clip(px[:, :3] * np.array(tint[:3], dtype=np.float32), 0.0, 1.0)
+    return px
+
+
+def load_scaled(path, size, out_dir, colour=True, keep_alpha=False, tint=None, name=None,
+                desaturate=False):
+    """Load an image, scale it to at most size x size, grade it and save it as JPEG (or PNG
+    with alpha); return it loaded as a Blender image."""
+    w, h, px = load_pixels(path, size)
+    if colour:
+        px = grade(px, keep_alpha, tint, desaturate)
+    ext, fmt = ("png", "PNG") if keep_alpha else ("jpg", "JPEG")
+    dest = save_pixels(w, h, px, Path(out_dir) / f"{name or Path(path).stem}.{ext}", fmt)
     img = bpy.data.images.load(str(dest), check_existing=False)
     img.colorspace_settings.name = "sRGB" if colour else "Non-Color"
     return img
+
+
+def tint_iris(px, tint):
+    """Tint only the coloured iris of an eye texture (its saturated pixels), not the white."""
+    px = px.copy()
+    rgb = px[:, :3]
+    sat = rgb.max(axis=1) - rgb.min(axis=1)
+    mask = np.clip((sat - 0.12) / 0.15, 0.0, 1.0)[:, None]
+    px[:, :3] = rgb * (1 - mask) + rgb * np.array(tint, dtype=np.float32) * mask
+    return px
+
+
+def look_by_id(items, look_id):
+    for item in items:
+        if item["id"] == look_id:
+            return item
+    raise KeyError(look_id)
+
+
+def skin_pixels(spec, size):
+    """A skin option's colour texture: one MakeHuman skin, or a blend of several (a tone
+    between two real skins)."""
+    parts = [[spec["mhmat"], 1.0]] if "mhmat" in spec else spec["blend"]
+    out = None
+    for mhmat, share in parts:
+        w, h, px = load_pixels(mhmat_texture(read_mhmat(MH / mhmat), "diffuseTexture"), size)
+        out = px * share if out is None else out + px * share
+    out[:, 3] = 1.0
+    return w, h, out
 
 
 def make_material(name, base_img=None, normal_img=None, alpha="OPAQUE", roughness=0.5,
@@ -375,6 +476,8 @@ ASSET_LOOK = {
     "Eyes": ("MASK", 0.15, "smallTextureSize", False),
     "Eyebrows": ("BLEND", 0.8, "smallTextureSize", False),
     "Eyelashes": ("BLEND", 0.8, "smallTextureSize", False),
+    "Teeth": ("OPAQUE", 0.6, "smallTextureSize", False),
+    "Tongue": ("OPAQUE", 0.45, "smallTextureSize", False),
     "Hair": ("MASK", 0.6, "smallTextureSize", False),
     "Clothes": ("OPAQUE", 0.45, "textureSize", True),
 }
@@ -382,26 +485,42 @@ ASSET_LOOK = {
 
 def set_materials(human, cfg):
     tex_dir = OUT / "textures" / human.name
-    size = cfg["textureSize"]
-    skin = read_mhmat(MH / human.body["skin"])
-    skin_img = load_scaled(mhmat_texture(skin, "diffuseTexture"), size, tex_dir)
+    looks = cfg["looks"]
+    skin = look_by_id(looks["skins"][human.name], human.body["skin"])
+    w, h, px = skin_pixels(skin, cfg["textureSize"])
+    skin_file = save_pixels(w, h, px, tex_dir / f"skin-{skin['id']}.jpg", "JPEG")
+    skin_img = bpy.data.images.load(str(skin_file), check_existing=False)
     skin_mat = make_material(f"{human.name}_skin", skin_img, roughness=0.55)
     human.basemesh.data.materials.clear()
     human.basemesh.data.materials.append(skin_mat)
-    used = [str(MH / human.body["skin"])]
+    used = [str(MH / f) for f in ([skin["mhmat"]] if "mhmat" in skin else [b[0] for b in skin["blend"]])]
+    eyes = look_by_id(looks["eyes"], human.body["eyeColour"])
     for index, (kind, obj, mhclo) in enumerate(human.assets):
         alpha, rough, size_key, use_normal = ASSET_LOOK[kind]
         look = json.loads(obj["look"]) if "look" in obj else {}
+        label = kind.lower()
+        if kind == "Clothes":
+            label = look.get("name", f"clothes{index}")
+        if kind == "Hair":
+            look = look_by_id(looks["hair"], obj["hair_id"])
+            if obj["hair_id"] != human.body["hair"]:
+                label = f"hair_{obj['hair_id']}"
         rough = look.get("roughness", rough)
-        mat_path = MH / human.body["eyeMaterial"] if kind == "Eyes" else Path(mhclo.material)
+        mat_path = MH / eyes["mhmat"] if kind == "Eyes" else Path(mhclo.material)
         info = read_mhmat(mat_path)
         diffuse = mhmat_texture(info, "diffuseTexture")
         normal = mhmat_texture(info, "normalmapTexture") if use_normal else None
         tex_size = look.get("textureSize", cfg[size_key])
-        img = load_scaled(diffuse, tex_size, tex_dir, keep_alpha=alpha != "OPAQUE",
-                          tint=look.get("tint")) if diffuse else None
+        if kind == "Eyes" and eyes.get("irisTint"):
+            w, h, px = load_pixels(diffuse, tex_size)
+            eye_file = save_pixels(w, h, tint_iris(px, eyes["irisTint"]),
+                                   tex_dir / f"eyes-{eyes['id']}.png", "PNG")
+            img = bpy.data.images.load(str(eye_file), check_existing=False)
+        else:
+            img = load_scaled(diffuse, tex_size, tex_dir, keep_alpha=alpha != "OPAQUE",
+                              tint=look.get("tint"), desaturate=look.get("desaturate", False),
+                              name=f"{label}-{Path(diffuse).stem}") if diffuse else None
         nimg = load_scaled(normal, tex_size, tex_dir, colour=False) if normal else None
-        label = kind.lower() if kind != "Clothes" else look.get("name", f"clothes{index}")
         mat = make_material(f"{human.name}_{label}", img, nimg, alpha=alpha, roughness=rough)
         obj.data.materials.clear()
         obj.data.materials.append(mat)
@@ -434,13 +553,17 @@ def build_body(name, cfg, anim_cfg, with_anim):
     mp = load_mpfb()
     body = cfg["bodies"][name]
     C.log(f"building {name}")
-    human = Human(mp, name, body)
+    human = Human(mp, name, body, cfg)
     human.build(cfg["rig"])
     deltas = human.bake_morphs(cfg["morphs"])
     used_files = set_materials(human, cfg)
 
+    # Hair styles are swappable parts, so no hair may cut the scalp away.
+    hair_groups = {f"Delete.{Path(o['source_mhclo']).stem}" for k, o, _ in human.assets
+                   if k == "Hair"}
     removed = delete_hidden_body(human.basemesh,
-                                 [obj for kind, obj, _ in human.assets if kind == "Clothes"])
+                                 [obj for kind, obj, _ in human.assets if kind == "Clothes"],
+                                 keep_groups=hair_groups)
     C.log(f"  removed {removed} hidden body vertices")
     meshes = [human.basemesh] + [obj for _, obj, _ in human.assets]
     for obj in meshes:
@@ -448,6 +571,20 @@ def build_body(name, cfg, anim_cfg, with_anim):
         for m in list(obj.modifiers):
             if m.type != "ARMATURE":
                 obj.modifiers.remove(m)
+    rig = human.rig
+    rig.name = rig.data.name = f"Hero_{name}_Rig"
+
+    # Every hair style becomes its own part on the same skeleton; only the default stays.
+    looks = {"hair": export_hair_parts(human, cfg, deltas),
+             "skins": export_skin_looks(human, cfg),
+             "eyes": export_eye_looks(human, cfg)}
+    meshes = [human.basemesh] + [obj for kind, obj, _ in human.assets
+                                 if kind != "Hair" or obj["hair_id"] == body["hair"]]
+    extra_hair = [obj for kind, obj, _ in human.assets
+                  if kind == "Hair" and obj["hair_id"] != body["hair"]]
+    human.assets = [a for a in human.assets if a[1] not in extra_hair]
+    for obj in extra_hair:
+        bpy.data.objects.remove(obj, do_unlink=True)
 
     # One skinned mesh: the body is the active object, so its armature modifier is kept.
     bpy.ops.object.select_all(action="DESELECT")
@@ -457,8 +594,6 @@ def build_body(name, cfg, anim_cfg, with_anim):
     bpy.ops.object.join()
     mesh = human.basemesh
     mesh.name = mesh.data.name = f"Hero_{name}"
-    rig = human.rig
-    rig.name = rig.data.name = f"Hero_{name}_Rig"
     # MPFB's own custom properties would otherwise be exported as glTF extras.
     for idblock in (mesh, mesh.data, rig, rig.data):
         for k in list(idblock.keys()):
@@ -486,7 +621,7 @@ def build_body(name, cfg, anim_cfg, with_anim):
         C.push_to_nla(rig, clips)
 
     raw = OUT / f"hero-{name}.raw.glb"
-    C.export_glb(raw, [rig, mesh], morphs=True,
+    C.export_glb(raw, [rig, mesh], morphs=True, image_format="WEBP",
                  copyright_text="Hero character from MPFB/MakeHuman and Quaternius assets (CC0)")
     height = max(v.co.z for v in mesh.data.vertices) - min(v.co.z for v in mesh.data.vertices)
     output = C.REPO / body["output"]
@@ -510,10 +645,109 @@ def build_body(name, cfg, anim_cfg, with_anim):
         "report": report,
         "heightMetres": round(height, 3),
         "morphs": morph_info,
+        "looks": looks,
         "sourcesUsed": sorted(set(
-            used_files + [str(MH / body[k]) for k in ("eyes", "eyebrows", "eyelashes", "hair")
-                          if body.get(k)] + [str(MH / clothes_file(p)) for p in body.get("clothes", [])])),
+            used_files + [str(MH / body[k]) for k in ("eyes", "eyebrows", "eyelashes")
+                          if body.get(k)]
+            + [str(MH / cfg[k]) for k in ("teeth", "tongue") if cfg.get(k)]
+            + [str(MH / h["file"]) for h in cfg["looks"]["hair"] if h.get("file")]
+            + [str(MH / clothes_file(p)) for p in body.get("clothes", [])])),
     }
+
+
+LOOKS = C.OUT_CHARACTERS / "looks"
+HAIR_MORPH_MIN = 0.002  # metres
+HAIR_MOVE_MIN = 0.002
+
+
+def export_hair_parts(human, cfg, deltas):
+    """One .glb per hair style: the hair mesh skinned to the hero's own skeleton (same bones,
+    order and inverse bind matrices), with the morphs that move it. Returns manifest rows."""
+    rig, rows = human.rig, []
+    default = human.body["hair"]
+    for style in cfg["looks"]["hair"]:
+        row = {"id": style["id"], "label": style["label"], "default": style["id"] == default}
+        if not style.get("file"):
+            row.update({"file": None, "bytes": 0, "triangles": 0, "morphs": [],
+                        "replaces": f"hides the primitive with material {human.name}_hair"})
+            rows.append(row)
+            continue
+        obj = next(o for k, o, _ in human.assets if k == "Hair" and o["hair_id"] == style["id"])
+        part = obj.copy()
+        part.data = obj.data.copy()
+        bpy.context.scene.collection.objects.link(part)
+        # Keep only the morphs that move this hair by HAIR_MORPH_MIN or more, and in them only
+        # the movements of HAIR_MOVE_MIN or more: hair is a light part, and smaller movements
+        # are hidden under it.
+        keys = part.data.shape_keys.key_blocks
+        basis = np.empty(len(part.data.vertices) * 3)
+        keys[0].data.foreach_get("co", basis)
+        basis = basis.reshape(-1, 3)
+        kept = []
+        for kb in list(keys)[1:]:
+            co = np.empty(basis.size)
+            kb.data.foreach_get("co", co)
+            delta = co.reshape(-1, 3) - basis
+            moved = np.linalg.norm(delta, axis=1)
+            if moved.max() < HAIR_MORPH_MIN:
+                part.shape_key_remove(kb)
+                continue
+            delta[moved < HAIR_MOVE_MIN] = 0.0
+            kb.data.foreach_set("co", (basis + delta).ravel())
+            kept.append(kb.name)
+        part.name = part.data.name = f"Hair_{style['id']}"
+        for k in list(part.keys()):
+            del part[k]
+        raw = OUT / f"hair-{human.name}-{style['id']}.raw.glb"
+        C.export_glb(raw, [rig, part], morphs=True, morph_normals=False, image_format="WEBP",
+                     copyright_text="Hair from MakeHuman assets; see CREDITS.md")
+        out = LOOKS / human.name / f"hair-{style['id']}.glb"
+        C.finish_glb(raw, out)
+        report = C.glb_report(out)
+        bpy.data.objects.remove(part, do_unlink=True)
+        row.update({"file": str(out.relative_to(C.OUT_CHARACTERS)), "bytes": report["bytes"],
+                    "triangles": report["triangles"], "morphs": report["morphTargets"],
+                    "material": report_material(out),
+                    "replaces": f"the primitive with material {human.name}_hair"})
+        rows.append(row)
+        C.log(f"  hair part {style['id']}: {report['bytes'] / 1e3:.0f} kB, "
+              f"{report['triangles']} triangles, {len(kept)} morphs")
+    return rows
+
+
+def report_material(path):
+    gltf, _ = C._read_glb(path)
+    return [m["name"] for m in gltf.get("materials", [])]
+
+
+def export_skin_looks(human, cfg):
+    rows = []
+    for skin in cfg["looks"]["skins"][human.name]:
+        w, h, px = skin_pixels(skin, cfg["textureSize"])
+        out = save_pixels(w, h, px, LOOKS / human.name / f"skin-{skin['id']}.webp", "WEBP")
+        rows.append({"id": skin["id"], "label": skin["label"],
+                     "default": skin["id"] == human.body["skin"],
+                     "file": str(out.relative_to(C.OUT_CHARACTERS)), "bytes": out.stat().st_size,
+                     "normalFile": None,
+                     "derived": "blend" in skin,
+                     "replaces": f"baseColorTexture of material {human.name}_skin"})
+    return rows
+
+
+def export_eye_looks(human, cfg):
+    rows = []
+    for eyes in cfg["looks"]["eyes"]:
+        info = read_mhmat(MH / eyes["mhmat"])
+        w, h, px = load_pixels(mhmat_texture(info, "diffuseTexture"), cfg["smallTextureSize"])
+        if eyes.get("irisTint"):
+            px = tint_iris(px, eyes["irisTint"])
+        out = save_pixels(w, h, px, LOOKS / f"eyes-{eyes['id']}.webp", "WEBP")
+        rows.append({"id": eyes["id"], "label": eyes["label"],
+                     "default": eyes["id"] == human.body["eyeColour"],
+                     "file": str(out.relative_to(C.OUT_CHARACTERS)), "bytes": out.stat().st_size,
+                     "replaces": f"baseColorTexture of material {human.name}_eyes "
+                                 "(its alpha cuts out the cornea; keep alpha mode MASK)"})
+    return rows
 
 
 def main():
@@ -564,12 +798,27 @@ def write_manifest(cfg, anim_cfg, results):
     for name, r in results.items():
         bodies[name] = {
             "file": r["output"].name,
+            "bytes": r["report"]["bytes"],
             "heightMetres": r["heightMetres"],
             "triangles": r["report"]["triangles"],
             "bones": r["report"]["bones"],
             "megabytes": r["report"]["megabytes"],
+            "materials": report_material(r["output"]),
+            "defaultLooks": {"skin": cfg["bodies"][name]["skin"],
+                             "hair": cfg["bodies"][name]["hair"],
+                             "eyes": cfg["bodies"][name]["eyeColour"]},
             "morphs": r["morphs"],
         }
+        manifest.setdefault("looks", {})[name] = r["looks"]
+    manifest["looksNote"] = (
+        "Paths are relative to this file. A skin replaces the base colour texture of the "
+        "body's <body>_skin material (normalFile, when not null, replaces its normal texture). "
+        "An eye colour replaces the base colour texture of <body>_eyes. A hair part is a .glb "
+        "skinned to the same 53 bones, in the same order and with the same inverse bind "
+        "matrices as the hero: hide the hero's primitive whose material is <body>_hair, load "
+        "the part and give its mesh the hero's skeleton; set its morph weights by name as on "
+        "the hero. 'shaved' has no file: hide the hair and add nothing. See "
+        "docs/ART_PIPELINE.md.")
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     C.log("wrote", path.relative_to(C.REPO))
 

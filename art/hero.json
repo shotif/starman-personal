@@ -1,5 +1,5 @@
 {
-  "about": "Settings for scripts/art/hero.py: how the two hero bodies are built with MPFB 2, and the morph targets (character-creator sliders) baked into them. Asset paths are relative to art/cache/makehuman/. Targets are MPFB's bundled targets (CC0), named <folder>/<target>. A body's 'targets' shape it before the skeleton is fitted (an athletic build, not MakeHuman's default curves). A clothes entry is a path or {file, name, roughness, tint (multiplies the colour), textureSize}.",
+  "about": "Settings for scripts/art/hero.py: how the two hero bodies are built with MPFB 2, the looks the character creator offers (D-30), and the morph targets baked into them: the 19 sliders, the 15 visemes, blinks and eye turns (D-31). Asset paths are relative to art/cache/makehuman/. Targets are MPFB's bundled targets (CC0), named <folder>/<target>; 'mh:<path>' is a target file in art/cache/makehuman/, and '{race}' is replaced by each of the body's races, weighted by its phenotype. A body's 'targets' shape it before the skeleton is fitted. A clothes entry is a path or {file, name, roughness, tint (multiplies the colour), textureSize}. Each body names its default skin, hair and eyes from 'looks'.",
   "rig": "game_engine",
   "textureSize": 1024,
   "smallTextureSize": 512,
@@ -34,12 +34,12 @@
         "legs/l-upperleg-muscle-incr": 0.3,
         "legs/r-upperleg-muscle-incr": 0.3
       },
-      "skin": "system_assets/skins/young_african_male/young_african_male.mhmat",
+      "skin": "tone6",
       "eyes": "system_assets/eyes/high-poly/high-poly.mhclo",
-      "eyeMaterial": "system_assets/eyes/materials/brown.mhmat",
+      "eyeColour": "brown",
       "eyebrows": "system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
       "eyelashes": "system_assets/eyelashes/eyelashes02/eyelashes02.mhclo",
-      "hair": "system_assets/hair/short04/short04.mhclo",
+      "hair": "cropped",
       "clothes": [
         {
           "file": "suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
@@ -91,12 +91,12 @@
         "legs/l-upperleg-muscle-incr": 0.2,
         "legs/r-upperleg-muscle-incr": 0.2
       },
-      "skin": "system_assets/skins/young_asian_female/young_asian_female.mhmat",
+      "skin": "tone1",
       "eyes": "system_assets/eyes/high-poly/high-poly.mhclo",
-      "eyeMaterial": "system_assets/eyes/materials/brownlight.mhmat",
+      "eyeColour": "hazel",
       "eyebrows": "system_assets/eyebrows/eyebrow006/eyebrow006.mhclo",
       "eyelashes": "system_assets/eyelashes/eyelashes01/eyelashes01.mhclo",
-      "hair": "system_assets/hair/ponytail01/ponytail01.mhclo",
+      "hair": "ponytail",
       "clothes": [
         {
           "file": "suits02/clothes/thegreatengineer_galactic_warrior_uniform/thegreatengineer_galactic_warrior_uniform.mhclo",
@@ -316,6 +316,362 @@
         "cheek/l-cheek-volume-incr": 0.6,
         "cheek/r-cheek-volume-incr": 0.6
       }
+    },
+    {
+      "name": "viseme_sil",
+      "group": "speech",
+      "label": "Silence",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_sil.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_PP",
+      "group": "speech",
+      "label": "P, B, M",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_PP.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_FF",
+      "group": "speech",
+      "label": "F, V",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_FF.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_TH",
+      "group": "speech",
+      "label": "Th",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_TH.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_DD",
+      "group": "speech",
+      "label": "T, D",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_DD.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_kk",
+      "group": "speech",
+      "label": "K, G",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_kk.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_CH",
+      "group": "speech",
+      "label": "Ch, J, Sh",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_CH.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_SS",
+      "group": "speech",
+      "label": "S, Z",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_SS.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_nn",
+      "group": "speech",
+      "label": "N, L",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_nn.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_RR",
+      "group": "speech",
+      "label": "R",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_RR.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_aa",
+      "group": "speech",
+      "label": "A",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_aa.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_E",
+      "group": "speech",
+      "label": "E",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_E.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_I",
+      "group": "speech",
+      "label": "I",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_I.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_O",
+      "group": "speech",
+      "label": "O",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_O.target": 1.0
+      }
+    },
+    {
+      "name": "viseme_U",
+      "group": "speech",
+      "label": "U",
+      "targets": {
+        "mh:visemes02/targets/visemes/viseme_U.target": 1.0
+      }
+    },
+    {
+      "name": "blink_left",
+      "group": "eyes",
+      "label": "Blink (left eye)",
+      "targets": {
+        "expression/units/{race}/eye-left-closure": 1.0
+      }
+    },
+    {
+      "name": "blink_right",
+      "group": "eyes",
+      "label": "Blink (right eye)",
+      "targets": {
+        "expression/units/{race}/eye-right-closure": 1.0
+      }
+    },
+    {
+      "name": "look_left",
+      "group": "eyes",
+      "label": "Look left",
+      "eyes_turn": {
+        "yaw": 22
+      }
+    },
+    {
+      "name": "look_right",
+      "group": "eyes",
+      "label": "Look right",
+      "eyes_turn": {
+        "yaw": -22
+      }
+    },
+    {
+      "name": "look_up",
+      "group": "eyes",
+      "label": "Look up",
+      "eyes_turn": {
+        "pitch": 15
+      }
+    },
+    {
+      "name": "look_down",
+      "group": "eyes",
+      "label": "Look down",
+      "eyes_turn": {
+        "pitch": -18
+      }
     }
-  ]
+  ],
+  "teeth": "system_assets/teeth/teeth_base/teeth_base.mhclo",
+  "tongue": "system_assets/tongue/tongue01/tongue01.mhclo",
+  "looks": {
+    "hair": [
+      {
+        "id": "shaved",
+        "label": "Shaved",
+        "file": null
+      },
+      {
+        "id": "cropped",
+        "label": "Cropped",
+        "file": "system_assets/hair/short04/short04.mhclo"
+      },
+      {
+        "id": "short",
+        "label": "Short",
+        "file": "system_assets/hair/short02/short02.mhclo"
+      },
+      {
+        "id": "afro",
+        "label": "Afro",
+        "file": "system_assets/hair/afro01/afro01.mhclo"
+      },
+      {
+        "id": "long",
+        "label": "Long",
+        "file": "system_assets/hair/long01/long01.mhclo"
+      },
+      {
+        "id": "ponytail",
+        "label": "Tied back",
+        "file": "system_assets/hair/ponytail01/ponytail01.mhclo"
+      },
+      {
+        "id": "braid",
+        "label": "Braided",
+        "file": "system_assets/hair/braid01/braid01.mhclo"
+      },
+      {
+        "id": "bun",
+        "label": "Bun",
+        "file": "hair01/hair/elvs_reverse_french_braid_bun/elvs_reverse_french_braid_bun.mhclo",
+        "desaturate": true,
+        "tint": [
+          0.55,
+          0.42,
+          0.33
+        ],
+        "note": "recoloured from dyed purple to dark brown"
+      }
+    ],
+    "eyes": [
+      {
+        "id": "brown",
+        "label": "Brown",
+        "mhmat": "system_assets/eyes/materials/brownlight.mhmat",
+        "irisTint": [
+          0.55,
+          0.47,
+          0.5
+        ],
+        "note": "MakeHuman's own brown is red; this is its amber iris darkened to brown"
+      },
+      {
+        "id": "hazel",
+        "label": "Hazel",
+        "mhmat": "system_assets/eyes/materials/brownlight.mhmat"
+      },
+      {
+        "id": "green",
+        "label": "Green",
+        "mhmat": "system_assets/eyes/materials/green.mhmat"
+      },
+      {
+        "id": "blue",
+        "label": "Blue",
+        "mhmat": "system_assets/eyes/materials/blue.mhmat"
+      },
+      {
+        "id": "grey",
+        "label": "Grey",
+        "mhmat": "system_assets/eyes/materials/grey.mhmat"
+      }
+    ],
+    "skins": {
+      "man": [
+        {
+          "id": "tone1",
+          "label": "Very light",
+          "mhmat": "system_assets/skins/young_caucasian_male/young_caucasian_male.mhmat"
+        },
+        {
+          "id": "tone2",
+          "label": "Light",
+          "mhmat": "system_assets/skins/young_asian_male/young_asian_male.mhmat"
+        },
+        {
+          "id": "tone3",
+          "label": "Light olive",
+          "mhmat": "skins02/skins/toigo_light_skin_male_bronze/toigo_light_skin_male_bronze.mhmat"
+        },
+        {
+          "id": "tone4",
+          "label": "Medium",
+          "blend": [
+            [
+              "skins02/skins/toigo_light_skin_male_bronze/toigo_light_skin_male_bronze.mhmat",
+              0.65
+            ],
+            [
+              "system_assets/skins/young_african_male/young_african_male.mhmat",
+              0.35
+            ]
+          ]
+        },
+        {
+          "id": "tone5",
+          "label": "Brown",
+          "blend": [
+            [
+              "skins02/skins/toigo_light_skin_male_bronze/toigo_light_skin_male_bronze.mhmat",
+              0.3
+            ],
+            [
+              "system_assets/skins/young_african_male/young_african_male.mhmat",
+              0.7
+            ]
+          ]
+        },
+        {
+          "id": "tone6",
+          "label": "Deep",
+          "mhmat": "system_assets/skins/young_african_male/young_african_male.mhmat"
+        }
+      ],
+      "woman": [
+        {
+          "id": "tone1",
+          "label": "Light",
+          "mhmat": "system_assets/skins/young_asian_female/young_asian_female.mhmat"
+        },
+        {
+          "id": "tone2",
+          "label": "Light warm",
+          "mhmat": "skins01/skins/bobby_03_young_female_hairless/bobby_03_young_female_hairless.mhmat"
+        },
+        {
+          "id": "tone3",
+          "label": "Light brown",
+          "mhmat": "skins01/skins/cutoff3d_indian_female_skin/cutoff3d_indian_female_skin.mhmat"
+        },
+        {
+          "id": "tone4",
+          "label": "Medium",
+          "blend": [
+            [
+              "system_assets/skins/young_asian_female/young_asian_female.mhmat",
+              0.45
+            ],
+            [
+              "system_assets/skins/young_african_female/young_african_female.mhmat",
+              0.55
+            ]
+          ]
+        },
+        {
+          "id": "tone5",
+          "label": "Brown",
+          "blend": [
+            [
+              "system_assets/skins/young_asian_female/young_asian_female.mhmat",
+              0.2
+            ],
+            [
+              "system_assets/skins/young_african_female/young_african_female.mhmat",
+              0.8
+            ]
+          ]
+        },
+        {
+          "id": "tone6",
+          "label": "Deep",
+          "mhmat": "system_assets/skins/young_african_female/young_african_female.mhmat"
+        }
+      ]
+    }
+  }
 }
