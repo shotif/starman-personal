@@ -189,7 +189,11 @@ test('talking to Ren: every line and choice, to the end', async ({ page }, testI
     if ((await body.getAttribute('data-talking')) === 'false') break;
     const line = (await body.getAttribute('data-line')) ?? '';
     heard.push(line);
-    if (step === 0) await page.screenshot({ path: testInfo.outputPath('talking.png') });
+    if (step === 0 || line === 'hero_range_02a') {
+      // Once the camera has settled: Ren over the hero's shoulder, then the hero over hers.
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: testInfo.outputPath(step === 0 ? 'talking.png' : 'hero-speaking.png') });
+    }
     // A tap is ignored for a moment after a new line, so one meant for the line before cannot skip it.
     await page.waitForTimeout(400);
     if (line === 'choices') {

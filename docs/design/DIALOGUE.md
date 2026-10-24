@@ -40,7 +40,7 @@ conversation log, and the story's conversations.
 | Rule | Value | Why |
 | --- | --- | --- |
 | Talk reach | 3 m from the hero to the partner | Ren, following, stays within 2.6 m (`ORDERS` in `src/game/orders.ts`), so she can always be spoken to |
-| Camera | Swings behind the hero to frame the partner over the shoulder, eased over about half a second; the player's look input waits | both faces readable on a narrow phone |
+| Camera | Shot and reverse shot (`src/game/shots.ts`): over the listener's shoulder onto the speaker's face, cutting when the speaker changes; the partner while the hero chooses. The camera stands far enough aside that the listener's head stays at least 38 cm clear of the line to the speaker's face, keeps to one side of the line between the two so they never swap places on screen, takes the other side when a wall stands in the way, and eases in and out over about a second. The player's own view is handed back unchanged | the first version only turned the camera behind the hero, and on a narrow phone the hero hid Ren (the owner's screenshot, 24 October 2026) |
 | Input | Movement, aim and fire wait; the stick and the fire button are let go, and the mouse is freed for the choices | nothing carries on, or fires, behind a conversation |
 | Taps | A tap within 0.35 s of a new line or new choices is ignored; keys are not | a double tap cannot skip a line or pick a reply unread |
 | Choice tags | Inside the brackets: `* [Do they? #manner: ask]` | ink gives a tag after the `]` to the spoken line, not to the choice; the story test fails any choice without a manner |

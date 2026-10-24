@@ -38,6 +38,7 @@ import {
 } from './motion.ts';
 import { poseWeights } from './pose.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
+import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 
 export interface GameStats {
   fps: number;
@@ -93,6 +94,9 @@ export interface GameOptions {
 const CAPSULE_HEIGHT = 1.8;
 const CAPSULE_RADIUS = 0.35;
 const GRAVITY = new Vector3(0, -18, 0);
+const vector = (p: Point) => new Vector3(p.x, p.y, p.z);
+/** The middle of the head above the feet, for a character of standard height. */
+const HEAD_HEIGHT = 1.6;
 /** How near the hero must be to talk to someone; Ren, following, stays within 2.6 m (ORDERS). */
 const TALK_REACH = 3;
 const UP = Vector3.Up();
@@ -135,6 +139,19 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   camera.inputs.clear();
   camera.minZ = 0.05;
   camera.fov = CAMERA.fov;
+  /** The player's view round the hero; a conversation takes the camera, and hands it back unchanged. */
+  const orbit = { alpha: camera.alpha, beta: camera.beta };
+  /** Puts the camera at `position`, looking at `target`. */
+  const place = (position: Vector3, target: Vector3) => {
+    const v = position.subtract(target);
+    const r = v.length() || 1e-3;
+    // Keep the camera's angles as its target moves: plain `target =` would re-aim it from where it
+    // stood, turning it a little every frame, and the hero, walking "forward", would drift.
+    camera.setTarget(target, false, false, true);
+    camera.alpha = Math.atan2(v.z, v.x);
+    camera.beta = Math.acos(Math.min(1, Math.max(-1, v.y / r)));
+    camera.radius = r;
+  };
 
   const range = buildRange(scene, DRONES, q.maxLights);
   // The style test's props; the scene starts without waiting for them.
@@ -184,8 +201,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     (line) => options.onSay('Ren', line),
   );
   let commanding = false;
-  /** A conversation in progress (DIALOGUE.md), and who is speaking. */
-  let talking: { speaker: 'hero' | 'partner' | null } | null = null;
+  /**
+   * A conversation in progress (DIALOGUE.md): who is speaking, and the side of the line between the
+   * two people the camera keeps (src/game/shots.ts).
+   */
+  let talking: { speaker: 'hero' | 'partner' | null; side: 1 | -1 } | null = null;
+  /** How far the camera has gone over to the conversation's shots, 0 to 1; and the last shot. */
+  let talkBlend = 0;
+  let lastShot: Shot | null = null;
   let couldTalk = false;
 
   /** The camera's view: where it is and where it looks. */
@@ -265,6 +288,40 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     shotPose = SHOT_POSE;
   };
 
+  /** The middle of a character's head, by their height. */
+  const headOf = (character: Character) =>
+    character.root.position.add(new Vector3(0, HEAD_HEIGHT * character.root.scaling.y, 0));
+  /**
+   * The shot for the conversation's present moment: over the hero's shoulder onto the partner while
+   * the partner speaks or the hero chooses, and over the partner's onto the hero while the hero
+   * speaks. When a wall stands where the camera would, it tries the other side of the line, and
+   * failing that comes in short of the wall.
+   */
+  const conversationShot = (now: { speaker: 'hero' | 'partner' | null; side: 1 | -1 }): Shot => {
+    const heroHead = headOf(hero);
+    const partnerHead = headOf(companion);
+    const line = { x: partnerHead.x - heroHead.x, z: partnerHead.z - heroHead.z };
+    const [listener, speaker] = now.speaker === 'hero' ? [partnerHead, heroHead] : [heroHead, partnerHead];
+    const aspect = engine.getAspectRatio(camera);
+    const shotFrom = (side: 1 | -1) => {
+      const shot = overShoulder(listener, speaker, line, side, aspect);
+      const at = vector(shot.position);
+      const wall = cast(listener, at);
+      return { shot, at, wall: wall ? wall.distance / Vector3.Distance(listener, at) : 1 };
+    };
+    let chosen = shotFrom(now.side);
+    if (chosen.wall < 1) {
+      const other = shotFrom(now.side === 1 ? -1 : 1);
+      if (other.wall >= 1) {
+        now.side = now.side === 1 ? -1 : 1;
+        chosen = other;
+      }
+    }
+    if (chosen.wall >= 1) return chosen.shot;
+    const pulled = Vector3.Lerp(listener, chosen.at, Math.max(0.15, chosen.wall - 0.12));
+    return { position: { x: pulled.x, y: pulled.y, z: pulled.z }, target: chosen.shot.target };
+  };
+
   scene.onBeforeRenderObservable.add(() => {
     // In the command view time nearly stops: the game's rules run slow, the camera does not.
     const real = Math.min(engine.getDeltaTime() / 1000, 0.1);
@@ -279,22 +336,16 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
 
     // Look: drag or mouse turns the camera round the hero, more finely while aiming.
+    // In a conversation the camera frames whoever speaks, and looking waits.
     const look = input.takeLook();
-    if (talking) {
-      // In a conversation the camera swings round behind the hero to frame the other speaker.
-      let turn = (Math.atan2(-toPartner.z, -toPartner.x) - camera.alpha) % (Math.PI * 2);
-      if (turn > Math.PI) turn -= Math.PI * 2;
-      if (turn < -Math.PI) turn += Math.PI * 2;
-      camera.alpha += turn * Math.min(1, real * 4);
-      camera.beta += (1.42 - camera.beta) * Math.min(1, real * 4);
-    } else {
+    if (!talking) {
       const fine = aiming ? 0.6 : 1;
-      camera.alpha -= look.x * 0.0055 * fine;
-      camera.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, camera.beta - look.y * 0.0045 * fine));
+      orbit.alpha -= look.x * 0.0055 * fine;
+      orbit.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, orbit.beta - look.y * 0.0045 * fine));
     }
 
     // Move: relative to where the camera looks.
-    const forward: Vec3Like = { x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) };
+    const forward: Vec3Like = { x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) };
     const move = held ? { x: 0, y: 0 } : input.move();
     const push = Math.min(1, Math.hypot(move.x, move.y));
     const direction = cameraRelative(move, forward);
@@ -376,7 +427,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // Camera: over the right shoulder, closer while aiming or giving orders and lower in cover,
     // pulled in when a wall is in the way. On a portrait phone it stands further back.
-    aimBlend = lerp(aimBlend, aiming || commanding ? 1 : talking ? 0.6 : 0, Math.min(1, real * 9));
+    aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
@@ -386,19 +437,31 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const right = { x: forward.z, z: -forward.x };
     const pivot = new Vector3(feet.x + right.x * shoulder, feet.y + eye, feet.z + right.z * shoulder);
     const back = new Vector3(
-      Math.cos(camera.alpha) * Math.sin(camera.beta),
-      Math.cos(camera.beta),
-      Math.sin(camera.alpha) * Math.sin(camera.beta),
+      Math.cos(orbit.alpha) * Math.sin(orbit.beta),
+      Math.cos(orbit.beta),
+      Math.sin(orbit.alpha) * Math.sin(orbit.beta),
     );
     const head = new Vector3(feet.x, feet.y + eye, feet.z);
     // From the hero's head to the far end of the shoulder offset and the camera's place.
     const blocked = cast(head, pivot.add(back.scale(distance)));
     const hit = blocked ? Vector3.Distance(pivot, blocked.point) : null;
-    // Keep the camera's angles as its target moves: plain `target =` would re-aim it from where it
-    // stood, turning it a little every frame, and the hero, walking "forward", would drift.
-    camera.setTarget(pivot, false, false, true);
-    camera.radius = cameraDistance(hit, distance, CAMERA.minDistance);
-    hero.setFade(closeFade(Vector3.Distance(pivot.add(back.scale(camera.radius)), head)));
+    let from = pivot.add(back.scale(cameraDistance(hit, distance, CAMERA.minDistance)));
+    let lookAt = pivot;
+
+    // In a conversation the camera eases over to the shot of whoever speaks, and cuts between them.
+    talkBlend = lerp(talkBlend, talking ? 1 : 0, Math.min(1, real * 3));
+    if (talking) lastShot = conversationShot(talking);
+    if (talkBlend > 1e-3 && lastShot) {
+      const t = talkBlend * talkBlend * (3 - 2 * talkBlend);
+      from = Vector3.Lerp(from, vector(lastShot.position), t);
+      lookAt = Vector3.Lerp(lookAt, vector(lastShot.target), t);
+    } else {
+      lastShot = null;
+    }
+    place(from, lookAt);
+    // Anyone the camera is pressed against fades, rather than filling the screen.
+    hero.setFade(closeFade(Vector3.Distance(from, head)));
+    companion.setFade(closeFade(Vector3.Distance(from, headOf(companion))));
   });
 
   scene.onAfterPhysicsObservable.add(() => {
@@ -413,7 +476,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   // `?debug` in the address exposes the hero's state for testing in the browser's console.
   if (new URLSearchParams(location.search).has('debug')) {
-    const facing = () => ({ x: -Math.cos(camera.alpha), z: -Math.sin(camera.alpha) });
+    const facing = () => ({ x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) });
     Object.assign(window, {
       lightkeeper: {
         /** The scene itself, for measuring in the browser (where the feet meet the floor, bounds). */
@@ -431,10 +494,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
          * Moves the hero (feet at x, z) and turns the camera to look along yaw (radians, 0 = +z),
          * pitched by beta (the camera's polar angle; about 1.55 looks level).
          */
-        teleport: (x: number, z: number, yaw = 0, beta = camera.beta) => {
+        teleport: (x: number, z: number, yaw = 0, beta = orbit.beta) => {
           controller.setPosition(new Vector3(x, CAPSULE_HEIGHT / 2 + 0.05, z));
-          camera.alpha = -Math.PI / 2 - yaw;
-          camera.beta = beta;
+          orbit.alpha = -Math.PI / 2 - yaw;
+          orbit.beta = beta;
         },
       },
     });
@@ -478,7 +541,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     startConversation() {
       if (!couldTalk || commanding) return false;
       input.release();
-      talking = { speaker: null };
+      // The camera keeps to the side of the line between the two that it is on already.
+      talking = { speaker: null, side: sideOf(hero.root.position, companion.root.position, camera.position) };
       return true;
     },
     setSpeaker(who) {
