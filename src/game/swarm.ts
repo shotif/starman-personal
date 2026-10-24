@@ -32,6 +32,67 @@ export const MOTE = {
   hits: 3,
 };
 
+export type MachineKind = 'mote' | 'lattice' | 'tender';
+
+/** How each machine of the swarm moves and fights (COMBAT.md). */
+export interface MachineRules {
+  near: number;
+  far: number;
+  low: number;
+  high: number;
+  speed: number;
+  stayMin: number;
+  stayMax: number;
+  /** The glow, or the beam's warning line, before it fires. */
+  charge: number;
+  restMin: number;
+  restMax: number;
+  /** Its body's radius. */
+  radius: number;
+  /** A slow bolt; a beam along a line drawn first; or new motes. */
+  weapon: 'bolt' | 'beam' | 'spawn';
+  /** What one shot does to a person, at Standard. */
+  damage: number;
+}
+
+export const MACHINES: Record<MachineKind, MachineRules> = {
+  mote: { ...MOTE, radius: 0.3, weapon: 'bolt', damage: 25 },
+  // Hangs back and charges a beam for two seconds: break line of sight or be hit hard.
+  lattice: {
+    ...MOTE,
+    near: 11,
+    far: 18,
+    low: 2,
+    high: 4,
+    speed: 2.2,
+    stayMin: 4,
+    stayMax: 6,
+    charge: 2,
+    restMin: 3,
+    restMax: 4,
+    radius: 0.75,
+    weapon: 'beam',
+    damage: 55,
+  },
+  // Slow and far back; sends out motes in threes.
+  tender: {
+    ...MOTE,
+    near: 14,
+    far: 22,
+    low: 4,
+    high: 7,
+    speed: 1.4,
+    stayMin: 6,
+    stayMax: 9,
+    charge: 1.5,
+    restMin: 10,
+    restMax: 13,
+    radius: 1.6,
+    weapon: 'spawn',
+    damage: 0,
+  },
+};
+
 export const BOLT = {
   /** Slow enough to see and step out of the way of. */
   speed: 18,
@@ -58,14 +119,17 @@ export function pickSpot(o: {
   /** The point the mote must see from its new place (the target's chest). */
   aimAt: P3;
   tries?: number;
+  /** The machine's own distances and heights; a mote's by default. */
+  rules?: Pick<MachineRules, 'near' | 'far' | 'low' | 'high'>;
 }): P3 | null {
+  const r = o.rules ?? MOTE;
   const bearing = Math.atan2(o.me.x - o.target.x, o.me.z - o.target.z);
   for (let i = 0; i < (o.tries ?? 12); i++) {
     const angle = bearing + (o.rng() * 2 - 1) * MOTE.swing;
-    const distance = MOTE.near + o.rng() * (MOTE.far - MOTE.near);
+    const distance = r.near + o.rng() * (r.far - r.near);
     const spot = {
       x: o.target.x + Math.sin(angle) * distance,
-      y: o.target.y + MOTE.low + o.rng() * (MOTE.high - MOTE.low),
+      y: o.target.y + r.low + o.rng() * (r.high - r.low),
       z: o.target.z + Math.cos(angle) * distance,
     };
     if (o.others.some((p) => Math.hypot(p.x - spot.x, p.y - spot.y, p.z - spot.z) < MOTE.apart)) continue;
@@ -85,16 +149,17 @@ export function fireStep(
   dt: number,
   sees: boolean,
   rng: () => number,
+  rules: Pick<MachineRules, 'charge' | 'restMin' | 'restMax'> = MOTE,
 ): { phase: FirePhase; fire: boolean } {
   if (phase.kind === 'rest') {
     const left = phase.left - dt;
     if (left > 0 || !sees) return { phase: { kind: 'rest', left: Math.max(0, left) }, fire: false };
-    return { phase: { kind: 'charge', left: MOTE.charge }, fire: false };
+    return { phase: { kind: 'charge', left: rules.charge }, fire: false };
   }
   if (!sees) return { phase: { kind: 'rest', left: 0.5 }, fire: false };
   const left = phase.left - dt;
   if (left > 0) return { phase: { kind: 'charge', left }, fire: false };
-  return { phase: { kind: 'rest', left: MOTE.restMin + rng() * (MOTE.restMax - MOTE.restMin) }, fire: true };
+  return { phase: { kind: 'rest', left: rules.restMin + rng() * (rules.restMax - rules.restMin) }, fire: true };
 }
 
 /**

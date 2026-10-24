@@ -16,7 +16,7 @@ import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { CLIPS, type Clip, type Pose, type Weights } from './pose.ts';
+import { CLIPS, type Clip, ONE_SHOT, type Pose, type Weights } from './pose.ts';
 
 registerBuiltInLoaders();
 
@@ -210,6 +210,14 @@ export function spawnCharacter(
     current.set(group, weight);
     group.weight = weight;
   };
+  /** One-shot clips playing now: they start from their first frame when they fade in. */
+  const playing = new Set<Clip>();
+  /** Plays a clip once from the start, then holds its last frame for as long as it is asked for. */
+  const playOnce = (group: AnimationGroup) => {
+    group.stop();
+    group.start(false, 1, group.from, group.to);
+    group.onAnimationGroupEndObservable.addOnce(() => group.start(true, 1, group.to, group.to));
+  };
   /** A clip the model lacks hands its weight to idle. */
   const withIdle = (weights: Weights, have: Map<Clip, AnimationGroup>): Weights => {
     let orphaned = 0;
@@ -228,9 +236,18 @@ export function spawnCharacter(
     fitBounds: (parts) => fitFigureBounds(root, figure, parts),
     setFade: fader(model),
     setPose(pose, dt) {
-      const t = Math.min(1, dt * 12);
+      const t = Math.min(1, dt * (pose.blend ?? 12));
       const legWeights = withIdle(pose.lower, lower);
       const torsoWeights = withIdle(pose.upper ?? pose.lower, upper);
+      for (const clip of ONE_SHOT) {
+        const wanted = (legWeights[clip] ?? 0) > 0 || (torsoWeights[clip] ?? 0) > 0;
+        if (wanted && !playing.has(clip)) {
+          playing.add(clip);
+          for (const group of [lower.get(clip), upper.get(clip)]) if (group) playOnce(group);
+        } else if (!wanted) {
+          playing.delete(clip);
+        }
+      }
       for (const [clip, group] of lower) fade(group, legWeights[clip] ?? 0, t);
       for (const [clip, group] of upper) fade(group, torsoWeights[clip] ?? 0, t);
     },

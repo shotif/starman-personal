@@ -50,17 +50,14 @@ body {
 
 .hud {
   position: absolute;
-  top: calc(var(--safe-top) + 10px);
-  left: calc(var(--safe-left) + 12px);
+  top: calc(var(--safe-top) + 12px);
+  left: calc(var(--safe-left) + 14px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
-  padding: 8px 12px;
-  background: var(--panel);
-  border: 1px solid var(--panel-edge);
-  border-radius: 8px;
-  pointer-events: auto;
+  gap: 6px;
+  max-width: min(420px, calc(100vw - 90px));
+  pointer-events: none;
   z-index: 2;
 }
 
@@ -123,7 +120,7 @@ body {
 .hint {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--safe-bottom) + 14px);
+  top: calc(var(--safe-top) + 92px);
   transform: translateX(-50%);
   margin: 0;
   padding: 6px 12px;
@@ -864,4 +861,475 @@ body {
   to {
     opacity: 0;
   }
+}
+
+/* The objective, the vitals, and the companions' state, top left. */
+.objective {
+  font-size: 15px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.9);
+  animation: objective-in 0.5s ease-out;
+}
+
+.objective__mark {
+  color: #ffc65a;
+}
+
+@keyframes objective-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.vitals {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: min(220px, 50vw);
+}
+
+.bar {
+  position: relative;
+  height: 7px;
+  background: rgb(0 0 0 / 0.5);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  transition: width 0.15s linear;
+}
+
+.bar--shield > span {
+  background: linear-gradient(90deg, #4aa8ff, #9fdcff);
+}
+
+.bar--health > span {
+  background: linear-gradient(90deg, #d8323a, #ff6b5c);
+}
+
+.bar > i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgb(0 0 0 / 0.6);
+}
+
+.vitals__companion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--ink-dim);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.9);
+}
+
+.vitals__companion--down {
+  color: var(--danger);
+}
+
+.mini {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 5px;
+  background: rgb(0 0 0 / 0.5);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mini__shield,
+.mini__health {
+  position: absolute;
+  left: 0;
+  height: 2px;
+}
+
+.mini__shield {
+  top: 0;
+  background: #7cc4ff;
+}
+
+.mini__health {
+  bottom: 0;
+  background: #ff6b5c;
+}
+
+.pause-button {
+  position: absolute;
+  top: calc(var(--safe-top) + 10px);
+  right: calc(var(--safe-right) + 12px);
+  width: 40px;
+  height: 40px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  z-index: 3;
+}
+
+/* A caption: place and time, centred, fading in and out. */
+.caption {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 16px;
+  max-width: calc(100vw - 32px);
+  font-size: clamp(17px, 3.2vw, 26px);
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.95);
+  pointer-events: none;
+  animation: caption 5.2s ease forwards;
+  z-index: 3;
+}
+
+@keyframes caption {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.saved {
+  position: absolute;
+  right: calc(var(--safe-right) + 62px);
+  top: calc(var(--safe-top) + 20px);
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-dim);
+  animation: caption 2s ease forwards;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Low health: the edges of the screen darken red. */
+.wounded {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgb(140 0 0 / 0.45) 100%);
+  animation: wounded 1.4s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes wounded {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Down (D-43): grey, red edges, and how long is left. */
+.down {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: radial-gradient(ellipse at center, rgb(0 0 0 / 0.15) 30%, rgb(120 0 0 / 0.6) 100%);
+  backdrop-filter: grayscale(0.85);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.down__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.down__detail {
+  margin: 0;
+  color: var(--ink-dim);
+}
+
+.fade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  animation: fade-in 0.4s ease forwards;
+  pointer-events: none;
+  z-index: 8;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The pause menu and the end of the prologue. */
+.pause,
+.ending {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px;
+  background: rgb(4 6 10 / 0.82);
+  backdrop-filter: blur(4px);
+  z-index: 9;
+}
+
+.pause button,
+.ending button,
+.title__buttons button {
+  width: min(320px, 100%);
+  min-height: 48px;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(127 212 255 / 0.08);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pause button:hover,
+.ending button:hover,
+.title__buttons button:hover,
+.pause button:focus-visible,
+.ending button:focus-visible,
+.title__buttons button:focus-visible {
+  border-color: var(--accent);
+}
+
+.pause__title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pause__note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+
+.ending {
+  background: rgb(4 4 8 / 0.92);
+}
+
+.ending__kicker {
+  margin: 0;
+  color: #ffc65a;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.ending__title {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 5vw, 38px);
+  text-align: center;
+}
+
+.ending__list {
+  margin: 0;
+  padding: 0;
+  max-width: 560px;
+  list-style: none;
+  color: var(--ink-dim);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.ending__next {
+  margin: 6px 0 10px;
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+
+/* Orders for one companion or both. */
+.orders__who {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.orders__pick {
+  padding: 4px 12px;
+  border: 1px solid var(--panel-edge);
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.orders__pick input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.orders__pick--on {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* The title: the red star low over a dark horizon. */
+.title {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px calc(var(--safe-right) + 16px) 24px calc(var(--safe-left) + 16px);
+  background: #030306;
+  overflow: hidden;
+}
+
+.title__sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 40% at 72% 78%, rgb(150 45 18 / 0.45), transparent 70%),
+    linear-gradient(to bottom, #04040a 0%, #0c0812 55%, #2a1110 78%, #08060a 79%, #050406 100%);
+}
+
+.title__sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #cfd6ff, transparent),
+    radial-gradient(1px 1px at 28% 32%, #dfe4ff, transparent),
+    radial-gradient(1.5px 1.5px at 44% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 63% 26%, #cdd4ff, transparent),
+    radial-gradient(1px 1px at 82% 14%, #e6e9ff, transparent),
+    radial-gradient(1px 1px at 90% 40%, #cdd4ff, transparent),
+    radial-gradient(1px 1px at 18% 52%, #dfe4ff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 46%, #fff, transparent);
+  opacity: 0.8;
+}
+
+.title__star {
+  position: absolute;
+  left: 72%;
+  top: 74%;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff8a4a 0%, #ff5a26 45%, #b0300f 70%, transparent 72%);
+  box-shadow:
+    0 0 60px 20px rgb(255 80 30 / 0.35),
+    0 0 160px 60px rgb(255 60 20 / 0.15);
+  animation: dim 9s ease-in-out infinite alternate;
+}
+
+.title__star::after {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  border: 1px dotted rgb(255 190 140 / 0.55);
+  animation: ring 60s linear infinite;
+}
+
+@keyframes dim {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(0.72);
+  }
+}
+
+@keyframes ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.title__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(380px, 100%);
+  margin-left: clamp(0px, 6vw, 80px);
+}
+
+.title__kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 14px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+
+.title__name {
+  margin: 0;
+  font-size: clamp(40px, 9vw, 64px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.title__tagline {
+  margin: 4px 0 18px;
+  color: #ffb08a;
+}
+
+.title__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title__buttons .title__primary {
+  background: rgb(255 140 80 / 0.16);
+  border-color: rgb(255 160 110 / 0.6);
+}
+
+.title__sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-dim);
+}
+
+.title__fiction {
+  margin: 16px 0 0;
+  font-size: 12px;
+  color: var(--ink-dim);
 }

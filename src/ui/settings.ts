@@ -2,6 +2,9 @@ import { chooseQuality, isQualityTier, type QualityTier } from '../game/quality.
 
 export const QUALITY_KEY = 'lightkeeper.quality';
 export const HERO_KEY = 'lightkeeper.hero';
+/** The saved game: the story's state at its last checkpoint (src/game/game.ts, SaveData). */
+export const SAVE_KEY = 'lightkeeper.save';
+export const DIFFICULTY_KEY = 'lightkeeper.difficulty';
 
 /** A touch screen is the main input. */
 export function isTouch(): boolean {

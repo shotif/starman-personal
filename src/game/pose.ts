@@ -18,9 +18,12 @@ export const CLIPS = [
   'crouch_right',
   'pistol_aim',
   'pistol_shoot',
+  'death',
 ] as const;
 export type Clip = (typeof CLIPS)[number];
 
+/** Clips that play once and hold their last frame (going down), rather than looping. */
+export const ONE_SHOT: readonly Clip[] = ['death'];
 export type Weights = Partial<Record<Clip, number>>;
 
 export type PoseState =
@@ -31,13 +34,19 @@ export type PoseState =
   /** In low cover, facing it; `slide` is -1 (left) to 1 (right) along it. */
   | { mode: 'cover'; slide: number }
   /** In a conversation: standing, gesturing while speaking (DIALOGUE.md). */
-  | { mode: 'talk'; speaking: boolean };
+  | { mode: 'talk'; speaking: boolean }
+  /** Down in a fight (D-43): on the floor. */
+  | { mode: 'down' }
+  /** Kneeling beside someone, to help them up. */
+  | { mode: 'kneel' };
 
 export interface Pose {
   /** The whole body, or the legs and hips when `upper` is set. */
   lower: Weights;
   /** The spine, arms and head on their own, or null when the whole body follows `lower`. */
   upper: Weights | null;
+  /** How fast the clips fade towards these weights (per second); quick by default. */
+  blend?: number;
 }
 
 /** The four walking directions while aiming, by angle from forward (clockwise, radians). */
@@ -70,6 +79,8 @@ export function poseWeights(state: PoseState): Pose {
     const w = locomotionWeights(state.speed);
     return { lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint }, upper: null };
   }
+  if (state.mode === 'down') return { lower: { death: 1 }, upper: null, blend: 5 };
+  if (state.mode === 'kneel') return { lower: { crouch_idle: 1 }, upper: null, blend: 6 };
   if (state.mode === 'talk') {
     return { lower: state.speaking ? { idle_talk: 1 } : { idle: 1 }, upper: null };
   }

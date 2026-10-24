@@ -2,8 +2,8 @@
 
 *Written 24 October 2026 for the playable slice ([SLICE.md](SLICE.md)). It fills in D-17 (cover,
 guns, full melee and combinable powers; assisted aim on phones) for the swarm, the slice's enemies.
-The rules that shape the game wait for the owner (D-42, D-43, D-46); the first increment, enemies
-that shoot back, does not need them. Everything here is fiction.*
+The rules that shape the game (D-42, D-43, D-46) were decided as recommended on 24 October 2026.
+Everything here is fiction.*
 
 ## Goals
 

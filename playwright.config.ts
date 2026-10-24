@@ -2,10 +2,14 @@ import { defineConfig } from '@playwright/test';
 
 /**
  * Browser journeys run against the production build (`vite preview`), on a phone with touch and a
- * desktop with a mouse (D-02). Headless Chromium draws WebGL through SwiftShader, as in Starman
- * Reborn and Starman Control, so frame rates here say nothing about real devices.
+ * desktop with a mouse (D-02). On the owner's Mac, Chromium draws with the real GPU (ANGLE on
+ * Metal): fast, and close to what players see. GitHub's CI has no GPU, so there it draws through
+ * SwiftShader, as in Starman Reborn and Starman Control, and its frame rates say nothing.
  */
-const GL_ARGS = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+const GL_ARGS =
+  process.platform === 'darwin'
+    ? ['--use-gl=angle', '--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu']
+    : ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 
 export default defineConfig({
   testDir: 'tests/e2e',

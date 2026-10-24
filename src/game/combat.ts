@@ -11,8 +11,16 @@ import type { PhysicsBody } from '@babylonjs/core/Physics/v2/physicsBody';
 import type { Scene } from '@babylonjs/core/scene';
 import type { AimCandidate } from './aim.ts';
 
-/** Who fired a shot: the hero, or the companion. */
-export type Shooter = 'hero' | 'partner';
+import type { DamageKind } from './defences.ts';
+
+/** Who fired a shot: 'hero', or a companion's name. */
+export type Shooter = string;
+
+/** What a shot does: an amount, of a kind (D-42). */
+export interface Damage {
+  amount: number;
+  kind: DamageKind;
+}
 
 /**
  * Other things that can be aimed at and shot, joined to the range: the swarm (src/game/motes.ts).
@@ -24,7 +32,7 @@ export interface TargetGroup {
   alive(id: number): boolean;
   owns(id: number, body: PhysicsBody | null | undefined): boolean;
   /** Applies a hit if the body is one of its live targets; true if it was. */
-  hit(body: PhysicsBody | null | undefined, by: Shooter): boolean;
+  hit(body: PhysicsBody | null | undefined, by: Shooter, damage: Damage): boolean;
 }
 
 /**
@@ -43,8 +51,8 @@ export interface Range {
   isDrone(id: number, body: PhysicsBody | null | undefined): boolean;
   /** The live drone a physics body belongs to, or null. */
   droneOf(body: PhysicsBody | null | undefined): number | null;
-  /** Applies a hit to whatever body a shot struck; true if it was a target. */
-  hit(body: PhysicsBody | null | undefined, by?: Shooter): boolean;
+  /** Applies a hit to whatever body a shot struck; true if it was a target. A drone takes any hit as one. */
+  hit(body: PhysicsBody | null | undefined, by?: Shooter, damage?: Damage): boolean;
   /** Live targets of joined groups (the swarm), which fight back. */
   threats(): { id: number; position: Vector3 }[];
   /** Adds a group of targets after the drones. */
@@ -55,8 +63,9 @@ export interface Range {
    */
   shot(from: Vector3, to: Vector3, struck: boolean, shooter?: number): void;
   update(dt: number): void;
-  /** How many drones are down right now. */
+  /** How many drones are down right now, and how many have been destroyed since the start. */
   readonly down: number;
+  readonly destroyed: number;
 }
 
 const HITS = 3;
@@ -129,6 +138,7 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
   });
 
   const alive = (d: Drone) => d.respawnIn <= 0;
+  let destroyed = 0;
   const groups: { group: TargetGroup; first: number }[] = [];
   /** The joined group an id falls in, and the id within it. */
   const joined = (id: number) => {
@@ -185,14 +195,15 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
       const last = groups[groups.length - 1];
       groups.push({ group, first: last ? last.first + last.group.size : drones.length });
     },
-    hit(struck, by = 'hero') {
-      if (groups.some(({ group }) => group.hit(struck, by))) return true;
+    hit(struck, by = 'hero', damage = { amount: 34, kind: 'kinetic' }) {
+      if (groups.some(({ group }) => group.hit(struck, by, damage))) return true;
       const drone = drones.find((d) => alive(d) && d.aggregate.body === struck);
       if (!drone) return false;
       drone.hp -= 1;
       drone.flashFor = FLASH_SECONDS;
       drone.eye.emissiveColor = EYE_HIT;
       if (drone.hp <= 0) {
+        destroyed += 1;
         // Destroyed: it drops to the floor as a loose body, its eye dark.
         drone.respawnIn = RESPAWN_SECONDS;
         drone.aggregate.dispose();
@@ -253,6 +264,9 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
     },
     get down() {
       return drones.filter((d) => !alive(d)).length;
+    },
+    get destroyed() {
+      return destroyed;
     },
   };
 }

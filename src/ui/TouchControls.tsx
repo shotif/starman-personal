@@ -1,4 +1,5 @@
 import { useRef, useState } from 'preact/hooks';
+import type { Prompt } from '../game/game.ts';
 import type { Input } from '../game/input.ts';
 import { stickVector } from '../game/motion.ts';
 
@@ -15,19 +16,19 @@ export function TouchControls({
   input,
   commanding,
   talking,
-  canTalk,
+  prompt,
   onOrders,
-  onTalk,
+  onInteract,
 }: {
   input: Input;
   /** In the command view only the look area stays, to point the crosshair. */
   commanding: boolean;
-  /** In a conversation none of the controls show; the conversation takes the screen. */
+  /** In a conversation (or paused, or down) none of the controls show. */
   talking: boolean;
-  /** Someone to talk to is within reach. */
-  canTalk: boolean;
+  /** Someone to talk to, or something to use, within reach. */
+  prompt: Prompt | null;
   onOrders: () => void;
-  onTalk: () => void;
+  onInteract: () => void;
 }) {
   const stickFinger = useRef<number | null>(null);
   const stickOrigin = useRef({ x: 0, y: 0 });
@@ -165,16 +166,17 @@ export function TouchControls({
           >
             Orders
           </button>
-          {canTalk && (
+          {prompt && (
             <button
               type="button"
               class="touch__talk"
+              aria-label={prompt.label}
               onPointerDown={(e) => {
                 e.preventDefault();
-                onTalk();
+                onInteract();
               }}
             >
-              Talk
+              {prompt.kind === 'talk' ? 'Talk' : 'Use'}
             </button>
           )}
           <button

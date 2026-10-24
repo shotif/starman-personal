@@ -53,11 +53,11 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-39 | The eight companions | Decided 2026-10-24 | **As recommended**: Ren Okafor, Jo Rook, Corin Ash, Doctor Mira Achterberg, Low Ember, Fair Weather, Unit Seventy, Wren of the Seventh Ark ([STORY.md](design/STORY.md)) |
 | D-40 | The ship's name | Decided 2026-10-24 | **As recommended**: *Lantern* ([STORY.md](design/STORY.md)) |
 | D-41 | The rule for side stories | Decided 2026-10-24 | **As recommended**: people with reasons, a choice that costs, a consequence seen later ([STORY.md](design/STORY.md)) |
-| D-42 | Defences and health | Open | proposal in [COMBAT.md](design/COMBAT.md) |
-| D-43 | When the hero falls | Open | proposal in [COMBAT.md](design/COMBAT.md) |
-| D-44 | The slice's side story | Open | proposal in [SLICE.md](design/SLICE.md) |
-| D-45 | Where sound and music come from | Open | see round 6 below |
-| D-46 | Difficulty | Open | proposal in [COMBAT.md](design/COMBAT.md) |
+| D-42 | Defences and health | Decided 2026-10-24 | **As recommended**: shield, plate and health; the hero's shield returns after four seconds, health to the next quarter ([COMBAT.md](design/COMBAT.md)) |
+| D-43 | When the hero falls | Decided 2026-10-24 | **As recommended**: down, then a companion's hand once per fight, otherwise a checkpoint just before the fight ([COMBAT.md](design/COMBAT.md)) |
+| D-44 | The slice's side story | Decided 2026-10-24 | **As recommended**: the mast and the *Merrow* ([SLICE.md](design/SLICE.md)) |
+| D-45 | Where sound and music come from | Decided 2026-10-24 | **As recommended**: CC0 libraries first, ElevenLabs effects where nothing fits, Lyria music (round 6 below) |
+| D-46 | Difficulty | Decided 2026-10-24 | **As recommended**: Story, Standard and Hard, changeable at any time ([COMBAT.md](design/COMBAT.md)) |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -560,13 +560,15 @@ the rule for side stories, with three examples (D-41).
 **Decided:** all six as recommended, 24 October 2026 ("Everything else is as recommended, so
 continue"). The prologue is the playable slice of D-20: [design/SLICE.md](design/SLICE.md).
 
-## Round 6: the slice — open
+## Round 6: the slice — decided 24 October 2026
 
 The prologue is the playable slice ([design/SLICE.md](design/SLICE.md)); its fights are in
-[design/COMBAT.md](design/COMBAT.md). Its first increment, enemies that shoot back, needs none of
-these and is being built.
+[design/COMBAT.md](design/COMBAT.md). Its first increment, enemies that shoot back, needed none of
+these and was built first.
 
-### D-42 · Defences and health — **Open**
+**Decided:** all five as recommended, 24 October 2026 ("As recommended").
+
+### D-42 · Defences and health — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -576,7 +578,7 @@ these and is being built.
 
 **Recommendation: A.**
 
-### D-43 · When the hero falls — **Open**
+### D-43 · When the hero falls — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -586,7 +588,7 @@ these and is being built.
 
 **Recommendation: A.**
 
-### D-44 · The slice's side story — **Open**
+### D-44 · The slice's side story — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -597,7 +599,7 @@ these and is being built.
 **Recommendation: A.** All three keep D-41; A has the clearest cost and the consequence nearest the
 end.
 
-### D-45 · Where sound and music come from — **Open**
+### D-45 · Where sound and music come from — **Decided**
 
 The slice needs sound: shots, bolts, the swarm, footsteps, the station's hum, and music for fights
 and quiet moments.
@@ -610,7 +612,7 @@ and quiet moments.
 
 **Recommendation: A.**
 
-### D-46 · Difficulty — **Open**
+### D-46 · Difficulty — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -657,3 +659,7 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-24 | The HUD names the graphics chip | so a screenshot of a graphics fault says which chip it came from |
 | 2026-10-24 | Conversations: **E** or *Talk* within 3 m; the camera frames the partner over the hero's shoulder; plain replies carry no mark, *mercy*, *resolve* and *ask* do; a tap in the first 0.35 s of a line is ignored | the rules are in [DIALOGUE.md](design/DIALOGUE.md); none changes the story, and each is easy to change |
 | 2026-10-24 | The camera stops short of any wall however near (it never comes closer than 0.3 m to its pivot), and the hero fades out as the camera comes within 0.75 m of the head | the owner's phone showed the camera pressed against the hero's face in cover; most third-person games fade the hero the same way; see [COVER_AND_AIM.md](design/COVER_AND_AIM.md) |
+| 2026-10-24 | The slice's working names: Calder Station; Chief Hale; Pell; the night shift Dena, Sorrel and Ilya; people call the hero "Officer" and never by name, so every line can be voiced | the owner may rename any of them ([SLICE.md](design/SLICE.md)) |
+| 2026-10-24 | A conversation is had once; the story offers another when it has one. A saved game resumes at the last checkpoint, with the scene set up again | simple, and no stale talk |
+| 2026-10-24 | After a companion's help the hero has 2.5 seconds' grace from the swarm's shots | getting up straight into fire was a second fall at once |
+| 2026-10-24 | Testing runs on the owner's Mac with its GPU (ANGLE on Metal); GitHub's CI keeps SwiftShader | the owner's instruction; the journeys take half the time |

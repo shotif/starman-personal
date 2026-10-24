@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import proof from '../../story/proof.ink';
-import { Conversation } from '../game/conversation.ts';
+import type { Conversation } from '../game/conversation.ts';
+import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
 import type { Renderer } from '../game/engine.ts';
-import type { Game, GameStats, OrderKind } from '../game/game.ts';
-import { classOf } from '../game/hero.ts';
+import type { Ending, Game, GameStats, OrderKind, Prompt, SaveData, Vitals } from '../game/game.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Dialogue } from './Dialogue.tsx';
-import { isTouch, QUALITY_KEY, save } from './settings.ts';
+import { DIFFICULTY_KEY, isTouch, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
@@ -17,34 +16,82 @@ export interface GameViewProps {
   manifest: Manifest;
   tier: QualityTier;
   renderer: Renderer;
-  /** Back to the character creator. */
-  onChangeHero(): void;
+  difficulty: Difficulty;
+  /** A saved game to resume, or null for a new one. */
+  saved: SaveData | null;
+  /** Back to the title. */
+  onQuit(): void;
 }
 
-/** The proof: the corridor, the hero the player made, Ren and the drones. */
-export function GameView({ looks, manifest, tier, renderer, onChangeHero }: GameViewProps) {
+/** Tutorial hints, in the words of the device in hand (D-02). */
+const HINTS: Record<string, { touch: string; desk: string }> = {
+  move: {
+    touch: 'Left thumb moves · right thumb looks · Run toggles running',
+    desk: 'WASD to move · click the scene, then the mouse looks · Shift runs · E talks',
+  },
+  cover: {
+    touch: 'Walk into a low crate to take cover · walk away to leave it',
+    desk: 'Walk into a low crate to take cover · walk away to leave it',
+  },
+  aim: {
+    touch: 'Aim, then hold Fire · shots turn to the nearest target',
+    desk: 'Right mouse aims · left mouse fires',
+  },
+  orders: {
+    touch: 'Orders slows time: point the crosshair, then send your people there, at a target, or back to you',
+    desk: 'Q opens Orders and slows time: point, then 1 go there · 2 attack · 3 follow',
+  },
+};
+
+const LEADS: Record<string, string> = {
+  pyre: 'Pyre Remnant, and the Cooperative’s observatory',
+  maw: 'Maw Roost, and the Wake’s black market',
+  dusk: 'the Duskfolk border, where their star is dimming too',
+};
+
+/** The slice: Calder Station on Ross 128 b, run by the story (SLICE.md). */
+export function GameView({
+  looks,
+  manifest,
+  tier,
+  renderer,
+  difficulty: startDifficulty,
+  saved,
+  onQuit,
+}: GameViewProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [status, setStatus] = useState<Status>({ kind: 'loading' });
   const [stats, setStats] = useState<GameStats | null>(null);
   const [aiming, setAiming] = useState(false);
   const [commanding, setCommanding] = useState(false);
+  const [orderTo, setOrderTo] = useState('all');
   /** The command view's state for the key handler, which may run before the screen re-renders. */
   const commandingNow = useRef(false);
   const [line, setLine] = useState<{ name: string; text: string; id: number } | null>(null);
-  const [canTalk, setCanTalk] = useState(false);
-  /** The last hit the hero took, for the red flash at the edge it came from (COMBAT.md). */
-  const [hit, setHit] = useState<{ side: string; id: number } | null>(null);
-  const [conversation, setConversation] = useState<Conversation | null>(null);
-  /** Whether a conversation is open, for the key handler, as `commandingNow` is for the command view. */
+  const [prompt, setPrompt] = useState<Prompt | null>(null);
+  const [conversation, setConversation] = useState<{ conversation: Conversation; partner: string } | null>(null);
   const talkingNow = useRef(false);
+  const [objective, setObjective] = useState<string | null>(null);
+  const [caption, setCaption] = useState<{ text: string; id: number } | null>(null);
+  const [hint, setHint] = useState<{ id: string; at: number } | null>(null);
+  const [hit, setHit] = useState<{ side: string; id: number } | null>(null);
+  const [vitals, setVitals] = useState<Vitals | null>(null);
+  const [black, setBlack] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const pausedNow = useRef(false);
+  const [difficulty, setDifficulty] = useState(startDifficulty);
+  const [ending, setEnding] = useState<Ending | null>(null);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const touch = isTouch();
+  const debug = new URLSearchParams(location.search).has('debug');
 
   useEffect(() => {
     const element = canvas.current;
     if (!element) return;
     let disposed = false;
     let started: Game | null = null;
+    const params = new URLSearchParams(location.search);
     import('../game/game.ts')
       .then(({ startGame }) =>
         startGame(element, {
@@ -53,23 +100,52 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           looks,
           manifest,
           assist: isTouch(),
+          difficulty: startDifficulty,
+          save: saved,
+          chapter: params.get('chapter'),
           onAim: setAiming,
-          onCanTalk: setCanTalk,
-          onHit: (side) => setHit({ side, id: performance.now() }),
           onSay: (name, text) => {
             setLine({ name, text, id: performance.now() });
-            // For the browser journeys: the last thing the companion said.
+            // For the browser journeys: the last thing said.
             document.body.dataset.said = text;
           },
-          onStats: (s) => {
-            setStats(s);
-            // For the browser journeys: how many shots, and how many drones are down.
-            document.body.dataset.shots = String(s.shots);
-            document.body.dataset.dronesDown = String(s.dronesDown);
-            document.body.dataset.motesLive = String(s.motesLive);
-            document.body.dataset.motesDown = String(s.motesDown);
-            document.body.dataset.hits = String(s.hitsTaken);
+          onPrompt: (p) => {
+            setPrompt(p);
+            document.body.dataset.prompt = p?.label ?? '';
           },
+          onConversation: (c, partner) => {
+            talkingNow.current = true;
+            setLine(null);
+            setConversation({ conversation: c, partner });
+          },
+          onObjective: (text) => {
+            setObjective(text);
+            document.body.dataset.objective = text ?? '';
+          },
+          onCaption: (text) => setCaption({ text, id: performance.now() }),
+          onHint: (id) => setHint({ id, at: performance.now() }),
+          onHit: (side) => {
+            setHit({ side, id: performance.now() });
+            document.body.dataset.hits = String(Number(document.body.dataset.hits ?? 0) + 1);
+          },
+          onVitals: (v) => {
+            setVitals(v);
+            // For the browser journeys: the hero's state.
+            document.body.dataset.condition = v.condition.kind;
+            document.body.dataset.shield = v.shield.toFixed(2);
+            document.body.dataset.health = v.health.toFixed(2);
+          },
+          onFade: setBlack,
+          onSave: (data) => {
+            save(SAVE_KEY, JSON.stringify(data));
+            setSavedAt(performance.now());
+            document.body.dataset.checkpoint = data.checkpoint;
+          },
+          onEnd: (e) => {
+            setEnding(e);
+            document.body.dataset.ended = 'true';
+          },
+          onStats: (s) => setStats(s),
           onReady: () => {
             setStatus({ kind: 'ready' });
             document.body.dataset.ready = 'true';
@@ -93,53 +169,74 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
     };
   }, [tier, renderer, looks, manifest]);
 
-  // A companion's line stays for a few seconds.
+  // A line said in the world stays for a few seconds, longer for longer lines.
   useEffect(() => {
     if (!line) return;
-    const timer = setTimeout(() => setLine(null), 2800);
+    const timer = setTimeout(() => setLine(null), 2200 + line.text.length * 45);
     return () => clearTimeout(timer);
   }, [line]);
+  useEffect(() => {
+    if (!caption) return;
+    const timer = setTimeout(() => setCaption(null), 5200);
+    return () => clearTimeout(timer);
+  }, [caption]);
+  useEffect(() => {
+    if (!hint) return;
+    const timer = setTimeout(() => setHint(null), 9000);
+    return () => clearTimeout(timer);
+  }, [hint]);
+  useEffect(() => {
+    if (!savedAt) return;
+    const timer = setTimeout(() => setSavedAt(null), 2000);
+    return () => clearTimeout(timer);
+  }, [savedAt]);
 
   const openCommand = (open: boolean) => {
+    if (open && (talkingNow.current || pausedNow.current)) return;
     game?.setCommandView(open);
     commandingNow.current = open;
     setCommanding(open);
   };
   const give = (kind: OrderKind) => {
-    game?.order(kind);
+    game?.order(kind, orderTo);
     commandingNow.current = false;
     setCommanding(false);
-  };
-
-  const talk = () => {
-    if (talkingNow.current || !game?.startConversation()) return;
-    talkingNow.current = true;
-    setLine(null);
-    setConversation(
-      new Conversation(proof, 'ren_range', {
-        name: looks.name,
-        heroClass: looks.heroClass,
-        origin: looks.origin,
-        moment: looks.moment,
-      }),
-    );
   };
   const endTalk = () => {
     game?.endConversation();
     talkingNow.current = false;
     setConversation(null);
   };
+  const pause = (on: boolean) => {
+    pausedNow.current = on;
+    setPaused(on);
+    game?.setPaused(on);
+  };
+  const changeDifficulty = () => {
+    const next = DIFFICULTIES[(DIFFICULTIES.indexOf(difficulty) + 1) % DIFFICULTIES.length] ?? 'standard';
+    setDifficulty(next);
+    game?.setDifficulty(next);
+    save(DIFFICULTY_KEY, next);
+  };
+  const changeQuality = () => {
+    save(QUALITY_KEY, nextTier(tier));
+    location.reload();
+  };
 
-  // On a desktop: E talks; Q (or Tab) opens and closes the command view; 1, 2 and 3 give the orders.
+  // On a desktop: E talks or uses; Q (or Tab) opens Orders, 1, 2 and 3 give them; Escape pauses.
   useEffect(() => {
     if (!game) return;
     const keys = (e: KeyboardEvent) => {
       if (talkingNow.current) {
-        // The conversation reads its own keys; Tab must not leave the page mid-line.
         if (e.code === 'Tab') e.preventDefault();
         return;
       }
-      if (e.code === 'KeyE' && !commandingNow.current) talk();
+      if (e.code === 'Escape' && !commandingNow.current) {
+        pause(!pausedNow.current);
+        return;
+      }
+      if (pausedNow.current) return;
+      if (e.code === 'KeyE' && !commandingNow.current) game.interact();
       else if (e.code === 'KeyQ' || e.code === 'Tab') {
         e.preventDefault();
         openCommand(!commandingNow.current);
@@ -154,85 +251,121 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
     return () => window.removeEventListener('keydown', keys);
   });
 
-  const changeQuality = () => {
-    save(QUALITY_KEY, nextTier(tier));
-    const url = new URL(location.href);
-    url.searchParams.set('quality', nextTier(tier));
-    location.replace(url);
-  };
+  const team = game?.companions() ?? [];
+  const down = vitals?.condition.kind === 'down' ? vitals.condition : null;
+  const hintText = hint ? HINTS[hint.id] : null;
 
   return (
     <main class="stage">
-      <canvas ref={canvas} class="scene" aria-label="The station corridor" />
-      <header class="hud">
-        <p class="hud__title">Starman Lightkeeper · proof</p>
-        <p class="hud__stats">
-          {looks.name || 'Your hero'} · {classOf(looks.heroClass)?.name}
-        </p>
-        {stats && (
-          <p class="hud__stats">
-            {stats.fps} fps · {stats.renderer} · {stats.activeMeshes} meshes · {stats.speed.toFixed(1)} m/s
-            {stats.companionNavigation ? '' : ' · companion without navigation'}
-          </p>
-        )}
-        {stats?.gpu && <p class="hud__stats hud__gpu">{stats.gpu}</p>}
-        {stats && (
-          <p class="hud__stats">
-            {stats.inCover ? 'In cover · ' : ''}Drones down: {stats.dronesDown} of 3
-          </p>
-        )}
-        {stats && (stats.motesLive > 0 || stats.motesDown > 0) && (
-          <p class="hud__stats hud__swarm">
-            Swarm: {stats.motesLive} flying · {stats.motesDown} down · hits taken {stats.hitsTaken}
-          </p>
-        )}
-        <div class="hud__row">
-          <button type="button" class="hud__button" onClick={changeQuality}>
-            Quality: {tier}
-          </button>
-          <button type="button" class="hud__button" onClick={onChangeHero}>
-            Change hero
-          </button>
-        </div>
-      </header>
-      {status.kind === 'loading' && <p class="notice">Loading the station…</p>}
+      <canvas ref={canvas} class="scene" aria-label="Calder Station" />
+      {status.kind === 'ready' && !ending && (
+        <header class="hud">
+          {objective && !conversation && (
+            <p class="objective" key={objective}>
+              <span class="objective__mark" aria-hidden="true">
+                ◆
+              </span>{' '}
+              {objective}
+            </p>
+          )}
+          {vitals && (
+            <section class="vitals" aria-label="Shield and health">
+              <div class="bar bar--shield">
+                <span style={{ width: `${Math.round(vitals.shield * 100)}%` }} />
+              </div>
+              <div class="bar bar--health">
+                <span style={{ width: `${Math.round(vitals.health * 100)}%` }} />
+                <i style={{ left: '25%' }} />
+                <i style={{ left: '50%' }} />
+                <i style={{ left: '75%' }} />
+              </div>
+              {vitals.companions.map((c) => (
+                <p class={`vitals__companion${c.down ? ' vitals__companion--down' : ''}`} key={c.name}>
+                  {c.name}
+                  {c.down ? ' · down' : ''}
+                  <span class="mini">
+                    <span class="mini__shield" style={{ width: `${Math.round(c.shield * 100)}%` }} />
+                    <span class="mini__health" style={{ width: `${Math.round(c.health * 100)}%` }} />
+                  </span>
+                </p>
+              ))}
+            </section>
+          )}
+          {debug && stats && (
+            <p class="hud__stats">
+              {stats.fps} fps · {stats.renderer} · {stats.activeMeshes} meshes · {stats.gpu}
+            </p>
+          )}
+        </header>
+      )}
+      {status.kind === 'ready' && !ending && (
+        <button type="button" class="pause-button" aria-label="Pause" onClick={() => pause(true)}>
+          ❚❚
+        </button>
+      )}
+      {status.kind === 'loading' && <p class="notice">Loading Calder Station…</p>}
       {status.kind === 'error' && (
         <div class="notice notice--error" role="alert">
-          <p>The scene could not start.</p>
+          <p>The game could not start.</p>
           <p class="notice__detail">{status.message}</p>
         </div>
       )}
-      {status.kind === 'ready' && !conversation && (
-        <p class="hint">
-          {touch
-            ? 'Left thumb moves · right thumb looks · walk into a crate for cover · Aim, then Fire · Orders for Ren'
-            : 'Click to look · WASD to move · Shift to run · walk into a crate for cover · right mouse aims, left fires · Q gives Ren orders'}
+      {caption && (
+        <p class="caption" key={caption.id}>
+          {caption.text}
         </p>
       )}
+      {hintText && !conversation && !commanding && (
+        <p class="hint" key={hint?.at}>
+          {touch ? hintText.touch : hintText.desk}
+        </p>
+      )}
+      {savedAt && <p class="saved">Saved</p>}
       {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
       {hit && <div class={`hit hit--${hit.side}`} key={hit.id} aria-hidden="true" />}
-      {canTalk && !conversation && !commanding && !touch && (
+      {vitals && vitals.health < 0.35 && vitals.condition.kind === 'up' && <div class="wounded" aria-hidden="true" />}
+      {prompt && !conversation && !commanding && !touch && (
         <p class="talk-prompt">
-          <kbd>E</kbd>Talk to Ren
+          <kbd>E</kbd>
+          {prompt.label}
+        </p>
+      )}
+      {down && (
+        <div class="down" role="alert">
+          <p class="down__title">You’re down</p>
+          <p class="down__detail">
+            {vitals?.helpComing ? 'Hold on. Help is coming.' : 'Back to just before the fight in a moment.'}{' '}
+            {Math.ceil(down.left)}
+          </p>
+        </div>
+      )}
+      {line && !conversation && (
+        <p class="said" key={line.id} role="status">
+          <span class="said__name">{line.name}</span> {line.text}
         </p>
       )}
       {conversation && (
         <Dialogue
-          conversation={conversation}
+          conversation={conversation.conversation}
           heroName={looks.name || 'You'}
           touch={touch}
           onSpeaker={(who) => game?.setSpeaker(who)}
           onEnd={endTalk}
         />
       )}
-      {line && (
-        <p class="said" key={line.id} role="status">
-          <span class="said__name">{line.name}:</span> {line.text}
-        </p>
-      )}
-      {commanding && (
-        <div class="orders" role="dialog" aria-label="Orders for Ren">
-          <p class="orders__title">Orders for Ren · point the crosshair, then choose</p>
+      {commanding && !paused && (
+        <div class="orders" role="dialog" aria-label="Orders">
+          <p class="orders__title">Orders · point the crosshair, then choose</p>
+          {team.length > 1 && (
+            <div class="orders__who" role="radiogroup" aria-label="Who">
+              {['all', ...team].map((who) => (
+                <label key={who} class={`orders__pick${orderTo === who ? ' orders__pick--on' : ''}`}>
+                  <input type="radio" name="order-to" checked={orderTo === who} onChange={() => setOrderTo(who)} />
+                  {who === 'all' ? 'Both' : who}
+                </label>
+              ))}
+            </div>
+          )}
           <div class="orders__buttons">
             <button type="button" onClick={() => give('go')}>
               Go there {!touch && <kbd>1</kbd>}
@@ -249,15 +382,59 @@ export function GameView({ looks, manifest, tier, renderer, onChangeHero }: Game
           </div>
         </div>
       )}
-      {touch && game && (
+      {touch && game && !ending && (
         <TouchControls
           input={game.input}
           commanding={commanding}
-          talking={conversation !== null}
-          canTalk={canTalk}
+          talking={conversation !== null || paused || !!down}
+          prompt={prompt}
           onOrders={() => openCommand(true)}
-          onTalk={talk}
+          onInteract={() => game.interact()}
         />
+      )}
+      {paused && (
+        <div class="pause" role="dialog" aria-label="Paused">
+          <p class="pause__title">Paused</p>
+          <button type="button" onClick={() => pause(false)}>
+            Resume
+          </button>
+          <button type="button" onClick={changeDifficulty}>
+            Difficulty: {DIFFICULTY[difficulty].name}
+          </button>
+          <button type="button" onClick={changeQuality}>
+            Quality: {tier}
+          </button>
+          <button type="button" onClick={onQuit}>
+            Save and quit to title
+          </button>
+          <p class="pause__note">The game saves at every checkpoint.</p>
+        </div>
+      )}
+      {black && <div class="fade" aria-hidden="true" />}
+      {ending && (
+        <div class="ending" role="dialog" aria-label="The end of the prologue">
+          <p class="ending__kicker">End of the prologue</p>
+          <h1 class="ending__title">Last light at Ross 128</h1>
+          <ul class="ending__list">
+            <li>
+              {ending.tookMast
+                ? 'You turned the relay by hand. The Merrow heard, and turned back.'
+                : 'You brought the night shift through. The Merrow never heard the warning.'}
+            </li>
+            <li>
+              {ending.ilyaLost
+                ? 'Ilya Marsh stood in front of Dena when the machines came. He did not leave Ross 128 b.'
+                : 'Everyone from the night shift came aboard.'}
+            </li>
+            <li>Chief Hale stayed behind to keep the doors working.</li>
+            <li>The surveyor is yours now, and her name is Lantern.</li>
+            {ending.firstLead && <li>Your first course: {LEADS[ending.firstLead] ?? ending.firstLead}.</li>}
+          </ul>
+          <p class="ending__next">Act 1, The dimming, is being written.</p>
+          <button type="button" onClick={onQuit}>
+            Back to the title
+          </button>
+        </div>
       )}
     </main>
   );

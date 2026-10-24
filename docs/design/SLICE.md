@@ -92,13 +92,21 @@ Each keeps the game playable, passes CI and deploys (D-01).
 1. **Enemies that shoot back**: motes in the range, their shots stopped by cover. Needs no
    decision; the hits are only shown until D-42 is answered. *Built 24 October 2026
    ([COMBAT.md](COMBAT.md)).*
-2. **Defences, health, falling and trying again** (D-42, D-43, D-46).
+2. **Defences, health, falling and trying again** (D-42, D-43, D-46). *Built: shield, plate and
+   health for everyone (`src/game/defences.ts`); down, a companion's hand once a fight, a moment's
+   grace after it, otherwise back to just before the fight (`src/game/falling.ts`); difficulty in
+   the title and the pause menu.*
 3. **Powers**: one signature power per class first, then the rest of the starting powers, on
    buttons and keys.
 4. **Calder Station, blocked out**: the six parts in simple shapes, the route, the doors and the
-   triggers that start beats.
+   triggers that start beats. *Built: `src/game/kit.ts` (rooms, doors, windows, lights by zone,
+   merged by material), `src/game/station.ts`, `src/game/places.ts` (the named places the script
+   uses), `src/game/sky.ts` (Ross 128 at its real 2.1°, and the swarm's ring).*
 5. **The story in ink**: every conversation of the slice, story state, checkpoints and saving.
-6. **Jo Rook** and two companions at once.
+   *Built: `story/slice.ink` runs the whole slice through the director (`src/game/director.ts`):
+   `>>>` commands, waits on events, checkpoints that save; conversations in a flow of their own.
+   The title offers Continue. A browser journey plays it from the night shift to the bridge.*
+6. **Jo Rook** and two companions at once. *Built: orders to either or both.*
 7. **Voices and mouths.**
 8. **The art pass**: Meshy for the station's pieces, the swarm and the bridge (the owner's
    style decision: Meshy first, the local pipeline when the budget runs out).
@@ -114,3 +122,5 @@ In [DECISIONS.md](../DECISIONS.md), round 6:
 - **D-44** The side story at the mast, as above, or another.
 - **D-45** Where sound and music come from.
 - **D-46** Difficulty.
+
+All five were decided as recommended on 24 October 2026.

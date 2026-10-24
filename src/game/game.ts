@@ -1,9 +1,11 @@
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
-import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import type { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { CreatePolyhedron } from '@babylonjs/core/Meshes/Builders/polyhedronBuilder';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { PhysicsRaycastResult } from '@babylonjs/core/Physics/physicsRaycastResult';
 import {
   CharacterSupportedState,
@@ -14,16 +16,30 @@ import { HavokPlugin } from '@babylonjs/core/Physics/v2/Plugins/havokPlugin';
 import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
+import slice from '../../story/slice.ink';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
-import { CHARACTERS, wardrobe } from './appearance.ts';
-import { type Character, loadCharacterTemplate, spawnCharacter } from './characters.ts';
+import { CHARACTERS } from './appearance.ts';
+import { type Character, loadCharacterTemplate } from './characters.ts';
 import { buildRange } from './combat.ts';
-import { spawnCompanion } from './companion.ts';
+import { type Companion, spawnCompanion } from './companion.ts';
+import { type Conversation, StoryRunner } from './conversation.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
+import {
+  DAMAGE,
+  type Defences,
+  DIFFICULTY,
+  type Difficulty,
+  helpedUp,
+  personDefences,
+  recover,
+  restored,
+  takeHit,
+} from './defences.ts';
+import { type Command, Director } from './director.ts';
+import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
-import { buildGallery } from './gallery.ts';
+import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
 import { Input } from './input.ts';
-import { buildLevel } from './level.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
 import { buildSwarm } from './motes.ts';
 import {
@@ -37,10 +53,13 @@ import {
   type Vec3Like,
   yawOf,
 } from './motion.ts';
+import { createNavigation, type Navigation } from './navigation.ts';
+import { dress, looksOf, type Person, spawnPerson } from './people.ts';
 import { poseWeights } from './pose.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
-import { type Drill, drillStep, hitSide } from './swarm.ts';
+import { buildStation, type Mark } from './station.ts';
+import { hitSide } from './swarm.ts';
 
 export interface GameStats {
   fps: number;
@@ -49,17 +68,43 @@ export interface GameStats {
   gpu: string;
   tier: QualityTier;
   activeMeshes: number;
-  /** The hero's ground speed in metres a second. */
-  speed: number;
-  companionNavigation: boolean;
+}
+
+/** The hero's and the companions' shields and health, for the screen (D-42). */
+export interface Vitals {
+  shield: number;
+  health: number;
+  companions: { name: string; shield: number; health: number; down: boolean }[];
+  /** Down and waiting for help, with seconds left, or rising, or up. */
+  condition: Condition;
+  helpComing: boolean;
   inCover: boolean;
-  /** Shots fired since the start, and drones down right now. */
-  shots: number;
-  dronesDown: number;
-  /** The swarm (COMBAT.md): motes flying, motes brought down, and bolts that hit the hero. */
-  motesLive: number;
-  motesDown: number;
-  hitsTaken: number;
+}
+
+/** What the hero can do where they stand: talk to someone, or use something. */
+export interface Prompt {
+  kind: 'talk' | 'use';
+  label: string;
+}
+
+/** What the player chose, for the end of the slice. */
+export interface Ending {
+  tookMast: boolean;
+  merrowWarned: boolean;
+  ilyaLost: boolean;
+  firstLead: string;
+  renApproval: number;
+  joApproval: number;
+}
+
+/** A saved game: the hero, the story's state at its last checkpoint, and the difficulty. */
+export interface SaveData {
+  version: 1;
+  looks: Looks;
+  story: string;
+  checkpoint: string;
+  difficulty: Difficulty;
+  at: number;
 }
 
 /** The orders of the command view (ORDERS.md). */
@@ -69,49 +114,69 @@ export interface Game {
   input: Input;
   /** Opens or closes the command view, where time nearly stops. */
   setCommandView(open: boolean): void;
-  /** Gives the companion an order about what the crosshair points at, and closes the command view. */
-  order(kind: OrderKind): void;
-  /** Starts a conversation with the companion if she is close enough (DIALOGUE.md). */
-  startConversation(): boolean;
+  /** Gives an order about what the crosshair points at to one companion (by name) or all, and closes the command view. */
+  order(kind: OrderKind, who?: string): void;
+  /** Talks to whoever, or uses whatever, the prompt names. */
+  interact(): void;
   /** Who is speaking now, so they gesture and the camera knows. */
   setSpeaker(who: 'hero' | 'partner' | null): void;
   endConversation(): void;
+  setDifficulty(difficulty: Difficulty): void;
+  /** Stops the game's time (the pause menu), or starts it again. */
+  setPaused(paused: boolean): void;
+  /** The companions with the hero now. */
+  companions(): string[];
   dispose(): void;
 }
 
 export interface GameOptions {
   tier: QualityTier;
-  /** The hero the player made (CREATOR.md); the other body is the companion. */
+  /** The hero the player made (CREATOR.md). */
   looks: Looks;
   manifest: Manifest;
   renderer: Renderer;
   /** Aim assist turns shots towards a nearby target (D-17: on phones). */
   assist: boolean;
+  difficulty: Difficulty;
+  /** A saved game to resume, or null for a new one. */
+  save: SaveData | null;
+  /** For testing: start at a chapter of the slice (a stitch of `slice`). */
+  chapter?: string | null;
   onStats(stats: GameStats): void;
   onReady(): void;
   /** Called when the hero starts or stops aiming, to show the crosshair. */
   onAim(aiming: boolean): void;
-  /** A companion says something (ORDERS.md). */
-  onSay(name: string, line: string): void;
-  /** Called when someone to talk to comes within reach, or leaves it. */
-  onCanTalk(canTalk: boolean): void;
-  /** A bolt hit the hero, from this edge of the screen (COMBAT.md). */
+  /** Someone says something in the world (a companion, a voice on the comms). */
+  onSay(name: string, line: string, id: string | null): void;
+  onPrompt(prompt: Prompt | null): void;
+  /** A conversation starts: the screen shows it, and calls `setSpeaker` and `endConversation`. */
+  onConversation(conversation: Conversation, partner: string): void;
+  onObjective(text: string | null): void;
+  onCaption(text: string): void;
+  onHint(id: string): void;
+  /** A shot hit the hero, from this edge of the screen (COMBAT.md). */
   onHit(side: 'front' | 'back' | 'left' | 'right'): void;
+  onVitals(vitals: Vitals): void;
+  /** The screen fades to black, or back. */
+  onFade(black: boolean): void;
+  onSave(save: SaveData): void;
+  onEnd(ending: Ending): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
+const CAPSULE_RADIUS = 0.35;
 /** How far ahead the cover is looked for while in it: as far as it can be taken from, and a little. */
-const COVER_AHEAD = COVER.reach + 0.35 + 0.15;
+const COVER_AHEAD = COVER.reach + CAPSULE_RADIUS + 0.15;
 /** The hero's capsule's collision group, and every group but it (Havok's 32-bit masks). */
 const HERO_GROUP = 2;
 const ALL_BUT_HERO = 0xffffffff - HERO_GROUP;
-const CAPSULE_RADIUS = 0.35;
 const GRAVITY = new Vector3(0, -18, 0);
 const vector = (p: Point) => new Vector3(p.x, p.y, p.z);
 /** The middle of the head above the feet, for a character of standard height. */
 const HEAD_HEIGHT = 1.6;
-/** How near the hero must be to talk to someone; Ren, following, stays within 2.6 m (ORDERS). */
+/** How near the hero must be to talk to someone, or use something. */
 const TALK_REACH = 3;
+const USE_REACH = 1.9;
 const UP = Vector3.Up();
 const DOWN = Vector3.Down();
 const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, maxBeta: 1.85, fov: 0.95, aimFov: 0.72 };
@@ -119,18 +184,12 @@ const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, max
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
-/** Where the swarm comes in: the range's vents, high on the far wall and the sides. */
-const VENTS = [
-  new Vector3(-5, 3.2, 37.4),
-  new Vector3(5, 3.2, 37.4),
-  new Vector3(0, 3.4, 37.4),
-  new Vector3(-5.4, 3, 33),
-  new Vector3(5.4, 3, 33),
-];
-const DRONES = [new Vector3(-2.6, 1.7, 37.2), new Vector3(0.8, 1.9, 37), new Vector3(4.8, 1.4, 31.5)];
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
+const LIFTOFF_SECONDS = 8;
+/** After a companion's help, this long before shots count again. */
+const GRACE_SECONDS = 2.5;
 
 export async function startGame(canvas: HTMLCanvasElement, options: GameOptions): Promise<Game> {
   const q = QUALITY[options.tier];
@@ -139,67 +198,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, q.maxPixelRatio));
 
   const scene = new Scene(engine);
-  scene.clearColor = new Color4(0.015, 0.02, 0.03, 1);
   scene.skipPointerMovePicking = true;
-
   const havok = await HavokPhysics({ locateFile: () => havokWasmUrl });
   const physics = new HavokPlugin(true, havok);
   scene.enablePhysics(GRAVITY, physics);
 
-  const level = buildLevel(scene, q);
-  const { hero, companion } = await spawnCast(scene, options.looks, options.manifest);
-  for (const mesh of [...hero.meshes, ...companion.meshes]) level.castShadow(mesh as Mesh);
-
-  const controller = new PhysicsCharacterController(
-    level.heroStart.clone(),
-    { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
-    scene,
-  );
-  // The controller's capsule is a body rays can meet. It has a group of its own, so the swarm's rays
-  // can look past it to the hero (COMBAT.md) while walls and cover still stop them.
-  controller.shape.filterMembershipMask = HERO_GROUP;
-
-  const camera = new ArcRotateCamera('camera', -Math.PI / 2, 1.2, 3.4, level.heroStart.clone(), scene);
-  camera.inputs.clear();
-  camera.minZ = 0.05;
-  camera.fov = CAMERA.fov;
-  /** The player's view round the hero; a conversation takes the camera, and hands it back unchanged. */
-  const orbit = { alpha: camera.alpha, beta: camera.beta };
-  /** Puts the camera at `position`, looking at `target`. */
-  const place = (position: Vector3, target: Vector3) => {
-    const v = position.subtract(target);
-    const r = v.length() || 1e-3;
-    // Keep the camera's angles as its target moves: plain `target =` would re-aim it from where it
-    // stood, turning it a little every frame, and the hero, walking "forward", would drift.
-    camera.setTarget(target, false, false, true);
-    camera.alpha = Math.atan2(v.z, v.x);
-    camera.beta = Math.acos(Math.min(1, Math.max(-1, v.y / r)));
-    camera.radius = r;
-  };
-
-  const range = buildRange(scene, DRONES, q.maxLights);
-  const swarm = buildSwarm(scene, q.maxLights);
-  range.join(swarm);
-  /** The drill that turns into a fight; `?swarm` starts the fight at once, for testing. */
-  let drill: Drill = new URLSearchParams(location.search).has('swarm')
-    ? { kind: 'warning', left: 1, wave: 0 }
-    : { kind: 'quiet' };
-  let hitsTaken = 0;
-  // The style test's props; the scene starts without waiting for them.
-  buildGallery(scene, q.maxLights).catch((error: unknown) => console.warn('The gallery could not load.', error));
-  const input = new Input(canvas);
+  const place = buildStation(scene, q);
+  let difficulty = options.difficulty;
   const ray = new PhysicsRaycastResult();
-  let heroYaw = 0;
-  const desired = new Vector3();
-  const heroForward = new Vector3(0, 0, 1);
-  let cover: CoverState = { inCover: false };
-  let aimBlend = 0;
-  let coverBlend = 0;
-  let wasAiming = false;
-  let fireCooldown = 0;
-  let shotPose = 0;
-  let shots = 0;
-
   /**
    * Distance to the first thing a ray meets, its point and normal; null if it meets nothing.
    * `pastHero` looks through the hero's own capsule.
@@ -222,63 +228,390 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
    * on air (seen on the owner's phone, 24 October 2026). The feet are put on the floor itself.
    */
   const groundUnder = (at: Vector3) => {
-    const hit = cast(new Vector3(at.x, at.y + 0.25, at.z), new Vector3(at.x, at.y - 0.3, at.z));
+    const hit = cast(new Vector3(at.x, at.y + 0.25, at.z), new Vector3(at.x, at.y - 0.3, at.z), true);
     return hit ? hit.point.y : null;
   };
 
-  const ren = await spawnCompanion(
+  // The cast: the hero the player made, the companions and the people of the station.
+  const templates: Record<Body, Awaited<ReturnType<typeof loadCharacterTemplate>>> = {
+    man: null,
+    woman: null,
+  };
+  [templates.man, templates.woman] = await Promise.all([
+    loadCharacterTemplate(scene, `${CHARACTERS}${options.manifest.bodies.man.file}`),
+    loadCharacterTemplate(scene, `${CHARACTERS}${options.manifest.bodies.woman.file}`),
+  ]);
+  const others = ['ren', 'jo', 'hale', 'pell', 'dena', 'sorrel', 'ilya'];
+  const [hero, ...dressed] = await Promise.all([
+    dress(scene, templates, options.manifest, 'hero', options.looks),
+    ...others.map((id) => dress(scene, templates, options.manifest, id, looksOf(options.manifest, id))),
+  ]);
+  const characters: Record<string, Character> = { hero };
+  others.forEach((id, i) => {
+    const c = dressed[i];
+    if (c) characters[id] = c;
+  });
+  for (const c of [hero, characters.ren, characters.jo]) for (const mesh of c?.meshes ?? []) place.castShadow(mesh);
+
+  const controller = new PhysicsCharacterController(
+    place.heroStart.at.add(new Vector3(0, CAPSULE_HEIGHT / 2 + 0.05, 0)),
+    { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
     scene,
-    level.navigationMeshes,
-    companion,
-    level.companionStart,
-    { range, cast, groundUnder },
-    (line) => options.onSay('Ren', line),
   );
+  // The controller's capsule is a body rays can meet. It has a group of its own, so the swarm's rays
+  // can look past it to the hero (COMBAT.md) while walls and cover still stop them.
+  controller.shape.filterMembershipMask = HERO_GROUP;
+
+  const camera = new ArcRotateCamera('camera', -Math.PI / 2, 1.2, 3.4, place.heroStart.at.clone(), scene);
+  camera.inputs.clear();
+  camera.minZ = 0.05;
+  camera.maxZ = 5000;
+  camera.fov = CAMERA.fov;
+  /** The player's view round the hero; a conversation or a scene takes the camera, and hands it back. */
+  const orbit = { alpha: -Math.PI / 2 - place.heroStart.yaw, beta: 1.32 };
+  /** Puts the camera at `position`, looking at `target`. */
+  const aimCamera = (position: Vector3, target: Vector3) => {
+    const v = position.subtract(target);
+    const r = v.length() || 1e-3;
+    // Keep the camera's angles as its target moves: plain `target =` would re-aim it from where it
+    // stood, turning it a little every frame, and the hero, walking "forward", would drift.
+    camera.setTarget(target, false, false, true);
+    camera.alpha = Math.atan2(v.z, v.x);
+    camera.beta = Math.acos(Math.min(1, Math.max(-1, v.y / r)));
+    camera.radius = r;
+  };
+
+  const range = buildRange(scene, place.drones, q.maxLights);
+  const swarm = buildSwarm(scene, q.maxLights);
+  range.join(swarm);
+  const input = new Input(canvas);
+
+  let nav: Navigation | null = null;
+  try {
+    nav = await createNavigation(scene, place.navigationMeshes);
+  } catch (error) {
+    console.warn('Navigation could not start; companions only follow.', error);
+  }
+  const world = { range, cast: (a: Vector3, b: Vector3) => cast(a, b), groundUnder };
+  const say = (name: string) => (line: string) => options.onSay(name, line, null);
+  const ren = spawnCompanion(
+    scene,
+    'Ren',
+    nav,
+    characters.ren ?? hero,
+    place.marks.ren?.at ?? Vector3.Zero(),
+    world,
+    say('Ren'),
+  );
+  const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, say('Jo'));
+  jo.show(false);
+  const companionsById: Record<string, Companion> = { ren, jo };
+  /** Companions with the hero: Ren from the start, Jo once she joins. */
+  const joined = new Set<Companion>([ren]);
+  const people: Record<string, Person> = {};
+  for (const id of ['hale', 'pell', 'dena', 'sorrel', 'ilya']) {
+    const c = characters[id];
+    if (!c) continue;
+    people[id] = spawnPerson(scene, id, looksOf(options.manifest, id).name, c, nav, groundUnder);
+  }
+  const nameOf = (id: string) => companionsById[id]?.name ?? people[id]?.name ?? id;
+  const characterOf = (id: string) => (id === 'hero' ? hero : (companionsById[id]?.character ?? people[id]?.character));
+
+  // The hero's state.
+  let heroYaw = place.heroStart.yaw;
+  const desired = new Vector3();
+  const heroForward = new Vector3(Math.sin(heroYaw), 0, Math.cos(heroYaw));
+  let cover: CoverState = { inCover: false };
+  let aimBlend = 0;
+  let coverBlend = 0;
+  let wasAiming = false;
+  let fireCooldown = 0;
+  let shotPose = 0;
+  let heroDefences: Defences = personDefences();
+  let condition: Condition = { kind: 'up' };
+  let helpUsed = false;
+  let helper: Companion | null = null;
+  /** Seconds of grace after being helped up: getting up under fire is not a second fall. */
+  let grace = 0;
   let commanding = false;
-  /**
-   * A conversation in progress (DIALOGUE.md): who is speaking, and the side of the line between the
-   * two people the camera keeps (src/game/shots.ts).
-   */
-  let talking: { speaker: 'hero' | 'partner' | null; side: 1 | -1 } | null = null;
-  /** How far the camera has gone over to the conversation's shots, 0 to 1; and the last shot. */
+
+  // The story.
+  const runner = new StoryRunner(slice, {
+    name: options.looks.name,
+    heroClass: options.looks.heroClass,
+    origin: options.looks.origin,
+    moment: options.looks.moment,
+  });
+  /** Conversations people offer, by person. */
+  const talkKnots: Record<string, string | null> = {};
+  /** Things that can be used, by id. */
+  const usable = new Map<string, { at: Vector3; label: string }>();
+  let markerTarget: string | null = null;
+  let drillFrom: number | null = null;
+  let fight: Fight | null = null;
+  /** Where everyone stood when the fight began, to start it again from there (D-43). */
+  let snapshot: { hero: Vector3; yaw: number; companions: { c: Companion; at: Vector3; yaw: number }[] } | null = null;
+  let area: string | null = null;
+  /** True while a saved game (or a new one) sets its scene up: `start` commands apply. */
+  let resuming = true;
+  let liftoff: { t: number } | null = null;
+  let ended = false;
+
+  /** A conversation in progress: with whom, who is speaking, and the side of the line the camera keeps. */
+  let talking: { id: string; knot: string; speaker: 'hero' | 'partner' | null; side: 1 | -1 } | null = null;
   let talkBlend = 0;
   let lastShot: Shot | null = null;
-  let couldTalk = false;
+  let prompt: Prompt | null = null;
+  let promptTarget: { kind: 'talk'; id: string } | { kind: 'use'; id: string } | null = null;
 
-  /** The camera's view: where it is and where it looks. */
+  const markOf = (name: string): Mark | null => place.marks[name] ?? null;
+
+  /** Moves the hero at once, facing `yaw`, with the camera behind. */
+  const moveHero = (at: Vector3, yaw: number) => {
+    controller.setPosition(at.add(new Vector3(0, CAPSULE_HEIGHT / 2 + 0.05, 0)));
+    controller.setVelocity(Vector3.Zero());
+    hero.root.position.copyFrom(at);
+    heroYaw = yaw;
+    orbit.alpha = -Math.PI / 2 - yaw;
+    orbit.beta = 1.32;
+    cover = { inCover: false };
+  };
+
+  /** Puts someone at a mark; a companion `behind` the mark stands a little back and to the side. */
+  const putAt = (who: string, markName: string, behind = false) => {
+    const m = markOf(markName);
+    if (!m) return;
+    let at = m.at;
+    if (behind) {
+      const back = new Vector3(Math.sin(m.yaw), 0, Math.cos(m.yaw));
+      at = m.at.subtract(back.scale(1.6)).add(new Vector3(back.z, 0, -back.x).scale(-0.9));
+    }
+    if (who === 'hero') moveHero(at, m.yaw);
+    else if (companionsById[who]) companionsById[who]?.place(at, m.yaw);
+    else people[who]?.place(at, m.yaw);
+  };
+
+  const startConversation = (id: string, knot: string) => {
+    const partner = characterOf(id);
+    if (!partner || talking) return;
+    input.release();
+    const conversation = runner.converse(knot);
+    talking = {
+      id,
+      knot,
+      speaker: null,
+      side: sideOf(hero.root.position, partner.root.position, camera.position),
+    };
+    options.onPrompt(null);
+    prompt = null;
+    options.onConversation(conversation, nameOf(id));
+  };
+
+  const wakeWave = (wave: Wave) => {
+    const vents = [...(place.vents[wave.vents] ?? [])].sort(() => Math.random() - 0.5);
+    let i = 0;
+    const next = () => {
+      const v = vents[i % Math.max(1, vents.length)] ?? hero.root.position.add(new Vector3(0, 6, 10));
+      i += 1;
+      // A little apart when more come from one vent than there are vents.
+      return i > vents.length ? v.add(new Vector3(Math.random() - 0.5, Math.random() * 0.5, Math.random() - 0.5)) : v;
+    };
+    const take = (n = 0) => Array.from({ length: n }, next);
+    swarm.wake(take(wave.motes), 'mote');
+    swarm.wake(take(wave.lattices), 'lattice');
+    swarm.wake(take(wave.tenders), 'tender');
+  };
+
+  const startEncounter = (id: string) => {
+    fight = startFight(id);
+    helpUsed = false;
+    snapshot = {
+      hero: hero.root.position.clone(),
+      yaw: heroYaw,
+      companions: [...joined].map((c) => ({
+        c,
+        at: c.character.root.position.clone(),
+        yaw: c.character.root.rotation.y,
+      })),
+    };
+  };
+
+  /** Back to just before the fight (D-43): everyone where they stood, whole, and the fight from its start. */
+  const restartFight = () => {
+    options.onFade(true);
+    swarm.clear();
+    if (snapshot) {
+      moveHero(snapshot.hero, snapshot.yaw);
+      for (const s of snapshot.companions) {
+        s.c.raise();
+        s.c.place(s.at, s.yaw);
+        s.c.order({ kind: 'follow' }, true);
+      }
+    }
+    heroDefences = restored(heroDefences);
+    condition = { kind: 'up' };
+    helper?.help(null);
+    helper = null;
+    helpUsed = false;
+    if (fight) fight = startFight(fight.id);
+    window.setTimeout(() => options.onFade(false), 450);
+  };
+
+  const fightOver = () => {
+    helpUsed = false;
+    for (const c of joined) if (c.down) c.raise();
+  };
+
+  const ending = (): Ending => ({
+    tookMast: runner.variable('took_mast') === true,
+    merrowWarned: runner.variable('merrow_warned') === true,
+    ilyaLost: runner.variable('ilya_lost') === true,
+    firstLead: String(runner.variable('first_lead') ?? ''),
+    renApproval: Number(runner.variable('ren_approval') ?? 0),
+    joApproval: Number(runner.variable('jo_approval') ?? 0),
+  });
+
+  const run = (c: Command) => {
+    const [a = '', b = ''] = c.args;
+    switch (c.verb) {
+      case 'lights':
+        place.lightsOut(a === 'out');
+        break;
+      case 'sky':
+        place.sky.swarm(a === 'swarm');
+        break;
+      case 'start':
+        if (resuming) putAt(a, b, a !== 'hero');
+        break;
+      case 'place':
+        putAt(a, b);
+        break;
+      case 'hide':
+      case 'show':
+        if (companionsById[a]) companionsById[a]?.show(c.verb === 'show');
+        else people[a]?.show(c.verb === 'show');
+        break;
+      case 'open':
+      case 'close':
+        place.doors[a]?.set(c.verb === 'open');
+        break;
+      case 'lock':
+      case 'unlock':
+        place.doors[a]?.lock(c.verb === 'lock');
+        if (c.verb === 'lock') place.doors[a]?.set(false);
+        break;
+      case 'caption':
+        options.onCaption(c.rest);
+        break;
+      case 'hint':
+        options.onHint(a);
+        break;
+      case 'objective':
+        options.onObjective(c.rest);
+        break;
+      case 'marker':
+        markerTarget = a === 'none' ? null : a;
+        break;
+      case 'talk':
+        talkKnots[a] = b || null;
+        break;
+      case 'drill':
+        drillFrom = range.destroyed;
+        break;
+      case 'scene':
+        startConversation(a, b);
+        break;
+      case 'walk': {
+        const m = markOf(b);
+        if (m) people[a]?.walkTo(m.at, b === 'boarding');
+        break;
+      }
+      case 'follow':
+        if (companionsById[a]) companionsById[a]?.order({ kind: 'follow' }, true);
+        else people[a]?.follow(true);
+        break;
+      case 'stay': {
+        const comp = companionsById[a];
+        if (comp) comp.place(comp.character.root.position.clone(), comp.character.root.rotation.y);
+        else people[a]?.follow(false);
+        break;
+      }
+      case 'join': {
+        const comp = companionsById[a];
+        if (comp) {
+          joined.add(comp);
+          comp.order({ kind: 'follow' }, true);
+        }
+        break;
+      }
+      case 'encounter':
+        startEncounter(a);
+        break;
+      case 'use': {
+        const m = markOf(b);
+        if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' ') });
+        break;
+      }
+      case 'down':
+        people[a]?.fall();
+        break;
+      case 'liftoff':
+        liftoff = { t: 0 };
+        place.freeShip();
+        options.onObjective(null);
+        break;
+      case 'end':
+        ended = true;
+        options.onEnd(ending());
+        break;
+    }
+  };
+
+  const director = new Director(runner, {
+    command: run,
+    bark: (line) =>
+      options.onSay(line.speaker === 'hero' ? options.looks.name || 'You' : line.speaker, line.text, line.id),
+    checkpoint: (name, state) => {
+      options.onSave({ version: 1, looks: options.looks, story: state, checkpoint: name, difficulty, at: Date.now() });
+    },
+  });
+  if (options.save) runner.load(options.save.story);
+  else if (options.chapter) runner.story.ChoosePathString(`slice.${options.chapter}`);
+
+  /** The orders of the command view, to one companion or all (ORDERS.md). */
   const view = () => {
     const from = camera.globalPosition.clone();
     return { from, dir: camera.getTarget().subtract(from).normalize() };
   };
-
-  /** An order about what the crosshair points at (ORDERS.md). */
-  const order = (kind: OrderKind) => {
+  const order = (kind: OrderKind, who?: string) => {
     const { from, dir } = view();
+    const team = [...joined].filter((c) => !c.down && (!who || who === 'all' || c.name === who));
     if (kind === 'follow') {
-      ren.order({ kind: 'follow' });
+      for (const [i, c] of team.entries()) c.order({ kind: 'follow' }, i > 0);
     } else if (kind === 'attack') {
       const id = pickAssistTarget(range.candidates(from), dir, ASSIST_CONE * 1.5);
-      if (id === null) options.onSay('Ren', 'No target there.');
-      else ren.order({ kind: 'attack', target: id });
+      if (id === null) options.onSay(team[0]?.name ?? 'Ren', 'No target there.', null);
+      else for (const [i, c] of team.entries()) c.order({ kind: 'attack', target: id }, i > 0);
     } else {
-      const struck = cast(from.add(dir.scale(0.3)), from.add(dir.scale(SHOT_RANGE)));
-      const drone = range.droneOf(struck?.body);
-      if (!struck) options.onSay('Ren', "I can't reach that.");
-      else if (drone !== null) ren.order({ kind: 'attack', target: drone });
+      const struck = cast(from.add(dir.scale(0.3)), from.add(dir.scale(SHOT_RANGE)), true);
+      const target = range.droneOf(struck?.body);
+      if (!struck) options.onSay(team[0]?.name ?? 'Ren', "I can't reach that.", null);
+      else if (target !== null) for (const [i, c] of team.entries()) c.order({ kind: 'attack', target }, i > 0);
       else {
         // On the floor, that spot; against a wall or a crate, just in front of it.
         const at = struck.normal.y > 0.6 ? struck.point : struck.point.add(struck.normal.scale(0.7));
-        ren.order({ kind: 'hold', at: { x: at.x, y: hero.root.position.y, z: at.z } });
+        for (const [i, c] of team.entries()) {
+          c.order({ kind: 'hold', at: { x: at.x + i * 1.2, y: hero.root.position.y, z: at.z } }, i > 0);
+        }
       }
     }
     setCommandView(false);
   };
-
   const setCommandView = (open: boolean) => {
     commanding = open;
     const factor = open ? COMMAND_TIME : 1;
     scene.animationTimeScale = factor;
-    ren.setTimeFactor(factor);
+    nav?.setTimeFactor(factor);
   };
 
   /** The two cover rays from the hero's feet along a ground direction (COVER_AND_AIM.md). */
@@ -308,17 +641,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const shoot = () => {
     const from = camera.globalPosition.clone();
     let dir = camera.getTarget().subtract(from).normalize();
-    if (options.assist) {
-      const id = pickAssistTarget(range.candidates(from), dir);
+    // Aim assist on phones (D-17), and on Story for everyone; stronger or weaker by difficulty.
+    if (options.assist || difficulty === 'story') {
+      const id = pickAssistTarget(range.candidates(from), dir, ASSIST_CONE * DIFFICULTY[difficulty].assist);
       if (id !== null) dir = range.centre(id).subtract(from).normalize();
     }
     const end = from.add(dir.scale(SHOT_RANGE));
-    const struck = cast(from.add(dir.scale(0.3)), end);
+    const struck = cast(from.add(dir.scale(0.3)), end, true);
     const point = struck ? struck.point : end;
-    const hitDrone = range.hit(struck?.body);
+    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol, kind: 'kinetic' });
     hero.fire();
-    range.shot(hero.muzzle(), point, hitDrone);
-    shots += 1;
+    range.shot(hero.muzzle(), point, hitTarget);
     shotPose = SHOT_POSE;
   };
 
@@ -331,16 +664,16 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
    * speaks. When a wall stands where the camera would, it tries the other side of the line, and
    * failing that comes in short of the wall.
    */
-  const conversationShot = (now: { speaker: 'hero' | 'partner' | null; side: 1 | -1 }): Shot => {
+  const conversationShot = (now: NonNullable<typeof talking>, partner: Character): Shot => {
     const heroHead = headOf(hero);
-    const partnerHead = headOf(companion);
+    const partnerHead = headOf(partner);
     const line = { x: partnerHead.x - heroHead.x, z: partnerHead.z - heroHead.z };
     const [listener, speaker] = now.speaker === 'hero' ? [partnerHead, heroHead] : [heroHead, partnerHead];
     const aspect = engine.getAspectRatio(camera);
     const shotFrom = (side: 1 | -1) => {
       const shot = overShoulder(listener, speaker, line, side, aspect);
       const at = vector(shot.position);
-      const wall = cast(listener, at);
+      const wall = cast(listener, at, true);
       return { shot, at, wall: wall ? wall.distance / Vector3.Distance(listener, at) : 1 };
     };
     let chosen = shotFrom(now.side);
@@ -356,23 +689,47 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     return { position: { x: pulled.x, y: pulled.y, z: pulled.z }, target: chosen.shot.target };
   };
 
+  // The marker over the objective: drawn over everything, the same size on screen at any distance.
+  const marker = CreatePolyhedron('objective-marker', { type: 1, size: 0.16 }, scene);
+  const markerMaterial = new StandardMaterial('objective-marker', scene);
+  markerMaterial.emissiveColor = new Color3(1, 0.78, 0.3);
+  markerMaterial.disableLighting = true;
+  marker.material = markerMaterial;
+  marker.renderingGroupId = 2;
+  marker.isPickable = false;
+  marker.setEnabled(false);
+  const markerPosition = (): Vector3 | null => {
+    if (!markerTarget) return null;
+    const who = characterOf(markerTarget);
+    if (who?.root.isEnabled() && markerTarget !== 'hero') return who.root.position.add(new Vector3(0, 2.25, 0));
+    const m = markOf(markerTarget);
+    return m ? m.at.add(new Vector3(0, 1.9, 0)) : null;
+  };
+
+  let clock = 0;
+  let vitalsTime = 0;
+  let paused = false;
   scene.onBeforeRenderObservable.add(() => {
+    if (paused) {
+      input.takeLook();
+      return;
+    }
     // In the command view time nearly stops: the game's rules run slow, the camera does not.
     const real = Math.min(engine.getDeltaTime() / 1000, 0.1);
     const dt = real * (commanding ? COMMAND_TIME : 1);
-    // In the command view or a conversation, the player's movement and shots wait.
-    const held = commanding || talking !== null;
+    clock += real;
+    const fallen = condition.kind !== 'up';
+    // In the command view, a conversation, a scene, or down, the player's movement and shots wait.
+    const held = commanding || talking !== null || fallen || liftoff !== null || ended;
     const aiming = !held && (input.aiming || input.firing);
-    const toPartner = companion.root.position.subtract(hero.root.position);
     if (aiming !== wasAiming) {
       wasAiming = aiming;
       options.onAim(aiming);
     }
 
     // Look: drag or mouse turns the camera round the hero, more finely while aiming.
-    // In a conversation the camera frames whoever speaks, and looking waits.
     const look = input.takeLook();
-    if (!talking) {
+    if (!talking && !liftoff) {
       const fine = aiming ? 0.6 : 1;
       orbit.alpha -= look.x * 0.0055 * fine;
       orbit.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, orbit.beta - look.y * 0.0045 * fine));
@@ -399,18 +756,26 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       move: { x: unit.x * push, z: unit.z * push },
       sprint: input.sprint,
       aiming,
-      probe: !cover.inCover && push > 0.3 ? probeCover(feet, unit) : null,
+      probe: !cover.inCover && push > 0.3 && !held ? probeCover(feet, unit) : null,
       coverAhead: ahead !== null,
     });
-    cover = result.state;
+    cover = fallen ? { inCover: false } : result.state;
     /** How far the hero's front is from the cover, to settle against it. */
     const coverGap = ahead ? ahead.distance - CAPSULE_RADIUS : 0;
 
     const velocity = controller.getVelocity();
     const groundSpeed = Math.hypot(velocity.x, velocity.z);
-    if (talking) {
+    const partner = talking ? characterOf(talking.id) : null;
+    if (condition.kind === 'down') {
       desired.set(0, 0, 0);
-      heroYaw = turnTowards(heroYaw, yawOf({ x: toPartner.x, z: toPartner.z }), 8 * dt);
+      hero.setPose(poseWeights({ mode: 'down' }), dt);
+    } else if (condition.kind === 'rising') {
+      desired.set(0, 0, 0);
+      hero.setPose(poseWeights({ mode: 'kneel' }), dt);
+    } else if (talking && partner) {
+      desired.set(0, 0, 0);
+      const to = partner.root.position.subtract(feet);
+      heroYaw = turnTowards(heroYaw, yawOf({ x: to.x, z: to.z }), 8 * dt);
       hero.setPose(poseWeights({ mode: 'talk', speaking: talking.speaker === 'hero' }), dt);
     } else if (aiming) {
       // Aiming: face where the camera looks and walk in any direction; from cover, stand and aim.
@@ -429,14 +794,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     } else if (cover.inCover) {
       desired.set(result.velocity.x, 0, result.velocity.z);
       // Settle against the cover, rather than crouching short of it.
-      if (cover.inCover && coverGap > 0.1) {
+      if (coverGap > 0.1) {
         const settle = Math.min(2, coverGap * 5);
         desired.addInPlace(new Vector3(-cover.normal.x * settle, 0, -cover.normal.z * settle));
       }
       heroYaw = turnTowards(heroYaw, yawOf({ x: -cover.normal.x, z: -cover.normal.z }), 10 * dt);
       hero.setPose(poseWeights({ mode: 'cover', slide: result.slide }), dt);
     } else {
-      const speed = targetSpeed(push, input.sprint);
+      const speed = held ? 0 : targetSpeed(push, input.sprint);
       if (length > 0 && speed > 0) {
         desired.set(unit.x * speed, 0, unit.z * speed);
         heroYaw = turnTowards(heroYaw, yawOf(direction), 11 * dt);
@@ -452,7 +817,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     hero.root.position.set(position.x, groundUnder(bottom) ?? bottom.y, position.z);
     hero.root.rotation.y = heroYaw;
 
-    // Shoot: where the crosshair points, or at the nearest drone near it with aim assist.
+    // Shoot: where the crosshair points, or at the nearest target near it with aim assist.
     fireCooldown -= dt;
     shotPose -= dt;
     if (!held && input.firing && fireCooldown <= 0) {
@@ -460,37 +825,147 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       shoot();
     }
     range.update(dt);
-    const wave = drillStep(drill, { dronesDown: range.down, drones: DRONES.length, live: swarm.live }, dt);
-    drill = wave.drill;
-    if (wave.say) options.onSay('Ren', wave.say);
-    if (wave.wake) swarm.wake(VENTS.slice(0, wave.wake));
+    place.update(dt);
+
+    // The fight, and the swarm.
+    if (fight) {
+      const step = fightStep(fight, swarm.live, dt);
+      fight = step.fight;
+      if (step.wake) wakeWave(step.wake);
+      if (step.cleared) {
+        const id = fight.id;
+        fight = null;
+        fightOver();
+        director.event(`cleared:${id}`);
+      }
+    }
+    const team = [...joined].filter((c) => c.visible);
     swarm.update(dt, {
-      // Crouched behind cover the hero is a smaller mark: the cover takes the bolts.
-      hero: { feet: hero.root.position, height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT },
-      partner: { feet: companion.root.position },
+      targets: [
+        {
+          id: 'hero',
+          feet: hero.root.position,
+          // Crouched behind cover the hero is a smaller mark: the cover takes the shots.
+          height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT,
+          down: fallen || liftoff !== null,
+        },
+        ...team.map((c) => ({ id: c.name, feet: c.character.root.position, height: CAPSULE_HEIGHT, down: c.down })),
+      ],
       cast: (from, to) => cast(from, to, true),
-      onHeroHit: (from) => {
-        hitsTaken += 1;
-        options.onHit(hitSide(forward, hero.root.position, from));
+      difficulty,
+      onHit: (id, from, damage) => {
+        const amount = damage * DIFFICULTY[difficulty].taken;
+        if (id === 'hero') {
+          if (condition.kind === 'down' || grace > 0) return;
+          const r = takeHit(heroDefences, amount, 'kinetic');
+          heroDefences = r.defences;
+          options.onHit(hitSide(forward, hero.root.position, from));
+          if (r.down) {
+            condition = fall(helpUsed);
+            input.release();
+          }
+        } else {
+          team.find((c) => c.name === id)?.hurt(amount);
+        }
       },
     });
-    ren.converse(talking ? hero.root.position.clone() : null, talking?.speaker === 'partner');
-    ren.update(dt, hero.root.position, heroForward);
-    // No conversations while the swarm is fighting.
-    const near = !held && swarm.live === 0 && Math.hypot(toPartner.x, toPartner.z) < TALK_REACH;
-    if (near !== couldTalk) {
-      couldTalk = near;
-      options.onCanTalk(near);
+
+    // The hero's shield and health return out of fire; down, a companion may come (D-43).
+    if (condition.kind === 'up') heroDefences = recover(heroDefences, dt);
+    if (condition.kind === 'down' && !helper) {
+      helper =
+        team
+          .filter((c) => !c.down && c.objective.kind === 'follow')
+          .sort(
+            (a, b) =>
+              Vector3.Distance(a.character.root.position, feet) - Vector3.Distance(b.character.root.position, feet),
+          )[0] ?? null;
+    }
+    const facts = {
+      companionFree: !!helper && !helper.down,
+      companionDistance: helper ? Vector3.Distance(helper.character.root.position, feet) : Number.POSITIVE_INFINITY,
+      helpUsed,
+    };
+    if (helper && needsHelp(condition, facts)) helper.help(feet);
+    const fallStep = conditionStep(condition, facts, dt);
+    condition = fallStep.condition;
+    grace = Math.max(0, grace - dt);
+    if (fallStep.helpedUp) {
+      heroDefences = helpedUp(heroDefences);
+      grace = GRACE_SECONDS + FALLING.rising;
+      helpUsed = true;
+      helper?.help(null);
+      helper = null;
+    }
+    if (condition.kind === 'restart') restartFight();
+    if (condition.kind === 'up' && helper) {
+      helper.help(null);
+      helper = null;
     }
 
-    // Camera: over the right shoulder, closer while aiming or giving orders and lower in cover,
-    // pulled in when a wall is in the way. On a portrait phone it stands further back.
+    // Companions and people.
+    for (const c of Object.values(companionsById)) {
+      if (!c.visible) continue;
+      c.converse(talking?.id === nameKey(c) ? hero.root.position.clone() : null, talking?.speaker === 'partner');
+      c.update(dt, hero.root.position, heroForward);
+    }
+    Object.values(people).forEach((p, i) => {
+      p.converse(talking?.id === p.id ? hero.root.position.clone() : null, talking?.speaker === 'partner');
+      p.update(dt, hero.root.position, heroForward, i);
+    });
+
+    // The drill on the range: three drones down since it began.
+    if (drillFrom !== null && range.destroyed - drillFrom >= 3) {
+      drillFrom = null;
+      director.event('cleared:drill');
+    }
+
+    // Where the hero is, for the story.
+    const here = place.areaAt(hero.root.position.add(new Vector3(0, 0.5, 0)));
+    if (here !== area) area = here;
+    if (area && director.waiting?.includes(`enter:${area}`)) director.event(`enter:${area}`);
+    director.update(dt);
+    resuming = false;
+
+    // What the hero can talk to or use where they stand.
+    let next: typeof promptTarget = null;
+    let label = '';
+    if (!held && !fight) {
+      let best = Number.POSITIVE_INFINITY;
+      for (const [id, knot] of Object.entries(talkKnots)) {
+        if (!knot) continue;
+        const c = characterOf(id);
+        if (!c?.root.isEnabled()) continue;
+        const d = Vector3.Distance(c.root.position, feet);
+        if (d < TALK_REACH && d < best) {
+          best = d;
+          next = { kind: 'talk', id };
+          label = `Talk to ${nameOf(id)}`;
+        }
+      }
+      for (const [id, thing] of usable) {
+        const d = Vector3.Distance(new Vector3(thing.at.x, feet.y, thing.at.z), feet);
+        if (d < USE_REACH && d < best + 0.5) {
+          best = d;
+          next = { kind: 'use', id };
+          label = thing.label;
+        }
+      }
+    }
+    const nextPrompt: Prompt | null = next ? { kind: next.kind, label } : null;
+    if (nextPrompt?.label !== prompt?.label || nextPrompt?.kind !== prompt?.kind) {
+      prompt = nextPrompt;
+      options.onPrompt(prompt);
+    }
+    promptTarget = next;
+
+    // The camera: the player's view, a conversation's shots, or the lift-off.
     aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
     const shoulder = lerp(framing.shoulder, Math.max(framing.shoulder, 0.6), aimBlend);
-    const eye = lerp(CAMERA.eye, CAMERA.coverEye, coverBlend);
+    const eye = lerp(fallen ? 0.7 : CAMERA.eye, CAMERA.coverEye, coverBlend);
     camera.fov = lerp(CAMERA.fov, CAMERA.aimFov, aimBlend);
     const right = { x: forward.z, z: -forward.x };
     const pivot = new Vector3(feet.x + right.x * shoulder, feet.y + eye, feet.z + right.z * shoulder);
@@ -500,15 +975,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       Math.sin(orbit.alpha) * Math.sin(orbit.beta),
     );
     const head = new Vector3(feet.x, feet.y + eye, feet.z);
-    // From the hero's head to the far end of the shoulder offset and the camera's place.
-    const blocked = cast(head, pivot.add(back.scale(distance)));
+    const blocked = cast(head, pivot.add(back.scale(distance)), true);
     const hit = blocked ? Vector3.Distance(pivot, blocked.point) : null;
     let from = pivot.add(back.scale(cameraDistance(hit, distance, CAMERA.minDistance)));
     let lookAt = pivot;
 
-    // In a conversation the camera eases over to the shot of whoever speaks, and cuts between them.
     talkBlend = lerp(talkBlend, talking ? 1 : 0, Math.min(1, real * 3));
-    if (talking) lastShot = conversationShot(talking);
+    if (talking && partner) lastShot = conversationShot(talking, partner);
     if (talkBlend > 1e-3 && lastShot) {
       const t = talkBlend * talkBlend * (3 - 2 * talkBlend);
       from = Vector3.Lerp(from, vector(lastShot.position), t);
@@ -516,54 +989,134 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     } else {
       lastShot = null;
     }
-    place(from, lookAt);
+
+    if (liftoff) {
+      // The surveyor rises out of the hangar's open roof; the camera watches from the floor.
+      liftoff.t += real;
+      const t = liftoff.t;
+      const rise = Math.max(0, t - 1.2);
+      place.ship.position.y = rise * rise * 1.6;
+      place.ship.position.x = 30 + Math.max(0, t - 3) ** 2 * 1.2;
+      const ship = place.ship.position.add(new Vector3(0, 3, 0));
+      from = (markOf('hangar')?.at ?? Vector3.Zero()).add(new Vector3(-6, 1.6, -4));
+      lookAt = ship;
+      for (const who of [hero, ...Object.values(companionsById).map((c) => c.character)]) who.root.setEnabled(false);
+      if (t > LIFTOFF_SECONDS - 1.2 && t - real <= LIFTOFF_SECONDS - 1.2) options.onFade(true);
+      if (t >= LIFTOFF_SECONDS) {
+        liftoff = null;
+        place.ship.setEnabled(false);
+        hero.root.setEnabled(true);
+        director.event('done:liftoff');
+        window.setTimeout(() => options.onFade(false), 300);
+      }
+    }
+    aimCamera(from, lookAt);
     // Anyone the camera is pressed against fades, rather than filling the screen.
     hero.setFade(closeFade(Vector3.Distance(from, head)));
-    companion.setFade(closeFade(Vector3.Distance(from, headOf(companion))));
+    for (const c of Object.values(companionsById))
+      c.character.setFade(closeFade(Vector3.Distance(from, headOf(c.character))));
+
+    // The objective's marker.
+    const mp = markerPosition();
+    const showMarker = !!mp && !talking && !liftoff && Vector3.Distance(mp, feet) > 3;
+    marker.setEnabled(showMarker);
+    if (mp && showMarker) {
+      marker.position.copyFrom(mp);
+      marker.position.y += Math.sin(clock * 2.4) * 0.08;
+      marker.rotation.y = clock * 1.5;
+      marker.scaling.setAll(Math.max(1, Vector3.Distance(from, mp) * 0.09));
+    }
+
+    // The screen's vitals, a few times a second.
+    vitalsTime += real;
+    if (vitalsTime > 0.08) {
+      vitalsTime = 0;
+      options.onVitals({
+        shield: heroDefences.shield / heroDefences.shieldMax,
+        health: heroDefences.health / heroDefences.healthMax,
+        companions: team.map((c) => ({
+          name: c.name,
+          shield: c.defences.shield / c.defences.shieldMax,
+          health: c.defences.health / c.defences.healthMax,
+          down: c.down,
+        })),
+        condition,
+        helpComing: !!helper && !helpUsed,
+        inCover: cover.inCover,
+      });
+    }
   });
+
+  /** A companion's key in the cast (her name in lower case). */
+  function nameKey(c: Companion) {
+    return c.name.toLowerCase();
+  }
 
   scene.onAfterPhysicsObservable.add(() => {
     // Capped, so a long pause (a tab in the background, a slow frame) cannot throw the hero
     // through a wall in one step.
     const dt = Math.min(scene.deltaTime / 1000, 1 / 20);
-    if (!dt) return;
+    if (!dt || paused) return;
     const support = controller.checkSupport(dt, DOWN);
     controller.setVelocity(characterVelocity(controller, dt, support, desired, heroForward));
     controller.integrate(dt, support, GRAVITY);
   });
 
-  // `?debug` in the address exposes the hero's state for testing in the browser's console.
+  // `?debug` in the address exposes the game's state for testing in the browser's console.
   if (new URLSearchParams(location.search).has('debug')) {
     const facing = () => ({ x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) });
     Object.assign(window, {
       lightkeeper: {
-        /** The scene itself, for measuring in the browser (where the feet meet the floor, bounds). */
         scene,
         state: () => ({
           feet: hero.root.position.asArray(),
+          area,
           cover,
           aiming: input.aiming,
-          shots,
           commanding,
-          companion: { objective: ren.objective, feet: companion.root.position.asArray() },
-          swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, drill: drill.kind, motes: swarm.inspect() },
-          hitsTaken,
+          waiting: director.waiting,
+          fight: fight?.id ?? null,
+          condition,
+          defences: heroDefences,
+          companions: [...joined].map((c) => ({
+            name: c.name,
+            objective: c.objective,
+            feet: c.character.root.position.asArray(),
+          })),
+          swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, machines: swarm.inspect() },
+          prompt,
+          talk: talkKnots,
         }),
-        /** The first thing a ray between two points meets, for testing: its distance and point. */
-        ray: (from: number[], to: number[]) => {
-          const hit = cast(Vector3.FromArray(from), Vector3.FromArray(to));
-          return hit ? { distance: hit.distance, point: hit.point.asArray() } : null;
+        /** Hurts the hero, as a shot would (for testing what happens when they fall). */
+        hurt: (amount: number) => {
+          const r = takeHit(heroDefences, amount, 'kinetic');
+          heroDefences = r.defences;
+          if (r.down && condition.kind === 'up') condition = fall(helpUsed);
         },
-        /** Sends motes in at once, without running the drill. */
-        wake: (count = 3) => swarm.wake(VENTS.slice(0, count)),
+        /** Starts a fight by name, wherever the hero is. */
+        fight: (id: string) => startEncounter(id),
+        /** Reports an event to the story, as if it had happened (skipping a fight: `cleared:<id>`). */
+        event: (name: string) => {
+          if (name.startsWith('cleared:') && fight) {
+            swarm.clear();
+            fight = null;
+            fightOver();
+          }
+          director.event(name);
+        },
+        ray: (a: number[], b: number[]) => {
+          const h = cast(Vector3.FromArray(a), Vector3.FromArray(b));
+          return h ? { distance: h.distance, point: h.point.asArray() } : null;
+        },
+        wake: (count = 3, kind: 'mote' | 'lattice' | 'tender' = 'mote') =>
+          swarm.wake(
+            Array.from({ length: count }, (_, i) => hero.root.position.add(new Vector3(-4 + i * 3, 4, 10))),
+            kind,
+          ),
         probe: () => probeCover(hero.root.position, facing()),
-        /**
-         * Moves the hero (feet at x, z) and turns the camera to look along yaw (radians, 0 = +z),
-         * pitched by beta (the camera's polar angle; about 1.55 looks level).
-         */
-        teleport: (x: number, z: number, yaw = 0, beta = orbit.beta) => {
-          controller.setPosition(new Vector3(x, CAPSULE_HEIGHT / 2 + 0.05, z));
-          orbit.alpha = -Math.PI / 2 - yaw;
+        /** Moves the hero (feet at x, z, y) and turns the camera to look along yaw, pitched by beta. */
+        teleport: (x: number, z: number, yaw = 0, beta = orbit.beta, y = 0) => {
+          moveHero(new Vector3(x, y, z), yaw);
           orbit.beta = beta;
         },
       },
@@ -577,6 +1130,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (!ready) {
       ready = true;
       options.onReady();
+      director.step();
     }
     statsTime += engine.getDeltaTime();
     if (statsTime > 500) {
@@ -587,14 +1141,6 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         gpu: gpuName(engine),
         tier: options.tier,
         activeMeshes: scene.getActiveMeshes().length,
-        speed: Math.hypot(controller.getVelocity().x, controller.getVelocity().z),
-        companionNavigation: ren.navigated,
-        inCover: cover.inCover,
-        shots,
-        dronesDown: range.down,
-        motesLive: swarm.live,
-        motesDown: swarm.down,
-        hitsTaken,
       });
     }
   });
@@ -608,20 +1154,39 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   return {
     input,
     setCommandView,
-    startConversation() {
-      if (!couldTalk || commanding) return false;
-      input.release();
-      // The camera keeps to the side of the line between the two that it is on already.
-      talking = { speaker: null, side: sideOf(hero.root.position, companion.root.position, camera.position) };
-      return true;
+    order,
+    interact() {
+      if (!promptTarget || talking) return;
+      if (promptTarget.kind === 'talk') {
+        const knot = talkKnots[promptTarget.id];
+        if (knot) startConversation(promptTarget.id, knot);
+      } else {
+        const id = promptTarget.id;
+        usable.delete(id);
+        director.event(`used:${id}`);
+      }
     },
     setSpeaker(who) {
       if (talking) talking.speaker = who;
     },
     endConversation() {
+      if (!talking) return;
+      const { id, knot } = talking;
       talking = null;
+      // A conversation is had once; the story offers another if it has one.
+      talkKnots[id] = null;
+      director.event(`talked:${knot}`);
     },
-    order,
+    setDifficulty(d) {
+      difficulty = d;
+    },
+    setPaused(on) {
+      paused = on;
+      scene.animationTimeScale = on ? 0 : commanding ? COMMAND_TIME : 1;
+      nav?.setTimeFactor(on ? 0 : commanding ? COMMAND_TIME : 1);
+      if (on) input.release();
+    },
+    companions: () => [...joined].map((c) => c.name),
     dispose() {
       window.removeEventListener('resize', onResize);
       input.dispose();
@@ -629,32 +1194,6 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       scene.dispose();
       engine.dispose();
     },
-  };
-}
-
-/**
- * The hero and the companion: the player's hero in the looks they made (CREATOR.md), and the other
- * MPFB body as the companion in its defaults; two tinted mannequins if they cannot be loaded.
- */
-async function spawnCast(
-  scene: Scene,
-  looks: Looks,
-  manifest: Manifest,
-): Promise<{ hero: Character; companion: Character }> {
-  const other: Body = looks.body === 'man' ? 'woman' : 'man';
-  const [heroTemplate, companionTemplate] = await Promise.all([
-    loadCharacterTemplate(scene, `${CHARACTERS}${manifest.bodies[looks.body].file}`),
-    loadCharacterTemplate(scene, `${CHARACTERS}${manifest.bodies[other].file}`),
-  ]);
-  if (heroTemplate && companionTemplate) {
-    const hero = spawnCharacter(scene, heroTemplate, 'hero');
-    await wardrobe(scene, hero, manifest, looks.body).wear(looks);
-    return { hero, companion: spawnCharacter(scene, companionTemplate, 'companion') };
-  }
-  const mannequin = await loadCharacterTemplate(scene, `${CHARACTERS}mannequin.glb`);
-  return {
-    hero: spawnCharacter(scene, mannequin, 'hero', { height: 1.8 }),
-    companion: spawnCharacter(scene, mannequin, 'companion', { height: 1.8, tint: new Color3(0.45, 0.75, 0.8) }),
   };
 }
 
@@ -696,3 +1235,5 @@ function characterVelocity(
   output.addInPlace(UP.scale(current.dot(UP)));
   return output.addInPlace(GRAVITY.scale(dt));
 }
+
+export { Mesh };
