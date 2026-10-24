@@ -56,7 +56,7 @@ export interface MachineRules {
 }
 
 export const MACHINES: Record<MachineKind, MachineRules> = {
-  mote: { ...MOTE, radius: 0.3, weapon: 'bolt', damage: 25 },
+  mote: { ...MOTE, radius: 0.3, weapon: 'bolt', damage: 18 },
   // Hangs back and charges a beam for two seconds: break line of sight or be hit hard.
   lattice: {
     ...MOTE,

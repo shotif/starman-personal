@@ -33,7 +33,7 @@ export const DIFFICULTIES: readonly Difficulty[] = ['story', 'standard', 'hard']
 
 export const RECOVERY = {
   /** Seconds untouched before the shield and health begin to return (D-42). */
-  delay: 4,
+  delay: 3,
   /** Points a second. */
   shieldRate: 40,
   healthRate: 10,
@@ -44,7 +44,7 @@ export const RECOVERY = {
 /** What weapons and machines deal (COMBAT.md). */
 export const DAMAGE = {
   pistol: 34,
-  bolt: 25,
+  bolt: 18,
 };
 
 const layers = (shield: number, plate: number, plateBlock: number, health: number): Defences => ({

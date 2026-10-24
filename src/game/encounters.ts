@@ -17,9 +17,10 @@ export const ENCOUNTERS: Record<string, Wave[]> = {
     { motes: 3, vents: 'catwalk' },
     { motes: 2, lattices: 1, vents: 'catwalk' },
   ],
+  // The machines that reached the clinic come back out into the hall as the hero returns.
   clinic: [
-    { motes: 3, vents: 'clinic' },
     { motes: 3, vents: 'concourse_2' },
+    { motes: 3, lattices: 1, vents: 'escort' },
   ],
   escort: [
     { motes: 4, vents: 'escort' },

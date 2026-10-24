@@ -424,6 +424,27 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
         const sees = !!aim && clearBetween(world, here, aim, rules.radius + 0.15);
         m.blind = sees ? 0 : m.blind + dt;
 
+        // Shut in with no way to its target (a room's corner, behind a wall), it comes out elsewhere,
+        // as the swarm does from its vents: somewhere that sees its target, and is in the open.
+        if (target && aim && m.blind > 4 && m.retry <= 0) {
+          const out = pickSpot({
+            me: here,
+            target: target.feet,
+            others: others(m),
+            rng: Math.random,
+            clear: (a, b) =>
+              a === here ||
+              clearBetween(world, new Vector3(a.x, a.y, a.z), new Vector3(b.x, b.y, b.z), rules.radius + 0.15),
+            aimAt: aim,
+            rules,
+            tries: 20,
+          });
+          if (out) {
+            here.set(out.x, out.y, out.z);
+            m.spot = null;
+            m.blind = 0;
+          }
+        }
         // Move on when it has stayed long enough, lost sight of its target, or has nowhere yet.
         m.retry -= dt;
         if (target && aim && (!m.spot || m.stay <= 0 || m.blind > 1.2) && m.retry <= 0) {

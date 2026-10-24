@@ -253,7 +253,8 @@ export function buildKit(scene: Scene, q: QualitySettings) {
       const mid = (from + to) / 2;
       const size: [number, number, number] = alongX ? [to - from, y1 - y0, T] : [T, y1 - y0, to - from];
       const at: [number, number, number] = alongX ? [mid, (y0 + y1) / 2, fixed] : [fixed, (y0 + y1) / 2, mid];
-      solid(size, at, material, { nav: false });
+      // Walls stand in the navigation mesh, so people walk round them and through doorways.
+      solid(size, at, material);
     };
     let cursor = a0 - (alongX ? T / 2 : 0);
     const end = a1 + (alongX ? T / 2 : 0);

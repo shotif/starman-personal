@@ -287,11 +287,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const input = new Input(canvas);
 
   let nav: Navigation | null = null;
+  const navStarted = performance.now();
   try {
     nav = await createNavigation(scene, place.navigationMeshes);
   } catch (error) {
     console.warn('Navigation could not start; companions only follow.', error);
   }
+  const navMilliseconds = Math.round(performance.now() - navStarted);
   const world = { range, cast: (a: Vector3, b: Vector3) => cast(a, b), groundUnder };
   const say = (name: string) => (line: string) => options.onSay(name, line, null);
   const ren = spawnCompanion(
@@ -1086,12 +1088,26 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, machines: swarm.inspect() },
           prompt,
           talk: talkKnots,
+          navMilliseconds,
         }),
         /** Hurts the hero, as a shot would (for testing what happens when they fall). */
         hurt: (amount: number) => {
           const r = takeHit(heroDefences, amount, 'kinetic');
           heroDefences = r.defences;
           if (r.down && condition.kind === 'up') condition = fall(helpUsed);
+        },
+        /** Turns the hero's view to a point (for an automatic player in tests). */
+        aimAt: (p: number[]) => {
+          const target = Vector3.FromArray(p);
+          const eye = hero.root.position.add(new Vector3(0, CAMERA.eye, 0));
+          const to = target.subtract(eye);
+          orbit.alpha = Math.atan2(-to.z, -to.x);
+          orbit.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, Math.acos(-to.y / to.length())));
+        },
+        /** Holds or lets go of aim and fire, as the touch buttons do. */
+        trigger: (aim: boolean, fire: boolean) => {
+          input.aimToggle = aim;
+          input.fireTouch = fire;
         },
         /** Starts a fight by name, wherever the hero is. */
         fight: (id: string) => startEncounter(id),

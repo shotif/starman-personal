@@ -48,7 +48,7 @@ describe('defences in layers', () => {
     expect(results).toEqual([false, false, true]);
   });
 
-  it('downs the hero after about eight bolts at Standard, and far more at Story', () => {
+  it('downs the hero after about twelve bolts at Standard, and far more at Story', () => {
     const boltsToFall = (taken: number) => {
       let d = personDefences();
       for (let n = 1; n < 100; n++) {
@@ -58,9 +58,9 @@ describe('defences in layers', () => {
       }
       return Number.POSITIVE_INFINITY;
     };
-    expect(boltsToFall(DIFFICULTY.standard.taken)).toBe(8);
-    expect(boltsToFall(DIFFICULTY.story.taken)).toBe(16);
-    expect(boltsToFall(DIFFICULTY.hard.taken)).toBeLessThan(8);
+    expect(boltsToFall(DIFFICULTY.standard.taken)).toBe(12);
+    expect(boltsToFall(DIFFICULTY.story.taken)).toBe(23);
+    expect(boltsToFall(DIFFICULTY.hard.taken)).toBeLessThan(10);
   });
 });
 

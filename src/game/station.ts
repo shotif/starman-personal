@@ -462,7 +462,7 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
   kit.enter('catwalk');
   kit.solid([28, 0.3, 4], [68, -0.15, 31], s.deck, { name: 'catwalk-floor' });
   for (const z of [29.05, 32.95]) {
-    kit.solid([28, 1.05, 0.1], [68, 0.525, z], s.trim, { nav: false });
+    kit.solid([28, 1.05, 0.1], [68, 0.525, z], s.trim);
     kit.deco([28, 0.08, 0.14], [68, 1.08, z], s.stripe);
   }
   for (let x = 56; x <= 80; x += 4) {
@@ -482,10 +482,7 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
     rot: [0, 0, slope],
   });
   for (const z of [29.05, 32.95]) {
-    kit.solid([Math.hypot(run, rise), 1.05, 0.1], [87, rise / 2 + 0.525, z], s.trim, {
-      nav: false,
-      rot: [0, 0, slope],
-    });
+    kit.solid([Math.hypot(run, rise), 1.05, 0.1], [87, rise / 2 + 0.525, z], s.trim, { rot: [0, 0, slope] });
   }
   kit.solid([10, 0.3, 10], [96, rise - 0.15, 31], s.deck, { name: 'mast-platform' });
   for (const [x, z, w, d] of [
@@ -495,7 +492,7 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
     [91.05, 27.5, 0.1, 3],
     [91.05, 34.5, 0.1, 3],
   ] as const) {
-    kit.solid([w, 1.05, d], [x, rise + 0.525, z], s.trim, { nav: false });
+    kit.solid([w, 1.05, d], [x, rise + 0.525, z], s.trim);
   }
   // The mast: four legs, braced, rising thirty metres, a dish at the top.
   const legs: [number, number][] = [
@@ -504,7 +501,7 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
     [96.5, 32.5],
     [98.5, 32.5],
   ];
-  for (const [x, z] of legs) kit.solid([0.3, 30, 0.3], [x, rise + 15, z], s.hullDark, { nav: false });
+  for (const [x, z] of legs) kit.solid([0.3, 30, 0.3], [x, rise + 15, z], s.hullDark);
   for (let y = rise + 2; y < rise + 30; y += 3) {
     kit.deco([2.3, 0.12, 0.12], [97.5, y, 30.5], s.trim);
     kit.deco([2.3, 0.12, 0.12], [97.5, y, 32.5], s.trim);
