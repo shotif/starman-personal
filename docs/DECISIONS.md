@@ -47,6 +47,12 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-33 | The six classes and their powers | Decided 2026-10-24 | **As recommended**: Breacher, Rigger, Fieldwright, Shade, Striker, Warden ([CLASSES_AND_ORIGINS.md](design/CLASSES_AND_ORIGINS.md)) |
 | D-34 | Where you are from: the origins | Decided 2026-10-24 | **As recommended**: Ringborn, Steader, Den-raised, Laneborn, Beltborn, Borderer |
 | D-35 | The moment that made you | Decided 2026-10-24 | **As recommended**: the survivor, the hero of the line, the hard call, the one who lost someone |
+| D-36 | What the Quench is | Open | proposal in [STORY.md](design/STORY.md) |
+| D-37 | The face of the enemy | Open | proposal in [STORY.md](design/STORY.md) |
+| D-38 | The shape of the story | Open | proposal in [STORY.md](design/STORY.md) |
+| D-39 | The eight companions | Open | proposal in [STORY.md](design/STORY.md) |
+| D-40 | The ship's name | Open | proposal in [STORY.md](design/STORY.md) |
+| D-41 | The rule for side stories | Open | proposal in [STORY.md](design/STORY.md) |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -537,6 +543,14 @@ recommended").
   Beltborn, Borderer, each a place in the canon with a talent and a personal quest.
 - **D-35 · The moment that made you — Decided.** Recommended: the survivor, the hero of the line,
   the hard call, the one who lost someone.
+
+## Round 5: the story — open
+
+The proposal, with options and a recommendation for each, is [design/STORY.md](design/STORY.md):
+the Quench as the Absent's lifeboat engines waking and banking the stars' light (D-36); Lightkeeper
+Ansa Varro, a fallen Authority Lightkeeper, as its face (D-37); a prologue at Ross 128, three acts
+and a finale built from preparation (D-38); eight companions (D-39); the ship *Lantern* (D-40); and
+the rule for side stories, with three examples (D-41).
 
 ## Made without waiting
 
