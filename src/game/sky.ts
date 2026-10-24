@@ -20,6 +20,8 @@ export interface Sky {
   sun: Vector3;
   /** Shows the swarm's ring round the star. */
   swarm(visible: boolean): void;
+  /** Above the air, in orbit: the dusk goes, the stars and the star stay. */
+  space(above: boolean): void;
   /** Turns the swarm's ring, slowly, so it reads as machines rather than stars. */
   update(dt: number): void;
 }
@@ -145,6 +147,9 @@ export function buildSky(scene: Scene): Sky {
     sun,
     swarm(visible) {
       ring?.setEnabled(visible);
+    },
+    space(above) {
+      dome.setEnabled(!above);
     },
     update(dt) {
       if (!ring?.isEnabled()) return;

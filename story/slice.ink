@@ -312,7 +312,7 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 = bridge
 >>> checkpoint bridge
 >>> music ending
->>> sky swarm
+>>> sky swarm space
 >>> lights on
 >>> place hero bridge_hero
 >>> place ren bridge_ren

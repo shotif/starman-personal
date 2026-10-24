@@ -661,7 +661,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         atmosphere.setMood({ lightsOut: lightsAreOut, outdoors: area === 'catwalk' || area === 'mast' });
         break;
       case 'sky':
-        place.sky.swarm(a === 'swarm');
+        place.sky.swarm(c.args.includes('swarm'));
+        place.sky.space(c.args.includes('space'));
         break;
       case 'start':
         if (resuming) putAt(a, b, a !== 'hero');

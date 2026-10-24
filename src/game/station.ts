@@ -896,9 +896,19 @@ function bridge(kit: Kit) {
   }
   kit.light([0, 2.85, z0 + 8], new Color3(1, 0.85, 0.7), 5, 8);
   kit.light([0, 2.85, z0 + 13], new Color3(1, 0.85, 0.7), 5, 8);
-  // Ross 128 b below, its night side turning under the ship.
+  // Ross 128 b below, its night side turning under the ship: the painted ground, unfogged, lit only
+  // by the star.
   const planet = CreateSphere('ross-128-b', { diameter: 3000, segments: 48 }, kit.scene);
-  planet.position.set(-400, -1700, z0);
-  planet.material = s.ground.material;
+  planet.position.set(-1700, -1560, z0);
+  const surface = new StandardMaterial('ross-128-b', kit.scene);
+  const ground = new Texture(`${import.meta.env.BASE_URL}assets/textures/ground-regolith.webp`, kit.scene);
+  ground.uScale = 6;
+  ground.vScale = 3;
+  surface.diffuseTexture = ground;
+  surface.diffuseColor = new Color3(0.8, 0.6, 0.52);
+  surface.specularColor = Color3.Black();
+  surface.fogEnabled = false;
+  planet.material = surface;
+  planet.applyFog = false;
   planet.isPickable = false;
 }
