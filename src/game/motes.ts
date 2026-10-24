@@ -459,7 +459,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
             if (m.pullTo) {
               const to = m.pullTo.subtract(m.root.position);
               const d = to.length();
-              if (d > 1.6) m.root.position.addInPlace(to.scale(Math.min(1, (14 * dt) / d)));
+              if (d > 0.2) m.root.position.addInPlace(to.scale(Math.min(1, (14 * dt) / d)));
             }
             m.spin.rotation.y += dt * 6;
           }

@@ -220,7 +220,8 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       case 'lift':
       case 'pull':
         hitMachine(id, target ?? 0);
-        swarm.affect(target ?? 0, id, spec.lasts ?? 3, ctx.heroChest().add(ctx.heroForward().scale(2.5)));
+        // Pulled, it ends up in front of the hero, within a strike's reach.
+        swarm.affect(target ?? 0, id, spec.lasts ?? 3, ctx.heroChest().add(ctx.heroForward().scale(2.1)));
         flash(at, VIOLET, 0.9, 0.4, 2);
         break;
       case 'mark':

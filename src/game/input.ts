@@ -14,6 +14,9 @@ export class Input {
   aimToggle = false;
   /** Fire held on the touch button. */
   fireTouch = false;
+  /** A strike or a dodge asked for since the game last looked (F and Space, or the touch controls). */
+  strike = false;
+  dodge = false;
   private readonly keys = new Set<string>();
   private aimMouse = false;
   private fireMouse = false;
@@ -30,6 +33,9 @@ export class Input {
       (e) => {
         if (e.target instanceof HTMLInputElement) return;
         this.keys.add(e.code);
+        if (e.repeat) return;
+        if (e.code === 'KeyF') this.strike = true;
+        if (e.code === 'Space') this.dodge = true;
       },
       { signal },
     );
@@ -107,11 +113,27 @@ export class Input {
     return this.fireTouch || this.fireMouse;
   }
 
+  /** A strike asked for since the last call, then cleared. */
+  takeStrike(): boolean {
+    const asked = this.strike;
+    this.strike = false;
+    return asked;
+  }
+
+  /** A dodge asked for since the last call, then cleared. */
+  takeDodge(): boolean {
+    const asked = this.dodge;
+    this.dodge = false;
+    return asked;
+  }
+
   /** Lets go of everything held, and frees the mouse: a conversation needs the pointer for its choices. */
   release(): void {
     this.stick = { x: 0, y: 0 };
     this.fireTouch = false;
     this.fireMouse = false;
+    this.strike = false;
+    this.dodge = false;
     if (document.pointerLockElement === this.canvas) document.exitPointerLock();
   }
 

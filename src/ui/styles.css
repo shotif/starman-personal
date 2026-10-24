@@ -120,7 +120,7 @@ body {
 .hint {
   position: absolute;
   left: 50%;
-  top: calc(var(--safe-top) + 92px);
+  top: calc(var(--safe-top) + 170px);
   transform: translateX(-50%);
   margin: 0;
   padding: 6px 12px;
@@ -1462,4 +1462,28 @@ body {
   pointer-events: none;
   animation: caption 1.4s ease forwards;
   z-index: 3;
+}
+
+.touch__strike {
+  position: absolute;
+  right: calc(var(--safe-right) + 30px);
+  bottom: calc(var(--safe-bottom) + 232px);
+  width: 60px;
+  height: 60px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(80 30 20 / 0.6);
+  border: 2px solid rgb(255 150 110 / 0.6);
+  border-radius: 50%;
+  touch-action: none;
+}
+
+/* On a desktop the hint sits at the foot of the screen, above the powers. */
+@media (pointer: fine) {
+  .hint {
+    top: auto;
+    bottom: calc(var(--safe-bottom) + 86px);
+  }
 }

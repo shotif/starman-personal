@@ -19,12 +19,25 @@ export const CLIPS = [
   'pistol_aim',
   'pistol_shoot',
   'power_cast',
+  'punch_jab',
+  'punch_cross',
+  'roll',
+  'dodge_left',
+  'dodge_right',
   'death',
 ] as const;
 export type Clip = (typeof CLIPS)[number];
 
 /** Clips that play once and hold their last frame (going down), rather than looping. */
-export const ONE_SHOT: readonly Clip[] = ['death', 'power_cast'];
+export const ONE_SHOT: readonly Clip[] = [
+  'death',
+  'power_cast',
+  'punch_jab',
+  'punch_cross',
+  'roll',
+  'dodge_left',
+  'dodge_right',
+];
 export type Weights = Partial<Record<Clip, number>>;
 
 export type PoseState =

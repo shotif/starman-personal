@@ -26,8 +26,8 @@ export interface GameViewProps {
 /** Tutorial hints, in the words of the device in hand (D-02). */
 const HINTS: Record<string, { touch: string; desk: string }> = {
   move: {
-    touch: 'Left thumb moves · right thumb looks · Run toggles running',
-    desk: 'WASD to move · click the scene, then the mouse looks · Shift runs · E talks',
+    touch: 'Left thumb moves · right thumb looks · Run toggles running · double-tap the left side to dodge',
+    desk: 'WASD to move · click the scene, then the mouse looks · Shift runs · E talks · Space dodges · F strikes',
   },
   cover: {
     touch: 'Walk into a low crate to take cover · walk away to leave it',

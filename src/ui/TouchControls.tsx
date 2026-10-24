@@ -46,8 +46,13 @@ export function TouchControls({
   const aimTouchedAt = useRef(Number.NEGATIVE_INFINITY);
   const [firing, setFiring] = useState(false);
 
+  /** When the left thumb last touched down: two touches close together are a dodge. */
+  const lastStickDown = useRef(Number.NEGATIVE_INFINITY);
   const stickDown = (e: PointerEvent) => {
     if (stickFinger.current !== null) return;
+    const now = performance.now();
+    if (now - lastStickDown.current < 280) input.dodge = true;
+    lastStickDown.current = now;
     stickFinger.current = e.pointerId;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     stickOrigin.current = { x: e.clientX, y: e.clientY };
@@ -199,6 +204,16 @@ export function TouchControls({
               <span class="touch__power-name">{p.name}</span>
             </button>
           ))}
+          <button
+            type="button"
+            class="touch__strike"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              input.strike = true;
+            }}
+          >
+            Strike
+          </button>
           <button
             type="button"
             class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}

@@ -200,6 +200,10 @@ const COMMAND_TIME = 0.05;
 const LIFTOFF_SECONDS = 8;
 /** After a companion's help, this long before shots count again. */
 const GRACE_SECONDS = 2.5;
+/** The strike: two blows, how far they reach from the chest, and what each does (COMBAT.md). */
+const MELEE = { seconds: 0.78, reach: 2.8, damage: 50 };
+/** The dodge: how fast, how long (shots pass through it), and how soon it can come again. */
+const DODGE = { speed: 9, seconds: 0.38, cooldown: 0.7 };
 
 export async function startGame(canvas: HTMLCanvasElement, options: GameOptions): Promise<Game> {
   const q = QUALITY[options.tier];
@@ -349,6 +353,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   /** The hero's class's three powers (D-33), and how long the casting arm stays up. */
   const powers: PowerId[] = [...(CLASS_POWERS[options.looks.heroClass] ?? CLASS_POWERS.breacher ?? [])];
   let castPose = 0;
+  /** A strike (two blows) or a dodge in progress (COMBAT.md). */
+  let strike: { t: number; blows: number } | null = null;
+  let dodge: { t: number; dir: Vector3; clip: 'roll' | 'dodge_left' | 'dodge_right' } | null = null;
+  let dodgeCooldown = 0;
 
   // The story.
   const runner = new StoryRunner(slice, {
@@ -826,10 +834,61 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     /** How far the hero's front is from the cover, to settle against it. */
     const coverGap = ahead ? ahead.distance - CAPSULE_RADIUS : 0;
 
+    // A strike or a dodge, when asked for and the hero is free to.
+    const wantsStrike = input.takeStrike();
+    const wantsDodge = input.takeDodge();
+    dodgeCooldown -= dt;
+    if (!held && !strike && !dodge && wantsStrike) strike = { t: 0, blows: 0 };
+    if (!held && !dodge && wantsDodge && dodgeCooldown <= 0) {
+      // Where the stick points, or straight back; a roll forward or back, a sidestep to a side.
+      const dir = push > 0.2 ? new Vector3(unit.x, 0, unit.z) : new Vector3(-heroForward.x, 0, -heroForward.z);
+      const across = dir.x * heroForward.z - dir.z * heroForward.x;
+      const along = dir.x * heroForward.x + dir.z * heroForward.z;
+      const clip = Math.abs(across) > Math.abs(along) ? (across > 0 ? 'dodge_right' : 'dodge_left') : 'roll';
+      dodge = { t: 0, dir, clip };
+      strike = null;
+      cover = { inCover: false };
+      // A dodge outruns one shot.
+      grace = Math.max(grace, DODGE.seconds);
+    }
+
     const velocity = controller.getVelocity();
     const groundSpeed = Math.hypot(velocity.x, velocity.z);
     const partner = talking ? characterOf(talking.id) : null;
-    if (condition.kind === 'down') {
+    if (dodge) {
+      dodge.t += dt;
+      desired.set(dodge.dir.x * DODGE.speed, 0, dodge.dir.z * DODGE.speed);
+      if (dodge.clip === 'roll') heroYaw = turnTowards(heroYaw, yawOf(dodge.dir), 20 * dt);
+      hero.setPose({ lower: { [dodge.clip]: 1 }, upper: null, blend: 18 }, dt);
+      if (dodge.t >= DODGE.seconds) {
+        dodge = null;
+        dodgeCooldown = DODGE.cooldown;
+      }
+    } else if (strike && condition.kind === 'up') {
+      // Two blows at what is in front: a machine pulled or lifted into reach, one that came too close.
+      strike.t += dt;
+      desired.set(0, 0, 0);
+      heroYaw = turnTowards(heroYaw, yawOf(forward), 14 * dt);
+      hero.setPose({ lower: strike.t < 0.36 ? { punch_jab: 1 } : { punch_cross: 1 }, upper: null, blend: 16 }, dt);
+      const blowAt = [0.16, 0.5];
+      if (strike.blows < blowAt.length && strike.t >= (blowAt[strike.blows] ?? 1)) {
+        strike.blows += 1;
+        const chest = hero.root.position.add(new Vector3(0, 1.3, 0));
+        const ahead = new Vector3(heroForward.x, 0, heroForward.z);
+        let landed = false;
+        for (let m = 0; m < swarm.size; m++) {
+          const st = swarm.status(m);
+          if (!st?.alive) continue;
+          const to = st.at.subtract(chest);
+          if (to.length() > MELEE.reach || Vector3.Dot(to.normalize(), ahead) < 0.4) continue;
+          swarm.strikeMachine(m, { amount: MELEE.damage, kind: 'kinetic' }, 'hero');
+          swarm.affect(m, 'pull', 0.4, st.at.add(ahead.scale(3)));
+          landed = true;
+        }
+        if (landed) options.onNote('Hit!');
+      }
+      if (strike.t >= MELEE.seconds) strike = null;
+    } else if (condition.kind === 'down') {
       desired.set(0, 0, 0);
       hero.setPose(poseWeights({ mode: 'down' }), dt);
     } else if (condition.kind === 'rising') {
