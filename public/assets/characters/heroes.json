@@ -1,0 +1,2857 @@
+{
+  "about": "Made by scripts/art/hero.py from art/hero.json, art/animations.json and art/lineages.json. Do not edit by hand.",
+  "skeleton": "MPFB game_engine (Unreal-style bone names)",
+  "clips": [
+    {
+      "name": "idle",
+      "loop": true
+    },
+    {
+      "name": "idle_talk",
+      "loop": true
+    },
+    {
+      "name": "walk",
+      "loop": true
+    },
+    {
+      "name": "jog",
+      "loop": true
+    },
+    {
+      "name": "sprint",
+      "loop": true
+    },
+    {
+      "name": "strafe_left",
+      "loop": true
+    },
+    {
+      "name": "strafe_right",
+      "loop": true
+    },
+    {
+      "name": "crouch_idle",
+      "loop": true
+    },
+    {
+      "name": "crouch_walk",
+      "loop": true
+    },
+    {
+      "name": "roll",
+      "loop": false
+    },
+    {
+      "name": "jump_start",
+      "loop": false
+    },
+    {
+      "name": "jump_loop",
+      "loop": true
+    },
+    {
+      "name": "jump_land",
+      "loop": false
+    },
+    {
+      "name": "pistol_idle",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim_up",
+      "loop": true
+    },
+    {
+      "name": "pistol_aim_down",
+      "loop": true
+    },
+    {
+      "name": "pistol_shoot",
+      "loop": false
+    },
+    {
+      "name": "pistol_reload",
+      "loop": false
+    },
+    {
+      "name": "power_ready",
+      "loop": true
+    },
+    {
+      "name": "power_cast",
+      "loop": false
+    },
+    {
+      "name": "punch_jab",
+      "loop": false
+    },
+    {
+      "name": "punch_cross",
+      "loop": false
+    },
+    {
+      "name": "melee_hook",
+      "loop": false
+    },
+    {
+      "name": "melee_combo",
+      "loop": false
+    },
+    {
+      "name": "hit_chest",
+      "loop": false
+    },
+    {
+      "name": "hit_head",
+      "loop": false
+    },
+    {
+      "name": "hit_knockback",
+      "loop": false
+    },
+    {
+      "name": "death",
+      "loop": false
+    },
+    {
+      "name": "interact",
+      "loop": false
+    }
+  ],
+  "heightScale": {
+    "range": [
+      0.9,
+      1.1
+    ],
+    "note": "Height is a uniform scale on the character's root node."
+  },
+  "morphNote": "maxJointShiftCm is how far the morph at weight 1 would move the joints if the skeleton were refitted. boneOffsets give that shift per bone in glTF model space (metres, Y up); the game may add weight * offset to the bones' rest positions for morphs that move joints. Clips do not key bone translation except on the hips and root.",
+  "lineages": {
+    "earthborn": {
+      "label": "Earthborn",
+      "summary": "Baseline humans, born and raised in Earth's gravity.",
+      "heightScale": {
+        "man": 1.0,
+        "woman": 1.0
+      },
+      "morphs": {}
+    },
+    "spacer": {
+      "label": "Spacer",
+      "summary": "Born in low gravity: tall and light, with a long, narrow frame.",
+      "heightScale": {
+        "man": 1.07,
+        "woman": 1.07
+      },
+      "morphs": {
+        "body_lean": 0.9,
+        "body_slim": 0.35,
+        "body_soft": 0.3,
+        "body_hips_wide": 0.0,
+        "face_cheekbones": 0.4,
+        "face_nose_long": 0.3,
+        "face_eyes_large": 0.25
+      }
+    },
+    "heavyworlder": {
+      "label": "Heavyworlder",
+      "summary": "Engineered for strong gravity: short and dense, with heavy muscle and bone.",
+      "heightScale": {
+        "man": 0.93,
+        "woman": 0.93
+      },
+      "morphs": {
+        "body_stocky": 0.9,
+        "body_muscular": 0.7,
+        "body_heavy": 0.25,
+        "body_shoulders_broad": 0.5,
+        "body_neck_thick": 0.8,
+        "face_jaw_wide": 0.5,
+        "face_brow_heavy": 0.4,
+        "face_round": 0.2
+      }
+    }
+  },
+  "bodies": {
+    "man": {
+      "file": "hero-man.glb",
+      "heightMetres": 1.796,
+      "triangles": 38262,
+      "bones": 53,
+      "megabytes": 4.59,
+      "morphs": [
+        {
+          "name": "body_heavy",
+          "group": "body",
+          "label": "Heavier",
+          "maxJointShiftCm": 0.23,
+          "boneOffsets": {
+            "clavicle_l": [
+              -2e-05,
+              -0.0021,
+              -6e-05
+            ],
+            "upperarm_l": [
+              -0.00017,
+              -0.00209,
+              -2e-05
+            ],
+            "clavicle_r": [
+              2e-05,
+              -0.0021,
+              -6e-05
+            ],
+            "upperarm_r": [
+              0.00017,
+              -0.00209,
+              -2e-05
+            ],
+            "neck_01": [
+              0.0,
+              -0.00217,
+              -1e-05
+            ],
+            "head": [
+              0.0,
+              -0.00228,
+              -1e-05
+            ]
+          }
+        },
+        {
+          "name": "body_slim",
+          "group": "body",
+          "label": "Slimmer",
+          "maxJointShiftCm": 0.61,
+          "boneOffsets": {
+            "spine_01": [
+              0.0,
+              -0.00346,
+              0.0006
+            ],
+            "spine_02": [
+              0.0,
+              -0.00483,
+              0.00044
+            ],
+            "spine_03": [
+              0.0,
+              -0.00608,
+              0.00023
+            ],
+            "clavicle_l": [
+              -3e-05,
+              -0.00306,
+              -9e-05
+            ],
+            "upperarm_l": [
+              -0.00028,
+              -0.00314,
+              1e-05
+            ],
+            "lowerarm_l": [
+              -0.00069,
+              -0.00262,
+              -9e-05
+            ],
+            "hand_l": [
+              -0.00092,
+              -0.0023,
+              -0.00044
+            ],
+            "index_01_l": [
+              -0.00096,
+              -0.00222,
+              -0.00062
+            ],
+            "index_02_l": [
+              -0.00097,
+              -0.00219,
+              -0.00066
+            ],
+            "index_03_l": [
+              -0.00097,
+              -0.00216,
+              -0.0007
+            ],
+            "middle_01_l": [
+              -0.00098,
+              -0.00219,
+              -0.00059
+            ],
+            "middle_02_l": [
+              -0.001,
+              -0.00215,
+              -0.00063
+            ],
+            "middle_03_l": [
+              -0.00101,
+              -0.00211,
+              -0.00066
+            ],
+            "pinky_01_l": [
+              -0.00101,
+              -0.00217,
+              -0.00052
+            ],
+            "pinky_02_l": [
+              -0.00102,
+              -0.00213,
+              -0.00054
+            ],
+            "pinky_03_l": [
+              -0.00103,
+              -0.00211,
+              -0.00055
+            ],
+            "ring_01_l": [
+              -0.001,
+              -0.00218,
+              -0.00056
+            ],
+            "ring_02_l": [
+              -0.00102,
+              -0.00214,
+              -0.00058
+            ],
+            "ring_03_l": [
+              -0.00103,
+              -0.0021,
+              -0.00061
+            ],
+            "thumb_01_l": [
+              -0.00091,
+              -0.00228,
+              -0.00053
+            ],
+            "thumb_02_l": [
+              -0.00088,
+              -0.00226,
+              -0.00057
+            ],
+            "thumb_03_l": [
+              -0.00086,
+              -0.00223,
+              -0.00063
+            ],
+            "clavicle_r": [
+              3e-05,
+              -0.00306,
+              -9e-05
+            ],
+            "upperarm_r": [
+              0.00028,
+              -0.00314,
+              1e-05
+            ],
+            "lowerarm_r": [
+              0.00069,
+              -0.00262,
+              -9e-05
+            ],
+            "hand_r": [
+              0.00092,
+              -0.0023,
+              -0.00044
+            ],
+            "index_01_r": [
+              0.00096,
+              -0.00222,
+              -0.00062
+            ],
+            "index_02_r": [
+              0.00097,
+              -0.00219,
+              -0.00066
+            ],
+            "index_03_r": [
+              0.00097,
+              -0.00216,
+              -0.0007
+            ],
+            "middle_01_r": [
+              0.00098,
+              -0.00219,
+              -0.00059
+            ],
+            "middle_02_r": [
+              0.001,
+              -0.00215,
+              -0.00063
+            ],
+            "middle_03_r": [
+              0.00101,
+              -0.00211,
+              -0.00066
+            ],
+            "pinky_01_r": [
+              0.00101,
+              -0.00217,
+              -0.00052
+            ],
+            "pinky_02_r": [
+              0.00102,
+              -0.00213,
+              -0.00054
+            ],
+            "pinky_03_r": [
+              0.00103,
+              -0.00211,
+              -0.00055
+            ],
+            "ring_01_r": [
+              0.001,
+              -0.00218,
+              -0.00056
+            ],
+            "ring_02_r": [
+              0.00102,
+              -0.00214,
+              -0.00058
+            ],
+            "ring_03_r": [
+              0.00103,
+              -0.0021,
+              -0.00061
+            ],
+            "thumb_01_r": [
+              0.00091,
+              -0.00228,
+              -0.00053
+            ],
+            "thumb_02_r": [
+              0.00088,
+              -0.00226,
+              -0.00057
+            ],
+            "thumb_03_r": [
+              0.00086,
+              -0.00223,
+              -0.00063
+            ],
+            "neck_01": [
+              0.0,
+              -0.00316,
+              -2e-05
+            ],
+            "head": [
+              0.0,
+              -0.00331,
+              -2e-05
+            ],
+            "thigh_l": [
+              -0.00064,
+              -0.00243,
+              0.00053
+            ],
+            "thigh_r": [
+              0.00064,
+              -0.00243,
+              0.00053
+            ]
+          }
+        },
+        {
+          "name": "body_muscular",
+          "group": "body",
+          "label": "More muscle",
+          "maxJointShiftCm": 0.43,
+          "boneOffsets": {
+            "upperarm_l": [
+              -0.00427,
+              -0.00042,
+              -0.00029
+            ],
+            "upperarm_r": [
+              0.00427,
+              -0.00042,
+              -0.00029
+            ]
+          }
+        },
+        {
+          "name": "body_soft",
+          "group": "body",
+          "label": "Less muscle",
+          "maxJointShiftCm": 0.25,
+          "boneOffsets": {
+            "upperarm_l": [
+              -0.00246,
+              0.00035,
+              -0.00017
+            ],
+            "upperarm_r": [
+              0.00246,
+              0.00035,
+              -0.00017
+            ]
+          }
+        },
+        {
+          "name": "body_lean",
+          "group": "body",
+          "label": "Long and lean (proportions)",
+          "maxJointShiftCm": 1.01,
+          "boneOffsets": {
+            "clavicle_l": [
+              -0.00158,
+              0.0,
+              -0.0017
+            ],
+            "upperarm_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "clavicle_r": [
+              0.00158,
+              0.0,
+              -0.0017
+            ],
+            "upperarm_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "neck_01": [
+              0.0,
+              0.0,
+              0.00298
+            ],
+            "thigh_l": [
+              -0.0044,
+              0.0,
+              -0.0
+            ],
+            "thigh_r": [
+              0.0044,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_stocky",
+          "group": "body",
+          "label": "Short and dense (proportions)",
+          "maxJointShiftCm": 1.03,
+          "boneOffsets": {
+            "spine_03": [
+              0.0,
+              0.0,
+              -0.00472
+            ],
+            "clavicle_l": [
+              0.00158,
+              0.0,
+              0.00128
+            ],
+            "upperarm_l": [
+              0.01012,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "clavicle_r": [
+              -0.00158,
+              0.0,
+              0.00128
+            ],
+            "upperarm_r": [
+              -0.01012,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_shoulders_broad",
+          "group": "body",
+          "label": "Broad shoulders",
+          "maxJointShiftCm": 2.67,
+          "boneOffsets": {
+            "upperarm_l": [
+              0.02662,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "upperarm_r": [
+              -0.02662,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_hips_wide",
+          "group": "body",
+          "label": "Wide hips",
+          "maxJointShiftCm": 1.54,
+          "boneOffsets": {
+            "thigh_l": [
+              0.0154,
+              0.0,
+              -0.0
+            ],
+            "thigh_r": [
+              -0.0154,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_chest",
+          "group": "body",
+          "label": "Chest",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "body_neck_thick",
+          "group": "body",
+          "label": "Thick neck",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_jaw_wide",
+          "group": "face",
+          "label": "Wide jaw",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_chin_strong",
+          "group": "face",
+          "label": "Strong chin",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_cheekbones",
+          "group": "face",
+          "label": "High cheekbones",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_nose_wide",
+          "group": "face",
+          "label": "Wide nose",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_nose_long",
+          "group": "face",
+          "label": "Long nose",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_lips_full",
+          "group": "face",
+          "label": "Full lips",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_eyes_large",
+          "group": "face",
+          "label": "Large eyes",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_brow_heavy",
+          "group": "face",
+          "label": "Heavy brow",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_round",
+          "group": "face",
+          "label": "Round face",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        }
+      ]
+    },
+    "woman": {
+      "file": "hero-woman.glb",
+      "heightMetres": 1.651,
+      "triangles": 42564,
+      "bones": 53,
+      "megabytes": 5.07,
+      "morphs": [
+        {
+          "name": "body_heavy",
+          "group": "body",
+          "label": "Heavier",
+          "maxJointShiftCm": 0.47,
+          "boneOffsets": {
+            "pelvis": [
+              0.0,
+              0.00304,
+              4e-05
+            ],
+            "spine_01": [
+              0.0,
+              0.00342,
+              -0.00011
+            ],
+            "spine_02": [
+              0.0,
+              0.00347,
+              0.00056
+            ],
+            "spine_03": [
+              0.0,
+              0.00377,
+              0.00037
+            ],
+            "clavicle_l": [
+              4e-05,
+              0.00439,
+              0.00079
+            ],
+            "upperarm_l": [
+              0.00034,
+              0.00437,
+              5e-05
+            ],
+            "lowerarm_l": [
+              0.00097,
+              0.00364,
+              0.00013
+            ],
+            "hand_l": [
+              0.00129,
+              0.00332,
+              0.00062
+            ],
+            "index_01_l": [
+              0.00135,
+              0.00319,
+              0.0009
+            ],
+            "index_02_l": [
+              0.00136,
+              0.00315,
+              0.00096
+            ],
+            "index_03_l": [
+              0.00137,
+              0.0031,
+              0.00101
+            ],
+            "middle_01_l": [
+              0.00139,
+              0.00315,
+              0.00085
+            ],
+            "middle_02_l": [
+              0.00142,
+              0.00308,
+              0.00091
+            ],
+            "middle_03_l": [
+              0.00143,
+              0.00303,
+              0.00096
+            ],
+            "pinky_01_l": [
+              0.00143,
+              0.00311,
+              0.00074
+            ],
+            "pinky_02_l": [
+              0.00145,
+              0.00306,
+              0.00077
+            ],
+            "pinky_03_l": [
+              0.00146,
+              0.00302,
+              0.00078
+            ],
+            "ring_01_l": [
+              0.00142,
+              0.00313,
+              0.00079
+            ],
+            "ring_02_l": [
+              0.00145,
+              0.00307,
+              0.00084
+            ],
+            "ring_03_l": [
+              0.00147,
+              0.00301,
+              0.00088
+            ],
+            "thumb_01_l": [
+              0.00128,
+              0.00329,
+              0.00075
+            ],
+            "thumb_02_l": [
+              0.00123,
+              0.00326,
+              0.00081
+            ],
+            "thumb_03_l": [
+              0.0012,
+              0.00322,
+              0.00091
+            ],
+            "clavicle_r": [
+              -4e-05,
+              0.00439,
+              0.00079
+            ],
+            "upperarm_r": [
+              -0.00034,
+              0.00437,
+              5e-05
+            ],
+            "lowerarm_r": [
+              -0.00097,
+              0.00364,
+              0.00013
+            ],
+            "hand_r": [
+              -0.00129,
+              0.00332,
+              0.00062
+            ],
+            "index_01_r": [
+              -0.00135,
+              0.00319,
+              0.0009
+            ],
+            "index_02_r": [
+              -0.00136,
+              0.00315,
+              0.00096
+            ],
+            "index_03_r": [
+              -0.00137,
+              0.0031,
+              0.00101
+            ],
+            "middle_01_r": [
+              -0.00139,
+              0.00315,
+              0.00085
+            ],
+            "middle_02_r": [
+              -0.00142,
+              0.00308,
+              0.00091
+            ],
+            "middle_03_r": [
+              -0.00143,
+              0.00303,
+              0.00096
+            ],
+            "pinky_01_r": [
+              -0.00143,
+              0.00311,
+              0.00074
+            ],
+            "pinky_02_r": [
+              -0.00145,
+              0.00306,
+              0.00077
+            ],
+            "pinky_03_r": [
+              -0.00146,
+              0.00302,
+              0.00078
+            ],
+            "ring_01_r": [
+              -0.00142,
+              0.00313,
+              0.00079
+            ],
+            "ring_02_r": [
+              -0.00145,
+              0.00307,
+              0.00084
+            ],
+            "ring_03_r": [
+              -0.00147,
+              0.00301,
+              0.00088
+            ],
+            "thumb_01_r": [
+              -0.00128,
+              0.00329,
+              0.00075
+            ],
+            "thumb_02_r": [
+              -0.00123,
+              0.00326,
+              0.00081
+            ],
+            "thumb_03_r": [
+              -0.0012,
+              0.00322,
+              0.00091
+            ],
+            "neck_01": [
+              0.0,
+              0.00452,
+              2e-05
+            ],
+            "head": [
+              0.0,
+              0.00471,
+              2e-05
+            ],
+            "thigh_l": [
+              0.00024,
+              0.00303,
+              1e-05
+            ],
+            "thigh_r": [
+              -0.00024,
+              0.00303,
+              1e-05
+            ]
+          }
+        },
+        {
+          "name": "body_slim",
+          "group": "body",
+          "label": "Slimmer",
+          "maxJointShiftCm": 0.48,
+          "boneOffsets": {
+            "pelvis": [
+              0.0,
+              0.00325,
+              0.0
+            ],
+            "spine_01": [
+              0.0,
+              0.00339,
+              -5e-05
+            ],
+            "spine_02": [
+              0.0,
+              0.00357,
+              -3e-05
+            ],
+            "spine_03": [
+              0.0,
+              0.00379,
+              -2e-05
+            ],
+            "clavicle_l": [
+              5e-05,
+              0.0044,
+              0.00012
+            ],
+            "upperarm_l": [
+              0.00037,
+              0.00437,
+              4e-05
+            ],
+            "lowerarm_l": [
+              0.00101,
+              0.00364,
+              0.00013
+            ],
+            "hand_l": [
+              0.00134,
+              0.00329,
+              0.00065
+            ],
+            "index_01_l": [
+              0.0014,
+              0.00318,
+              0.00089
+            ],
+            "index_02_l": [
+              0.00141,
+              0.00315,
+              0.00094
+            ],
+            "index_03_l": [
+              0.00141,
+              0.00311,
+              0.00099
+            ],
+            "middle_01_l": [
+              0.00143,
+              0.00314,
+              0.00085
+            ],
+            "middle_02_l": [
+              0.00146,
+              0.00309,
+              0.0009
+            ],
+            "middle_03_l": [
+              0.00147,
+              0.00304,
+              0.00094
+            ],
+            "pinky_01_l": [
+              0.00146,
+              0.00311,
+              0.00075
+            ],
+            "pinky_02_l": [
+              0.00148,
+              0.00306,
+              0.00078
+            ],
+            "pinky_03_l": [
+              0.00149,
+              0.00303,
+              0.0008
+            ],
+            "ring_01_l": [
+              0.00145,
+              0.00313,
+              0.0008
+            ],
+            "ring_02_l": [
+              0.00148,
+              0.00307,
+              0.00084
+            ],
+            "ring_03_l": [
+              0.00149,
+              0.00302,
+              0.00088
+            ],
+            "thumb_01_l": [
+              0.00134,
+              0.00326,
+              0.00076
+            ],
+            "thumb_02_l": [
+              0.0013,
+              0.00324,
+              0.00082
+            ],
+            "thumb_03_l": [
+              0.00127,
+              0.0032,
+              0.0009
+            ],
+            "clavicle_r": [
+              -5e-05,
+              0.0044,
+              0.00012
+            ],
+            "upperarm_r": [
+              -0.00037,
+              0.00437,
+              4e-05
+            ],
+            "lowerarm_r": [
+              -0.00101,
+              0.00364,
+              0.00013
+            ],
+            "hand_r": [
+              -0.00134,
+              0.00329,
+              0.00065
+            ],
+            "index_01_r": [
+              -0.0014,
+              0.00318,
+              0.00089
+            ],
+            "index_02_r": [
+              -0.00141,
+              0.00315,
+              0.00094
+            ],
+            "index_03_r": [
+              -0.00141,
+              0.00311,
+              0.00099
+            ],
+            "middle_01_r": [
+              -0.00143,
+              0.00314,
+              0.00085
+            ],
+            "middle_02_r": [
+              -0.00146,
+              0.00309,
+              0.0009
+            ],
+            "middle_03_r": [
+              -0.00147,
+              0.00304,
+              0.00094
+            ],
+            "pinky_01_r": [
+              -0.00146,
+              0.00311,
+              0.00075
+            ],
+            "pinky_02_r": [
+              -0.00148,
+              0.00306,
+              0.00078
+            ],
+            "pinky_03_r": [
+              -0.00149,
+              0.00303,
+              0.0008
+            ],
+            "ring_01_r": [
+              -0.00145,
+              0.00313,
+              0.0008
+            ],
+            "ring_02_r": [
+              -0.00148,
+              0.00307,
+              0.00084
+            ],
+            "ring_03_r": [
+              -0.00149,
+              0.00302,
+              0.00088
+            ],
+            "thumb_01_r": [
+              -0.00134,
+              0.00326,
+              0.00076
+            ],
+            "thumb_02_r": [
+              -0.0013,
+              0.00324,
+              0.00082
+            ],
+            "thumb_03_r": [
+              -0.00127,
+              0.0032,
+              0.0009
+            ],
+            "neck_01": [
+              0.0,
+              0.00456,
+              2e-05
+            ],
+            "head": [
+              0.0,
+              0.00479,
+              2e-05
+            ],
+            "thigh_l": [
+              0.0002,
+              0.00321,
+              -0.0
+            ],
+            "thigh_r": [
+              -0.0002,
+              0.00321,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_muscular",
+          "group": "body",
+          "label": "More muscle",
+          "maxJointShiftCm": 0.38,
+          "boneOffsets": {
+            "pelvis": [
+              0.0,
+              0.00243,
+              3e-05
+            ],
+            "spine_01": [
+              0.0,
+              0.00258,
+              -1e-05
+            ],
+            "spine_02": [
+              0.0,
+              0.00276,
+              2e-05
+            ],
+            "spine_03": [
+              0.0,
+              0.00301,
+              1e-05
+            ],
+            "clavicle_l": [
+              3e-05,
+              0.00352,
+              0.0001
+            ],
+            "upperarm_l": [
+              0.00028,
+              0.0035,
+              3e-05
+            ],
+            "lowerarm_l": [
+              0.00078,
+              0.00292,
+              0.00011
+            ],
+            "hand_l": [
+              0.00103,
+              0.00266,
+              0.00049
+            ],
+            "index_01_l": [
+              0.00108,
+              0.00256,
+              0.00072
+            ],
+            "index_02_l": [
+              0.00109,
+              0.00252,
+              0.00077
+            ],
+            "index_03_l": [
+              0.00109,
+              0.00249,
+              0.00081
+            ],
+            "middle_01_l": [
+              0.00111,
+              0.00252,
+              0.00068
+            ],
+            "middle_02_l": [
+              0.00114,
+              0.00247,
+              0.00073
+            ],
+            "middle_03_l": [
+              0.00115,
+              0.00242,
+              0.00077
+            ],
+            "pinky_01_l": [
+              0.00114,
+              0.00249,
+              0.00059
+            ],
+            "pinky_02_l": [
+              0.00116,
+              0.00245,
+              0.00061
+            ],
+            "pinky_03_l": [
+              0.00117,
+              0.00242,
+              0.00063
+            ],
+            "ring_01_l": [
+              0.00113,
+              0.00251,
+              0.00063
+            ],
+            "ring_02_l": [
+              0.00116,
+              0.00246,
+              0.00067
+            ],
+            "ring_03_l": [
+              0.00117,
+              0.00241,
+              0.0007
+            ],
+            "thumb_01_l": [
+              0.00103,
+              0.00264,
+              0.0006
+            ],
+            "thumb_02_l": [
+              0.00098,
+              0.00261,
+              0.00065
+            ],
+            "thumb_03_l": [
+              0.00096,
+              0.00258,
+              0.00073
+            ],
+            "clavicle_r": [
+              -3e-05,
+              0.00352,
+              0.0001
+            ],
+            "upperarm_r": [
+              -0.00028,
+              0.0035,
+              3e-05
+            ],
+            "lowerarm_r": [
+              -0.00078,
+              0.00292,
+              0.00011
+            ],
+            "hand_r": [
+              -0.00103,
+              0.00266,
+              0.00049
+            ],
+            "index_01_r": [
+              -0.00108,
+              0.00256,
+              0.00072
+            ],
+            "index_02_r": [
+              -0.00109,
+              0.00252,
+              0.00077
+            ],
+            "index_03_r": [
+              -0.00109,
+              0.00249,
+              0.00081
+            ],
+            "middle_01_r": [
+              -0.00111,
+              0.00252,
+              0.00068
+            ],
+            "middle_02_r": [
+              -0.00114,
+              0.00247,
+              0.00073
+            ],
+            "middle_03_r": [
+              -0.00115,
+              0.00242,
+              0.00077
+            ],
+            "pinky_01_r": [
+              -0.00114,
+              0.00249,
+              0.00059
+            ],
+            "pinky_02_r": [
+              -0.00116,
+              0.00245,
+              0.00061
+            ],
+            "pinky_03_r": [
+              -0.00117,
+              0.00242,
+              0.00063
+            ],
+            "ring_01_r": [
+              -0.00113,
+              0.00251,
+              0.00063
+            ],
+            "ring_02_r": [
+              -0.00116,
+              0.00246,
+              0.00067
+            ],
+            "ring_03_r": [
+              -0.00117,
+              0.00241,
+              0.0007
+            ],
+            "thumb_01_r": [
+              -0.00103,
+              0.00264,
+              0.0006
+            ],
+            "thumb_02_r": [
+              -0.00098,
+              0.00261,
+              0.00065
+            ],
+            "thumb_03_r": [
+              -0.00096,
+              0.00258,
+              0.00073
+            ],
+            "neck_01": [
+              0.0,
+              0.00362,
+              2e-05
+            ],
+            "head": [
+              0.0,
+              0.00377,
+              2e-05
+            ],
+            "thigh_l": [
+              0.00019,
+              0.00242,
+              1e-05
+            ],
+            "thigh_r": [
+              -0.00019,
+              0.00242,
+              1e-05
+            ]
+          }
+        },
+        {
+          "name": "body_soft",
+          "group": "body",
+          "label": "Less muscle",
+          "maxJointShiftCm": 1.13,
+          "boneOffsets": {
+            "pelvis": [
+              0.0,
+              0.00214,
+              -0.00017
+            ],
+            "spine_01": [
+              0.0,
+              0.00227,
+              -0.00106
+            ],
+            "spine_02": [
+              0.0,
+              0.00243,
+              2e-05
+            ],
+            "spine_03": [
+              0.0,
+              0.00349,
+              4e-05
+            ],
+            "clavicle_l": [
+              -0.00019,
+              0.00464,
+              0.00011
+            ],
+            "upperarm_l": [
+              -0.00041,
+              0.00487,
+              2e-05
+            ],
+            "lowerarm_l": [
+              0.00073,
+              0.00345,
+              0.0001
+            ],
+            "hand_l": [
+              0.00136,
+              0.00361,
+              0.00065
+            ],
+            "index_01_l": [
+              0.00142,
+              0.0035,
+              0.00089
+            ],
+            "index_02_l": [
+              0.00143,
+              0.00346,
+              0.00096
+            ],
+            "index_03_l": [
+              0.00143,
+              0.00342,
+              0.001
+            ],
+            "middle_01_l": [
+              0.00145,
+              0.00345,
+              0.00085
+            ],
+            "middle_02_l": [
+              0.00148,
+              0.0034,
+              0.0009
+            ],
+            "middle_03_l": [
+              0.00149,
+              0.00334,
+              0.00096
+            ],
+            "pinky_01_l": [
+              0.00149,
+              0.00342,
+              0.00076
+            ],
+            "pinky_02_l": [
+              0.00151,
+              0.00337,
+              0.00078
+            ],
+            "pinky_03_l": [
+              0.00151,
+              0.00333,
+              0.0008
+            ],
+            "ring_01_l": [
+              0.00147,
+              0.00344,
+              0.0008
+            ],
+            "ring_02_l": [
+              0.00151,
+              0.00338,
+              0.00084
+            ],
+            "ring_03_l": [
+              0.00152,
+              0.00333,
+              0.00088
+            ],
+            "thumb_01_l": [
+              0.00135,
+              0.00358,
+              0.00076
+            ],
+            "thumb_02_l": [
+              0.00131,
+              0.00356,
+              0.00082
+            ],
+            "thumb_03_l": [
+              0.00127,
+              0.00352,
+              0.0009
+            ],
+            "clavicle_r": [
+              0.00019,
+              0.00464,
+              0.00011
+            ],
+            "upperarm_r": [
+              0.00041,
+              0.00487,
+              2e-05
+            ],
+            "lowerarm_r": [
+              -0.00073,
+              0.00345,
+              0.0001
+            ],
+            "hand_r": [
+              -0.00136,
+              0.00361,
+              0.00065
+            ],
+            "index_01_r": [
+              -0.00142,
+              0.0035,
+              0.00089
+            ],
+            "index_02_r": [
+              -0.00143,
+              0.00346,
+              0.00096
+            ],
+            "index_03_r": [
+              -0.00143,
+              0.00342,
+              0.001
+            ],
+            "middle_01_r": [
+              -0.00145,
+              0.00345,
+              0.00085
+            ],
+            "middle_02_r": [
+              -0.00148,
+              0.0034,
+              0.0009
+            ],
+            "middle_03_r": [
+              -0.00149,
+              0.00334,
+              0.00096
+            ],
+            "pinky_01_r": [
+              -0.00149,
+              0.00342,
+              0.00076
+            ],
+            "pinky_02_r": [
+              -0.00151,
+              0.00337,
+              0.00078
+            ],
+            "pinky_03_r": [
+              -0.00151,
+              0.00333,
+              0.0008
+            ],
+            "ring_01_r": [
+              -0.00147,
+              0.00344,
+              0.0008
+            ],
+            "ring_02_r": [
+              -0.00151,
+              0.00338,
+              0.00084
+            ],
+            "ring_03_r": [
+              -0.00152,
+              0.00333,
+              0.00088
+            ],
+            "thumb_01_r": [
+              -0.00135,
+              0.00358,
+              0.00076
+            ],
+            "thumb_02_r": [
+              -0.00131,
+              0.00356,
+              0.00082
+            ],
+            "thumb_03_r": [
+              -0.00127,
+              0.00352,
+              0.0009
+            ],
+            "neck_01": [
+              0.0,
+              0.00483,
+              0.00013
+            ],
+            "head": [
+              0.0,
+              0.00502,
+              6e-05
+            ],
+            "thigh_l": [
+              0.01121,
+              0.00166,
+              -0.00013
+            ],
+            "thigh_r": [
+              -0.01121,
+              0.00166,
+              -0.00013
+            ]
+          }
+        },
+        {
+          "name": "body_lean",
+          "group": "body",
+          "label": "Long and lean (proportions)",
+          "maxJointShiftCm": 1.01,
+          "boneOffsets": {
+            "clavicle_l": [
+              -0.00158,
+              0.0,
+              -0.0017
+            ],
+            "upperarm_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              -0.01014,
+              0.0,
+              -0.0
+            ],
+            "clavicle_r": [
+              0.00158,
+              0.0,
+              -0.0017
+            ],
+            "upperarm_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              0.01014,
+              0.0,
+              -0.0
+            ],
+            "neck_01": [
+              0.0,
+              0.0,
+              0.00297
+            ],
+            "thigh_l": [
+              -0.0044,
+              0.0,
+              -0.0
+            ],
+            "thigh_r": [
+              0.0044,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_stocky",
+          "group": "body",
+          "label": "Short and dense (proportions)",
+          "maxJointShiftCm": 1.03,
+          "boneOffsets": {
+            "spine_03": [
+              0.0,
+              0.0,
+              -0.00472
+            ],
+            "clavicle_l": [
+              0.00158,
+              0.0,
+              0.00128
+            ],
+            "upperarm_l": [
+              0.01012,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              0.01026,
+              0.0,
+              -0.0
+            ],
+            "clavicle_r": [
+              -0.00158,
+              0.0,
+              0.00128
+            ],
+            "upperarm_r": [
+              -0.01012,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              -0.01026,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_shoulders_broad",
+          "group": "body",
+          "label": "Broad shoulders",
+          "maxJointShiftCm": 2.67,
+          "boneOffsets": {
+            "upperarm_l": [
+              0.02663,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "hand_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_l": [
+              0.0267,
+              0.0,
+              -0.0
+            ],
+            "upperarm_r": [
+              -0.02663,
+              0.0,
+              -0.0
+            ],
+            "lowerarm_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "hand_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "index_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "middle_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "pinky_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "ring_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_01_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_02_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ],
+            "thumb_03_r": [
+              -0.0267,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_hips_wide",
+          "group": "body",
+          "label": "Wide hips",
+          "maxJointShiftCm": 1.54,
+          "boneOffsets": {
+            "thigh_l": [
+              0.0154,
+              0.0,
+              -0.0
+            ],
+            "thigh_r": [
+              -0.0154,
+              0.0,
+              -0.0
+            ]
+          }
+        },
+        {
+          "name": "body_chest",
+          "group": "body",
+          "label": "Chest",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "body_neck_thick",
+          "group": "body",
+          "label": "Thick neck",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_jaw_wide",
+          "group": "face",
+          "label": "Wide jaw",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_chin_strong",
+          "group": "face",
+          "label": "Strong chin",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_cheekbones",
+          "group": "face",
+          "label": "High cheekbones",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_nose_wide",
+          "group": "face",
+          "label": "Wide nose",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_nose_long",
+          "group": "face",
+          "label": "Long nose",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_lips_full",
+          "group": "face",
+          "label": "Full lips",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_eyes_large",
+          "group": "face",
+          "label": "Large eyes",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_brow_heavy",
+          "group": "face",
+          "label": "Heavy brow",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        },
+        {
+          "name": "face_round",
+          "group": "face",
+          "label": "Round face",
+          "maxJointShiftCm": 0.0,
+          "boneOffsets": {}
+        }
+      ]
+    }
+  }
+}

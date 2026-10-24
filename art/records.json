@@ -1,0 +1,361 @@
+{
+  "about": "The record of every source file and every output of the art pipeline (D-28). 'sources' is written by hand and read by scripts/art/fetch_sources.py; 'items', 'mpfbData' and 'outputs' are filled in by scripts/art/records.py. Downloads live in the git-ignored art/cache/.",
+  "updated": "2026-10-24",
+  "sources": [
+    {
+      "id": "ual1",
+      "name": "Universal Animation Library, Standard (free) version",
+      "author": "Quaternius",
+      "licence": "CC0-1.0",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://opengameart.org/content/universal-animation-library",
+      "alsoAt": [
+        "https://quaternius.com/packs/universalanimationlibrary.html",
+        "https://quaternius.itch.io/universal-animation-library"
+      ],
+      "url": "https://opengameart.org/sites/default/files/universal_animation_librarystandard.zip",
+      "file": "universal_animation_librarystandard.zip",
+      "bytes": 14541205,
+      "sha256": "18ff1a7215f4852b320203e8aaf02a1578b5c8eef9027fbaedfcedc7b85a3ac2",
+      "downloaded": "2026-10-24",
+      "unpackTo": "ual1",
+      "used": [
+        "Animation Library[Standard]/Godot/AnimationLibrary_Godot_Standard.glb (45 clips; the licence file inside says CC0)"
+      ]
+    },
+    {
+      "id": "ual2",
+      "name": "Universal Animation Library 2, Standard (free) version",
+      "author": "Quaternius",
+      "licence": "CC0-1.0",
+      "licenceUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://opengameart.org/content/universal-animation-library-2",
+      "alsoAt": [
+        "https://quaternius.itch.io/universal-animation-library-2"
+      ],
+      "url": "https://opengameart.org/sites/default/files/universal_animation_library_2standard.zip",
+      "file": "universal_animation_library_2standard.zip",
+      "bytes": 10257419,
+      "sha256": "ec0e40d6d78fe9aaad59e322f40865a8675c22f0745e291622e54520391a9217",
+      "downloaded": "2026-10-24",
+      "unpackTo": "ual2",
+      "used": [
+        "Universal Animation Library 2 [Standard]/Unreal-Godot/UAL2_Standard.glb (the mannequin and skeleton, and 43 clips; the licence file inside says CC0)"
+      ]
+    },
+    {
+      "id": "mpfb",
+      "name": "MPFB 2.0.18 (MakeHuman plugin for Blender), from the Blender extensions platform",
+      "author": "Joel Palmius and the MakeHuman Community",
+      "licence": "GPL-3.0-or-later for the code (it runs in Blender only and is not shipped); CC0-1.0 for its bundled core assets (base mesh, targets, rigs and weights)",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://extensions.blender.org/add-ons/mpfb/",
+      "url": "https://extensions.blender.org/download/sha256:c075b3e9b94b8e5556a5f03f4653602d02ea306de08126e8f55ed6dee28a2dad/add-on-mpfb-v2.0.18.zip",
+      "file": "add-on-mpfb-v2.0.18.zip",
+      "bytes": 45956992,
+      "sha256": "c075b3e9b94b8e5556a5f03f4653602d02ea306de08126e8f55ed6dee28a2dad",
+      "downloaded": "2026-10-24",
+      "install": "blender -c extension install-file -r user_default -e art/cache/downloads/add-on-mpfb-v2.0.18.zip"
+    },
+    {
+      "id": "mh_system_assets",
+      "name": "MakeHuman system assets (asset pack)",
+      "author": "The MakeHuman team (Data Collection AB, Joel Palmius, Jonas Hauquier)",
+      "licence": "CC0-1.0 (each item's metadata says CC0; see 'items')",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+      "url": "https://files.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip",
+      "file": "makehuman_system_assets_cc0.zip",
+      "bytes": 280737770,
+      "sha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/system_assets"
+    },
+    {
+      "id": "mh_suits02",
+      "name": "MakeHuman asset pack Suits 02 (sci-fi and fantasy suits)",
+      "author": "Several community authors; the item used is by MatCreator",
+      "licence": "CC0-1.0 (each item's metadata says CC0; see 'items')",
+      "licenceUrl": "https://static.makehumancommunity.org/about/license.html",
+      "page": "https://static.makehumancommunity.org/assets/assetpacks/suits02.html",
+      "url": "https://files.makehumancommunity.org/asset_packs/suits02/suits02_cc0.zip",
+      "file": "suits02_cc0.zip",
+      "bytes": 192511027,
+      "sha256": "437f4d7ab92b698c1fb1047e7d62b22c11f195b2473e936118661dc8e6b7eb7a",
+      "downloaded": "2026-10-24",
+      "unpackTo": "makehuman/suits02"
+    }
+  ],
+  "tools": [
+    {
+      "name": "Blender 5.2.1 LTS",
+      "licence": "GPL-2.0-or-later",
+      "note": "runs the scripts; not shipped"
+    },
+    {
+      "name": "glTF-Transform 4.5.1 (@gltf-transform/cli, already in node_modules)",
+      "licence": "MIT",
+      "note": "resamples, prunes and quantizes the .glb files; not shipped"
+    }
+  ],
+  "items": [
+    {
+      "name": "young_african_male",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_african_male/young_african_male.mhmat",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "high-poly",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/high-poly/high-poly.mhclo",
+      "usedBy": [
+        "hero-man.glb",
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "brown",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/brown.mhmat",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "eyebrow001",
+      "type": "eyebrows",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyebrows/eyebrow001/eyebrow001.mhclo",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "eyelashes02",
+      "type": "eyelashes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyelashes/eyelashes02/eyelashes02.mhclo",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "short04",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/short04/short04.mhclo",
+      "usedBy": [
+        "hero-man.glb"
+      ]
+    },
+    {
+      "name": "matcreator_mc-skinsuit_2022",
+      "type": "clothes",
+      "author": "MatCreator",
+      "licence": "CC0",
+      "source": "mh_suits02",
+      "page": "http://www.makehumancommunity.org/node/2991",
+      "file": "art/cache/makehuman/suits02/clothes/matcreator_mc-skinsuit_2022/matcreator_mc-skinsuit_2022.mhclo",
+      "usedBy": [
+        "hero-man.glb",
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "young_asian_female",
+      "type": "skins",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/skins/young_asian_female/young_asian_female.mhmat",
+      "usedBy": [
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "brownlight",
+      "type": "eyes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyes/materials/brownlight.mhmat",
+      "usedBy": [
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "eyebrow006",
+      "type": "eyebrows",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyebrows/eyebrow006/eyebrow006.mhclo",
+      "usedBy": [
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "eyelashes01",
+      "type": "eyelashes",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/eyelashes/eyelashes01/eyelashes01.mhclo",
+      "usedBy": [
+        "hero-woman.glb"
+      ]
+    },
+    {
+      "name": "ponytail01",
+      "type": "hair",
+      "author": "makehuman_system",
+      "licence": "CC0",
+      "source": "mh_system_assets",
+      "page": "http://www.makehumancommunity.org",
+      "file": "art/cache/makehuman/system_assets/hair/ponytail01/ponytail01.mhclo",
+      "usedBy": [
+        "hero-woman.glb"
+      ]
+    }
+  ],
+  "mpfbData": {
+    "source": "mpfb",
+    "licence": "CC0-1.0 (MakeHuman core assets)",
+    "used": [
+      "data/3dobjs/base.obj (the body)",
+      "data/rigs/standard/rig.game_engine.json and weights.game_engine.json",
+      "data/targets/macrodetails (gender, age, muscle, weight, height, proportions)",
+      "data/targets/breast (cup size and firmness)",
+      "data/targets/arms/l-lowerarm-fat-decr.target.gz",
+      "data/targets/arms/l-lowerarm-muscle-incr.target.gz",
+      "data/targets/arms/l-upperarm-fat-decr.target.gz",
+      "data/targets/arms/l-upperarm-fat-incr.target.gz",
+      "data/targets/arms/l-upperarm-muscle-incr.target.gz",
+      "data/targets/arms/r-lowerarm-fat-decr.target.gz",
+      "data/targets/arms/r-lowerarm-muscle-incr.target.gz",
+      "data/targets/arms/r-upperarm-fat-decr.target.gz",
+      "data/targets/arms/r-upperarm-fat-incr.target.gz",
+      "data/targets/arms/r-upperarm-muscle-incr.target.gz",
+      "data/targets/cheek/l-cheek-bones-incr.target.gz",
+      "data/targets/cheek/l-cheek-volume-incr.target.gz",
+      "data/targets/cheek/r-cheek-bones-incr.target.gz",
+      "data/targets/cheek/r-cheek-volume-incr.target.gz",
+      "data/targets/chin/chin-bones-incr.target.gz",
+      "data/targets/chin/chin-height-incr.target.gz",
+      "data/targets/chin/chin-prominent-incr.target.gz",
+      "data/targets/chin/chin-width-incr.target.gz",
+      "data/targets/eyebrows/eyebrows-trans-down.target.gz",
+      "data/targets/eyes/l-eye-scale-incr.target.gz",
+      "data/targets/eyes/r-eye-scale-incr.target.gz",
+      "data/targets/forehead/forehead-nubian-incr.target.gz",
+      "data/targets/head/head-round.target.gz",
+      "data/targets/hip/hip-scale-horiz-decr.target.gz",
+      "data/targets/hip/hip-scale-horiz-incr.target.gz",
+      "data/targets/legs/l-lowerleg-fat-decr.target.gz",
+      "data/targets/legs/l-lowerleg-muscle-incr.target.gz",
+      "data/targets/legs/l-upperleg-fat-decr.target.gz",
+      "data/targets/legs/l-upperleg-fat-incr.target.gz",
+      "data/targets/legs/l-upperleg-muscle-incr.target.gz",
+      "data/targets/legs/r-lowerleg-fat-decr.target.gz",
+      "data/targets/legs/r-lowerleg-muscle-incr.target.gz",
+      "data/targets/legs/r-upperleg-fat-decr.target.gz",
+      "data/targets/legs/r-upperleg-fat-incr.target.gz",
+      "data/targets/legs/r-upperleg-muscle-incr.target.gz",
+      "data/targets/mouth/mouth-lowerlip-volume-incr.target.gz",
+      "data/targets/mouth/mouth-upperlip-volume-incr.target.gz",
+      "data/targets/neck/measure-neck-circ-incr.target.gz",
+      "data/targets/neck/neck-scale-depth-decr.target.gz",
+      "data/targets/neck/neck-scale-depth-incr.target.gz",
+      "data/targets/neck/neck-scale-horiz-decr.target.gz",
+      "data/targets/neck/neck-scale-horiz-incr.target.gz",
+      "data/targets/nose/nose-flaring-incr.target.gz",
+      "data/targets/nose/nose-point-down.target.gz",
+      "data/targets/nose/nose-scale-horiz-incr.target.gz",
+      "data/targets/nose/nose-scale-vert-incr.target.gz",
+      "data/targets/stomach/stomach-pregnant-decr.target.gz",
+      "data/targets/torso/torso-muscle-pectoral-incr.target.gz",
+      "data/targets/torso/torso-scale-depth-decr.target.gz",
+      "data/targets/torso/torso-scale-depth-incr.target.gz",
+      "data/targets/torso/torso-scale-horiz-decr.target.gz",
+      "data/targets/torso/torso-scale-horiz-incr.target.gz",
+      "data/targets/torso/torso-vshape-incr.target.gz"
+    ]
+  },
+  "outputs": [
+    {
+      "path": "public/assets/characters/hero-man.glb",
+      "bytes": 4591804,
+      "sha256": "b1b6676cb4225b221684e8845000f01a3108523213fb68bac9cf7404c1f56917",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_suits02",
+        "ual1",
+        "ual2"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/hero-woman.glb",
+      "bytes": 5066868,
+      "sha256": "a0c08e3875a16bec105a77855036d9042f456ea79159af29f4384dcf48c1594a",
+      "madeBy": "scripts/art/hero.py",
+      "from": [
+        "mpfb",
+        "mh_system_assets",
+        "mh_suits02",
+        "ual1",
+        "ual2"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/heroes.json",
+      "bytes": 61826,
+      "sha256": "12a30b9357bae36767285cce96e5b2fdef5764c3836cd1d5505e6286924cfc19",
+      "madeBy": "scripts/art/hero.py",
+      "from": [],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    },
+    {
+      "path": "public/assets/characters/mannequin.glb",
+      "bytes": 1084928,
+      "sha256": "d9049f1e0e966626ac5bd1f9011475c48a3b6f8b737ba9c0cdeee46b31d983dc",
+      "madeBy": "scripts/art/mannequin.py",
+      "from": [
+        "ual1",
+        "ual2"
+      ],
+      "licence": "CC0-1.0 inputs only; no attribution is required"
+    }
+  ]
+}

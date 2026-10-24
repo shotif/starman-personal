@@ -40,12 +40,15 @@ export function App() {
     if (!element) return;
     let disposed = false;
     let started: Game | null = null;
-    const renderer = new URLSearchParams(location.search).get('renderer') === 'webgpu' ? 'webgpu' : 'webgl2';
+    const params = new URLSearchParams(location.search);
+    const renderer = params.get('renderer') === 'webgpu' ? 'webgpu' : 'webgl2';
+    const hero = params.get('hero') === 'woman' ? 'woman' : 'man';
     import('../game/game.ts')
       .then(({ startGame }) =>
         startGame(element, {
           tier,
           renderer,
+          hero,
           onStats: setStats,
           onReady: () => {
             setStatus({ kind: 'ready' });

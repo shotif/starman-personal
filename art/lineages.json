@@ -1,0 +1,41 @@
+{
+  "about": "Lineage presets for the hero (D-08). Each preset is a starting point in the character creator: a height scale for the whole character and weights for the morph targets in hero-man.glb and hero-woman.glb (see art/hero.json). The player can move every slider afterwards. The lineages are fiction made for this game.",
+  "heightScaleRange": [0.9, 1.1],
+  "presets": {
+    "earthborn": {
+      "label": "Earthborn",
+      "summary": "Baseline humans, born and raised in Earth's gravity.",
+      "heightScale": { "man": 1.0, "woman": 1.0 },
+      "morphs": {}
+    },
+    "spacer": {
+      "label": "Spacer",
+      "summary": "Born in low gravity: tall and light, with a long, narrow frame.",
+      "heightScale": { "man": 1.07, "woman": 1.07 },
+      "morphs": {
+        "body_lean": 0.9,
+        "body_slim": 0.35,
+        "body_soft": 0.3,
+        "body_hips_wide": 0.0,
+        "face_cheekbones": 0.4,
+        "face_nose_long": 0.3,
+        "face_eyes_large": 0.25
+      }
+    },
+    "heavyworlder": {
+      "label": "Heavyworlder",
+      "summary": "Engineered for strong gravity: short and dense, with heavy muscle and bone.",
+      "heightScale": { "man": 0.93, "woman": 0.93 },
+      "morphs": {
+        "body_stocky": 0.9,
+        "body_muscular": 0.7,
+        "body_heavy": 0.25,
+        "body_shoulders_broad": 0.5,
+        "body_neck_thick": 0.8,
+        "face_jaw_wide": 0.5,
+        "face_brow_heavy": 0.4,
+        "face_round": 0.2
+      }
+    }
+  }
+}

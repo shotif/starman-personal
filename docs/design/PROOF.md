@@ -22,8 +22,8 @@ scene run well in a phone's browser, with the controls this game needs?** It mus
 
 ## Out of scope
 
-Cover, aiming, shooting and melee; dialogue; the MPFB people (they replace the mannequin when the
-art pipeline delivers them); real materials and lighting from the art pipeline; sound; saving.
+Cover, aiming, shooting and melee; dialogue; real lighting from the art pipeline; sound; saving.
+*(The MPFB people and Poly Haven's materials arrived during the proof and are in it.)*
 
 ## How it is built
 
@@ -37,8 +37,9 @@ art pipeline delivers them); real materials and lighting from the art pipeline; 
 | The loop: engine, physics, character controller, camera, the companion on the navigation mesh | [`src/game/game.ts`](../../src/game/game.ts) |
 | Screens: the HUD, the quality switch, notices, the touch controls | [`src/ui/`](../../src/ui/) |
 
-The character model is Quaternius's CC0 mannequin from the Universal Animation Library, made by
-the art pipeline ([ART_PIPELINE.md](../ART_PIPELINE.md)).
+The hero and the companion are the MPFB 2 man and woman from the art pipeline
+([ART_PIPELINE.md](../ART_PIPELINE.md)), animated with Quaternius's CC0 libraries; `?hero=woman`
+swaps them. Quaternius's mannequin stands in if they cannot be loaded.
 
 ## How to judge it
 

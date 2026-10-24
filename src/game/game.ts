@@ -50,6 +50,8 @@ export interface Game {
 
 export interface GameOptions {
   tier: QualityTier;
+  /** Which MPFB person the player is (D-09); the other is the companion. */
+  hero: 'man' | 'woman';
   /** `?renderer=webgpu` in the address asks for WebGPU; WebGL2 is the default. */
   renderer: 'webgl2' | 'webgpu';
   onStats(stats: GameStats): void;
@@ -94,9 +96,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   scene.enablePhysics(GRAVITY, physics);
 
   const level = buildLevel(scene, q);
-  const template = await loadCharacterTemplate(scene, `${import.meta.env.BASE_URL}assets/characters/mannequin.glb`);
-  const hero = spawnCharacter(scene, template, 'hero');
-  const companion = spawnCharacter(scene, template, 'companion', { tint: new Color3(0.45, 0.75, 0.8) });
+  const { hero, companion } = await spawnCast(scene, options.hero);
   for (const mesh of [...hero.meshes, ...companion.meshes]) level.castShadow(mesh as Mesh);
 
   const controller = new PhysicsCharacterController(
@@ -216,6 +216,30 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       scene.dispose();
       engine.dispose();
     },
+  };
+}
+
+/**
+ * The hero and the companion: the MPFB man and woman from the art pipeline (docs/ART_PIPELINE.md),
+ * or two tinted mannequins if they cannot be loaded.
+ */
+async function spawnCast(scene: Scene, heroBody: 'man' | 'woman'): Promise<{ hero: Character; companion: Character }> {
+  const folder = `${import.meta.env.BASE_URL}assets/characters`;
+  const companionBody = heroBody === 'man' ? 'woman' : 'man';
+  const [heroTemplate, companionTemplate] = await Promise.all([
+    loadCharacterTemplate(scene, `${folder}/hero-${heroBody}.glb`),
+    loadCharacterTemplate(scene, `${folder}/hero-${companionBody}.glb`),
+  ]);
+  if (heroTemplate && companionTemplate) {
+    return {
+      hero: spawnCharacter(scene, heroTemplate, 'hero'),
+      companion: spawnCharacter(scene, companionTemplate, 'companion'),
+    };
+  }
+  const mannequin = await loadCharacterTemplate(scene, `${folder}/mannequin.glb`);
+  return {
+    hero: spawnCharacter(scene, mannequin, 'hero', { height: 1.8 }),
+    companion: spawnCharacter(scene, mannequin, 'companion', { height: 1.8, tint: new Color3(0.45, 0.75, 0.8) }),
   };
 }
 

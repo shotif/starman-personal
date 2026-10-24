@@ -57,16 +57,19 @@ export function pickLocomotion(
   return picked;
 }
 
-/** Places a character from a template, scaled to `height` metres; a capsule if there is no model. */
+/**
+ * Places a character from a template with its feet on the ground: at the model's own size (the MPFB
+ * people are modelled in metres), or scaled to `height` metres when given (the mannequin). A capsule
+ * stands in when there is no model.
+ */
 export function spawnCharacter(
   scene: Scene,
   template: AssetContainer | null,
   name: string,
   options: { height?: number; tint?: Color3 } = {},
 ): Character {
-  const height = options.height ?? 1.8;
   const root = new TransformNode(name, scene);
-  if (!template) return standIn(scene, root, height, options.tint);
+  if (!template) return standIn(scene, root, options.height ?? 1.8, options.tint);
 
   const entries = template.instantiateModelsToScene((source) => `${name}-${source}`, true);
   const model = new TransformNode(`${name}-model`, scene);
@@ -84,7 +87,7 @@ export function spawnCharacter(
   }
   const modelHeight = max.y - min.y;
   if (Number.isFinite(modelHeight) && modelHeight > 0) {
-    const scale = height / modelHeight;
+    const scale = options.height ? options.height / modelHeight : 1;
     model.scaling.setAll(scale);
     model.position.y = -min.y * scale;
   }

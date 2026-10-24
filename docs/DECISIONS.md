@@ -40,6 +40,9 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-26 | How finished work reaches `main` | Assumed 2026-10-24 | Pushed to `main` once the checks pass, as in Reborn and Control |
 | D-27 | Reuse open source | Decided 2026-10-24 (owner's direction) | Look for open-source and CC0 work first; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) |
 | D-28 | What may go into the public repository | Assumed 2026-10-24 | Only files whose licence lets us share them, each recorded with its source |
+| D-29 | Real sideways walks: buy UAL Pro? | Open | |
+| D-30 | Which skins, hair and faces the character creator offers | Open | |
+| D-31 | Lip sync for the voiced lines | Open | |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -431,6 +434,41 @@ have already built where it looks good, "so we don't have to build everything fr
 now on, before building a system or making an asset, look for an open-source or CC0 one first and
 record what was found. The first survey is [research/OPEN_SOURCE.md](research/OPEN_SOURCE.md).
 
+## Round 3: the people — open
+
+The art pipeline ([ART_PIPELINE.md](ART_PIPELINE.md)) now makes the hero as a man and a woman
+from MPFB 2, with 19 body and face sliders, the lineage presets and 30 animations, all CC0. It
+raised three questions.
+
+### D-29 · Real sideways walks: buy UAL Pro? — **Open**
+
+The free animation libraries have no sideways walk, so `strafe_left` and `strafe_right` are made
+from the forward walk with the hips turned. They pass, but they are stand-ins, and cover and aiming
+(D-17) use them constantly.
+
+| Option | What it means |
+| --- | --- |
+| **A. Buy Quaternius's Universal Animation Library Pro** (recommended) | $9.99 on itch.io, inside D-24's allowance, with walks and runs in eight directions and more combat clips, under the same CC0 licence. Claude cannot pay, so the owner buys it and puts the download in `art/cache/` |
+| B. Keep the stand-ins | Free; they show when the hero moves sideways in cover |
+| C. Ask Meshy for them | Meshy's library has directional walks; licence to be confirmed for the library itself |
+
+### D-30 · Which skins, hair and faces the creator offers — **Open**
+
+The placeholders are one skin, one hair style and one eye colour for each body (in
+`art/hero.json`). Each extra skin or hair style costs about 0.1–0.3 MB.
+
+**Recommendation:** six skin tones across the range of humanity for each body, six to eight hair
+styles each (short, cropped, shaved, long, tied back, braided), five eye colours, and the 19
+sliders, all from the CC0 MakeHuman assets. The owner may want particular looks for the cover of
+the game; say so here.
+
+### D-31 · Lip sync for the voiced lines — **Open**
+
+Every line is voiced (D-23), and the MPFB people have no facial rig yet: no jaw or eye bones and no
+mouth shapes. **Recommendation:** add MakeHuman's CC0 mouth shapes (visemes) and face units to
+the heroes, and drive them from the timing of each voiced line, which ElevenLabs can provide. It
+costs a little size per character and makes every conversation look alive.
+
 ## Made without waiting
 
 ### D-26 · How finished work reaches `main` — **Assumed**
@@ -454,4 +492,6 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-24 | The local servers use ports **5391** (development) and **4391** (preview and tests) | the owner's other projects already use Vite's usual ports |
 | 2026-10-24 | Biome formats code but **not Markdown** | Biome's Markdown formatting rewrites the series' documents (italics, tables) |
 | 2026-10-24 | Quaternius's CC0 mannequin stands in for the hero and the companion until MPFB people exist | it carries the animations the proof needs; see [ART_PIPELINE.md](ART_PIPELINE.md) |
+| 2026-10-24 | The proof's hero is the **MPFB man** (`?hero=woman` for the woman), and the companion is the other; both at their own heights. The mannequin stays as the fallback | the art pipeline delivered them; the style test needs them |
+| 2026-10-24 | Character files use 16- and 8-bit vertex data (`KHR_mesh_quantization`), which Babylon reads without a decoder; meshopt compression, which needs a decoder, waits until we host one ourselves | the decoder would otherwise come from a CDN |
 | 2026-10-24 | Dialogue and quests to be written in **ink** (MIT), if the engine is agreed | plain text Claude can write and test, with a JavaScript runtime; see [OPEN_SOURCE.md](research/OPEN_SOURCE.md) §4 |
