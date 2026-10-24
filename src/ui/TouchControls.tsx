@@ -17,6 +17,8 @@ export function TouchControls({
   commanding,
   talking,
   prompt,
+  powers,
+  onPower,
   onOrders,
   onInteract,
 }: {
@@ -27,6 +29,9 @@ export function TouchControls({
   talking: boolean;
   /** Someone to talk to, or something to use, within reach. */
   prompt: Prompt | null;
+  /** The hero's three powers, and how far each is from ready. */
+  powers: { id: string; name: string; waiting: number }[];
+  onPower: (slot: number) => void;
   onOrders: () => void;
   onInteract: () => void;
 }) {
@@ -179,6 +184,21 @@ export function TouchControls({
               {prompt.kind === 'talk' ? 'Talk' : 'Use'}
             </button>
           )}
+          {powers.map((p, i) => (
+            <button
+              type="button"
+              key={p.id}
+              class={`touch__power touch__power--${i}${p.waiting > 0 ? ' touch__power--waiting' : ''}`}
+              aria-label={p.name}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                onPower(i);
+              }}
+            >
+              <span class="touch__power-fill" style={{ height: `${Math.round(p.waiting * 100)}%` }} />
+              <span class="touch__power-name">{p.name}</span>
+            </button>
+          ))}
           <button
             type="button"
             class={`touch__aim${aiming ? ' touch__aim--on' : ''}`}

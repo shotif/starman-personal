@@ -118,7 +118,7 @@ export async function loadCharacterTemplate(scene: Scene, url: string): Promise<
 
 /** The bones the aim and shoot clips own while aiming: the spine, arms, hands, neck and head. */
 const UPPER_BODY = /^(spine_0[123]|clavicle_|upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_|neck_|head)/i;
-const UPPER_CLIPS: readonly Clip[] = ['pistol_aim', 'pistol_shoot'];
+const UPPER_CLIPS: readonly Clip[] = ['pistol_aim', 'pistol_shoot', 'power_cast'];
 
 /**
  * Places a character from a template with its feet on the ground: at the model's own size (the MPFB

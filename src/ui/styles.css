@@ -1333,3 +1333,133 @@ body {
   font-size: 12px;
   color: var(--ink-dim);
 }
+
+/* Powers: three slots at the foot of a desktop screen; an arc above Fire on a phone. */
+.powers {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 18px);
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  z-index: 3;
+}
+
+.power {
+  position: relative;
+  width: 112px;
+  height: 52px;
+  padding: 6px 8px;
+  overflow: hidden;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ink);
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid rgb(180 140 255 / 0.5);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.power kbd {
+  display: inline-block;
+  margin-bottom: 3px;
+  padding: 0 5px;
+  font:
+    11px ui-monospace,
+    monospace;
+  color: var(--ink-dim);
+  border: 1px solid var(--panel-edge);
+  border-radius: 3px;
+}
+
+.power__name {
+  position: relative;
+  display: block;
+  font-weight: 600;
+}
+
+.power__fill,
+.touch__power-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(0 0 0 / 0.55);
+  pointer-events: none;
+}
+
+.power--waiting {
+  border-color: var(--panel-edge);
+  color: var(--ink-dim);
+}
+
+.powers__effects {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  color: #c9b4ff;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #000;
+}
+
+.touch__power {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  padding: 0 4px;
+  overflow: hidden;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+  background: rgb(40 20 70 / 0.65);
+  border: 2px solid rgb(180 140 255 / 0.6);
+  border-radius: 50%;
+  touch-action: none;
+}
+
+.touch__power-name {
+  position: relative;
+}
+
+.touch__power--waiting {
+  border-color: var(--panel-edge);
+  color: var(--ink-dim);
+}
+
+.touch__power--0 {
+  right: calc(var(--safe-right) + 112px);
+  bottom: calc(var(--safe-bottom) + 196px);
+}
+
+.touch__power--1 {
+  right: calc(var(--safe-right) + 180px);
+  bottom: calc(var(--safe-bottom) + 140px);
+}
+
+.touch__power--2 {
+  right: calc(var(--safe-right) + 196px);
+  bottom: calc(var(--safe-bottom) + 66px);
+}
+
+/* A brief note: no target, a combination. */
+.note {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #e0ccff;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+  animation: caption 1.4s ease forwards;
+  z-index: 3;
+}

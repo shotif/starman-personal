@@ -1,3 +1,4 @@
+import '@babylonjs/core/Rendering/outlineRenderer';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
@@ -32,6 +33,16 @@ export interface Swarm extends TargetGroup {
   readonly fired: number;
   /** Each flying machine's state, for the `?debug` hook. */
   inspect(): { kind: MachineKind; at: number[]; phase: string; target: string }[];
+  /** A power or a burst strikes a machine directly; true if it brought it down. Marked machines take half again. */
+  strikeMachine(id: number, damage: Damage, by: string): boolean;
+  /** What a power needs to know of a machine. */
+  status(id: number): { alive: boolean; at: Vector3; primed: boolean; shielded: boolean } | null;
+  /** A power's lasting effect on a machine (COMBAT.md, src/game/powers.ts). */
+  affect(id: number, effect: 'lift' | 'pull' | 'prime' | 'mark' | 'spoof', seconds: number, towards?: Vector3): void;
+  /** A burst at a point: every machine within the radius takes the damage. */
+  burst(at: Vector3, radius: number, damage: Damage, by: string): number;
+  /** Takes the primed state off a machine (it was set off). */
+  unprime(id: number): void;
 }
 
 /** Someone the swarm can shoot at: the hero or a companion. */
@@ -51,6 +62,8 @@ export interface SwarmWorld {
   /** A shot struck someone, fired from `from`, for `damage` at Standard. */
   onHit(id: string, from: Vector3, damage: number): void;
   difficulty: Difficulty;
+  /** A decoy the machines shoot at instead of people (Decoy Flare), or null. */
+  decoy: Vector3 | null;
 }
 
 const POOL: Record<MachineKind, number> = { mote: 14, lattice: 3, tender: 1 };
@@ -81,6 +94,13 @@ interface Machine {
   aim: Vector3 | null;
   /** A tender's motes still flying. */
   brood: Machine[];
+  /** Powers' effects, in seconds left (COMBAT.md). */
+  lifted: number;
+  pulled: number;
+  pullTo: Vector3 | null;
+  primed: number;
+  marked: number;
+  spoofed: number;
 }
 
 interface Bolt {
@@ -203,6 +223,12 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
       flash: 0,
       aim: null,
       brood: [],
+      lifted: 0,
+      pulled: 0,
+      pullTo: null,
+      primed: 0,
+      marked: 0,
+      spoofed: 0,
     };
   };
   const machines: Machine[] = (['mote', 'lattice', 'tender'] as MachineKind[]).flatMap((kind) =>
@@ -303,6 +329,13 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
       m.retry = 0;
       m.aim = null;
       m.brood = [];
+      m.lifted = 0;
+      m.pulled = 0;
+      m.pullTo = null;
+      m.primed = 0;
+      m.marked = 0;
+      m.spoofed = 0;
+      m.shell.renderOutline = false;
       m.target = 'hero';
       m.phase = { kind: 'rest', left: 0.8 + Math.random() * 1.2 };
       m.shell.parent = m.root;
@@ -372,7 +405,7 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     hit(body, by, damage: Damage) {
       const m = machines.find((x) => flying(x) && !!body && x.aggregate?.body === body);
       if (!m) return false;
-      const result = takeHit(m.defences, damage.amount, damage.kind);
+      const result = takeHit(m.defences, damage.amount * (m.marked > 0 ? 1.5 : 1), damage.kind);
       m.defences = result.defences;
       m.flash = 0.12;
       // It turns on whoever shot it; a mote moves at once.
@@ -411,8 +444,62 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
           continue;
         }
         const rules = MACHINES[m.kind];
+        // Powers' effects: primed glows violet; lifted or pulled, it is helpless and does not fire.
+        m.primed = Math.max(0, m.primed - dt);
+        m.marked = Math.max(0, m.marked - dt);
+        m.spoofed = Math.max(0, m.spoofed - dt);
+        if (m.marked <= 0 && m.shell.renderOutline) m.shell.renderOutline = false;
+        if (m.lifted > 0 || m.pulled > 0) {
+          if (m.lifted > 0) {
+            m.lifted -= dt;
+            m.root.position.y += dt * 0.9 * Math.max(0, m.lifted - 2.5);
+            m.spin.rotation.x += dt * 4;
+          } else {
+            m.pulled -= dt;
+            if (m.pullTo) {
+              const to = m.pullTo.subtract(m.root.position);
+              const d = to.length();
+              if (d > 1.6) m.root.position.addInPlace(to.scale(Math.min(1, (14 * dt) / d)));
+            }
+            m.spin.rotation.y += dt * 6;
+          }
+          m.phase = { kind: 'rest', left: 0.6 };
+          m.aim = null;
+          m.emitter.emissiveColor = m.primed > 0 ? new Color3(0.7, 0.3, 1) : RED.scale(0.3);
+          continue;
+        }
+        // Spoofed, it turns on the nearest of its own kind.
+        if (m.spoofed > 0) {
+          const victim = machines
+            .map((o, id) => ({ o, id }))
+            .filter(({ o }) => o !== m && flying(o))
+            .sort(
+              (a, b) =>
+                Vector3.Distance(a.o.root.position, m.root.position) -
+                Vector3.Distance(b.o.root.position, m.root.position),
+            )[0];
+          m.emitter.emissiveColor = new Color3(0.2, 0.9, 1);
+          m.flash -= dt;
+          if (victim) {
+            m.root.lookAt(victim.o.root.position);
+            m.phase = m.phase.kind === 'rest' ? { kind: 'rest', left: m.phase.left - dt } : m.phase;
+            if (m.phase.kind === 'rest' && m.phase.left <= 0) {
+              m.phase = { kind: 'rest', left: 1.4 };
+              this.strikeMachine(victim.id, { amount: 30, kind: 'kinetic' }, 'spoof');
+              const line = victim.o.root.position;
+              spark(line);
+            }
+          }
+          continue;
+        }
+        // A decoy draws every machine's fire while it burns.
+        if (world.decoy) m.target = 'decoy';
+        else if (m.target === 'decoy') m.target = 'hero';
         // Its target, or the nearest one standing if its target is down.
-        let target = world.targets.find((t) => t.id === m.target);
+        let target =
+          m.target === 'decoy' && world.decoy
+            ? { id: 'decoy', feet: world.decoy, height: 0.6, down: false }
+            : world.targets.find((t) => t.id === m.target);
         if (!target || target.down) {
           target = [...standing].sort(
             (a, b) => Vector3.Distance(a.feet, m.root.position) - Vector3.Distance(b.feet, m.root.position),
@@ -499,7 +586,8 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
         m.phase = step.phase;
         const charge = m.phase.kind === 'charge' ? 1 - m.phase.left / rules.charge : 0;
         m.flash -= dt;
-        m.emitter.emissiveColor = m.flash > 0 ? new Color3(1, 1, 1) : RED.scale(0.5 + charge * 2.5);
+        m.emitter.emissiveColor =
+          m.flash > 0 ? new Color3(1, 1, 1) : m.primed > 0 ? new Color3(0.7, 0.3, 1) : RED.scale(0.5 + charge * 2.5);
         if (!step.fire || !aim) continue;
         if (rules.weapon === 'bolt') fireBolt(m, aim, rules.damage);
         else if (rules.weapon === 'beam') {
@@ -583,6 +671,54 @@ export function buildSwarm(scene: Scene, maxLights: number): Swarm {
     },
     get fired() {
       return fired;
+    },
+    strikeMachine(id, damage, by) {
+      const m = machines[id];
+      if (!m || !flying(m)) return false;
+      const result = takeHit(m.defences, damage.amount * (m.marked > 0 ? 1.5 : 1), damage.kind);
+      m.defences = result.defences;
+      m.flash = 0.15;
+      if (!m.spoofed) m.target = by;
+      if (result.down) bringDown(m);
+      return result.down;
+    },
+    status(id) {
+      const m = machines[id];
+      if (!m) return null;
+      return { alive: flying(m), at: m.root.position.clone(), primed: m.primed > 0, shielded: m.defences.shield > 0 };
+    },
+    affect(id, effect, seconds, towards) {
+      const m = machines[id];
+      if (!m || !flying(m)) return;
+      if (effect === 'lift') m.lifted = seconds;
+      else if (effect === 'pull') {
+        m.pulled = seconds;
+        m.pullTo = towards?.clone() ?? null;
+      } else if (effect === 'prime') m.primed = seconds;
+      else if (effect === 'mark') {
+        m.marked = seconds;
+        m.shell.renderOutline = true;
+        m.shell.outlineColor = new Color3(1, 0.7, 0.2);
+        m.shell.outlineWidth = 0.04;
+      } else m.spoofed = seconds;
+      m.spot = null;
+      m.aim = null;
+    },
+    burst(at, radius, damage, by) {
+      let struck = 0;
+      for (const [id, m] of machines.entries()) {
+        if (!flying(m) || Vector3.Distance(m.root.position, at) > radius) continue;
+        struck += 1;
+        // The nearer, the harder: full at the heart, half at the edge.
+        const share = 1 - 0.5 * (Vector3.Distance(m.root.position, at) / radius);
+        this.strikeMachine(id, { amount: damage.amount * share, kind: damage.kind }, by);
+      }
+      spark(at, radius * 0.9);
+      return struck;
+    },
+    unprime(id) {
+      const m = machines[id];
+      if (m) m.primed = 0;
     },
     inspect() {
       const round = (v: Vector3) => [v.x, v.y, v.z].map((n) => Math.round(n * 100) / 100);

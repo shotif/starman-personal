@@ -37,6 +37,10 @@ const HINTS: Record<string, { touch: string; desk: string }> = {
     touch: 'Aim, then hold Fire · shots turn to the nearest target',
     desk: 'Right mouse aims · left mouse fires',
   },
+  powers: {
+    touch: 'Your powers sit above Fire: point the crosshair at a machine and tap one · Field powers prime, others set them off',
+    desk: '1, 2 and 3 use your powers on what the crosshair points at · Field powers prime a machine; others set it off',
+  },
   orders: {
     touch: 'Orders slows time: point the crosshair, then send your people there, at a target, or back to you',
     desk: 'Q opens Orders and slows time: point, then 1 go there · 2 attack · 3 follow',
@@ -83,6 +87,7 @@ export function GameView({
   const [difficulty, setDifficulty] = useState(startDifficulty);
   const [ending, setEnding] = useState<Ending | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [note, setNote] = useState<{ text: string; id: number } | null>(null);
   const touch = isTouch();
   const debug = new URLSearchParams(location.search).has('debug');
 
@@ -109,6 +114,7 @@ export function GameView({
             // For the browser journeys: the last thing said.
             document.body.dataset.said = text;
           },
+          onNote: (text) => setNote({ text, id: performance.now() }),
           onPrompt: (p) => {
             setPrompt(p);
             document.body.dataset.prompt = p?.label ?? '';
@@ -186,6 +192,11 @@ export function GameView({
     return () => clearTimeout(timer);
   }, [hint]);
   useEffect(() => {
+    if (!note) return;
+    const timer = setTimeout(() => setNote(null), 1400);
+    return () => clearTimeout(timer);
+  }, [note]);
+  useEffect(() => {
     if (!savedAt) return;
     const timer = setTimeout(() => setSavedAt(null), 2000);
     return () => clearTimeout(timer);
@@ -237,7 +248,9 @@ export function GameView({
       }
       if (pausedNow.current) return;
       if (e.code === 'KeyE' && !commandingNow.current) game.interact();
-      else if (e.code === 'KeyQ' || e.code === 'Tab') {
+      else if (!commandingNow.current && ['Digit1', 'Digit2', 'Digit3'].includes(e.code)) {
+        game.usePower(Number(e.code.slice(5)) - 1);
+      } else if (e.code === 'KeyQ' || e.code === 'Tab') {
         e.preventDefault();
         openCommand(!commandingNow.current);
       } else if (commandingNow.current) {
@@ -321,6 +334,28 @@ export function GameView({
         </p>
       )}
       {savedAt && <p class="saved">Saved</p>}
+      {note && (
+        <p class="note" key={note.id}>
+          {note.text}
+        </p>
+      )}
+      {vitals && !touch && !conversation && !ending && status.kind === 'ready' && (
+        <section class="powers" aria-label="Powers">
+          {vitals.powers.map((p, i) => (
+            <button
+              type="button"
+              key={p.id}
+              class={`power${p.waiting > 0 ? ' power--waiting' : ''}`}
+              onClick={() => game?.usePower(i)}
+            >
+              <span class="power__fill" style={{ height: `${Math.round(p.waiting * 100)}%` }} />
+              <kbd>{i + 1}</kbd>
+              <span class="power__name">{p.name}</span>
+            </button>
+          ))}
+          {vitals.effects.length > 0 && <p class="powers__effects">{vitals.effects.join(' · ')}</p>}
+        </section>
+      )}
       {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
       {hit && <div class={`hit hit--${hit.side}`} key={hit.id} aria-hidden="true" />}
       {vitals && vitals.health < 0.35 && vitals.condition.kind === 'up' && <div class="wounded" aria-hidden="true" />}
@@ -388,6 +423,8 @@ export function GameView({
           commanding={commanding}
           talking={conversation !== null || paused || !!down}
           prompt={prompt}
+          powers={vitals?.powers ?? []}
+          onPower={(i) => game.usePower(i)}
           onOrders={() => openCommand(true)}
           onInteract={() => game.interact()}
         />

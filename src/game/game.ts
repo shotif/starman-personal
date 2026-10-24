@@ -17,6 +17,7 @@ import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
 import slice from '../../story/slice.ink';
+import { buildAbilities } from './abilities.ts';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { CHARACTERS } from './appearance.ts';
 import { type Character, loadCharacterTemplate } from './characters.ts';
@@ -56,6 +57,7 @@ import {
 import { createNavigation, type Navigation } from './navigation.ts';
 import { dress, looksOf, type Person, spawnPerson } from './people.ts';
 import { poseWeights } from './pose.ts';
+import { CLASS_POWERS, POWERS, type PowerId } from './powers.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 import { buildStation, type Mark } from './station.ts';
@@ -79,6 +81,10 @@ export interface Vitals {
   condition: Condition;
   helpComing: boolean;
   inCover: boolean;
+  /** The hero's three powers: how far each is from ready (0 ready, 1 just used). */
+  powers: { id: PowerId; name: string; waiting: number }[];
+  /** The hero's own effects now running. */
+  effects: string[];
 }
 
 /** What the hero can do where they stand: talk to someone, or use something. */
@@ -118,6 +124,8 @@ export interface Game {
   order(kind: OrderKind, who?: string): void;
   /** Talks to whoever, or uses whatever, the prompt names. */
   interact(): void;
+  /** Uses the hero's power in slot 0, 1 or 2 (COMBAT.md). */
+  usePower(slot: number): void;
   /** Who is speaking now, so they gesture and the camera knows. */
   setSpeaker(who: 'hero' | 'partner' | null): void;
   endConversation(): void;
@@ -148,6 +156,8 @@ export interface GameOptions {
   onAim(aiming: boolean): void;
   /** Someone says something in the world (a companion, a voice on the comms). */
   onSay(name: string, line: string, id: string | null): void;
+  /** A brief note on the screen ("No target.", "Combination!"). */
+  onNote(text: string): void;
   onPrompt(prompt: Prompt | null): void;
   /** A conversation starts: the screen shows it, and calls `setSpeaker` and `endConversation`. */
   onConversation(conversation: Conversation, partner: string): void;
@@ -336,6 +346,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   /** Seconds of grace after being helped up: getting up under fire is not a second fall. */
   let grace = 0;
   let commanding = false;
+  /** The hero's class's three powers (D-33), and how long the casting arm stays up. */
+  const powers: PowerId[] = [...(CLASS_POWERS[options.looks.heroClass] ?? CLASS_POWERS.breacher ?? [])];
+  let castPose = 0;
 
   // The story.
   const runner = new StoryRunner(slice, {
@@ -391,6 +404,50 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (who === 'hero') moveHero(at, m.yaw);
     else if (companionsById[who]) companionsById[who]?.place(at, m.yaw);
     else people[who]?.place(at, m.yaw);
+  };
+
+  /** The swarm's ids in the range's numbering start after the drones. */
+  const swarmFirst = place.drones.length;
+  const abilities = buildAbilities({
+    scene,
+    swarm,
+    machineAhead: (reach) => {
+      const from = camera.globalPosition.clone();
+      const dir = camera.getTarget().subtract(from).normalize();
+      const candidates = range.candidates(from).filter((c) => c.id >= swarmFirst);
+      const id = pickAssistTarget(candidates, dir, ASSIST_CONE * 1.6, reach + 6);
+      return id === null ? null : id - swarmFirst;
+    },
+    groundAhead: (reach) => {
+      const from = camera.globalPosition.clone();
+      const dir = camera.getTarget().subtract(from).normalize();
+      const hit = cast(from.add(dir.scale(0.3)), from.add(dir.scale(reach + 6)), true);
+      return hit ? hit.point.add(hit.normal.scale(0.2)) : from.add(dir.scale(reach));
+    },
+    heroChest: () => hero.root.position.add(new Vector3(0, 1.2, 0)),
+    heroForward: () => new Vector3(-Math.cos(orbit.alpha), 0, -Math.sin(orbit.alpha)),
+    moveHero: (to) => {
+      const yaw = heroYaw;
+      const beta = orbit.beta;
+      const alpha = orbit.alpha;
+      moveHero(to, yaw);
+      orbit.alpha = alpha;
+      orbit.beta = beta;
+    },
+    heal: (amount) => {
+      heroDefences = { ...heroDefences, health: Math.min(heroDefences.healthMax, heroDefences.health + amount) };
+    },
+    say: (text) => options.onNote(text),
+  });
+  /** Uses the hero's power in a slot, facing where the camera looks, the casting arm up. */
+  const usePower = (slot: number) => {
+    const id = powers[slot];
+    if (!id || commanding || talking || condition.kind !== 'up' || liftoff || ended) return;
+    if (abilities.use(id)) {
+      castPose = 0.55;
+      heroYaw = yawOf({ x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) });
+      if (POWERS[id].id !== 'veil') abilities.effects.veil = 0;
+    }
   };
 
   const startConversation = (id: string, knot: string) => {
@@ -451,6 +508,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       }
     }
     heroDefences = restored(heroDefences);
+    abilities.clear();
     condition = { kind: 'up' };
     helper?.help(null);
     helper = null;
@@ -651,7 +709,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const end = from.add(dir.scale(SHOT_RANGE));
     const struck = cast(from.add(dir.scale(0.3)), end, true);
     const point = struck ? struck.point : end;
-    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol, kind: 'kinetic' });
+    // Out of the Veil, the first shot does double; shooting gives the hero away.
+    const bonus = abilities.effects.veil > 0 ? 2 : 1;
+    abilities.effects.veil = 0;
+    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol * bonus, kind: 'kinetic' });
     hero.fire();
     range.shot(hero.muzzle(), point, hitTarget);
     shotPose = SHOT_POSE;
@@ -793,6 +854,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         }),
         dt,
       );
+    } else if (cover.inCover && castPose > 0) {
+      desired.set(0, 0, 0);
+      hero.setPose({ lower: { crouch_idle: 1 }, upper: { power_cast: 1 } }, dt);
     } else if (cover.inCover) {
       desired.set(result.velocity.x, 0, result.velocity.z);
       // Settle against the cover, rather than crouching short of it.
@@ -804,13 +868,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       hero.setPose(poseWeights({ mode: 'cover', slide: result.slide }), dt);
     } else {
       const speed = held ? 0 : targetSpeed(push, input.sprint);
-      if (length > 0 && speed > 0) {
+      if (length > 0 && speed > 0 && castPose <= 0) {
         desired.set(unit.x * speed, 0, unit.z * speed);
         heroYaw = turnTowards(heroYaw, yawOf(direction), 11 * dt);
       } else {
-        desired.set(0, 0, 0);
+        desired.set(castPose > 0 ? unit.x * SPEED.walk * push : 0, 0, castPose > 0 ? unit.z * SPEED.walk * push : 0);
       }
-      hero.setPose(poseWeights({ mode: 'move', speed: groundSpeed }), dt);
+      const pose = poseWeights({ mode: 'move', speed: groundSpeed });
+      hero.setPose(castPose > 0 ? { ...pose, upper: { power_cast: 1 } } : pose, dt);
     }
     heroForward.set(Math.sin(heroYaw), 0, Math.cos(heroYaw));
 
@@ -826,7 +891,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       fireCooldown = FIRE_INTERVAL;
       shoot();
     }
-    range.update(dt);
+    abilities.update(dt);
+    castPose -= dt;
+    /** Under a stim, the world slows for the hero: the swarm and its shots, the drones. */
+    const worldDt = abilities.effects.stim > 0 ? dt * 0.35 : dt;
+    range.update(worldDt);
     place.update(dt);
 
     // The fight, and the swarm.
@@ -842,24 +911,28 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       }
     }
     const team = [...joined].filter((c) => c.visible);
-    swarm.update(dt, {
+    swarm.update(worldDt, {
       targets: [
         {
           id: 'hero',
           feet: hero.root.position,
           // Crouched behind cover the hero is a smaller mark: the cover takes the shots.
           height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT,
-          down: fallen || liftoff !== null,
+          // Veiled, the machines cannot see the hero to shoot.
+          down: fallen || liftoff !== null || abilities.effects.veil > 0,
         },
         ...team.map((c) => ({ id: c.name, feet: c.character.root.position, height: CAPSULE_HEIGHT, down: c.down })),
       ],
       cast: (from, to) => cast(from, to, true),
       difficulty,
+      decoy: abilities.effects.decoy,
       onHit: (id, from, damage) => {
         const amount = damage * DIFFICULTY[difficulty].taken;
         if (id === 'hero') {
           if (condition.kind === 'down' || grace > 0) return;
-          const r = takeHit(heroDefences, amount, 'kinetic');
+          // Braced, the hero takes half; a barrier takes what it can first.
+          const left = abilities.absorb(amount * (abilities.effects.brace > 0 ? 0.5 : 1));
+          const r = takeHit(heroDefences, left, 'kinetic');
           heroDefences = r.defences;
           options.onHit(hitSide(forward, hero.root.position, from));
           if (r.down) {
@@ -1014,7 +1087,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
     aimCamera(from, lookAt);
     // Anyone the camera is pressed against fades, rather than filling the screen.
-    hero.setFade(closeFade(Vector3.Distance(from, head)));
+    hero.setFade(Math.min(closeFade(Vector3.Distance(from, head)), abilities.effects.veil > 0 ? 0.25 : 1));
     for (const c of Object.values(companionsById))
       c.character.setFade(closeFade(Vector3.Distance(from, headOf(c.character))));
 
@@ -1045,6 +1118,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         condition,
         helpComing: !!helper && !helpUsed,
         inCover: cover.inCover,
+        powers: powers.map((id) => ({ id, name: POWERS[id].name, waiting: abilities.waiting(id) })),
+        effects: [
+          abilities.effects.stim > 0 ? 'Stim' : '',
+          abilities.effects.brace > 0 ? 'Braced' : '',
+          abilities.effects.veil > 0 ? 'Veiled' : '',
+          abilities.effects.barrier > 0 ? 'Barrier' : '',
+        ].filter(Boolean),
       });
     }
   });
@@ -1171,6 +1251,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     input,
     setCommandView,
     order,
+    usePower,
     interact() {
       if (!promptTarget || talking) return;
       if (promptTarget.kind === 'talk') {

@@ -49,7 +49,7 @@ function readDifficulty(): Difficulty {
  * The screens: the title (Continue, New game), the character creator (CREATOR.md), and the game.
  * `?play` goes straight into a new game with the saved hero or the defaults (the browser journeys use
  * it); `?chapter=<name>` starts there; `?creator` opens the creator; `?hero=woman` picks the default
- * woman.
+ * woman; `?class=<id>` plays as a class.
  */
 export function App() {
   const [manifest, setManifest] = useState<Manifest | null>(null);
@@ -72,7 +72,10 @@ export function App() {
           hero = null;
         }
         const body = params.get('hero') === 'woman' ? 'woman' : 'man';
-        setLooks(hero ?? defaultLooks(m, body));
+        const chosen = hero ?? defaultLooks(m, body);
+        // For testing: `?class=<id>` plays the hero as that class.
+        const heroClass = params.get('class');
+        setLooks(heroClass ? { ...chosen, heroClass } : chosen);
         setSaved(readSave(m));
         if (params.has('play') || params.has('chapter')) setScreen({ kind: 'game', saved: null });
         else if (params.has('creator')) setScreen({ kind: 'creator' });

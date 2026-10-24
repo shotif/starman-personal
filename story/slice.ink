@@ -138,6 +138,7 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> open concourse_door
 >>> wait enter:concourse
 Contacts! High, by the vents! #speaker: Ren #line: ren_concourse_01
+>>> hint powers
 >>> encounter concourse_1
 That's the last of them. For now. #speaker: Ren #line: ren_concourse_02
 >>> objective Talk to Pell at the comms booth
