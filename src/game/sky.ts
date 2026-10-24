@@ -97,6 +97,7 @@ export function buildSky(scene: Scene): Sky {
     stars.material = unlit(scene, 'stars', new Color3(0.75, 0.78, 0.9));
     stars.infiniteDistance = true;
     stars.isPickable = false;
+    stars.applyFog = false;
   }
 
   // The star: a disc 2.1° across, with a soft halo round it.
@@ -111,6 +112,7 @@ export function buildSky(scene: Scene): Sky {
     m.billboardMode = Mesh.BILLBOARDMODE_ALL;
     m.infiniteDistance = true;
     m.isPickable = false;
+    m.applyFog = false;
   }
   disc.position = sun.scale(distance * 0.99);
 
@@ -134,6 +136,7 @@ export function buildSky(scene: Scene): Sky {
     ring.material = unlit(scene, 'swarm-ring', new Color3(1, 0.7, 0.45));
     ring.infiniteDistance = true;
     ring.isPickable = false;
+    ring.applyFog = false;
     ring.setEnabled(false);
   }
 

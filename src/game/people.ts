@@ -1,4 +1,6 @@
 import type { AssetContainer } from '@babylonjs/core/assetContainer';
+import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
@@ -87,6 +89,20 @@ export function looksOf(manifest: Manifest, id: string): Looks {
   };
 }
 
+/**
+ * What each wears: the shared uniform, tinted by work (station security is the hero's grey). The
+ * tint multiplies the uniform's texture, so values above 1 lighten it.
+ */
+export const COSTUMES: Record<string, [number, number, number]> = {
+  ren: [0.72, 1.12, 0.82],
+  jo: [1.55, 0.95, 0.55],
+  hale: [0.7, 0.92, 0.76],
+  pell: [0.72, 0.92, 1.45],
+  dena: [1.7, 1.55, 1.28],
+  sorrel: [1.25, 0.98, 0.76],
+  ilya: [0.7, 1.22, 1.28],
+};
+
 /** Where people out of the story wait, out of the way: the bunk room's far corner. */
 const PARKED = new Vector3(-11.3, 0, 7.3);
 
@@ -100,6 +116,15 @@ export async function dress(
 ): Promise<Character> {
   const character = spawnCharacter(scene, templates[looks.body], id);
   if (templates[looks.body]) await wardrobe(scene, character, manifest, looks.body).wear(looks);
+  const tint = COSTUMES[id];
+  if (tint) {
+    for (const mesh of character.meshes) {
+      const material = mesh.material;
+      if (material instanceof PBRMaterial && material.name.endsWith(`${looks.body}_suit`)) {
+        material.albedoColor = new Color3(...tint);
+      }
+    }
+  }
   return character;
 }
 

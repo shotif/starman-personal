@@ -35,3 +35,6 @@ art/out/
 
 # Python caches from the art scripts
 __pycache__/
+
+# Screenshots from local probes, never committed.
+/*.png

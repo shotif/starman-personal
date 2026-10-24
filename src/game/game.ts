@@ -20,6 +20,7 @@ import slice from '../../story/slice.ink';
 import { buildAbilities } from './abilities.ts';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { CHARACTERS } from './appearance.ts';
+import { buildAtmosphere } from './atmosphere.ts';
 import { type Character, loadCharacterTemplate } from './characters.ts';
 import { buildRange } from './combat.ts';
 import { type Companion, spawnCompanion } from './companion.ts';
@@ -281,6 +282,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   camera.minZ = 0.05;
   camera.maxZ = 5000;
   camera.fov = CAMERA.fov;
+  const atmosphere = buildAtmosphere(scene, camera, options.tier);
+  let lightsAreOut = false;
   /** The player's view round the hero; a conversation or a scene takes the camera, and hands it back. */
   const orbit = { alpha: -Math.PI / 2 - place.heroStart.yaw, beta: 1.32 };
   /** Puts the camera at `position`, looking at `target`. */
@@ -543,7 +546,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const [a = '', b = ''] = c.args;
     switch (c.verb) {
       case 'lights':
-        place.lightsOut(a === 'out');
+        lightsAreOut = a === 'out';
+        place.lightsOut(lightsAreOut);
+        atmosphere.setMood({ lightsOut: lightsAreOut, outdoors: area === 'catwalk' || area === 'mast' });
         break;
       case 'sky':
         place.sky.swarm(a === 'swarm');
@@ -1056,7 +1061,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // Where the hero is, for the story.
     const here = place.areaAt(hero.root.position.add(new Vector3(0, 0.5, 0)));
-    if (here !== area) area = here;
+    if (here !== area) {
+      area = here;
+      atmosphere.setMood({ lightsOut: lightsAreOut, outdoors: area === 'catwalk' || area === 'mast' });
+    }
     if (area && director.waiting?.includes(`enter:${area}`)) director.event(`enter:${area}`);
     director.update(dt);
     resuming = false;

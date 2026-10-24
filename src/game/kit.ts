@@ -160,7 +160,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     crateBlue: textured('container_side', 1.2, new Color3(0.45, 0.65, 0.95)),
     crateOrange: textured('container_side', 1.2, new Color3(1, 0.62, 0.35)),
     dark: plain('dark', new Color3(0.07, 0.08, 0.09), 0.6, 0.45),
-    hull: plain('hull', new Color3(0.72, 0.74, 0.76), 0.75, 0.32),
+    hull: plain('hull', new Color3(0.5, 0.54, 0.58), 0.7, 0.42),
     hullDark: plain('hull-dark', new Color3(0.2, 0.22, 0.25), 0.7, 0.4),
     stripe: plain('stripe', new Color3(0.85, 0.55, 0.12), 0.2, 0.5),
     fabric: plain('fabric', new Color3(0.22, 0.3, 0.38), 0, 0.9),
@@ -170,9 +170,11 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     ground: plain('ground', new Color3(0.36, 0.24, 0.18), 0, 0.95),
     rock: plain('rock', new Color3(0.27, 0.19, 0.15), 0, 0.9),
     glow: glowing('glow', new Color3(0.75, 0.88, 1)),
-    screen: glowing('screen', new Color3(0.25, 0.65, 0.9), 1.1),
-    screenWarm: glowing('screen-warm', new Color3(0.95, 0.6, 0.25), 1.1),
+    screen: glowing('screen', new Color3(0.2, 0.5, 0.7), 0.75),
+    screenWarm: glowing('screen-warm', new Color3(0.8, 0.48, 0.2), 0.75),
     red: glowing('red', new Color3(1, 0.12, 0.08), 1.6),
+    /** The emergency lamps' glass: dark until the lights go. */
+    lamp: glowing('lamp', new Color3(0.08, 0.02, 0.02), 1.6),
     green: glowing('green', new Color3(0.2, 1, 0.4), 1.4),
     glass,
   };
@@ -314,7 +316,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     l.intensity = 0;
     l.range = 11;
     lights.push({ light: l, emergency: true, base: 7, zone });
-    deco([0.3, 0.12, 0.3], [at[0], at[1] + 0.1, at[2]], surfaces.red);
+    deco([0.3, 0.12, 0.3], [at[0], at[1] + 0.1, at[2]], surfaces.lamp);
     return l;
   };
 
@@ -375,6 +377,7 @@ export function buildKit(scene: Scene, q: QualitySettings) {
   const lightsOut = (out: boolean) => {
     for (const l of lights) l.light.intensity = l.emergency ? (out ? l.base : 0) : out ? l.base * 0.08 : l.base;
     surfaces.glow.material.emissiveColor = out ? new Color3(0.12, 0.1, 0.1) : new Color3(0.75, 0.88, 1);
+    surfaces.lamp.material.emissiveColor = out ? new Color3(1, 0.12, 0.08) : new Color3(0.08, 0.02, 0.02);
   };
 
   /**
