@@ -269,3 +269,63 @@ test('the title offers a new game, which opens the creator; a hero made there pl
   await expect(page.getByRole('button', { name: /Continue/ })).toContainText('Ada · Night shift');
   expect(errors).toEqual([]);
 });
+
+test('a chapter resumed finds everyone in place, and nobody stands where they should not', async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the scene is the same on both');
+  await page.goto('./?play&debug&quality=low&chapter=range');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  const people = await page.evaluate(() =>
+    (
+      window as unknown as { lightkeeper: { state(): { area: string; people: Record<string, number[] | null> } } }
+    ).lightkeeper.state(),
+  );
+  // The hero and Ren at the drill; Hale, Pell and Jo out of the story; the night shift at their marks.
+  expect(people.area).toBe('range');
+  expect(people.people.hale).toBeNull();
+  expect(people.people.pell).toBeNull();
+  expect(people.people.jo).toBeNull();
+  expect(people.people.dena?.[0]).toBeCloseTo(8, 0);
+  expect(people.people.dena?.[1]).toBeCloseTo(12.2, 0);
+  // No two people on one spot (the owner's phone showed them inside each other).
+  const spots = Object.values(people.people).filter((p): p is number[] => p !== null);
+  for (const [i, a] of spots.entries()) {
+    for (const b of spots.slice(i + 1))
+      expect(Math.hypot((a[0] ?? 0) - (b[0] ?? 0), (a[1] ?? 0) - (b[1] ?? 0))).toBeGreaterThan(0.5);
+  }
+});
+
+test('Pull, tapped without aiming, takes a practice drone on the range', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'the thumb on a power button is a phone journey');
+  await page.goto('./?play&debug&quality=low&class=warden&chapter=range');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  type Lk = {
+    teleport(x: number, z: number, yaw: number, beta: number): void;
+    state(): { drones: { destroyed: number } };
+  };
+  const lk = () => (window as unknown as { lightkeeper: Lk }).lightkeeper;
+  await page.evaluate(`(${lk.toString()})().teleport(1.5, 25, 0, 1.25)`);
+  await page.waitForTimeout(500);
+  await page.getByRole('button', { name: 'Pull' }).tap();
+  await expect.poll(() => page.evaluate(`(${lk.toString()})().state().drones.destroyed`)).toBeGreaterThan(0);
+});
+
+test('after a power, the casting arm comes back down', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
+  await page.goto('./?play&debug&quality=low&class=warden&chapter=range');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await page.locator('canvas').click();
+  await page.keyboard.press('Digit2');
+  await page.waitForTimeout(1500);
+  // The cast plays once and then holds, faded out: its clip must still drive the bones it moved, or
+  // they keep the cast's pose (the owner's phone showed the hero running with an arm held out).
+  const cast = await page.evaluate(() => {
+    type Group = { name: string; weight: number; animatables: unknown[] };
+    const { scene } = (window as unknown as { lightkeeper: { scene: { animationGroups: Group[] } } }).lightkeeper;
+    const group = scene.animationGroups.find((g) => g.name === 'hero-power_cast');
+    return { weight: group?.weight ?? -1, animatables: group?.animatables.length ?? 0 };
+  });
+  expect(cast.weight).toBeLessThan(0.05);
+  expect(cast.animatables).toBeGreaterThan(0);
+});

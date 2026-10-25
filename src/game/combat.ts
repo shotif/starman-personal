@@ -53,6 +53,8 @@ export interface Range {
   droneOf(body: PhysicsBody | null | undefined): number | null;
   /** Applies a hit to whatever body a shot struck; true if it was a target. A drone takes any hit as one. */
   hit(body: PhysicsBody | null | undefined, by?: Shooter, damage?: Damage): boolean;
+  /** A power strikes a practice drone: it comes down at once. */
+  knockDown(id: number): void;
   /** Live targets of joined groups (the swarm), which fight back. */
   threats(): { id: number; position: Vector3 }[];
   /** Adds a group of targets after the drones. */
@@ -219,6 +221,12 @@ export function buildRange(scene: Scene, positions: readonly Vector3[], maxLight
         drone.eye.emissiveColor = new Color3(0, 0, 0);
       }
       return true;
+    },
+    knockDown(id) {
+      const drone = drones[id];
+      if (!drone || !alive(drone)) return;
+      drone.hp = 1;
+      this.hit(drone.aggregate.body);
     },
     onShot: null,
     shot(from, to, struck, shooter = 0) {

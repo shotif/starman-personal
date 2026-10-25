@@ -166,11 +166,12 @@ export function createAudio(): GameAudio {
 
   const api: GameAudio = {
     get ready() {
-      return context !== null;
+      return context?.state === 'running';
     },
     unlock() {
       if (context) {
-        if (context.state === 'suspended') void context.resume();
+        // Suspended (started outside a gesture) or interrupted (a call, on iOS): try again.
+        if (context.state !== 'running') void context.resume().catch(() => {});
         return;
       }
       const Ctor =
@@ -185,6 +186,7 @@ export function createAudio(): GameAudio {
         g.connect(master);
         bus[name] = g;
       }
+      if (context.state !== 'running') void context.resume().catch(() => {});
       if (musicWanted) api.music(musicWanted);
       if (ambienceWanted) api.ambience(ambienceWanted);
     },

@@ -221,6 +221,8 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
 const LIFTOFF_SECONDS = 8;
+/** Without aim, a power takes the nearest target within this angle of where the hero faces (70°). */
+const POWER_CONE_COS = Math.cos((70 * Math.PI) / 180);
 /**
  * The sidearm in the hand: its length, and how it sits in the hand bone. Solved from the aiming pose
  * so the barrel runs along the forearm, upright, with the grip in the palm (the gun model's barrel
@@ -499,16 +501,53 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   /** The swarm's ids in the range's numbering start after the drones. */
   const swarmFirst = place.drones.length;
+  /**
+   * A power's target: what the crosshair points at; failing that, the nearest in front of the hero,
+   * within reach and in sight. On a phone a thumb on a power button is not aiming, and the camera
+   * then looks down at the hero's back: a machine up by the vents was never under it, and Pull
+   * always said there was no target (the owner's phone, 25 October 2026).
+   */
+  const powerTarget = (reach: number, wanted: (id: number) => boolean): number | null => {
+    const from = camera.globalPosition.clone();
+    const dir = camera.getTarget().subtract(from).normalize();
+    const aimed = pickAssistTarget(
+      range.candidates(from).filter((c) => wanted(c.id)),
+      dir,
+      ASSIST_CONE * 1.6,
+      reach + 6,
+    );
+    if (aimed !== null) return aimed;
+    const chest = hero.root.position.add(new Vector3(0, 1.3, 0));
+    const ahead = new Vector3(-Math.cos(orbit.alpha), 0, -Math.sin(orbit.alpha));
+    let best: number | null = null;
+    let nearest = Number.POSITIVE_INFINITY;
+    for (const c of range.candidates(chest)) {
+      if (!wanted(c.id)) continue;
+      const offset = new Vector3(c.offset.x, c.offset.y, c.offset.z);
+      const d = offset.length();
+      if (d > reach || d >= nearest) continue;
+      const flat = new Vector3(offset.x, 0, offset.z);
+      if (flat.length() > 0.01 && Vector3.Dot(flat.normalize(), ahead) < POWER_CONE_COS) continue;
+      const between = cast(chest, chest.add(offset), true);
+      if (between && !range.isDrone(c.id, between.body)) continue;
+      best = c.id;
+      nearest = d;
+    }
+    return best;
+  };
   const abilities = buildAbilities({
     scene,
     swarm,
     machineAhead: (reach) => {
-      const from = camera.globalPosition.clone();
-      const dir = camera.getTarget().subtract(from).normalize();
-      const candidates = range.candidates(from).filter((c) => c.id >= swarmFirst);
-      const id = pickAssistTarget(candidates, dir, ASSIST_CONE * 1.6, reach + 6);
+      const id = powerTarget(reach, (c) => c >= swarmFirst);
       return id === null ? null : id - swarmFirst;
     },
+    droneAhead: (reach) => powerTarget(reach, (c) => c < swarmFirst),
+    drone: (id) => ({ at: range.centre(id), knockDown: () => range.knockDown(id) }),
+    dronesNear: (at, radius) =>
+      place.drones
+        .map((_, id) => id)
+        .filter((id) => range.alive(id) && Vector3.Distance(range.centre(id), at) < radius),
     groundAhead: (reach) => {
       const from = camera.globalPosition.clone();
       const dir = camera.getTarget().subtract(from).normalize();
@@ -680,7 +719,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         place.sky.space(c.args.includes('space'));
         break;
       case 'start':
-        if (resuming) putAt(a, b, a !== 'hero');
+        // A companion stands a little behind the hero's mark; anyone else on their own.
+        if (resuming) putAt(a, b, !!companionsById[a]);
         break;
       case 'place':
         putAt(a, b);
@@ -1322,7 +1362,6 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
     if (area && director.waiting?.includes(`enter:${area}`)) director.event(`enter:${area}`);
     director.update(dt);
-    resuming = false;
     // Remarks wait for a conversation to end, and each for the one before it.
     remarkWait -= dt;
     if (remarks.length > 0 && !talking && remarkWait <= 0) {
@@ -1528,6 +1567,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
             feet: c.character.root.position.asArray(),
           })),
           swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, machines: swarm.inspect() },
+          drones: { destroyed: range.destroyed },
+          /** Who is shown, and where (x, z), by name. */
+          people: Object.fromEntries(
+            ['hero', 'ren', 'jo', 'hale', 'pell', 'dena', 'sorrel', 'ilya'].map((id) => {
+              const c = characterOf(id);
+              return [id, c?.root.isEnabled() ? [c.root.position.x, c.root.position.z] : null];
+            }),
+          ),
           prompt,
           talk: talkKnots,
           navMilliseconds,
@@ -1604,6 +1651,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       ready = true;
       options.onReady();
       director.step();
+      // The chapter's scene is set; from here `start` commands are for a resumed game only. (Cleared
+      // in the first frame's update instead, it came before this step, and a resumed game left the
+      // hero in the bunk room and everyone unplaced at one spot: the owner's phone, 25 October 2026.)
+      resuming = false;
     }
     statsTime += engine.getDeltaTime();
     if (statsTime > 500) {

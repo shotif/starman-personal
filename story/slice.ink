@@ -11,7 +11,9 @@ VAR hero_class = ""
 VAR hero_origin = ""
 VAR hero_moment = ""
 // Commands: `start` places someone only when a saved game resumes at that checkpoint; `place`
-// always does. The event that ended the last wait is in `event`.
+// always does. Every chapter sets its own scene (who is there, which doors are locked), so it is
+// right however it is reached: played into, or resumed. The event that ended the last wait is in
+// `event`.
 VAR event = ""
 VAR ren_approval = 0
 VAR jo_approval = 0
@@ -74,6 +76,17 @@ VAR have_curve = false
 >>> start hero drill
 >>> start ren drill
 >>> follow ren
+>>> hide pell
+>>> hide hale
+>>> hide jo
+>>> start dena dena
+>>> start sorrel sorrel
+>>> start ilya ilya
+>>> lock east_door
+>>> lock concourse_door
+>>> lock service_door
+>>> lock airlock
+>>> lock hangar_gate
 >>> lights on
 >>> open range_door
 >>> objective Run the drill on the range
@@ -105,6 +118,15 @@ That's the chief. #speaker: Ren #line: ren_drill_03
 >>> start hero drill
 >>> start ren drill
 >>> follow ren
+>>> hide pell
+>>> hide hale
+>>> hide jo
+>>> start dena dena
+>>> start sorrel sorrel
+>>> start ilya ilya
+>>> lock service_door
+>>> lock airlock
+>>> lock hangar_gate
 >>> lights out
 >>> unlock east_door
 >>> open east_door
@@ -132,17 +154,22 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> start hero control
 >>> start ren control
 >>> follow ren
+>>> hide jo
+>>> lock service_door
+>>> lock airlock
+>>> lock hangar_gate
+>>> open clinic_door
 >>> lights out
 >>> show hale
 >>> place hale hale
 >>> show pell
 >>> place pell pell
->>> scene hale hale_control
->>> forget star
->>> look screen screen look_screen Look at the main screen
 >>> place dena clinic_dena
 >>> place sorrel clinic_sorrel
 >>> place ilya clinic_ilya
+>>> scene hale hale_control
+>>> forget star
+>>> look screen screen look_screen Look at the main screen
 >>> talk dena
 >>> walk pell booth
 >>> talk sorrel
@@ -165,6 +192,12 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 >>> start hero concourse
 >>> start ren concourse
 >>> follow ren
+>>> hide jo
+>>> start hale hale
+>>> lock service_door
+>>> lock airlock
+>>> lock hangar_gate
+>>> open clinic_door
 >>> lights out
 >>> place pell booth
 >>> place dena clinic_dena
@@ -195,6 +228,10 @@ That's the last of them. For now. #speaker: Ren #line: ren_concourse_02
 >>> start hero booth
 >>> start ren booth
 >>> follow ren
+>>> hide jo
+>>> start hale hale
+>>> lock hangar_gate
+>>> open clinic_door
 >>> lights out
 >>> place pell clinic_pell
 >>> place dena clinic_dena
@@ -237,6 +274,12 @@ Something's at the clinic door. It's at the— Officer, they're inside! #speaker
 >>> start hero booth
 >>> start ren booth
 >>> follow ren
+>>> hide jo
+>>> start hale hale
+>>> lock service_door
+>>> lock airlock
+>>> lock hangar_gate
+>>> open clinic_door
 >>> lights out
 >>> place pell clinic_pell
 >>> place dena clinic_dena
@@ -266,9 +309,17 @@ Keep walking, all of you. Eyes on the officer's back. Don't look up. #speaker: D
 >>> start hero hangar_gate
 >>> start ren hangar_gate
 >>> follow ren
+>>> hide jo
+>>> hide hale
 >>> lights out
+>>> start dena gate_dena
+>>> start sorrel gate_sorrel
+>>> start pell gate_pell
 { ilya_lost:
+    >>> start ilya clinic_ilya
     >>> down ilya
+- else:
+    >>> start ilya gate_ilya
 }
 >>> follow dena
 >>> follow sorrel
@@ -291,6 +342,17 @@ Gate's open. Don't wait for me. Control out. #speaker: Hale #line: hale_gate_01
 >>> start hero hangar
 >>> start ren hangar
 >>> follow ren
+>>> hide hale
+>>> unlock hangar_gate
+>>> open hangar_gate
+>>> start dena hangar_dena
+>>> start sorrel hangar_sorrel
+>>> start pell hangar_pell
+{ ilya_lost:
+    >>> hide ilya
+- else:
+    >>> start ilya hangar_ilya
+}
 >>> lights out
 >>> show jo
 >>> place jo jo
@@ -320,6 +382,7 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 >>> checkpoint bridge
 >>> music ending
 >>> sky swarm space
+>>> hide hale
 >>> lights on
 >>> place hero bridge_hero
 >>> place ren bridge_ren

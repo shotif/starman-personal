@@ -226,11 +226,21 @@ export function spawnCharacter(
   };
   /** One-shot clips playing now: they start from their first frame when they fade in. */
   const playing = new Set<Clip>();
-  /** Plays a clip once from the start, then holds its last frame for as long as it is asked for. */
+  /**
+   * Plays a clip once from the start, then holds its last frame for as long as it is asked for. The
+   * hold starts on the next frame: a start from inside the group's own end is ignored, which left
+   * the group "started" but driving nothing, and a bone only it moves (the casting arm) kept its
+   * last value for good: the hero ran with an arm held out (the owner's phone, 25 October 2026).
+   */
   const playOnce = (group: AnimationGroup) => {
     group.stop();
     group.start(false, 1, group.from, group.to);
-    group.onAnimationGroupEndObservable.addOnce(() => group.start(true, 1, group.to, group.to));
+    group.onAnimationGroupEndObservable.addOnce(() => {
+      scene.onBeforeRenderObservable.addOnce(() => {
+        group.stop();
+        group.start(true, 1, group.to, group.to);
+      });
+    });
   };
   /** A clip the model lacks hands its weight to idle. */
   const withIdle = (weights: Weights, have: Map<Clip, AnimationGroup>): Weights => {

@@ -17,6 +17,12 @@ export interface AbilityContext {
   swarm: Swarm;
   /** The swarm machine under the crosshair (with a generous assist), within a range, or null. */
   machineAhead(range: number): number | null;
+  /** A practice drone on the range under the crosshair (when no machine is), within reach. */
+  droneAhead(range: number): number | null;
+  /** Where a practice drone is, and a power's strike on it. */
+  drone(id: number): { at: Vector3; knockDown(): void };
+  /** The practice drones within a radius of a point. */
+  dronesNear(at: Vector3, radius: number): number[];
   /** The point the crosshair rests on, within a range. */
   groundAhead(range: number): Vector3;
   heroChest(): Vector3;
@@ -133,8 +139,19 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
     if (spec.target === 'machine') {
       target = ctx.machineAhead(spec.range);
       if (target === null) {
-        ctx.say('No target.');
-        return false;
+        // On the range the practice drones stand in for machines: the power brings one down.
+        const practice = ctx.droneAhead(spec.range);
+        if (practice === null) {
+          ctx.say('No target.');
+          return false;
+        }
+        const d = ctx.drone(practice);
+        const arcPower = ['overload', 'spoof', 'mark', 'seeker'].includes(id);
+        ctx.sound(arcPower ? 'power_arc' : 'power_field', d.at);
+        flash(d.at, arcPower ? BLUE : VIOLET, 1, 0.4, 2.2);
+        d.knockDown();
+        cooldowns = { ...cooldowns, [id]: spec.cooldown };
+        return true;
       }
     }
     const at =
@@ -213,6 +230,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
               if (s?.alive && s.primed && Vector3.Distance(s.at, spot) < 4) hitMachine('charge', m);
             }
             swarm.burst(spot, 4, spec.damage ?? { amount: 90, kind: 'blast' }, 'hero');
+            for (const d of ctx.dronesNear(spot, 4)) ctx.drone(d).knockDown();
             flash(spot, ORANGE, 1, 0.45, 5);
             ctx.sound('charge_blast', spot);
           },
@@ -274,6 +292,9 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
           if (to.length() > spec.range || Vector3.Dot(to.normalize(), ahead) < 0.35) continue;
           hitMachine('shove', m);
           swarm.affect(m, 'pull', 0.8, s.at.add(to.normalize().scale(5)));
+        }
+        for (const d of ctx.dronesNear(origin.add(ahead.scale(spec.range / 2)), spec.range / 2 + 1)) {
+          ctx.drone(d).knockDown();
         }
         flash(origin.add(ahead.scale(2)), VIOLET, 1.5, 0.4, 4);
         break;

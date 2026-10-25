@@ -272,6 +272,39 @@ describe('the slice script', () => {
     expect(director.ended).toBe(true);
   });
 
+  it('sets the scene of every chapter by itself, so a resumed game finds everyone in place', () => {
+    const chapters = [...SOURCE.matchAll(/^>>> checkpoint (\w+)/gm)].map((m) => m[1] as string);
+    expect(chapters.length).toBeGreaterThan(8);
+    for (const chapter of chapters) {
+      for (const lost of [false, true]) {
+        const runner = new StoryRunner(JSON_STORY, facts('steader', 'rigger'));
+        runner.set('ilya_lost', lost);
+        runner.story.ChoosePathString(`slice.${chapter}`);
+        const commands: string[] = [];
+        // Up to the chapter's first wait or line: its scene.
+        const director = new Director(runner, {
+          command: (c) => commands.push(`${c.verb} ${c.rest}`),
+          bark: () => 1,
+          checkpoint: () => {},
+        });
+        director.step();
+        const has = (verb: string, who: string) => commands.some((c) => c.startsWith(`${verb} ${who}`));
+        const placed = (who: string) => has('start', who) || has('place', who);
+        expect(placed('hero'), `${chapter}: the hero`).toBe(true);
+        expect(placed('ren'), `${chapter}: Ren`).toBe(true);
+        // Jo is hidden until the hangar; Hale is placed or hidden; the night shift placed or hidden.
+        if (!['hangar', 'bridge'].includes(chapter)) expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
+        if (chapter !== 'night_shift') {
+          expect(placed('hale') || has('hide', 'hale'), `${chapter}: Hale`).toBe(true);
+          for (const who of ['dena', 'sorrel', 'pell']) {
+            expect(placed(who) || has('hide', who), `${chapter}: ${who}`).toBe(true);
+          }
+          expect(placed('ilya') || has('hide', 'ilya') || has('down', 'ilya'), `${chapter}: Ilya`).toBe(true);
+        }
+      }
+    }
+  });
+
   it('reads tags as keys and values', () => {
     expect(parseTags(['speaker: Ren', 'line: ren_01', 'junk'])).toEqual({ speaker: 'Ren', line: 'ren_01' });
     expect(parseTags(null)).toEqual({});
@@ -300,14 +333,10 @@ describe('the slice script', () => {
     const again = new Director(resumed, { command: (c) => commands.push(c), bark: () => {}, checkpoint: () => {} });
     again.step();
     // Straight after the checkpoint come the commands that set the scene up.
-    expect(commands.slice(0, 6).map((c) => `${c.verb} ${c.rest}`)).toEqual([
-      'music night',
-      'start hero drill',
-      'start ren drill',
-      'follow ren',
-      'lights on',
-      'open range_door',
-    ]);
+    const scene = commands.map((c) => `${c.verb} ${c.rest}`);
+    for (const wanted of ['start hero drill', 'start ren drill', 'hide jo', 'hide hale', 'start dena dena']) {
+      expect(scene).toContain(wanted);
+    }
     expect(again.waiting).toEqual(['enter:range']);
   });
 });

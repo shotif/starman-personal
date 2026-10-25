@@ -43,8 +43,8 @@ const HINTS: Record<string, { touch: string; desk: string }> = {
   },
   powers: {
     touch:
-      'Your powers sit above Fire: point the crosshair at a machine and tap one · Field powers prime, others set them off',
-    desk: '1, 2 and 3 use your powers on what the crosshair points at · Field powers prime a machine; others set it off',
+      'Your powers sit above Fire: tap one for the machine you aim at, or the nearest ahead · Field powers prime, others set them off',
+    desk: '1, 2 and 3 use your powers on what the crosshair points at, or the nearest machine ahead · Field powers prime; others set off',
   },
   orders: {
     touch: 'Orders slows time: point the crosshair, then send your people there, at a target, or back to you',

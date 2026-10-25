@@ -65,14 +65,16 @@ export function App() {
   const params = new URLSearchParams(location.search);
   const renderer: Renderer = params.get('renderer') === 'webgpu' ? 'webgpu' : 'webgl2';
 
-  // Browsers allow sound only after the player touches or presses something.
+  // Browsers allow sound only after the player touches or presses something. On a touch screen
+  // that is the lift of the finger, not the touch: Chrome on Android left the sound suspended when
+  // it was started on `pointerdown` (the owner's phone, 25 October 2026). So every one of these
+  // tries, until the sound runs.
   useEffect(() => {
     const unlock = () => audio.unlock();
-    window.addEventListener('pointerdown', unlock, { capture: true });
-    window.addEventListener('keydown', unlock, { capture: true });
+    const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+    for (const e of events) window.addEventListener(e, unlock, { capture: true });
     return () => {
-      window.removeEventListener('pointerdown', unlock, { capture: true });
-      window.removeEventListener('keydown', unlock, { capture: true });
+      for (const e of events) window.removeEventListener(e, unlock, { capture: true });
     };
   }, []);
   useEffect(() => {
