@@ -83,6 +83,21 @@ dodge. Desktop: **F** to strike, **Space** to dodge.
 and fall faster, aim assist stronger, for those who came for the story), *Standard*, and *Hard*
 (enemies flank and use cover, less aim assist). Nothing in the story depends on the level.
 
+## Growth and weapons (Act 1, increment 3)
+
+The design is in [ACT1.md](ACT1.md), increment 3 (D-53 to D-56); the rules, each tested:
+
+| Part | Rule | Where |
+| --- | --- | --- |
+| Experience | From the story only (`>>> xp`, and `#xp` on two hard choices), each grant once by its key; twelve levels, two points a level | `src/game/growth.ts` |
+| Ranks | Rank 2 a third stronger; rank 3 a quarter quicker and a third wider; one point, then two | `atRank` in `src/game/powers.ts` |
+| New powers | Two a class at levels 3 and 6; three in hand | `CLASS_GAINS`, `src/game/abilities.ts` |
+| Training and talents | The backstory's talents and the class's training change health, shield, plate, cooldowns, damage, healing, the shield's return and speed aboard | `modifiers` in `src/game/growth.ts` |
+| Companions' powers | Ren: Mark, Veil; Jo: Overload, Seeker Drone; their own ranks, half again slower than the hero's | `companionPower` in `src/game/game.ts` |
+| Weapons | Pistol, rifle, shotgun, marksman rifle: rate, damage, slugs, reach, falloff, spread, zoom, weight; no ammunition | `src/game/weapons.ts` |
+| Weight | Above 3 carried, each point makes powers return a tenth more slowly | `weightScale` |
+| Mods | Scope, stabiliser, heavy rounds (a quarter more to plate), long barrel, cooled coil; two a weapon | `fitted`, `takeHit`'s plate bonus |
+
 ## The first increment, as built
 
 | Part | Rule | Where |

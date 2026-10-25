@@ -13,7 +13,7 @@ invented for the game. Nothing here is taken from *Mass Effect* or any other gam
 
 ## 1. What was made
 
-26 models in `public/assets/models/`, with a manifest, `models.json`. **14.2 MB** in all: 12.0 MB
+26 models in `public/assets/models/` (29 with the three long guns added for increment 3 of Act 1), with a manifest, `models.json`. **14.2 MB** in all: 12.0 MB
 for the 22 new models, 2.2 MB for the four from the style test. Every model:
 
 - **faces +Z** (glTF's front, which Babylon's loader keeps as Babylon's forward),
@@ -51,6 +51,9 @@ for the 22 new models, 2.2 MB for the four from the style test. Every model:
 | `terminal` | The style test's wall terminal (flat back for the wall) | 0.8 | 0.47 × 0.8 × 0.35 | 2,999 | 1024 | 579 | [terminal](models/terminal.jpg) |
 | `helmet` | The style test's EVA helmet, visor to the front | 0.32 | 0.32 × 0.32 × 0.32 | 5,000 | 1024 | 609 | [helmet](models/helmet.jpg) |
 | `sidearm` | The style test's sidearm, muzzle to the front | 0.24 | 0.04 × 0.18 × 0.24 | 3,999 | 1024 | 513 | [sidearm](models/sidearm.jpg) |
+| `rifle` | An automatic coil rifle (D-56), muzzle to the front; added 25 October 2026 | 0.95 | 0.10 × 0.37 × 0.95 | 3,407 | 1024 | 522 | [rifle](models/rifle.jpg) |
+| `shotgun` | A pump-action coil shotgun with a drum of slugs; added 25 October 2026 | 0.9 | 0.17 × 0.33 × 0.9 | 3,439 | 1024 | 512 | [shotgun](models/shotgun.jpg) |
+| `marksman` | A long marksman coil rifle with a scope and a bipod; added 25 October 2026 | 1.15 | 0.14 × 0.36 × 1.15 | 3,500 | 1024 | 614 | [marksman](models/marksman.jpg) |
 
 Each preview shows the model in the game's own Babylon.js 9.32 from six sides (front, three-quarter,
 left, back, right, top), on a grid, with its measured size and base. The full-size pictures are in
@@ -171,7 +174,9 @@ node scripts/art/models.ts preview [id ...]             # six views → art/out/
 | Mote, Tender and drone rebuilt from two views (30 each; the drone's rebuild was not kept) | 90 |
 | Locker, terminal, helmet and sidearm remeshed to their budgets (5 each) | 20 |
 | **Used** (of the 1,200 allowed) | **770** |
-| **Left** | **2,210** |
+| **Left** after the first pass | **2,210** |
+| Rifle, shotgun and marksman rifle (D-56), image-to-3D with textures (30 each), 25 October 2026 | 90 |
+| **Left** | **2,120** |
 
 Gemini drew 33 pictures (22 concepts, two redrawn Tender concepts and nine extra views), about
 $3.30 from D-24's budget. trellis.cpp was not needed.

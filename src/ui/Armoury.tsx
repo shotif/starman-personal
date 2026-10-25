@@ -137,7 +137,7 @@ export function Armoury({ game, heroClass, onClose }: { game: Game; heroClass: s
                 <p class="growth__says">{mod.says}</p>
                 <div class="growth__actions">
                   {kit.weapons
-                    .filter((k) => mod.fits.includes(k))
+                    .filter((k) => mod.fits.includes(k) && (TRAINED[heroClass] ?? []).includes(k))
                     .map((k) => {
                       const full = m.on !== k && modsOn(kit, k).length >= MOD_SLOTS;
                       return (

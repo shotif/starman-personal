@@ -127,8 +127,10 @@ increments, each playable and deployed (D-01):
    engine), `src/ui/StarMap.tsx` (its screen), `src/data/stars.json` (from Control); the course is
    set on the bridge, Jo lays it in, and Lantern leaves Ross 128 for the lanes (the `lane` chapter).*
 3. The hero's growth and the weapons. *Designed below; D-53 to D-56 decided as recommended, 25 October
-   2026. Growth and the new powers built 25 October 2026 (`src/game/growth.ts`, `src/ui/Growth.tsx`,
-   the nine powers in `src/game/abilities.ts`, Ren's and Jo's own powers); the weapons next.*
+   2026. Built 25 October 2026: growth (`src/game/growth.ts`, `src/ui/Growth.tsx`), the nine new
+   powers (`src/game/abilities.ts`) and Ren's and Jo's own, and the weapons (`src/game/weapons.ts`,
+   the armoury in `src/ui/Armoury.tsx`, three Meshy models). The long guns are held in the pistol's
+   pose until there are rifle animations (a tool asked of the owner).*
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.

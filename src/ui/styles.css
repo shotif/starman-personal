@@ -2172,3 +2172,10 @@ fieldset.growth__slots {
   margin: 0 0 8px;
   font-size: 13px;
 }
+
+.touch__fire-weapon {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--ink-dim);
+}

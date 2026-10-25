@@ -271,6 +271,7 @@ export function TouchControls({
             onPointerCancel={fireUp}
           >
             Fire
+            {weapon && <span class="touch__fire-weapon">{weapon.name}</span>}
           </button>
         </>
       )}
