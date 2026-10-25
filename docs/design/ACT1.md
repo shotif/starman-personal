@@ -138,7 +138,9 @@ increments, each playable and deployed (D-01):
    2026 in [PYRE.md](PYRE.md); round 9 (D-57 to D-65) decided as recommended the same day. The
    place, the story, money and the trader, the fights and Mira built the same day, then every line
    voiced, seven models, older faces and the station's music (PYRE.md §15).*
-6. Voices, music, models, and play-testing on a phone and a desktop.
+6. Voices, music, models, and play-testing on a phone and a desktop. *Designed 25 October 2026
+   in [ACT1_ART.md](ACT1_ART.md): the Banked's own armour, battle talk, a sound for each weapon, the
+   powers' things, the lane and hands on the rifle; round 10 (D-66 to D-70) open.*
 
 ## Increment 1 in detail: places that load on their own, and *Lantern*'s decks
 
@@ -381,4 +383,5 @@ beyond the motes.
 Round 7 in [DECISIONS.md](../DECISIONS.md): D-47 the next milestone, D-48 which lead first, D-49 how
 the hero grows, D-50 weapons, D-51 the Banked as the first human enemy and Pyre Remnant's outline.
 Round 8 (D-53 to D-56) decided growth and weapons; round 9 (D-57 to D-65, decided as recommended)
-decided Pyre Remnant's details ([PYRE.md](PYRE.md)).
+decided Pyre Remnant's details ([PYRE.md](PYRE.md)). Round 10 (D-66 to D-70) is the art and sound
+pass ([ACT1_ART.md](ACT1_ART.md)).

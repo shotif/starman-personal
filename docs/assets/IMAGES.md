@@ -185,3 +185,21 @@ clone rebuilds the screens exactly, but must generate new candidates (which will
 can rebuild a generated picture; the shipped WebP files and their records stay the reference.
 Look at every new picture before keeping it: misspelt or stray letters, logos, and anything that
 looks like another game's design are reasons to generate again.
+
+## 6. Concept pictures for decisions
+
+Pictures made to help the owner choose a look, kept in `docs/assets/concepts/` and linked from
+DECISIONS.md. They are not used in the game. Made with Gemini (`gemini-nano-banana-2.1`) on
+25 October 2026, each with two references, MakeHuman's thumbnails of the CC0 armours Jupiter7 and
+Helios (MatCreator), and resized to 1024 pixels. Licence as §4's generated pictures.
+
+| File | For | Prompt |
+| --- | --- | --- |
+| `banked-a.jpg` | D-66, option A | The common prompt below, then: *The plates are matte charcoal grey with narrow dull-gold edges, the uniform underneath near-black. The trooper and the warden wear closed helmets with a smooth visor of gold-tinted glass that glows faintly from within, like banked embers; the engineer wears an open helmet with a slim gold-rimmed headset, the face visible. The only mark is a small plain gold disc inside an open ring on each left shoulder plate.* |
+| `banked-b.jpg` | D-66, option B | The common prompt below, then: *They are engine crews and workers who took up arms, not an army: ochre and rust-brown work coveralls with many pockets, lighter scuffed dull-steel plates over them, open-faced helmets with a breathing mask hanging at the chin, and a plain gold band round the left upper arm. The warden is a heavy-plant operator in thicker plate.* |
+| `banked-c.jpg` | D-66, option C | The common prompt below, then: *They come from different nations and still wear what they came in: the trooper in muted green plate, the engineer in muted blue, the warden in dark red, each scuffed and practical, over dark uniforms. What makes them one side is a broad plain dull-gold sash worn across the chest from one shoulder, and gold-tinted visors on open-faced helmets.* |
+
+The common prompt: *Character concept art lineup for a grounded near-future science-fiction game set in the 2180s: three fighters of the same faction standing side by side, full body from head to boots, front three-quarter view, on a plain light grey studio background with even soft light. Left: a trooper, a rifle held low across the body. Middle: an engineer in lighter armour, a compact backpack with a cradle holding two small spherical drones, a pistol at the hip. Right: a warden, a head taller and broader, in heavy plate, a squat field projector with short emitter vanes mounted on the back above the shoulders, a short heavy shotgun. The armour is separate hard plates strapped over a close-fitting uniform, shaped like the two reference images: a breastplate, shoulder plates, forearm guards, thigh and knee plates, and tall boots. Semi-realistic, believable, practical and worn, as if made and used by people. Painterly-realistic rendering. No text, no letters, no numbers, no logos, no watermark, no signature, no frame.*
+
+A first wording of option C (ivory plate with gold trim and tabards) was refused by Gemini's
+content rules, most likely as too close to a well-known film's armour, and was replaced.

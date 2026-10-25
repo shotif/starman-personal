@@ -77,6 +77,11 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-63 | Voices for the new people | Decided 2026-10-25 | **As recommended**: library voices where the stock set falls short |
 | D-64 | Whether Varro is heard at Pyre | Decided 2026-10-25 | **As recommended**: one recorded line, twenty years old |
 | D-65 | How Pyre's people look in this increment | Decided 2026-10-25 | **As recommended**: tinted uniforms, older faces, Mira's own look |
+| D-66 | The Banked's own look | **Open** | Recommended: charcoal plate and banked gold ([concepts](design/ACT1_ART.md#1-the-bankeds-own-look-d-66)) |
+| D-67 | Battle talk | **Open** | Recommended: both sides talk as they fight, the Banked now and then to the hero |
+| D-68 | The weapons' sounds, and music for fights with people | **Open** | Recommended: a sound for each gun and side, and a fight piece for the Banked |
+| D-69 | The powers' things | **Open** | Recommended: models for the Gun Post, the Shelter's emitter and the drones; one field surface |
+| D-70 | The lane | **Open** | Recommended: Reborn's tunnel of light, seen from inside *Lantern* |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -884,6 +889,75 @@ about twenty people, some of them old. The Banked's own look stays the owner's f
 
 **Recommendation: A.** Readable at a glance on a phone, little to load, and the old look old.
 
+## Round 10: the art and sound pass — open
+
+The proposal is [design/ACT1_ART.md](design/ACT1_ART.md): increment 6 of ACT1.md, the Banked in
+armour of their own, both sides talking in a fight, a sound for each weapon, the powers' things
+made as models, the lane, hands that close on the rifle, and a play-test on a phone and a desktop.
+Hands on the rifle need no decision and are listed under *Made without waiting*.
+
+### D-66 · The Banked's own look — **Open**
+
+D-65 left it to this increment. The armour is MakeHuman's CC0 armour by MatCreator, fitted to the
+bodies as the uniform is, so it moves with them; helmets, the warden's barrier projector and the
+engineer's pack are made with Meshy. What is to decide is how they look. The concept pictures are in
+[ACT1_ART.md §1](design/ACT1_ART.md#1-the-bankeds-own-look-d-66).
+
+| Option | What it means |
+| --- | --- |
+| **A. Charcoal and banked gold** (recommended) | Matte charcoal plates edged in dull gold over a near-black uniform; closed helmets with a visor band of gold glass, faintly lit, for troopers and the warden; the engineer's face seen under an open helmet; a small gold disc in an open ring on the shoulder. One side at a glance, dark against Pyre's pale halls |
+| B. Engine crews | Ochre and rust work coveralls with lighter steel plates, open helmets with breathing masks, a gold band on the arm: people who took up arms, the crews the Banked carry. More human; less readable as one side in a fight |
+| C. Every power's colours | Each keeps the plate of the power they left (the Authority's green, the Cooperative's blue, the Wake's red) under one gold sash: the Banked "from every power" (STORY.md §3), but a squad reads as three sides on a phone |
+
+**Recommendation: A.** The three kinds read apart by shape (the pack, the projector), the side
+reads by colour, and gold is already the Banked's (D-65). B's coveralls suit the unlisted's
+future crews in Act 2 better than soldiers.
+
+### D-67 · Battle talk — **Open**
+
+ACT1.md increment 4 promised that the Banked would talk as they fight. Today they say one line as a
+fight starts, and the companions' calls in a fight are captions without a voice.
+
+| Option | What it means |
+| --- | --- |
+| **A. Both sides talk, the Banked now and then to the hero** (recommended) | The Banked call what they do and see (cover, going round, shields, motes, the barrier, a death, the last one standing) and, once a fight at most, speak to the hero calmly about the light. Five voices, one for each of the squad, of mixed accents. Ren, Jo and Mira voice their answers to orders and three calls each about the Banked. About 130 takes ([ACT1_ART.md §2](design/ACT1_ART.md#2-battle-talk-d-67)) |
+| B. Calls only | As A without the lines to the hero: soldiers, not believers, in a fight |
+| C. Companions only | The Banked stay silent after the first line; the companions' calls are voiced |
+
+**Recommendation: A.** The Banked are people with reasons (D-37, D-51); a fight is where most
+players meet them, so a little of the reason belongs there too.
+
+### D-68 · The weapons' sounds, and music for fights with people — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. A sound for each gun and side, and a fight piece for the Banked** (recommended) | The rifle, the shotgun and the marksman rifle their own shots; the Banked's rifle and the warden's cannon their own, so the player hears which side fired; rounds striking metal and snapping past; the Gun Post's. CC0 first, ElevenLabs where nothing fits (D-45). A Lyria piece for fights with people: low strings and hand drums, tense and human |
+| B. Sounds only | The swarm's driving, mechanical piece stays for every fight |
+| C. Fewer sounds | The hero's three guns only; the Banked keep the pitched pistol and the lattice's beam |
+
+**Recommendation: A.**
+
+### D-69 · The powers' things — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Models, and one field surface** (recommended) | Meshy models for the Gun Post (it unfolds, turns, flashes and winds down), the Shelter's thrown emitter, the Repair Drone and the Seeker Drone; one field surface, a shimmer brighter at its edge with ripples where it is struck, for the Shelter, the Barrier and the warden's barrier, blue for the hero's side and amber for the Banked |
+| B. Models only | The fields stay plain see-through shapes |
+| C. The two named only | The Gun Post and the Shelter; the drones stay glowing balls |
+
+**Recommendation: A.** Mira's Repair Drone is in every fight now, and the warden's barrier is the
+Banked's best-known sight; making them all of one family costs little more than the two.
+
+### D-70 · The lane — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Reborn's tunnel, from inside the ship** (recommended) | A tunnel of slowly flowing violet and blue light with a bright gate far ahead, as Reborn shows a jump: along the course through the bridge's window, flowing past the mess's window, its light moving across the bridge; a low hum and a quiet piece of music of its own |
+| B. The stars bent | No tunnel: the stars squeezed into a bright ring ahead and a dim one behind, as warped space might show them. Stranger, and unlike Reborn |
+| C. As now | A dark sky with bluer stars |
+
+**Recommendation: A.** The same lane in both games, and a reason to stand at the bridge's window.
+
 ## Made without waiting
 
 ### D-26 · How finished work reaches `main` — **Assumed**
@@ -959,3 +1033,5 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-25 | A conversation that starts the moment another ends (Jo's question straight after Mira's) stays on screen | it was closed with the one before it |
 | 2026-10-25 | Pyre's cast (VOICES.md §2): Mira Sarah, Ruth Bella, Nell Jessica, Quaye Brian, Esben Eric, Joost Will, Matti Charlie, Lenz Roger, the Banked Harry and Adam, the ship River; from the library, Linde (a Northern English older man), Varro (Katherine), Tilly (a Northern Irish voice) and Arno (a Scottish voice) | D-63 and the owner's note; each auditioned, the owner may overrule any |
 | 2026-10-25 | Older people are aged by MPFB's own age macro, as a body shape (`age_old`), with MakeHuman's old skins and greyed hair; these are kept out of the creator | D-65's older faces; the hero is about thirty and voiced so |
+| 2026-10-25 | Increment 6's design is its own file, [ACT1_ART.md](design/ACT1_ART.md); its concept pictures for D-66 are kept in `docs/assets/concepts/` (Gemini, recorded in IMAGES.md) | a decision about a look is easier to make from pictures; they are not game assets |
+| 2026-10-25 | The rifle clips' fingers close on the grip and the handguard, the forefinger along the guard (ACT1_ART.md §6) | polish to an animation already decided; no new look |
