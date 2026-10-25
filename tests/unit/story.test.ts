@@ -7,7 +7,7 @@ import { type Beat, type HeroFacts, parseTags, StoryRunner } from '../../src/gam
 import { type Command, Director, parseCommand } from '../../src/game/director.ts';
 import { ENCOUNTERS } from '../../src/game/encounters.ts';
 import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
-import { AREAS, CAST, DOORS, MARKS } from '../../src/game/places.ts';
+import { ALL_MARKS, AREAS, CAST, DOORS, LANTERN_AREAS, PLACES } from '../../src/game/places.ts';
 
 const SOURCE = readFileSync(join('story', 'slice.ink'), 'utf8');
 
@@ -88,6 +88,8 @@ const VERBS = new Set([
   'codex',
   'down',
   'liftoff',
+  'travel',
+  'card',
   'end',
 ]);
 
@@ -104,8 +106,8 @@ describe('the slice script', () => {
   });
 
   it('names only places, doors, people, fights and conversations that exist', () => {
-    const marks = new Set([...Object.keys(MARKS), 'none']);
-    const areas = new Set(AREAS.map((a) => a.id));
+    const marks = new Set([...Object.keys(ALL_MARKS), 'none']);
+    const areas = new Set([...AREAS, ...LANTERN_AREAS].map((a) => a.id));
     const doors = new Set(DOORS);
     const cast = new Set(CAST);
     const knots = new Set([...SOURCE.matchAll(/^=== (\w+) ===/gm)].map((m) => m[1]));
@@ -140,6 +142,7 @@ describe('the slice script', () => {
           `unknown codex entry: ${a}`,
         ).toBe(true);
       if (c.verb === 'encounter') expect(ENCOUNTERS[a], `unknown fight: ${a}`).toBeDefined();
+      if (c.verb === 'travel') expect(Object.keys(PLACES), `unknown place: ${a}`).toContain(a);
       if (c.verb === 'wait' && !Number.isFinite(Number(a))) {
         for (const event of c.rest.split('|').map((e) => e.trim())) {
           const [kind, what = ''] = event.split(':');
@@ -226,7 +229,8 @@ describe('the slice script', () => {
     expect(escort.commands.some((c) => c.verb === 'encounter' && c.args[0] === 'escort')).toBe(true);
     for (const run of [mast, escort]) {
       expect(run.checkpoints[0]).toBe('night_shift');
-      expect(run.checkpoints.at(-1)).toBe('bridge');
+      expect(run.checkpoints).toContain('bridge');
+      expect(run.checkpoints.at(-1)).toBe('aboard');
       expect(run.commands.at(-1)?.verb).toBe('end');
       expect(run.runner.variable('first_lead')).not.toBe('');
     }
@@ -257,6 +261,9 @@ describe('the slice script', () => {
       checkpoint: () => {},
     });
     director.step();
+    // The bridge is aboard Lantern: the story travels there first.
+    expect(director.waiting).toEqual(['done:travel']);
+    director.event('done:travel');
     // The first line of the bridge is said, and the story waits for it.
     expect(said).toHaveLength(1);
     expect(director.waiting).toEqual(['time']);
@@ -269,7 +276,8 @@ describe('the slice script', () => {
     director.event('talked:jo_bridge');
     expect(director.waiting).toEqual(['talked:ren_bridge']);
     director.event('talked:ren_bridge');
-    expect(director.ended).toBe(true);
+    // Then the prologue's card, and the story waits for the player to go on.
+    expect(director.waiting).toEqual(['done:card']);
   });
 
   it('sets the scene of every chapter by itself, so a resumed game finds everyone in place', () => {
@@ -288,12 +296,14 @@ describe('the slice script', () => {
           checkpoint: () => {},
         });
         director.step();
+        // A chapter in another place begins with its travel.
+        if (director.waiting?.[0] === 'done:travel') director.event('done:travel');
         const has = (verb: string, who: string) => commands.some((c) => c.startsWith(`${verb} ${who}`));
         const placed = (who: string) => has('start', who) || has('place', who);
         expect(placed('hero'), `${chapter}: the hero`).toBe(true);
         expect(placed('ren'), `${chapter}: Ren`).toBe(true);
         // Jo is hidden until the hangar; Hale is placed or hidden; the night shift placed or hidden.
-        if (!['hangar', 'bridge'].includes(chapter)) expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
+        if (!['hangar', 'bridge', 'aboard'].includes(chapter)) expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
         if (chapter !== 'night_shift') {
           expect(placed('hale') || has('hide', 'hale'), `${chapter}: Hale`).toBe(true);
           for (const who of ['dena', 'sorrel', 'pell']) {

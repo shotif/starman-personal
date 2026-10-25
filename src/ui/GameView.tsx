@@ -25,6 +25,8 @@ export interface GameViewProps {
   saved: SaveData | null;
   /** Back to the title. */
   onQuit(): void;
+  /** The story moves the hero to another place: start a new game from this save. */
+  onTravel(save: SaveData): void;
 }
 
 /** Tutorial hints, in the words of the device in hand (D-02). */
@@ -79,6 +81,7 @@ export function GameView({
   audio,
   saved,
   onQuit,
+  onTravel,
 }: GameViewProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
@@ -103,6 +106,8 @@ export function GameView({
   const pausedNow = useRef(false);
   const [difficulty, setDifficulty] = useState(startDifficulty);
   const [ending, setEnding] = useState<Ending | null>(null);
+  /** The prologue's card, shown between the prologue and Act 1. */
+  const [card, setCard] = useState<Ending | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [note, setNote] = useState<{ text: string; id: number } | null>(null);
   const [codex, setCodex] = useState<string[]>(readCodex);
@@ -181,6 +186,11 @@ export function GameView({
               setNote({ text: `Codex: ${title}`, id: performance.now() });
               return next;
             });
+          },
+          onTravel: (s) => onTravel(s),
+          onCard: (_card, e) => {
+            setCard(e);
+            document.body.dataset.card = 'prologue';
           },
           onEnd: (e) => {
             setEnding(e);
@@ -326,7 +336,7 @@ export function GameView({
   return (
     <main class="stage">
       <canvas ref={canvas} class="scene" aria-label="Calder Station" />
-      {status.kind === 'ready' && !ending && (
+      {status.kind === 'ready' && !ending && !card && (
         <header class="hud">
           {objective && !conversation && (
             <p class="objective" key={objective}>
@@ -366,7 +376,7 @@ export function GameView({
           )}
         </header>
       )}
-      {status.kind === 'ready' && !ending && (
+      {status.kind === 'ready' && !ending && !card && (
         <button type="button" class="pause-button" aria-label="Pause" onClick={() => pause(true)}>
           ❚❚
         </button>
@@ -374,7 +384,9 @@ export function GameView({
       {status.kind === 'loading' && (
         <div
           class="loading"
-          style={{ backgroundImage: `url(${PICTURES}${LOADING_PICTURE[chapterAtStart] ?? 'loading-lounge'}.webp)` }}
+          style={{
+            backgroundImage: `url(${PICTURES}${saved?.place === 'lantern' ? 'loading-lantern' : (LOADING_PICTURE[chapterAtStart] ?? 'loading-lounge')}.webp)`,
+          }}
         >
           <p class="loading__text">Loading Calder Station…</p>
         </div>
@@ -401,7 +413,7 @@ export function GameView({
           {note.text}
         </p>
       )}
-      {vitals && !touch && !conversation && !ending && status.kind === 'ready' && (
+      {vitals && !touch && !conversation && !ending && !card && status.kind === 'ready' && (
         <section class="powers" aria-label="Powers">
           {vitals.powers.map((p, i) => (
             <button
@@ -482,7 +494,7 @@ export function GameView({
           </div>
         </div>
       )}
-      {touch && game && !ending && (
+      {touch && game && !ending && !card && (
         <TouchControls
           input={game.input}
           commanding={commanding}
@@ -525,48 +537,76 @@ export function GameView({
       )}
       {paused && reading && <Codex open={codex} onClose={() => setReading(false)} />}
       {black && <div class="fade" aria-hidden="true" />}
-      {ending && (
+      {card && (
         <div class="ending" role="dialog" aria-label="The end of the prologue">
           <p class="ending__kicker">End of the prologue</p>
           <h1 class="ending__title">Last light at Ross 128</h1>
-          <ul class="ending__list">
-            <li>
-              {ending.tookMast
-                ? 'You turned the relay by hand. The Merrow heard, and turned back.'
-                : 'You brought the night shift through. The Merrow never heard the warning.'}
-            </li>
-            <li>
-              {ending.ilyaLost
-                ? 'Ilya Marsh stood in front of Dena when the machines came. He did not leave Ross 128 b.'
-                : 'Everyone from the night shift came aboard.'}
-            </li>
-            {ending.haveCurve && (
-              <li>Ilya's readings came with you: thirty-one nights of a star going dark in steps.</li>
-            )}
-            <li>Chief Hale stayed behind to keep the doors working.</li>
-            <li>The surveyor is yours now, and her name is Lantern.</li>
-            <li>
-              {ending.renApproval >= 3
-                ? 'Ren Okafor would follow you anywhere now.'
-                : ending.renApproval >= 2
-                  ? 'Ren Okafor trusts you.'
-                  : ending.renApproval >= 1
-                    ? 'Ren Okafor is still making up her mind about you.'
-                    : 'Ren Okafor has doubts, and keeps them to herself.'}{' '}
-              {ending.joApproval >= 2
-                ? 'Jo Rook likes the way you give orders.'
-                : ending.joApproval >= 1
-                  ? 'Jo Rook has stopped calling you the cavalry.'
-                  : 'Jo Rook is reserving judgement.'}
-            </li>
-            {ending.firstLead && <li>Your first course: {LEADS[ending.firstLead] ?? ending.firstLead}.</li>}
-          </ul>
-          <p class="ending__next">Act 1, The dimming, is being written.</p>
+          <PrologueSummary ending={card} />
+          <button
+            type="button"
+            class="ending__go"
+            onClick={() => {
+              setCard(null);
+              document.body.dataset.card = '';
+              game?.continueStory();
+            }}
+          >
+            Continue aboard Lantern
+          </button>
+          <button type="button" onClick={onQuit}>
+            Back to the title
+          </button>
+        </div>
+      )}
+      {ending && (
+        <div class="ending" role="dialog" aria-label="To be continued">
+          <p class="ending__kicker">Act 1 · The dimming</p>
+          <h1 class="ending__title">To be continued</h1>
+          <p class="ending__next">
+            Lantern's course is set for Pyre Remnant. That part of the story is being built, and comes in the next
+            update.
+          </p>
           <button type="button" onClick={onQuit}>
             Back to the title
           </button>
         </div>
       )}
     </main>
+  );
+}
+
+/** What the prologue's choices came to, in a list. */
+function PrologueSummary({ ending }: { ending: Ending }) {
+  return (
+    <ul class="ending__list">
+      <li>
+        {ending.tookMast
+          ? 'You turned the relay by hand. The Merrow heard, and turned back.'
+          : 'You brought the night shift through. The Merrow never heard the warning.'}
+      </li>
+      <li>
+        {ending.ilyaLost
+          ? 'Ilya Marsh stood in front of Dena when the machines came. He did not leave Ross 128 b.'
+          : 'Everyone from the night shift came aboard.'}
+      </li>
+      {ending.haveCurve && <li>Ilya's readings came with you: thirty-one nights of a star going dark in steps.</li>}
+      <li>Chief Hale stayed behind to keep the doors working.</li>
+      <li>The surveyor is yours now, and her name is Lantern.</li>
+      <li>
+        {ending.renApproval >= 3
+          ? 'Ren Okafor would follow you anywhere now.'
+          : ending.renApproval >= 2
+            ? 'Ren Okafor trusts you.'
+            : ending.renApproval >= 1
+              ? 'Ren Okafor is still making up her mind about you.'
+              : 'Ren Okafor has doubts, and keeps them to herself.'}{' '}
+        {ending.joApproval >= 2
+          ? 'Jo Rook likes the way you give orders.'
+          : ending.joApproval >= 1
+            ? 'Jo Rook has stopped calling you the cavalry.'
+            : 'Jo Rook is reserving judgement.'}
+      </li>
+      {ending.firstLead && <li>Your first course: {LEADS[ending.firstLead] ?? ending.firstLead}.</li>}
+    </ul>
   );
 }

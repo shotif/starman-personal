@@ -88,6 +88,14 @@ export const CODEX: CodexEntry[] = [
       'Sound, fuelled, and without a captain or a name, until the night at Ross 128.',
   },
   {
+    id: 'pyre',
+    title: 'Pyre Remnant',
+    facts: null,
+    story:
+      "The Cooperative's observatory station, watching what is left of the star Pyre. Its archive holds " +
+      'a century of light curves from stars across the neighbourhood, and the people who read them.',
+  },
+  {
     id: 'lightkeeper',
     title: 'Lightkeepers',
     facts: null,

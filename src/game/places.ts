@@ -1,9 +1,10 @@
 /**
- * Calder Station's named places, as plain data (SLICE.md): the areas that tell the story where the
- * hero is, the marks where people stand and markers point, the vents fights come from, the doors,
- * and the cast. The station (src/game/station.ts) builds round them; the story's tests check every
- * name the script uses against them. x runs east, z north, y up, in metres; a mark's yaw is radians
- * about y, 0 facing north.
+ * The game's places, as plain data: Calder Station (the prologue, SLICE.md) and *Lantern* (ACT1.md),
+ * each built on its own and loaded one at a time. For each, the areas that tell the story where the
+ * hero is and the marks where people stand and markers point; for Calder also the vents fights come
+ * from, the doors and the range's drones. The builders (src/game/station.ts, src/game/lantern.ts)
+ * build round them; the story's tests check every name the script uses against them. x runs east,
+ * z north, y up, in metres; a mark's yaw is radians about y, 0 facing north.
  */
 export interface AreaData {
   id: string;
@@ -20,8 +21,7 @@ export interface MarkData {
   yaw?: number;
 }
 
-/** The bridge's offset from the station: far enough that neither sees the other. */
-export const BRIDGE_Z = -2000;
+export type PlaceId = 'calder' | 'lantern';
 
 const DEG = Math.PI / 180;
 
@@ -39,8 +39,6 @@ export const AREAS: AreaData[] = [
   { id: 'mast', x: [92, 100], z: [26, 36], y: [2, 8] },
   { id: 'hangar', x: [10, 50], z: [48, 92] },
   { id: 'ramp', x: [27.5, 32.5], z: [66.5, 70.6] },
-  { id: 'bridge', x: [-6, 6], z: [BRIDGE_Z - 6, BRIDGE_Z + 5] },
-  { id: 'hold', x: [-6, 6], z: [BRIDGE_Z + 5, BRIDGE_Z + 15] },
 ];
 
 export const MARKS: Record<string, MarkData> = {
@@ -76,13 +74,6 @@ export const MARKS: Record<string, MarkData> = {
   jo: { x: 24, z: 66, yaw: 90 * DEG },
   ramp: { x: 30, z: 67.6, yaw: 0 },
   boarding: { x: 30, z: 70.6, y: 1.4, yaw: 0 },
-  bridge_hero: { x: 1.5, z: BRIDGE_Z + 0.5, yaw: -90 * DEG },
-  bridge_ren: { x: -2.5, z: BRIDGE_Z + 3, yaw: -90 * DEG },
-  bridge_jo: { x: -2.5, z: BRIDGE_Z - 2.5, yaw: -90 * DEG },
-  hold_dena: { x: -1.8, z: BRIDGE_Z + 12.8, yaw: 160 * DEG },
-  hold_sorrel: { x: 2.4, z: BRIDGE_Z + 11.4, yaw: -90 * DEG },
-  hold_pell: { x: 3.2, z: BRIDGE_Z + 8.6, yaw: -120 * DEG },
-  hold_ilya: { x: -3.4, z: BRIDGE_Z + 9, yaw: 90 * DEG },
   // Things to look at: where each stands, for the prompt.
   window: { x: -3.3, z: 11, yaw: -90 * DEG },
   curve: { x: 4.4, z: 7.15 },
@@ -161,10 +152,63 @@ export const DRONES: [number, number, number][] = [
   [6, 1.4, 31],
 ];
 
+/**
+ * *Lantern*, the surveyor: the bridge at her nose (a window on space to the west), the hold behind it
+ * for the survivors of Ross 128, and a corridor aft to the stern: the crew deck's cabins to the south,
+ * the mess and the med bay to the north, engineering at the end.
+ */
+export const LANTERN_AREAS: AreaData[] = [
+  { id: 'bridge', x: [-6, 6], z: [-5, 5] },
+  { id: 'hold', x: [-6, 6], z: [5, 15] },
+  { id: 'corridor', x: [6, 30], z: [-1.5, 1.5] },
+  { id: 'cabins', x: [8, 23], z: [-7, -1.5] },
+  { id: 'store', x: [23, 28], z: [-7, -1.5] },
+  { id: 'mess', x: [8, 18], z: [1.5, 9] },
+  { id: 'medbay', x: [18, 24], z: [1.5, 7] },
+  { id: 'engineering', x: [30, 40], z: [-6, 6] },
+];
+
+export const LANTERN_MARKS: Record<string, MarkData> = {
+  bridge_hero: { x: 1.5, z: 0.5, yaw: -90 * DEG },
+  bridge_ren: { x: -2.5, z: 3, yaw: -90 * DEG },
+  bridge_jo: { x: -2.5, z: -2.5, yaw: -90 * DEG },
+  bridge_pell: { x: 2.5, z: 3.1, yaw: 0 },
+  hold_dena: { x: -1.8, z: 12.8, yaw: 160 * DEG },
+  hold_sorrel: { x: 2.4, z: 11.4, yaw: -90 * DEG },
+  hold_pell: { x: 3.2, z: 8.6, yaw: -120 * DEG },
+  hold_ilya: { x: -3.4, z: 9, yaw: 90 * DEG },
+  // Aboard between missions: each in their place.
+  cabin_captain: { x: 10.5, z: -3.2, yaw: 180 * DEG },
+  cabin_ren: { x: 15.5, z: -4.4, yaw: 90 * DEG },
+  cabin_jo: { x: 20.5, z: -4.4, yaw: -90 * DEG },
+  mess_dena: { x: 10.2, z: 7.6, yaw: 0 },
+  mess_ilya: { x: 15.4, z: 4.2, yaw: -90 * DEG },
+  medbay: { x: 21, z: 4, yaw: 0 },
+  engineering_jo: { x: 34.5, z: 2.6, yaw: 90 * DEG },
+  engineering_sorrel: { x: 33, z: -3.6, yaw: 180 * DEG },
+  // The navigation station, where a course is set; and the old captain's locker.
+  starmap: { x: 2.5, z: -3.1, yaw: 180 * DEG },
+  captain_locker: { x: 12, z: -4.4 },
+};
+
+/** Each place's areas and marks, and the mark the hero starts at when nothing else places them. */
+export const PLACES: Record<PlaceId, { areas: AreaData[]; marks: Record<string, MarkData>; start: string }> = {
+  calder: { areas: AREAS, marks: MARKS, start: 'hero_start' },
+  lantern: { areas: LANTERN_AREAS, marks: LANTERN_MARKS, start: 'bridge_hero' },
+};
+
+/** Every mark of every place, for checking the names the story uses. */
+export const ALL_MARKS: Record<string, MarkData> = { ...MARKS, ...LANTERN_MARKS };
+
+/** Where a chapter (its checkpoint) is played: the prologue at Calder, from its end aboard *Lantern*. */
+const CHAPTER_PLACE: Record<string, PlaceId> = { bridge: 'lantern', aboard: 'lantern' };
+export const placeOf = (checkpoint: string | null | undefined): PlaceId =>
+  (checkpoint && CHAPTER_PLACE[checkpoint]) || 'calder';
+
 /** The area a point is in, or null. */
-export function areaAt(p: { x: number; y: number; z: number }): string | null {
-  for (let i = AREAS.length - 1; i >= 0; i--) {
-    const a = AREAS[i];
+export function areaAt(p: { x: number; y: number; z: number }, areas: readonly AreaData[] = AREAS): string | null {
+  for (let i = areas.length - 1; i >= 0; i--) {
+    const a = areas[i];
     if (!a) continue;
     const inY = !a.y || (p.y >= a.y[0] && p.y <= a.y[1]);
     if (inY && p.x >= a.x[0] && p.x <= a.x[1] && p.z >= a.z[0] && p.z <= a.z[1]) return a.id;

@@ -29,6 +29,9 @@ VAR saw_curve = false
 VAR read_board = false
 VAR ilya_brings_curve = false
 VAR have_curve = false
+VAR ren_sent_file = false
+VAR jo_told_crew = false
+VAR sorrel_named_linde = false
 
 -> slice.night_shift
 
@@ -379,6 +382,8 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 -> bridge
 
 = bridge
+// Aboard Lantern: another place, loaded on its own (ACT1.md).
+>>> travel lantern
 >>> checkpoint bridge
 >>> music ending
 >>> sky swarm space
@@ -419,6 +424,51 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> talk jo jo_bridge
 >>> wait talked:ren_bridge
 >>> wait talked:jo_bridge
+>>> card prologue
+-> aboard
+
+// ─── Act 1: The dimming (ACT1.md) ───────────────────────────────────────────
+
+= aboard
+>>> travel lantern
+>>> checkpoint aboard
+>>> music night
+>>> sky swarm space
+>>> lights on
+>>> place hero cabin_captain
+>>> place ren cabin_ren
+>>> place jo engineering_jo
+>>> place dena mess_dena
+>>> place sorrel engineering_sorrel
+>>> place pell bridge_pell
+>>> hide hale
+{ ilya_lost:
+    >>> hide ilya
+- else:
+    >>> place ilya mess_ilya
+}
+>>> stay ren
+>>> stay jo
+>>> caption Lantern · a day out from Ross 128
+>>> objective Speak with your crew
+>>> look captain captain_locker look_captain Look at the old captain's things
+>>> talk ren ren_aboard
+>>> talk jo jo_aboard
+>>> talk dena dena_aboard
+>>> talk sorrel sorrel_aboard
+>>> talk pell pell_aboard
+>>> talk ilya ilya_aboard
+>>> marker cabin_ren
+>>> wait talked:ren_aboard
+>>> marker engineering_jo
+>>> wait talked:jo_aboard
+>>> objective Hear Pell out on the bridge
+>>> marker bridge_pell
+>>> wait talked:pell_aboard
+>>> objective Set a course from the bridge
+>>> marker starmap
+>>> use starmap starmap Set a course
+>>> wait used:starmap
 >>> end
 -> END
 
@@ -852,4 +902,104 @@ If this has happened to other stars, the steps will be in their light too. Someb
 * [You did well tonight. #manner: mercy]
     You did well tonight, Ilya. You saw it first. #speaker: hero #line: hero_ilya_ship_03b
     I saw it. I just didn't say it. Next time I'll say it. #speaker: Ilya #line: ilya_ship_04b
+- -> DONE
+
+// ─── Act 1: aboard Lantern ──────────────────────────────────────────────────
+
+=== look_captain ===
+The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name pencilled in it. #speaker: hero #line: hero_look_captain_01
+Someone should write to their family. When there's somewhere to send it from. #speaker: hero #line: hero_look_captain_02
+-> DONE
+
+=== ren_aboard ===
+Captain. Come in; it's your ship. I've been reading the chief's file. Most of it is sealed twice, and I only had the key to once. #speaker: Ren #line: ren_aboard_01
+What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking. #speaker: Ren #line: ren_aboard_02
+* [Who did she ask? #manner: ask]
+    Who did she ask? #speaker: hero #line: hero_ren_aboard_03a
+    The Lane Office. My office. Twenty years ago it said yes, and a year ago it said the same to me. #speaker: Ren #line: ren_aboard_04a
+* [Then the Authority knew. #manner: resolve]
+    Then the Authority knew, and buried it. #speaker: hero #line: hero_ren_aboard_03b
+    Someone in it did. I'd like to know whether they still do. #speaker: Ren #line: ren_aboard_04b
+- I could send this to the Lane Office now. Or I could wait until we know who's still listening there. #speaker: Ren #line: ren_aboard_05
+* [Send it. Make them answer for it. #manner: resolve]
+    Send it. Make them answer for it. #speaker: hero #line: hero_ren_aboard_06a
+    ~ ren_sent_file = true
+    Sent. If they're clean, they'll thank us. If they're not, they'll know where we are. #speaker: Ren #line: ren_aboard_07a
+* [Wait. We don't know who's listening. #manner: plain]
+    Wait. We don't know who's listening yet. #speaker: hero #line: hero_ren_aboard_06b
+    ~ ren_sent_file = false
+    ~ ren_approval += 1
+    Careful. Good. I was hoping you'd say that. #speaker: Ren #line: ren_aboard_07b
+- -> DONE
+
+=== jo_aboard ===
+She's flying sweet, Captain. Sorrel's regulator went in as if it was made for her. Don't tell him I said so. #speaker: Jo #line: jo_aboard_01
+The turret's another story. Somebody bolted it on with more hope than bolts. #speaker: Jo #line: jo_aboard_02
+* [What does she need? #manner: ask]
+    What does she need? #speaker: hero #line: hero_jo_aboard_03a
+    Plating, a second gun, and a shield that doesn't sulk. Stations sell all three, if you've the money and they've the sense. #speaker: Jo #line: jo_aboard_04a
+* [Where's the rest of her crew? #manner: ask]
+    Where's the rest of the surveyor's crew? #speaker: hero #line: hero_jo_aboard_03b
+    ~ jo_told_crew = true
+    Three of them took a job on the side, a month back. Selling parts off a wreck to a buyer who paid too well. They didn't come back. #speaker: Jo #line: jo_aboard_04b
+    The parts looked like nothing I'd ever seen. Now I think I have seen them. Flying round Ross 128. #speaker: Jo #line: jo_aboard_05b
+- Anyway. You set the course; I'll keep her in one piece. #speaker: Jo #line: jo_aboard_06
+-> DONE
+
+=== dena_aboard ===
+{ ilya_lost:
+    Morning, Captain. Porridge for everyone. I counted the bowls this time. #speaker: Dena #line: dena_aboard_01a
+- else:
+    Morning, Captain. Porridge for twenty-two, and nobody's complained yet, which is a first. #speaker: Dena #line: dena_aboard_01b
+}
+The stores will last us six weeks. Eight, if people stop eating when they're frightened. #speaker: Dena #line: dena_aboard_02
+* [We'll find them somewhere before then. #manner: resolve]
+    We'll find them somewhere before then. #speaker: hero #line: hero_dena_aboard_03a
+    I know you'll try. That's what I tell them. #speaker: Dena #line: dena_aboard_04a
+* [How are they holding up? #manner: mercy]
+    How are they holding up? #speaker: hero #line: hero_dena_aboard_03b
+    They sleep in shifts, so somebody's always awake. Like the station. It helps, I think. #speaker: Dena #line: dena_aboard_04b
+- -> DONE
+
+=== sorrel_aboard ===
+Captain. I've been thinking about the halo, now there's time to think. #speaker: Sorrel #line: sorrel_aboard_01
+Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money. #speaker: Sorrel #line: sorrel_aboard_02
+* [Who? #manner: ask]
+    Who was it? #speaker: hero #line: hero_sorrel_aboard_03a
+    ~ sorrel_named_linde = true
+    Teodor Linde, our navigator. Last I heard he went to count stars for the Cooperative. At an observatory. #speaker: Sorrel #line: sorrel_aboard_04a
+* [Do you regret taking it? #manner: mercy]
+    Do you regret taking it? #speaker: hero #line: hero_sorrel_aboard_03b
+    Every day since Ross 128. Not before. That's the shame of it. #speaker: Sorrel #line: sorrel_aboard_04b
+- -> DONE
+
+=== pell_aboard ===
+Captain. I've been on the bands all night. Stations along the lane going quiet, one after another. Not off. Quiet. #speaker: Pell #line: pell_aboard_01
+And this, an hour ago. Pyre Remnant's observatory, on their open band. They stopped in the middle of a sentence. #speaker: Pell #line: pell_aboard_02 #codex: pyre
+{ first_lead == "pyre":
+    We're headed there already. I thought you'd want to know we may not be welcome. #speaker: Pell #line: pell_aboard_03a
+- else:
+    I know you'd set another course. I thought you'd want to hear this before we went. #speaker: Pell #line: pell_aboard_03b
+}
+* [What did they say before it stopped? #manner: ask]
+    What did they say before it stopped? #speaker: hero #line: hero_pell_aboard_04a
+    "The archive is closed for audit. Repeat, the archive is." Then nothing. Twice, an hour apart. #speaker: Pell #line: pell_aboard_05a
+* [Then Pyre comes first. #manner: resolve]
+    Then Pyre Remnant comes first. #speaker: hero #line: hero_pell_aboard_04b
+    I'll tell Jo. #speaker: Pell #line: pell_aboard_05b
+- -> DONE
+
+=== ilya_aboard ===
+{ have_curve:
+    Captain! I've been through all thirty-one nights again. The steps aren't random. They come every three days, like something keeping time. #speaker: Ilya #line: ilya_aboard_01a
+- else:
+    Captain. I'm rebuilding my curve from memory, which is a stupid way to do science. #speaker: Ilya #line: ilya_aboard_01b
+}
+If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many. #speaker: Ilya #line: ilya_aboard_02
+* [Then that's where we go. #manner: resolve]
+    Then that's where we go. #speaker: hero #line: hero_ilya_aboard_03a
+    Really? I mean, yes. Good. I'll be ready. #speaker: Ilya #line: ilya_aboard_04a
+* [And if there are many? #manner: ask]
+    And if there are many? #speaker: hero #line: hero_ilya_aboard_03b
+    Then it isn't a star dying. It's something eating them, and it has been for a long time. #speaker: Ilya #line: ilya_aboard_04b
 - -> DONE

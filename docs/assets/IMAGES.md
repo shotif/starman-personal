@@ -15,7 +15,7 @@ the loading pictures show the star through a "long lens", so its disc looks bigg
 
 ## 1. The pictures
 
-All are WebP at quality 82, 1.3 MB together (the budget was 12 MB).
+All are WebP at quality 82, 1.4 MB together (the budget was 12 MB).
 
 | Id | Kind | Size | How it was made | KB |
 | --- | --- | --- | --- | --- |
@@ -39,6 +39,7 @@ All are WebP at quality 82, 1.3 MB together (the budget was 12 MB).
 | `loading-concourse` | loading | 1280 × 720 | Gemini painting: the concourse in red emergency light | 81 |
 | `loading-mast` | loading | 1280 × 720 | Gemini painting: the catwalk and the mast under the ringed star | 61 |
 | `loading-hangar` | loading | 1280 × 720 | Gemini painting: the hangar, the surveyor and the evacuees boarding | 84 |
+| `loading-lantern` | loading | 1280 × 720 | Gemini painting: *Lantern*'s bridge in orbit, the ringed star over the planet (added for Act 1) | 69 |
 
 `textures.json` maps each id to `{ "file", "width", "height", "kind" }`, with `file` relative to the
 manifest's folder.

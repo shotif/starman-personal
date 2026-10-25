@@ -118,12 +118,48 @@ Banked and their fights, the station and its mission, and every line voiced (D-2
 2,210 credits left (D-24); the station, the Banked and the weapons are the biggest pieces. The
 increments, each playable and deployed (D-01):
 
-1. Places that load on their own, and the ship's decks to walk.
+1. Places that load on their own, and the ship's decks to walk. *Built 25 October 2026:
+   `src/game/lantern.ts` (the decks), `src/game/places.ts` (each place's areas and marks), the
+   `travel` and `card` commands; Act 1 opens aboard after the prologue's card, with the crew's
+   conversations and Pyre Remnant's call, and ends honestly at "Set a course" until the map is built.*
 2. The star map and travel.
 3. The hero's growth and the weapons.
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.
+
+## Increment 1 in detail: places that load on their own, and *Lantern*'s decks
+
+**Places.** Each place is built on its own: Calder Station (the prologue), *Lantern*, and later Pyre
+Remnant. Only one is in memory at a time, so a phone never holds more than one place's models and
+textures. The story says when the hero moves to another place, with a command, `>>> travel lantern`:
+the game saves (the story's state just after the command, and the place it leads to), lets go of
+the old place entirely, and starts again in the new one behind its loading painting. A saved game
+remembers its place, and a save from before places existed finds its own (its chapter's first
+command is the `travel`).
+
+**The prologue's end moves aboard.** The bridge and the hold were built far off at Calder; they move
+to *Lantern*. After the lift-off the screen is already dark, so the travel happens there.
+
+***Lantern*'s decks.** The bridge at the nose, a window on space; the hold behind it, where the
+survivors of Ross 128 live; a corridor aft, with the crew deck's cabins on one side (the captain's,
+Ren's and Jo's), the mess on the other (Dena's galley, the table), and engineering at the stern
+(Jo's reactor, Sorrel's spares). Furniture from the models already made; new pieces from Meshy where
+needed (a reactor, the cabins' fittings).
+
+**After the prologue.** The end card offers to go on: Act 1 opens aboard *Lantern*, the crew settled
+in, and new conversations in their places (Ren in her cabin with the sealed file; Jo in engineering
+with Sorrel's regulator; Dena in the mess; Pell and Ilya, if he lived). Until the star map is built
+(increment 2), the objective that sets a course ends honestly: the next part is being built.
+
+### What the opening aboard adds to the canon
+
+Small things, all in `story/slice.ink`, all the owner's to change: the file Hale gave Ren is sealed
+twice, and its open part lists Antares, two other stars, and a request signed by Varro that the
+Lane Office stop looking; three of Jo's crew sold parts off a wreck to a buyer who paid too well,
+and did not come back (the first step of her personal quest); Teodor Linde, the navigator of
+Sorrel's Antares run, never took the Authority's money and went to count stars for the
+Cooperative; Pyre Remnant's open band stopped mid-sentence: "The archive is closed for audit."
 
 ## The decisions it needs
 

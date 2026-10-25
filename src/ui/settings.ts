@@ -20,7 +20,8 @@ export const LOADING_PICTURE: Record<string, string> = {
   gate: 'loading-concourse',
   mast: 'loading-mast',
   hangar: 'loading-hangar',
-  bridge: 'loading-hangar',
+  bridge: 'loading-lantern',
+  aboard: 'loading-lantern',
 };
 
 /** A touch screen is the main input. */

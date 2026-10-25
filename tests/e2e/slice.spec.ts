@@ -133,13 +133,29 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   // Aboard: the survivors in the hold first, then the crew, and the end of the prologue.
   await expect(body).toHaveAttribute('data-objective', 'See to the survivors in the hold', { timeout: 30_000 });
   await page.screenshot({ path: testInfo.outputPath('5-bridge.png') });
-  await talkTo(page, 'Dena', -1.8, -1988.6);
+  await talkTo(page, 'Dena', -1.8, 11.4);
   await expect(body).toHaveAttribute('data-objective', 'Talk to your crew');
-  await talkTo(page, 'Ren', -1.2, -1997);
-  await talkTo(page, 'Jo', -1.2, -2002.5);
-  await expect(body).toHaveAttribute('data-ended', 'true');
+  await talkTo(page, 'Ren', -1.2, 3);
+  await talkTo(page, 'Jo', -1.2, -2.5);
+  // The prologue's card: what the choices came to, and the way on.
+  await expect(body).toHaveAttribute('data-card', 'prologue');
   await expect(page.getByText('Last light at Ross 128')).toBeVisible();
   await expect(page.getByText(/You turned the relay by hand/)).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('6-end.png') });
+  await page.getByRole('button', { name: 'Continue aboard Lantern' }).click();
+
+  // Act 1 opens aboard Lantern: the crew in their places, Pyre Remnant's call, a course to set.
+  await expect(body).toHaveAttribute('data-objective', 'Speak with your crew', { timeout: 20_000 });
+  await talkTo(page, 'Ren', 15.5, -3);
+  await talkTo(page, 'Jo', 33.2, 2.6);
+  await expect(body).toHaveAttribute('data-objective', 'Hear Pell out on the bridge', { timeout: 15_000 });
+  await talkTo(page, 'Pell', 2.5, 1.8);
+  await expect(body).toHaveAttribute('data-objective', 'Set a course from the bridge', { timeout: 15_000 });
+  await teleport(page, 2.5, -2.6, Math.PI);
+  await expect(body).toHaveAttribute('data-prompt', 'Set a course');
+  await page.keyboard.press('KeyE');
+  await expect(body).toHaveAttribute('data-ended', 'true');
+  await expect(page.getByText('To be continued')).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('7-aboard.png') });
   expect(errors).toEqual([]);
 });

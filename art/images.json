@@ -250,6 +250,19 @@
         "station"
       ],
       "prompt": "Inside the station's large, worn hangar: a long-haul survey ship stands on its landing legs, a blunt, boxy, practical working vessel about sixty metres long with heavy radiator panels along its flanks, a slim sensor mast on its nose carrying a small dish and instrument pods (it carries no guns), and off-white and grey hull plates with orange hazard markings; its boarding ramp is down and lit. Work lights on gantries, stacked cargo crates, painted yellow walkway lines on the floor, and small silhouettes of evacuees with bags walking up the ramp. Red emergency light mixes with cold white work lights."
+    },
+    {
+      "id": "loading-lantern",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "with": [
+        "swarm"
+      ],
+      "prompt": "The bridge of a small long-haul survey ship in orbit: a compact, practical, lived-in bridge with four worn console stations whose screens glow cool blue, and a captain's chair facing a wide window. Through the window, the curve of a rust-brown rocky planet far below and, above it, a dim red-orange star with a faint ring of tiny lights around it. Two crew members seen from behind work at the consoles. Cool console light mixed with the star's low red glow; the rest of the room in soft shadow."
     }
   ],
   "records": {
@@ -1045,6 +1058,26 @@
         "candidate": 2,
         "candidateSize": "2752x1536",
         "candidateSha256": "2d5d31383380a9c5e8257146550306417c75757addb35bd90a68dba606d38ff7"
+      }
+    },
+    "loading-lantern": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-lantern.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 70170,
+      "sha256": "0f37c413813f6ca65856bc5d23ee87214f840c1335508c45a056f739d12c5b7b",
+      "built": "2026-10-25",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "The bridge of a small long-haul survey ship in orbit: a compact, practical, lived-in bridge with four worn console stations whose screens glow cool blue, and a captain's chair facing a wide window. Through the window, the curve of a rust-brown rocky planet far below and, above it, a dim red-orange star with a faint ring of tiny lights around it. Two crew members seen from behind work at the consoles. Cool console light mixed with the star's low red glow; the rest of the room in soft shadow. A thin ring of countless tiny points of light circles the star a little way out from its disc, like a faint necklace of sparks: a swarm of machines, seen only as points of light. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-25T07:43:14.617Z",
+        "candidate": 1,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "fbb41497b19f1d128e15c7097c385575779ed4a663a7f5c50901ac4a1d501707"
       }
     }
   }

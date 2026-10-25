@@ -31,6 +31,10 @@ const WAITS_FOR: Record<string, (c: Command) => string> = {
   encounter: (c) => `cleared:${c.args[0] ?? ''}`,
   drill: () => 'cleared:drill',
   liftoff: () => 'done:liftoff',
+  // On the way to another place: this game ends here; the next starts past the command.
+  travel: () => 'done:travel',
+  // A chapter's card: the player goes on when ready.
+  card: () => 'done:card',
 };
 
 export function parseCommand(line: string): Command | null {
@@ -102,7 +106,13 @@ export class Director {
       this.host.command(command);
       const waitsFor = WAITS_FOR[command.verb];
       if (waitsFor) {
-        this.waiting = [waitsFor(command)];
+        const event = waitsFor(command);
+        // Over already (a travel to the place the hero is in): go on.
+        if (this.happened.delete(event)) {
+          this.runner.set('event', event);
+          continue;
+        }
+        this.waiting = [event];
         return;
       }
     }

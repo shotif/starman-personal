@@ -176,6 +176,7 @@ export function App() {
       difficulty={difficulty}
       audio={audio}
       saved={screen.saved}
+      onTravel={(next) => setScreen({ kind: 'game', saved: next })}
       onQuit={() => {
         setSaved(readSave(manifest));
         setScreen({ kind: 'title' });

@@ -15,7 +15,7 @@ import { PhysicsShapeType } from '@babylonjs/core/Physics/v2/IPhysicsEnginePlugi
 import { PhysicsAggregate } from '@babylonjs/core/Physics/v2/physicsAggregate';
 import type { Scene } from '@babylonjs/core/scene';
 import { buildKit, type Door, type Kit } from './kit.ts';
-import { AREAS, type AreaData, areaAt, BRIDGE_Z, DRONES, MARKS, VENTS } from './places.ts';
+import { AREAS, type AreaData, areaAt, DRONES, MARKS, VENTS } from './places.ts';
 import type { QualitySettings } from './quality.ts';
 import { buildSky, type Sky } from './sky.ts';
 
@@ -77,7 +77,6 @@ export function buildStation(scene: Scene, q: QualitySettings): Place {
   concourse(kit, addDoor);
   serviceAndMast(kit, addDoor);
   const ship = hangar(kit, scene);
-  bridge(kit);
   kit.finish();
   // The models take the place of their stand-ins as they arrive; the game does not wait for them.
   void kit.furnish();
@@ -127,7 +126,7 @@ export function buildStation(scene: Scene, q: QualitySettings): Place {
     castShadow(mesh) {
       shadows?.addShadowCaster(mesh, true);
     },
-    areaAt,
+    areaAt: (p) => areaAt(p),
     props: kit.placed(),
     update(dt) {
       for (const d of Object.values(doors)) d.update(dt);
@@ -837,97 +836,4 @@ function hangar(kit: Kit, scene: Scene): TransformNode {
     standIn: look,
   });
   return ship;
-}
-
-/** Lantern's bridge, far from the station: a window on the star, the chair, the stations. */
-function bridge(kit: Kit) {
-  const s = kit.surfaces;
-  kit.enter('bridge');
-  const z0 = BRIDGE_Z;
-  kit.room({
-    name: 'bridge',
-    x: [-6, 6],
-    z: [z0 - 5, z0 + 5],
-    height: 3.4,
-    floor: s.deck,
-    wall: s.hullDark,
-    gaps: [
-      { side: 'w', from: z0 - 4, to: z0 + 4, bottom: 0.7, top: 3, glass: true },
-      { side: 'n', from: -1, to: 1 },
-    ],
-  });
-  // The captain's chair faces the window; the stations face their screens.
-  kit.prop('chair', [0.6, 0, z0 + 0.5], -Math.PI / 2, [0.9, 1.3, 0.9], (box) => {
-    box([0.9, 0.6, 0.9], [0, 0.3, 0], s.hullDark);
-    box([0.9, 1, 0.15], [0, 1.1, -0.4], s.fabric);
-  });
-  // A console's front is its operator's side. The two by the window face into the room, so their
-  // operators look past the screens and out; the two by the side walls turn their backs to the walls.
-  for (const [x, z, look, yaw] of [
-    [-3.6, z0 + 3, s.screen, Math.PI / 2],
-    [-3.6, z0 - 2.5, s.screenWarm, Math.PI / 2],
-    [2.5, z0 + 4, s.screen, Math.PI],
-    [2.5, z0 - 4, s.screen, 0],
-  ] as const) {
-    kit.prop('bridgeconsole', [x, 0, z], yaw, [1.6, 1.3, 0.9], (box) => {
-      box([1.6, 0.95, 0.9], [0, 0.475, 0], s.hull);
-      box([1.4, 0.04, 0.7], [0, 0.97, 0], look);
-    });
-  }
-  kit.deco([0.06, 1.4, 3], [5.85, 1.8, z0], s.dark);
-  kit.picture('screen-navigation', [2.6, 1.3], [5.79, 1.8, z0], -Math.PI / 2);
-  kit.light([0, 3.25, z0 - 2], new Color3(0.8, 0.88, 1), 5, 9);
-  kit.light([0, 3.25, z0 + 2], new Color3(0.8, 0.88, 1), 5, 9);
-
-  // The hold behind the bridge, through the door in its north wall: where the survivors sit.
-  kit.room({
-    name: 'hold',
-    x: [-6, 6],
-    z: [z0 + 5, z0 + 15],
-    height: 3,
-    floor: s.deck,
-    wall: s.hull,
-    open: ['s'],
-  });
-  for (const [x, z, yaw] of [
-    [-5.2, z0 + 9, Math.PI / 2],
-    [-5.2, z0 + 12.4, Math.PI / 2],
-    [5.2, z0 + 13.6, -Math.PI / 2],
-  ] as const) {
-    kit.prop('bunk', [x, 0, z], yaw, [2.1, 2.1, 1], (box) => {
-      box([2.1, 0.5, 1], [0, 0.25, 0], s.hullDark);
-      box([2, 0.15, 0.9], [0, 0.58, 0], s.fabric);
-      box([2.1, 0.08, 1], [0, 1.7, 0], s.hullDark);
-      box([2, 0.15, 0.9], [0, 1.82, 0], s.fabric);
-    });
-  }
-  kit.prop('table', [0, 0, z0 + 11], 0, [2.8, 0.8, 2.6], (box) => {
-    box([2.8, 0.75, 1.2], [0, 0.375, 0], s.wood);
-    box([2.8, 0.45, 0.5], [0, 0.225, -1.1], s.hullDark);
-    box([2.8, 0.45, 0.5], [0, 0.225, 1.1], s.hullDark);
-  });
-  for (const [x, z] of [
-    [4.6, z0 + 7],
-    [4.6, z0 + 8.4],
-    [3.4, z0 + 7],
-  ] as const) {
-    kit.prop('crate', [x, 0, z], 0, [1.1, 1, 1.1], (box) => box([1.1, 1, 1.1], [0, 0.5, 0], s.crate), { fit: 'box' });
-  }
-  kit.light([0, 2.85, z0 + 8], new Color3(1, 0.85, 0.7), 5, 8);
-  kit.light([0, 2.85, z0 + 13], new Color3(1, 0.85, 0.7), 5, 8);
-  // Ross 128 b below, its night side turning under the ship: the painted ground, unfogged, lit only
-  // by the star.
-  const planet = CreateSphere('ross-128-b', { diameter: 3000, segments: 48 }, kit.scene);
-  planet.position.set(-1700, -1560, z0);
-  const surface = new StandardMaterial('ross-128-b', kit.scene);
-  const ground = new Texture(`${import.meta.env.BASE_URL}assets/textures/ground-regolith.webp`, kit.scene);
-  ground.uScale = 6;
-  ground.vScale = 3;
-  surface.diffuseTexture = ground;
-  surface.diffuseColor = new Color3(0.8, 0.6, 0.52);
-  surface.specularColor = Color3.Black();
-  surface.fogEnabled = false;
-  planet.material = surface;
-  planet.applyFog = false;
-  planet.isPickable = false;
 }

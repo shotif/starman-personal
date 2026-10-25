@@ -118,5 +118,11 @@
     "width": 1280,
     "height": 720,
     "kind": "loading"
+  },
+  "loading-lantern": {
+    "file": "loading-lantern.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
   }
 }

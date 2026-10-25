@@ -99,6 +99,12 @@ const SCENE: Record<string, string> = {
   sorrel_ship: '[soft, slow]',
   pell_ship: '[quiet, rueful]',
   ilya_ship: '[earnest, tired]',
+  ren_aboard: '[quiet, thoughtful]',
+  jo_aboard: '[wry, cheerful]',
+  dena_aboard: '[warm, tired]',
+  sorrel_aboard: '[soft, slow, remembering]',
+  pell_aboard: '[low, worried]',
+  ilya_aboard: '[eager, quick]',
 };
 const LINE: Record<string, string> = {
   ren_drill_01: '[calm, instructing]',
@@ -171,6 +177,12 @@ const LINE: Record<string, string> = {
   pell_ship_02a: '[quiet, troubled]',
   pell_ship_04b: '[wry, steadier]',
   ilya_ship_04b: '[quiet, determined]',
+  ren_aboard_07b: '[approving, warm]',
+  jo_aboard_04b: '[quiet, bitter]',
+  jo_aboard_05b: '[quiet, uneasy]',
+  sorrel_aboard_04b: '[quiet, ashamed]',
+  pell_aboard_05a: '[quoting, flat, uneasy]',
+  ilya_aboard_04b: '[quiet, frightened]',
 };
 const MANNER: Record<string, string> = {
   ask: '[curious]',

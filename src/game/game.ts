@@ -48,6 +48,7 @@ import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
 import { Input } from './input.ts';
+import { buildLantern } from './lantern.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
 import { buildSwarm } from './motes.ts';
 import {
@@ -63,6 +64,7 @@ import {
 } from './motion.ts';
 import { createNavigation, type Navigation } from './navigation.ts';
 import { dress, looksOf, type Person, spawnPerson } from './people.ts';
+import { type PlaceId, placeOf } from './places.ts';
 import { poseWeights } from './pose.ts';
 import { CLASS_POWERS, POWERS, type PowerId } from './powers.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
@@ -120,6 +122,8 @@ export interface SaveData {
   checkpoint: string;
   difficulty: Difficulty;
   at: number;
+  /** Where the hero is: the place to build when the game resumes (Calder when missing). */
+  place?: PlaceId;
   /** Which script the story's state belongs to; a save from another resumes at its checkpoint. */
   script?: string;
 }
@@ -147,6 +151,8 @@ export interface Game {
   /** Who is speaking now, so they gesture and the camera knows. */
   setSpeaker(who: 'hero' | 'partner' | null): void;
   endConversation(): void;
+  /** The player goes on from a chapter's card (the end of the prologue). */
+  continueStory(): void;
   setDifficulty(difficulty: Difficulty): void;
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
@@ -174,6 +180,8 @@ export interface GameOptions {
   save: SaveData | null;
   /** For testing: start at a chapter of the slice (a stitch of `slice`). */
   chapter?: string | null;
+  /** The place to build (only one is in memory at a time); otherwise the save's, or the chapter's. */
+  place?: PlaceId;
   onStats(stats: GameStats): void;
   onReady(): void;
   /** Called when the hero starts or stops aiming, to show the crosshair. */
@@ -195,6 +203,13 @@ export interface GameOptions {
   onFade(black: boolean): void;
   onSave(save: SaveData): void;
   onEnd(ending: Ending): void;
+  /** A chapter's card, between parts of the story (`prologue`); the story waits for `continueStory`. */
+  onCard(card: string, ending: Ending): void;
+  /**
+   * The story moves the hero to another place: this game is done, and a new one should start from
+   * this save, in that place, behind its loading painting.
+   */
+  onTravel(save: SaveData): void;
   /** The story opened an entry of the codex (src/game/codex.ts). */
   onCodex(id: string): void;
 }
@@ -255,6 +270,7 @@ const AMBIENCE: Record<string, string> = {
   catwalk: 'wind',
   mast: 'wind',
   hangar: 'ambience_hangar',
+  engineering: 'ambience_hangar',
 };
 /** After a companion's help, this long before shots count again. */
 const GRACE_SECONDS = 2.5;
@@ -275,7 +291,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const physics = new HavokPlugin(true, havok);
   scene.enablePhysics(GRAVITY, physics);
 
-  const place = buildStation(scene, q);
+  const placeId: PlaceId = options.place ?? options.save?.place ?? placeOf(options.save?.checkpoint ?? options.chapter);
+  const place = placeId === 'lantern' ? buildLantern(scene, q) : buildStation(scene, q);
   let difficulty = options.difficulty;
   const audio = options.audio;
   /** The voice speaking now, and whose mouth it moves. */
@@ -498,6 +515,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let resuming = true;
   let liftoff: { t: number } | null = null;
   let ended = false;
+  /** The last chapter saved, for a save made on the way to another place. */
+  let lastCheckpoint = options.save?.checkpoint ?? options.chapter ?? 'night_shift';
 
   /** A conversation in progress: with whom, who is speaking, and the side of the line the camera keeps. */
   let talking: { id: string; knot: string; speaker: 'hero' | 'partner' | null; side: 1 | -1 } | null = null;
@@ -854,6 +873,33 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         ended = true;
         options.onEnd(ending());
         break;
+      case 'card':
+        input.release();
+        options.onCard(a, ending());
+        break;
+      case 'travel': {
+        // Already there (a chapter that starts with its travel, resumed): nothing to do.
+        if (a === placeId) {
+          window.setTimeout(() => director.event('done:travel'), 0);
+          break;
+        }
+        // Elsewhere: saved just past this command, the game hands over to a new one in that place.
+        ended = true;
+        options.onFade(true);
+        const save: SaveData = {
+          version: 1,
+          looks: options.looks,
+          story: runner.save(),
+          checkpoint: lastCheckpoint,
+          difficulty,
+          at: Date.now(),
+          script: SCRIPT,
+          place: a as PlaceId,
+        };
+        options.onSave(save);
+        options.onTravel(save);
+        break;
+      }
     }
   };
 
@@ -865,6 +911,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       return say(line);
     },
     checkpoint: (name, state) => {
+      lastCheckpoint = name;
       options.onSave({
         version: 1,
         looks: options.looks,
@@ -873,6 +920,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         difficulty,
         at: Date.now(),
         script: SCRIPT,
+        place: placeId,
       });
     },
   });
@@ -1788,6 +1836,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     setSpeaker(who) {
       if (talking) talking.speaker = who;
     },
+    continueStory() {
+      director.event('done:card');
+    },
     endConversation() {
       if (!talking) return;
       const { id, knot } = talking;
@@ -1810,8 +1861,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       window.removeEventListener('resize', onResize);
       input.dispose();
       engine.stopRenderLoop();
+      // The drawing context is let go at once, not when the browser gets round to it: a phone holds
+      // one place at a time, and the next is about to load.
+      const gl = (engine as unknown as { _gl?: WebGLRenderingContext | null })._gl;
       scene.dispose();
       engine.dispose();
+      gl?.getExtension('WEBGL_lose_context')?.loseContext();
     },
   };
 }

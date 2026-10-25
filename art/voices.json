@@ -1,6 +1,206 @@
 {
   "about": "Every voice file in public/assets/voices/, made by scripts/art/voices.ts with ElevenLabs text to speech on the owner's paid plan from premade voices (docs/assets/VOICES.md). Generated speech, all of it; the lines are fiction.",
   "files": {
+    "dena_aboard_01a.mp3": {
+      "line": "dena_aboard_01a",
+      "speaker": "Dena",
+      "text": "Morning, Captain. Porridge for everyone. I counted the bowls this time.",
+      "direction": "[warm, tired]",
+      "hash": "f2b61b030c60a55904a9a6b4348784b6b6593f245fccb777d33b68ddec3d1dd1",
+      "voice": {
+        "id": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4072020739,
+      "stitching": {
+        "next": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "Morning, Captain. Porridge for everyone. I counted the bowls this time",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.99,
+      "lead": 0.25,
+      "tail": 0.05,
+      "peak": 0.731,
+      "loudness": -18.5,
+      "bytes": 40167,
+      "sha256": "54213dbd3766ecd938293c2a945007a6be79c501e2c83d69f0a2afe48b93c761",
+      "made": "2026-10-25T07:39:39.915Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0,0.42,0.68,0.77,0.66,0.39,0.31,0.2,0.15,0.12,0.24,0.26,0.19,0,0.25,0.29,0.28,0.24,0.18,0.09,0,0,0,0,0,0,0,0,0,0,0,0.05,0.1,0.47,0.79,1,1,0.63,0.19,0.26,0.07,0.29,0.8,0.84,0.71,0.3,0.25,0.38,0.3,0.26,0.32,0.27,0.18,0.17,0.05,0,0,0,0,0,0,0,0,0,0,0,0.05,0.56,0.27,0.17,0.5,0.6,0.34,0.22,0.31,0.09,0.4,0.08,0.33,0.62,0.64,0.51,0.2,0.07,0.13,0.22,0.17,0.12,0.14,0.13,0.19,0.18,0.16,0.14,0.14,0.08],
+      "words": [["Morning,",0.24,0.6],["Captain.",0.64,1.44],["Porridge",1.76,2.16],["for",2.24,2.32],["everyone.",2.4,3.2],["I",3.52,3.6],["counted",3.72,3.92],["the",3.96,4],["bowls",4.08,4.32],["this",4.4,4.56],["time.",4.64,5.04]]
+    },
+    "dena_aboard_01b.mp3": {
+      "line": "dena_aboard_01b",
+      "speaker": "Dena",
+      "text": "Morning, Captain. Porridge for twenty-two, and nobody's complained yet, which is a first.",
+      "direction": "[warm, tired]",
+      "hash": "24f4476a4c1291301d597601a0829e43c4d8b948a2ff5d3bd016595eee52356e",
+      "voice": {
+        "id": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 619988842,
+      "stitching": {
+        "next": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "Morning, Captain. Porridge for 22, and nobody's complained yet, which is a first",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.27,
+      "lead": 0.2,
+      "tail": 0.5,
+      "peak": 0.75,
+      "loudness": -20.9,
+      "bytes": 50407,
+      "sha256": "18980a1edc267973a3e0f5f6cfe7c39821a30616d331e3cbd31bc80c9b652c97",
+      "made": "2026-10-25T07:39:40.997Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0.16,0.66,1,0.97,0.73,0.5,0.41,0.27,0.25,0.19,0.32,0.34,0.24,0,0.23,0.34,0.36,0.33,0.27,0.15,0.06,0,0,0,0,0,0,0,0,0,0,0.08,0.1,0.58,1,1,0.83,0.37,0.29,0.21,0.18,0.43,0.15,0.19,0.48,0.54,0.49,0.38,0.11,0.44,0.24,0.62,0.56,0.49,0.47,0.51,0.37,0.14,0.06,0.07,0.21,0.27,0.28,0.26,0.24,0.22,0.31,0.44,0.35,0.76,0.46,0.38,0.29,0.21,0.07,0.37,0.45,0.14,0.07,0.53,0.4,0.5,0.56,0.25,0.52,0.73,0.76,0.33,0.14,0,0,0,0,0.08,0.21,0.15,0.16,0.18,0.16,0.16,0.06,0.06,0.05,0.17,0.43,0.49,0.22,0.17,0.25,0.27,0.14,0.16,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Morning,",0.24,0.6],["Captain.",0.64,1.44],["Porridge",1.76,2.16],["for",2.24,2.32],["twenty-two,",2.48,3.16],["and",3.2,3.44],["nobody's",3.55,3.84],["complained",3.92,4.32],["yet,",4.4,4.85],["which",4.91,4.96],["is",5,5.04],["a",5.28,5.6],["first.",5.92,6.32]]
+    },
+    "dena_aboard_02.mp3": {
+      "line": "dena_aboard_02",
+      "speaker": "Dena",
+      "text": "The stores will last us six weeks. Eight, if people stop eating when they're frightened.",
+      "direction": "[warm, tired]",
+      "hash": "f902ca686842425889d3e861d1018854e1fe06b07880dcb958aed1d00fe324cf",
+      "voice": {
+        "id": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4177709672,
+      "stitching": {
+        "previous": "Morning, Captain. Porridge for twenty-two, and nobody's complained yet, which is a first."
+      },
+      "heard": "The stores will last us six weeks. Eight if people stop eating when they're frightened",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 5.25,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.801,
+      "loudness": -21.7,
+      "bytes": 42256,
+      "sha256": "31a274a8e5a1f9864dac7b3fd19987a0160a2f79cbe3e572e0d92727e8e5c696",
+      "made": "2026-10-25T07:39:40.920Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.4,0.5,0.55,0.45,0.29,0.47,0.59,0.81,0.79,0.52,0.27,0.59,0.55,0.65,0.95,0.76,0.43,0.44,0.21,0.45,0.45,0.51,0.45,0.37,0.33,0.36,0.47,0.1,0.36,0.38,0.17,0.29,0.52,0.65,0.79,0.66,0,0.3,0.48,0.49,0.29,0.06,0,0,0,0,0,0,0,0,1,1,0.74,0.98,0.38,0.56,0.25,0.07,0,0,0.37,0.18,0.06,0.09,0.54,0.54,0.1,0.57,0.43,0.42,0.22,0.74,1,0.47,0.1,0.09,0.39,0.63,0.75,0.66,0.48,0.31,0.4,0.45,0.36,0.37,0.45,0.12,0.08,0.06,0.51,0.55,0.38,0.18,0.29,0.33,0.37,0.28,0.17,0,0,0,0,0],
+      "words": [["The",0.14,0.16],["stores",0.36,0.56],["will",0.64,0.72],["last",0.88,1.04],["us",1.16,1.28],["six",1.44,1.6],["weeks.",1.68,2.56],["Eight,",2.72,3.04],["if",3.12,3.2],["people",3.28,3.52],["stop",3.68,3.84],["eating",4,4.16],["when",4.24,4.32],["they're",4.37,4.48],["frightened.",4.52,5.28]]
+    },
+    "dena_aboard_04a.mp3": {
+      "line": "dena_aboard_04a",
+      "speaker": "Dena",
+      "text": "I know you'll try. That's what I tell them.",
+      "direction": "[warm, tired]",
+      "hash": "ac1f823318e05fb666c0075fe41eb75c6a88774a42e7c0aeab215a38d2531264",
+      "voice": {
+        "id": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2887746099,
+      "stitching": {
+        "previous": "We'll find them somewhere before then."
+      },
+      "heard": "I know you'll try. That's what I tell them",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.08,
+      "lead": 0.15,
+      "tail": 0.2,
+      "peak": 0.297,
+      "loudness": -23.7,
+      "bytes": 24911,
+      "sha256": "8b8db4eef16db431c3c9bd300bb7963f7708cd2e9f601f319c3da674442767e9",
+      "made": "2026-10-25T07:39:41.402Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.15,0.47,0.91,1,1,0.84,0.79,0.82,0.7,0.53,0.58,0.52,0.38,0.27,0.32,0.21,0.52,0.6,0.62,0.59,0.52,0.43,0.16,0.06,0,0,0,0,0,0,0,0,0,0,0.43,0.52,0.29,0.27,0.42,0.15,0.71,0.5,0.69,0.49,0.33,0.21,0.53,0.48,0.45,0,0.47,0.43,0.36,0.36,0.2,0,0,0,0],
+      "words": [["I",0.24,0.32],["know",0.4,0.56],["you'll",0.64,0.8],["try.",1,1.76],["That's",1.84,2.08],["what",2.12,2.16],["I",2.32,2.36],["tell",2.4,2.56],["them.",2.64,3.12]]
+    },
+    "dena_aboard_04b.mp3": {
+      "line": "dena_aboard_04b",
+      "speaker": "Dena",
+      "text": "They sleep in shifts, so somebody's always awake. Like the station. It helps, I think.",
+      "direction": "[warm, tired]",
+      "hash": "be1ba525c7f02024f014d13064e30a1d979a6c28a6c8d85676f8b8b8de2b6f2d",
+      "voice": {
+        "id": "XrExE9yKIg1WjnnlVkGX",
+        "name": "Matilda"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3189482789,
+      "stitching": {
+        "previous": "How are they holding up?"
+      },
+      "heard": "They sleep in shifts, so somebody's always awake, like the station. It helps, I think",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.53,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.515,
+      "loudness": -21.8,
+      "bytes": 52496,
+      "sha256": "af0e04f4f56ee2f4fc8c198ca304672afdadf62e2199633919bc7e1e64180a7c",
+      "made": "2026-10-25T07:39:42.372Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.12,0.62,0.48,0.48,0.43,0.3,0.71,0.72,0.4,0,0.63,0.49,0.38,0.51,0.52,0.4,0.54,0.8,0.69,0.19,0.1,0.15,0.17,0.33,0.37,0.19,0.08,0.06,0.07,0.15,0.3,0.23,0.27,0.29,0.32,0.34,1,0.85,0.6,0.66,0.41,0.49,0.38,0.19,0.05,0,0.38,1,1,0.93,0.55,0.52,0.46,0.3,0.25,0.34,0.24,0.37,0.48,0.48,0.42,0.08,0.11,0.06,0,0,0,0,0,0,0,0,0,0,0.46,0.65,0.66,0,0,0.52,0.22,0.24,0.12,0.49,0.59,0.43,0.27,0.27,0.35,0.34,0.24,0.23,0,0,0,0,0,0,0,0,0,0,0,0.39,0.15,0.2,0.52,0.88,0.87,0.4,0,0.06,0.31,0.3,0.28,0.12,0.14,0.31,0.12,0,0.28,0.31,0.26,0.13,0.07,0,0,0,0],
+      "words": [["They",0.08,0.24],["sleep",0.32,0.56],["in",0.64,0.72],["shifts,",0.8,1.56],["so",1.6,1.76],["somebody's",1.84,2.4],["always",2.56,2.8],["awake.",2.88,3.84],["Like",3.92,4],["the",4.08,4.16],["station.",4.64,5.2],["It",5.28,5.36],["helps,",5.44,5.95],["I",6,6.04],["think.",6.08,6.56]]
+    },
     "dena_dark_01.mp3": {
       "line": "dena_dark_01",
       "speaker": "Dena",
@@ -1434,6 +1634,170 @@
       "envelope": [0,0,0,0,0,0,0.63,1,0.93,0.29,0.42,0.51,0.54,0.53,0.32,0.09,0.34,0.38,0.28,0.26,0.18,0.09,0.06,0,0,0,0,0,0,0,0,0,0.34,0.87,0.8,0.25,0.25,0.37,0.31,0.13,0.15,0.14,0.25,0.29,0.25,0.22,0.14,0,0,0,0,0,0,0,0,0,0,0,0,0.11,0.6,0.63,0.45,0.27,1,0.59,0.48,0.4,0.37,0.38,0.29,0.17,0.1,0.11,0,0,0,0],
       "words": [["Gate's",0.24,0.56],["open.",0.64,1.28],["Don't",1.6,1.76],["wait",1.88,2],["for",2.08,2.16],["me.",2.24,2.64],["Control",2.96,3.36],["out.",3.44,3.92]]
     },
+    "hero_dena_aboard_03a.man.mp3": {
+      "line": "hero_dena_aboard_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "We'll find them somewhere before then.",
+      "direction": "[firm]",
+      "hash": "50bf214d9f04c181725707e4a74756f17ec918c87b0aee630b0d3063aa34ef29",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1354703181,
+      "stitching": {
+        "previous": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "We'll find them somewhere before then",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.43,
+      "lead": 0.1,
+      "tail": 0.4,
+      "peak": 0.943,
+      "loudness": -17.3,
+      "bytes": 19687,
+      "sha256": "2969f5d4bcb5993912fce7818f3a416117d456d15e7acd8fa71028d8a9194704",
+      "made": "2026-10-25T07:39:40.500Z",
+      "aiGenerated": true,
+      "envelope": [0,0.07,0.4,0.69,0.34,0.22,0.11,0.08,1,0.81,0.42,0.3,0.29,0.35,0.37,0.23,0.33,0.36,0.33,0.29,0.92,0.69,0.32,0.28,0.24,0.33,0.33,0.27,0.26,0.29,0.09,0.06,0.27,0.3,0.23,0.18,0.19,0.28,0.21,0.16,0.11,0.09,0.08,0,0,0,0,0,0],
+      "words": [["We'll",0.08,0.32],["find",0.44,0.56],["them",0.68,0.8],["somewhere",0.96,1.36],["before",1.56,1.76],["then.",1.84,2.48]]
+    },
+    "hero_dena_aboard_03a.woman.mp3": {
+      "line": "hero_dena_aboard_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "We'll find them somewhere before then.",
+      "direction": "[firm]",
+      "hash": "b2dd1cb2fcbc48372794995a0696c82bf9453057c6f6371c4cb96db61dd749e2",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3000835250,
+      "stitching": {
+        "previous": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "We'll find them somewhere before then",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.27,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.625,
+      "loudness": -20.9,
+      "bytes": 18433,
+      "sha256": "61ac991f915a4c954336ded78029582e096ea53b9d6628655b8835832e7cfa34",
+      "made": "2026-10-25T07:39:40.734Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.14,1,0.87,0.75,0.2,0.13,0.37,0.63,0.54,0.44,0.38,0.83,0.51,0.48,0.27,0.29,0.27,0.23,0.47,0.66,0.63,0.41,0.54,0.51,0.37,0.22,0.38,0.42,0.12,0.24,0.55,0.43,0.3,0.29,0.62,0.53,0.33,0.2,0.16,0.1,0,0,0,0],
+      "words": [["We'll",0.08,0.32],["find",0.4,0.56],["them",0.64,0.88],["somewhere",0.96,1.36],["before",1.56,1.76],["then.",1.92,2.32]]
+    },
+    "hero_dena_aboard_03b.man.mp3": {
+      "line": "hero_dena_aboard_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "How are they holding up?",
+      "direction": "[gentle]",
+      "hash": "ae53702edee77c3f270e4127eecd87a4e9863e1bb29abcc863fdfdf199ccda1c",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2924703790,
+      "stitching": {
+        "previous": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "How are they holding up?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.72,
+      "lead": 0.15,
+      "tail": 0.55,
+      "peak": 0.372,
+      "loudness": -21.4,
+      "bytes": 14044,
+      "sha256": "ca5f4658c2e4ebfe3491eda40825d00197c88f1bb06bc56e426782ba3fc86ee9",
+      "made": "2026-10-25T07:39:41.396Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.09,0.29,0.48,0.93,0.76,0.6,0.69,0.34,0.92,1,0.84,0.32,0.66,0.78,0.59,0.54,0.7,0.65,0.6,0.56,0.53,0.37,0.07,0.07,0.08,0,0,0,0,0,0,0,0],
+      "words": [["How",0.16,0.32],["are",0.36,0.4],["they",0.48,0.64],["holding",0.8,0.96],["up?",1.12,1.68]]
+    },
+    "hero_dena_aboard_03b.woman.mp3": {
+      "line": "hero_dena_aboard_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "How are they holding up?",
+      "direction": "[gentle]",
+      "hash": "cd69767bd49085817061a962f4dbd8ba422fffbd3953bfd9deaaf45e52b440b3",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3446240891,
+      "stitching": {
+        "previous": "The stores will last us six weeks. Eight, if people stop eating when they're frightened."
+      },
+      "heard": "How are they holding up?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.72,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.323,
+      "loudness": -21.5,
+      "bytes": 14044,
+      "sha256": "2fbd321ff3ad9a4d935640c8f45fa3475916d94940109a3f81adeb4305df4af6",
+      "made": "2026-10-25T07:39:41.576Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.06,0.14,0.29,0.55,0.81,0.46,0.37,0.4,0.22,0.66,0.42,0.27,0.38,0.56,0.63,0.52,0.7,0.8,0.78,1,0.95,0.78,0.59,0.52,0.1,0.05,0.1,0.08,0,0,0,0,0],
+      "words": [["How",0.16,0.32],["are",0.4,0.48],["they",0.56,0.64],["holding",0.72,1.04],["up?",1.2,1.76]]
+    },
     "hero_dena_dark_02a.man.mp3": {
       "line": "hero_dena_dark_02a",
       "speaker": "hero",
@@ -2582,6 +2946,170 @@
       "envelope": [0,0,0,0,0.19,1,0.61,0.33,0.48,0.25,0.2,0,0.42,0.51,0.28,0.19,0.1,0.08,0,0,0,0],
       "words": [["Understood.",0.24,1.12]]
     },
+    "hero_ilya_aboard_03a.man.mp3": {
+      "line": "hero_ilya_aboard_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Then that's where we go.",
+      "direction": "[firm]",
+      "hash": "3e318acd4e1e4e42256cc8929c11cd2b63e412e3d46487171482f6d1cb29fa8a",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1043434189,
+      "stitching": {
+        "previous": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "Then that's where we go",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.96,
+      "lead": 0.1,
+      "tail": 0.45,
+      "peak": 0.885,
+      "loudness": -18.6,
+      "bytes": 15925,
+      "sha256": "de5ef4fd0d48a73915a06359160d8beca39dcc87d5272ee423d15e378d583d40",
+      "made": "2026-10-25T07:39:48.554Z",
+      "aiGenerated": true,
+      "envelope": [0,0.09,0.41,0.66,0.42,0.47,0.32,0.25,0.24,1,0.74,0.48,0,0.24,0.41,0.28,0.58,0.93,0.77,0.57,0.45,0.64,0.38,0.24,0.27,0.62,0.51,0.42,0.27,0.15,0.13,0.07,0,0,0,0,0,0,0,0],
+      "words": [["Then",0.08,0.24],["that's",0.4,0.72],["where",0.8,0.96],["we",1.04,1.12],["go.",1.2,1.92]]
+    },
+    "hero_ilya_aboard_03a.woman.mp3": {
+      "line": "hero_ilya_aboard_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Then that's where we go.",
+      "direction": "[firm]",
+      "hash": "aef74a7735a62a36436fd6d5f0f76a2483503fdec48fa944f47879b790f20199",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2935442039,
+      "stitching": {
+        "previous": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "Then that's where we go",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.72,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.884,
+      "loudness": -19.5,
+      "bytes": 14044,
+      "sha256": "67b042ea5aa6b81a27eafe5a195141126cb5bb44be08fe9c4a5980e308e2f26d",
+      "made": "2026-10-25T07:39:48.960Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.08,0.59,0.42,0.18,0.17,0.08,0,1,0.77,0.36,0.06,0.2,0.24,0.16,0.74,0.49,0.43,0.21,0.45,0.19,0,0.52,0.63,0.33,0.27,0.24,0.21,0.07,0,0,0,0,0],
+      "words": [["Then",0.08,0.32],["that's",0.4,0.72],["where",0.8,0.88],["we",0.96,1.12],["go.",1.32,1.76]]
+    },
+    "hero_ilya_aboard_03b.man.mp3": {
+      "line": "hero_ilya_aboard_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "And if there are many?",
+      "direction": "[curious]",
+      "hash": "7a1b8356e237d9c60b5b215589ad1fa764707ad44ac3b8025ae361cb84fb5e40",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2048623446,
+      "stitching": {
+        "previous": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "And if there are many?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.8,
+      "lead": 0.1,
+      "tail": 0.45,
+      "peak": 0.527,
+      "loudness": -21.5,
+      "bytes": 14671,
+      "sha256": "a971b056c1996cb2e901463bf1d5181934cc0b8b17573fcd547594969077cf7c",
+      "made": "2026-10-25T07:39:49.273Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.53,0.73,0.76,0.69,0.59,0.27,0,0,0.61,0.67,0.26,0.13,0.74,1,0.94,0.96,0.62,0.52,0.46,0.48,0.42,0.4,0.58,0.66,0.71,0.43,0,0,0,0,0,0,0,0,0],
+      "words": [["And",0.08,0.24],["if",0.48,0.64],["there",0.72,0.8],["are",0.88,0.96],["many?",1.04,1.76]]
+    },
+    "hero_ilya_aboard_03b.woman.mp3": {
+      "line": "hero_ilya_aboard_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "And if there are many?",
+      "direction": "[curious]",
+      "hash": "1c7b2cc8c83c4bc5e66717a056a10328f8e13c847ce345dccacca057f81ee0cb",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 477834440,
+      "stitching": {
+        "previous": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "And if there are many?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.72,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.426,
+      "loudness": -22,
+      "bytes": 14044,
+      "sha256": "6073e3ef5c6cf647bbf564a00e80cb7450bb55a3c1f2c5682cac3a075d26dd02",
+      "made": "2026-10-25T07:39:49.352Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.73,0.85,0.88,0.79,0.8,0.54,0.37,0.06,0,0.85,0.69,0.18,0.14,0.08,0.78,0.79,0.77,0.99,0.85,0.58,0.49,0.56,0.47,0.4,0.63,1,0.43,0.27,0.06,0,0,0,0],
+      "words": [["And",0.26,0.32],["if",0.56,0.72],["there",0.8,0.88],["are",0.96,1.04],["many?",1.12,1.76]]
+    },
     "hero_ilya_dark_03a.man.mp3": {
       "line": "hero_ilya_dark_03a",
       "speaker": "hero",
@@ -3237,6 +3765,170 @@
       "aiGenerated": true,
       "envelope": [0,0,0.21,0.46,0.81,0.49,0.7,0.94,0.18,0.5,0.42,0.82,0.95,0.7,0.97,0.73,0.53,0.63,1,0.77,0.73,0.6,0.52,0.16,0.49,0.56,0.95,0.61,0.55,0.66,0.73,0.68,0.45,0.07,0,0,0,0,0,0,0.16,0.55,0.9,0.66,0.56,0.68,0.67,0.81,0.96,1,0.25,0.16,0.2,0.66,0.87,0.81,0.82,0.61,0.45,0.54,0.73,0.38,0.11,0.12,0,0,0,0],
       "words": [["You",0.08,0.24],["did",0.36,0.48],["well",0.56,0.8],["tonight,",0.92,1.24],["Ilya.",1.28,2],["You",2.08,2.24],["saw",2.28,2.4],["it",2.48,2.56],["first.",2.64,3.36]]
+    },
+    "hero_jo_aboard_03a.man.mp3": {
+      "line": "hero_jo_aboard_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "What does she need?",
+      "direction": "[curious]",
+      "hash": "5613aa1d1efb749e4efe4f4500ed7c5ef309f95de9cd3af7ebe335aab38eca11",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1444129309,
+      "stitching": {
+        "previous": "The turret's another story. Somebody bolted it on with more hope than bolts."
+      },
+      "heard": "What does she need?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.49,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.433,
+      "loudness": -22.2,
+      "bytes": 12163,
+      "sha256": "906f423ff1eba83f797453a56caacd21c398a447f8698a3b9fc10c72247aeefe",
+      "made": "2026-10-25T07:39:36.974Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.24,0.4,0.72,0.15,0.14,0.76,0.76,0.95,0.76,0.93,1,0.97,0.81,0.78,0.65,0.65,0.55,0.29,0.21,0.12,0.1,0,0,0,0,0,0,0],
+      "words": [["What",0.08,0.24],["does",0.32,0.4],["she",0.48,0.56],["need?",0.72,1.44]]
+    },
+    "hero_jo_aboard_03a.woman.mp3": {
+      "line": "hero_jo_aboard_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "What does she need?",
+      "direction": "[curious]",
+      "hash": "c305f2ec47d83f5c326d086ddb0d420346eea7b12f3e7bbb99fe920274b39e4a",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3271946988,
+      "stitching": {
+        "previous": "The turret's another story. Somebody bolted it on with more hope than bolts."
+      },
+      "heard": "What does she need?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.49,
+      "lead": 0.15,
+      "tail": 0.15,
+      "peak": 0.318,
+      "loudness": -24.5,
+      "bytes": 12163,
+      "sha256": "89f8b135505a377e0e1b3206db6a2483956a14d97124cb38a4ee4a19930a8929",
+      "made": "2026-10-25T07:39:37.060Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.22,0.5,0.98,0.84,0.15,0.19,1,0.55,0.79,0.6,0.81,0.41,0.51,0.74,0.53,0.36,0.41,0.91,0.5,0.44,0.23,0.5,0.57,0.14,0,0,0],
+      "words": [["What",0.16,0.32],["does",0.4,0.56],["she",0.64,0.72],["need?",0.8,1.52]]
+    },
+    "hero_jo_aboard_03b.man.mp3": {
+      "line": "hero_jo_aboard_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Where's the rest of the surveyor's crew?",
+      "direction": "[curious]",
+      "hash": "f3f9d6886b21d28c37458dbfd442c5a98ff013bc2f7e2506aa5176e2a8156acf",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4093236872,
+      "stitching": {
+        "previous": "The turret's another story. Somebody bolted it on with more hope than bolts."
+      },
+      "heard": "Where's the rest of the surveyor's crew?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.35,
+      "lead": 0.1,
+      "tail": 0.4,
+      "peak": 0.482,
+      "loudness": -22.2,
+      "bytes": 19060,
+      "sha256": "99b6d2122dd1093da4a3f688186a37428336af7d80353d4f08ec32bd829222f5",
+      "made": "2026-10-25T07:39:37.883Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.27,0.73,0.8,0.58,0.36,0.19,0.66,0.69,0.74,0.62,1,0.53,0.54,0.45,0.24,0.89,0.55,0.84,0.61,0.61,0.93,0.97,0.47,0.71,0.89,0.62,0.61,0.77,0.49,0.64,0.19,0.11,0.37,0.67,0.45,0.34,0.24,0.11,0,0,0,0,0,0,0,0],
+      "words": [["Where's",0.08,0.32],["the",0.4,0.48],["rest",0.56,0.8],["of",0.84,0.88],["the",0.92,0.96],["surveyor's",1.04,1.6],["crew?",1.68,2.32]]
+    },
+    "hero_jo_aboard_03b.woman.mp3": {
+      "line": "hero_jo_aboard_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Where's the rest of the surveyor's crew?",
+      "direction": "[curious]",
+      "hash": "2804fdcd233c6137257e23757b1e9883647fb6420383ab2527be9b0770e5db5e",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 671415757,
+      "stitching": {
+        "previous": "The turret's another story. Somebody bolted it on with more hope than bolts."
+      },
+      "heard": "Where's the rest of the surveyor's crew?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.12,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.505,
+      "loudness": -22.8,
+      "bytes": 17179,
+      "sha256": "74a7bbc942f3580cab2276e7700946b1bb1f76aff47672ce5cb2441390d55dd4",
+      "made": "2026-10-25T07:39:38.532Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.33,0.72,0.87,0.45,0.4,0.29,0.63,0.84,0.54,0.33,1,0.49,0.22,0.41,0.14,0.72,0.28,0.33,0.66,0.33,0.53,0.62,0.16,0.73,0.51,0.48,0.53,0.32,0.44,0,0.32,0.44,0.69,0.46,0.4,0.19,0.07,0,0,0,0],
+      "words": [["Where's",0.08,0.32],["the",0.4,0.48],["rest",0.56,0.8],["of",0.88,0.92],["the",0.96,1],["surveyor's",1.04,1.52],["crew?",1.6,2.08]]
     },
     "hero_jo_bridge_03a.man.mp3": {
       "line": "hero_jo_bridge_03a",
@@ -4534,6 +5226,170 @@
       "envelope": [0,0,0.12,0.86,0.6,0.44,0.33,0,0.46,0.77,0.4,0.34,0.84,0.74,1,1,1,0.82,0.59,0.42,0.34,0.25,0.16,0.09,0,0.38,0.74,0.44,0.14,0.27,0.31,0.47,0.64,0.26,0.65,0.6,0.63,0.52,0.4,0.19,0,0,0,0,0,0,0,0,0,0,0,0.08,0.32,0.52,0.54,0.73,0.93,0.24,0,0.33,0.47,0.43,0.6,0.69,0.44,0.69,0.44,0.73,0.65,0.42,0.25,0.06,0,0,0,0,0,0,0.25,0.2,0.26,0.28,0.22,0,0,0,0,0.38,0.48,0.21,0.25,0.62,0.59,0.64,0.53,0.54,0.35,0.15,0,0,0,0,0,0,0,0,0,0.35,0.43,0.56,0.44,0.49,0.36,0.15,0,0,0,0,0,0],
       "words": [["And",0.08,0.24],["underneath,",0.4,1.16],["in",1.28,1.36],["pencil:",1.44,2.48],["\"Bring",2.56,2.8],["cardamom.",2.96,3.84],["I",3.92,4],["am",4.12,4.24],["begging",4.32,4.64],["you.",4.72,5.28],["Dena.\"",5.32,6]]
     },
+    "hero_look_captain_01.man.mp3": {
+      "line": "hero_look_captain_01",
+      "speaker": "hero",
+      "body": "man",
+      "text": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name pencilled in it.",
+      "direction": "[quietly, thinking aloud]",
+      "hash": "452d8683eb95f5d3512733aa3cb9aacd30a7de326a161b58f15d3fe997c6f8d0",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1160611459,
+      "stitching": {
+        "next": "Someone should write to their family. When there's somewhere to send it from."
+      },
+      "heard": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name penciled in it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.05,
+      "lead": 0.2,
+      "tail": 0.65,
+      "peak": 0.426,
+      "loudness": -24.5,
+      "bytes": 64617,
+      "sha256": "2d0489c0ffe8e3f4f94218415b8ce5bcec902ed4ec98ef8067776f88e17667a0",
+      "made": "2026-10-25T07:39:32.381Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0.39,0.85,0.78,0.89,0.74,0.23,0,0.26,0.55,0.79,0.55,0,0.28,0.77,1,0.45,0.53,0.33,0.09,0.77,1,0.92,0.9,0.51,0.46,0.46,0.63,0.62,0.11,0.48,0.69,0.94,0.78,0.51,0.49,0.42,0.39,0.46,0.58,0.13,0.06,0.42,0.52,0.44,0.26,0.14,0,0,0,0,0,0,0,0,0,0,0.11,0.07,0,0,0.38,0.48,1,0.86,0.52,0.24,0.28,0.19,0.13,0.08,0,0,0,0,0.12,0.16,0.19,0.19,0.5,0.98,0.67,0.59,0.4,0.31,0.79,0.76,0.77,0.77,0.36,0.16,0,0,0,0,0,0,0,0,0,0,0,0.89,0.57,0.1,0,0.37,1,0.66,0.1,0,0.07,0.53,0.52,0.75,0.66,0.92,0.82,0.84,0.81,0.29,0.26,0.51,0.42,0.83,0.71,0.78,0.97,0.91,0.9,0.55,0.18,0.42,0.81,0.5,0.26,0.34,0.44,0.33,0.4,0.44,0.38,0.29,0.1,0.15,0.06,0,0,0,0,0,0,0,0,0,0,0,0],
+      "words": [["The",0.16,0.24],["old",0.36,0.48],["captain's",0.56,1.04],["things",1.12,1.36],["are",1.44,1.52],["still",1.64,1.76],["in",1.8,1.84],["the",1.88,1.92],["locker.",2,2.72],["A",3.04,3.12],["coat,",3.2,3.84],["a",3.92,4],["photograph,",4.12,5.2],["a",5.24,5.28],["book",5.44,5.68],["with",5.76,5.84],["a",5.92,6],["ship's",6.08,6.32],["name",6.4,6.64],["pencilled",6.72,7.04],["in",7.12,7.2],["it.",7.28,8]]
+    },
+    "hero_look_captain_01.woman.mp3": {
+      "line": "hero_look_captain_01",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name pencilled in it.",
+      "direction": "[quietly, thinking aloud]",
+      "hash": "97a5b964aa3b2146d080b637444462f656e4a45d32057bddff745e25653c0538",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2544220516,
+      "stitching": {
+        "next": "Someone should write to their family. When there's somewhere to send it from."
+      },
+      "heard": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name penciled in it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 7.55,
+      "lead": 0.1,
+      "tail": 0.6,
+      "peak": 0.274,
+      "loudness": -27.6,
+      "bytes": 60647,
+      "sha256": "5cf47f945eb30c96272eef64c73b21396a3d23c703bb5bccd1a622119df8768a",
+      "made": "2026-10-25T07:39:32.319Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.17,0.51,0.71,1,0.91,0.22,0,0.18,0.46,0.59,0.75,0.07,0,0.53,0.58,0.99,0.91,0.95,0.23,0.5,1,0.78,0.64,0.65,0.56,0.54,0.74,0.76,0.35,0.23,0.45,0.38,0.75,0.5,0.56,0.64,0.53,0.64,0.57,0.19,0.27,0.36,0.83,0.51,0.3,0.1,0,0,0,0,0,0,0,0,0,0.13,0.31,0,0.37,0.37,0.65,0.94,0.97,0.54,0,0.26,0.52,0.36,0.21,0.1,0,0,0,0.23,0.15,0.16,0.18,0.7,0.58,0.44,0.61,0.16,0.7,0.88,0.8,0.75,0.33,0.35,0.3,0.18,0.08,0,0,0,0,0,0.07,0.69,0,0,1,1,0.27,0,0.18,0.61,0.52,0.66,0.57,0.78,0.76,0.52,0.9,0,0.58,0.61,0.7,0.79,0.75,0.86,1,0.84,0.11,0.33,0.77,0.73,0.63,0.72,0.62,0.61,0.43,0.71,0.59,0.69,0.49,0,0.45,0,0,0,0,0,0,0,0,0,0,0,0],
+      "words": [["The",0.08,0.16],["old",0.28,0.4],["captain's",0.48,0.96],["things",1.04,1.28],["are",1.36,1.44],["still",1.52,1.68],["in",1.72,1.76],["the",1.8,1.84],["locker.",1.92,2.6],["A",2.88,2.96],["coat,",3.04,3.68],["a",3.76,3.84],["photograph,",3.96,4.88],["a",4.96,5.04],["book",5.16,5.28],["with",5.36,5.44],["a",5.48,5.52],["ship's",5.6,5.92],["name",6.04,6.16],["pencilled",6.24,6.56],["in",6.64,6.72],["it.",6.8,7.52]]
+    },
+    "hero_look_captain_02.man.mp3": {
+      "line": "hero_look_captain_02",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Someone should write to their family. When there's somewhere to send it from.",
+      "direction": "[quietly, thinking aloud]",
+      "hash": "ad4fc2d89fc0546428fc5b3bb425443ba823b8687defc207850edb2c654f97ba",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2907685592,
+      "stitching": {
+        "previous": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name pencilled in it."
+      },
+      "heard": "Someone should write to their family when there's somewhere to send it from",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.68,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.373,
+      "loudness": -25,
+      "bytes": 37659,
+      "sha256": "3e1086f4541bda0c7f5eaa6773da6b3641b4d4fc14f015551f34cf3fa575a7db",
+      "made": "2026-10-25T07:39:31.819Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.28,0.52,0.56,0.65,0.86,0.72,0.75,1,0.68,0.8,1,0.83,0.52,0.44,0.71,0.85,0.76,0.07,0.19,0.51,0.55,0.69,0.54,0.25,0.24,0.24,0.4,0.84,0.72,0.65,0.61,0.44,0.47,0.37,0.23,0.14,0.07,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.64,0.51,0.45,0.48,0.48,0.52,0.63,0.56,0.72,0.7,0.65,0.56,0.44,0.16,0.27,0.53,0.65,0.55,0.61,0.8,0.74,0.5,0.29,0.11,0.18,0.17,0.51,0.53,0.32,0.25,0.09,0,0,0,0,0],
+      "words": [["Someone",0.24,0.56],["should",0.64,0.8],["write",0.92,1.04],["to",1.08,1.12],["their",1.24,1.36],["family.",1.44,2.4],["When",2.88,2.96],["there's",3.04,3.2],["somewhere",3.28,3.52],["to",3.6,3.68],["send",3.76,3.92],["it",4,4.08],["from.",4.16,4.72]]
+    },
+    "hero_look_captain_02.woman.mp3": {
+      "line": "hero_look_captain_02",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Someone should write to their family. When there's somewhere to send it from.",
+      "direction": "[quietly, thinking aloud]",
+      "hash": "4d961b1b659b5af6fd7278831ea8983115c7e276a540e32f243fe688d3c5a673",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1301682971,
+      "stitching": {
+        "previous": "The old captain's things are still in the locker. A coat, a photograph, a book with a ship's name pencilled in it."
+      },
+      "heard": "Someone should write to their family when there's somewhere to send it from",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.28,
+      "lead": 0.15,
+      "tail": 0.2,
+      "peak": 0.267,
+      "loudness": -27,
+      "bytes": 34524,
+      "sha256": "c48e5ff4a1cd8a907e70ae16ba98edf30192fe8a902ba50b3b9c1187a1e1cab5",
+      "made": "2026-10-25T07:39:31.828Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.09,0.52,0.74,0.51,0.65,0.57,0.9,1,0.52,0.8,0.75,1,0.16,0.35,0.82,0.94,0.87,0.25,0.58,0.58,0.31,0.98,0.75,0.24,0.33,0.28,0.53,0.55,0.58,0.73,0.89,0.88,0.92,0.67,0.34,0.06,0.05,0,0,0,0,0,0,0,0,0,0,0,0,0.2,0.47,0.36,0.34,0.57,0.51,0.89,0.88,0.66,0.6,0.65,0.79,0.72,0.21,0.61,0.73,0.73,0.56,0.53,0.44,0.48,0.54,0.73,0.12,0.22,0.3,0.52,0.69,0.57,0.33,0.21,0,0,0,0],
+      "words": [["Someone",0.16,0.48],["should",0.56,0.72],["write",0.8,0.96],["to",1.04,1.08],["their",1.12,1.28],["family.",1.36,2.2],["When",2.56,2.64],["there's",2.72,2.88],["somewhere",2.96,3.2],["to",3.28,3.36],["send",3.48,3.6],["it",3.68,3.76],["from.",3.92,4.32]]
+    },
     "hero_look_curve_01a.man.mp3": {
       "line": "hero_look_curve_01a",
       "speaker": "hero",
@@ -5100,6 +5956,170 @@
       "envelope": [0,0,0.61,1,1,0.57,0,0.55,1,0.85,0.85,0.7,0.69,0.56,0.11,0.77,0.62,0.16,0.33,0.64,0.79,0.72,0.68,0.27,0,0.24,0.24,0.13,0,0,0,0,0,0,0.11,0.21,0.2,0.6,0.33,0.62,0.79,0.12,0.62,0.54,0.67,0.48,0.71,0.61,0.58,0.63,0.48,0.7,0.81,0.71,0.58,0.81,0.77,0.11,0,0,0,0,0,0,0,0.14,0.8,0.75,0.69,0.63,0.67,0.59,0.55,0.09,0.56,0.86,0.89,0.79,0.41,0.56,0.67,0.38,0.58,0.72,0.63,0.76,0.57,0.08,0.41,0.8,0.41,0,0.13,0.44,0.56,0.44,0.76,0.34,0.24,0.68,0.31,0.52,0.64,0.56,0.37,0.08,0.05,0.59,0.62,0.23,0,0,0,0,0,0],
       "words": [["Out",0.08,0.32],["there",0.44,0.56],["it's",0.64,0.88],["rock,",0.96,1.68],["frost",1.76,2.08],["in",2.12,2.16],["the",2.24,2.32],["shadows,",2.36,3.25],["and",3.31,3.36],["the",3.44,3.52],["settlement's",3.6,4.08],["lights",4.16,4.56],["past",4.72,4.88],["the",4.96,5.04],["ridge.",5.24,5.84]]
     },
+    "hero_pell_aboard_04a.man.mp3": {
+      "line": "hero_pell_aboard_04a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "What did they say before it stopped?",
+      "direction": "[curious]",
+      "hash": "77ff7c700761be09791cd441309b8f8d5f2362d9a2afda5d87f6732a5e5a942d",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2013232240,
+      "stitching": {
+        "previous": "I know you'd set another course. I thought you'd want to hear this before we went."
+      },
+      "heard": "What did they say before it stopped?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.27,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.402,
+      "loudness": -22.4,
+      "bytes": 18433,
+      "sha256": "665a8d8322048a6ac01b617073e99c087a3d97020dc7c3dfeb7b684a183fcdbc",
+      "made": "2026-10-25T07:39:45.821Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.19,0.34,0.64,0.06,0.43,0.51,0.3,1,0.84,0.51,0.66,0.63,0.53,0.59,0.81,0.75,0.73,0.54,0.4,0.64,0.25,0.14,0.68,0.7,0.64,0.16,0.22,0.59,0.57,0.13,0.62,0.79,0.49,0.25,0,0,0.12,0.08,0,0,0,0,0,0],
+      "words": [["What",0.08,0.24],["did",0.32,0.4],["they",0.52,0.64],["say",0.72,0.96],["before",1.12,1.28],["it",1.36,1.44],["stopped?",1.52,2.08]]
+    },
+    "hero_pell_aboard_04a.woman.mp3": {
+      "line": "hero_pell_aboard_04a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "What did they say before it stopped?",
+      "direction": "[curious]",
+      "hash": "74a3f6700d10692baf4af0e014a1b10dbe6e7e57380f8b4d318832eddbce13f1",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1956902512,
+      "stitching": {
+        "previous": "I know you'd set another course. I thought you'd want to hear this before we went."
+      },
+      "heard": "What did they say before it stopped?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.27,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.368,
+      "loudness": -23.1,
+      "bytes": 18433,
+      "sha256": "2d09f67afbd91e151d8b34c769e89710dd45c555078b88f790c98d929d15eda0",
+      "made": "2026-10-25T07:39:45.884Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.29,0.4,0.76,0.71,0.17,0.18,0.9,0.2,0.51,0.82,0.53,0.41,0.67,0.35,0.65,0.69,0.46,0.77,0.64,0.21,0.85,0.4,0.28,0.62,0.77,1,0.34,0.37,0.57,0.29,0.43,0.98,0.61,0.72,0.56,0.21,0,0.06,0.33,0.21,0,0,0,0],
+      "words": [["What",0.16,0.32],["did",0.4,0.48],["they",0.6,0.72],["say",0.8,1.04],["before",1.2,1.36],["it",1.44,1.52],["stopped?",1.6,2.32]]
+    },
+    "hero_pell_aboard_04b.man.mp3": {
+      "line": "hero_pell_aboard_04b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Then Pyre Remnant comes first.",
+      "direction": "[firm]",
+      "hash": "fce2ba4f370360fbf6f213883562b27750af8772083e1a1c2e29d456e5fa5070",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4242717263,
+      "stitching": {
+        "previous": "I know you'd set another course. I thought you'd want to hear this before we went."
+      },
+      "heard": "Then Pyre Remnant comes first",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.51,
+      "lead": 0.05,
+      "tail": 0.25,
+      "peak": 0.889,
+      "loudness": -17.7,
+      "bytes": 20314,
+      "sha256": "d6dfb867833af76c26975e3d5283599d31f75e71406f76b20e18cd2b6b7bb7cc",
+      "made": "2026-10-25T07:39:46.707Z",
+      "aiGenerated": true,
+      "envelope": [0,0.11,0.34,0.35,0.36,0.18,0,0.14,0.3,0.46,1,0.98,0.51,0.43,0.53,0.52,0.37,0.34,0.54,0.46,0.38,0.31,0.32,0.35,0.27,0.15,0,0.2,0.77,0.5,0.37,0.27,0.19,0.18,0.06,0,0,0.7,0.59,0.28,0.13,0.09,0.22,0.23,0.1,0.12,0.08,0,0,0,0],
+      "words": [["Then",0.08,0.32],["Pyre",0.4,0.8],["Remnant",0.88,1.28],["comes",1.36,1.68],["first.",1.84,2.56]]
+    },
+    "hero_pell_aboard_04b.woman.mp3": {
+      "line": "hero_pell_aboard_04b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Then Pyre Remnant comes first.",
+      "direction": "[firm]",
+      "hash": "53bdb815fb9d47b3cffc75e12b808e9318fc9aaf18fd51ce56b479952cdf1040",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1404942357,
+      "stitching": {
+        "previous": "I know you'd set another course. I thought you'd want to hear this before we went."
+      },
+      "heard": "Then Pyre Remnant comes first",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.43,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.808,
+      "loudness": -20.1,
+      "bytes": 19687,
+      "sha256": "1205ab6d31f5b78ee43b97461ad246d1aa309b71d999153710ca4948a6fec571",
+      "made": "2026-10-25T07:39:46.610Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.18,0.97,0.65,0.35,0.17,0,0.08,0.18,0.72,0.95,0.9,0.81,0.94,0.33,0.35,0.79,0.92,0.66,0.52,0.32,0.41,0.39,0.19,0.28,0.14,0.14,0.24,0.76,0.43,0.35,0.27,0.29,0.12,0,0.43,1,0.53,0.29,0.2,0.14,0.33,0.42,0.11,0.09,0.05,0,0],
+      "words": [["Then",0.08,0.32],["Pyre",0.4,0.72],["Remnant",0.8,1.28],["comes",1.36,1.68],["first.",1.76,2.48]]
+    },
     "hero_pell_gate_05a.man.mp3": {
       "line": "hero_pell_gate_05a",
       "speaker": "hero",
@@ -5593,6 +6613,334 @@
       "aiGenerated": true,
       "envelope": [0,0,0.11,1,0.99,0.61,0.43,0,0.27,0.23,0.56,0.5,0.08,0.05,0.49,0.53,0.96,0.48,0.47,0.35,0.38,0.53,0.35,0.19,0.14,0.09,0,0,0,0,0,0,0,0.06,0.58,1,0.35,0.48,0.56,0.32,0.44,0.98,0.17,0,0.39,0.77,0.41,0.43,0.54,0.45,0.1,0,0,0.73,0.92,0.97,0.87,0.65,0.33,0.19,0.55,0.43,0.44,0.09,0.09,0.14,0.63,0.69,0.45,0.44,0.34,0.3,0.18,0.44,0.39,0.12,0,0,0,0],
       "words": [["Then",0.08,0.32],["keep",0.4,0.64],["listening.",0.72,1.68],["This",1.8,1.92],["ship",2.04,2.16],["will",2.24,2.32],["need",2.48,2.64],["ears",2.8,2.96],["like",3.04,3.2],["yours.",3.28,4]]
+    },
+    "hero_ren_aboard_03a.man.mp3": {
+      "line": "hero_ren_aboard_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Who did she ask?",
+      "direction": "[curious]",
+      "hash": "4d2decbe67cad9d2b94a0c33d60dcccceddb93b74d36dbbd58a46fbd7ec8091a",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1294855358,
+      "stitching": {
+        "previous": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking."
+      },
+      "heard": "Who did she ask?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.57,
+      "lead": 0.2,
+      "tail": 0.45,
+      "peak": 0.47,
+      "loudness": -20.8,
+      "bytes": 12790,
+      "sha256": "cb233bf3281bf006f999aa6a159a7b1399b32394f1f47734888ec95e37bdf93c",
+      "made": "2026-10-25T07:39:32.957Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.09,0.82,1,0.7,0.52,0.47,0.27,0.98,0.66,1,0.79,0.63,0.47,0.65,0.66,0.35,0.15,0.31,0.49,0.25,0,0.07,0,0,0,0,0,0,0],
+      "words": [["Who",0.16,0.24],["did",0.32,0.48],["she",0.56,0.64],["ask?",0.8,1.52]]
+    },
+    "hero_ren_aboard_03a.woman.mp3": {
+      "line": "hero_ren_aboard_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Who did she ask?",
+      "direction": "[curious]",
+      "hash": "6abe753cc8e6903813c4f7069edd8fd8766753ed4cc8b3d7d946f10108394def",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1790866748,
+      "stitching": {
+        "previous": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking."
+      },
+      "heard": "Who did she ask?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.41,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.38,
+      "loudness": -21.9,
+      "bytes": 11536,
+      "sha256": "355af78cef621a5d0e129b6bad97886a965d14251b12939e0830bab44dd32c36",
+      "made": "2026-10-25T07:39:33.011Z",
+      "aiGenerated": true,
+      "envelope": [0,0.05,0.12,1,0.73,0.48,0.8,0.68,0.09,0.54,0.37,0.78,0.48,0.45,0.28,0.56,0.68,0.37,0.18,0.34,0.63,0.5,0.09,0.08,0,0,0,0,0],
+      "words": [["Who",0.08,0.24],["did",0.32,0.4],["she",0.48,0.64],["ask?",0.8,1.44]]
+    },
+    "hero_ren_aboard_03b.man.mp3": {
+      "line": "hero_ren_aboard_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Then the Authority knew, and buried it.",
+      "direction": "[firm]",
+      "hash": "d4750890d10cef9010a209f54eac46f172d2b2ac344044b8fdf74916dadb4e65",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3564439696,
+      "stitching": {
+        "previous": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking."
+      },
+      "heard": "Then the authority knew and buried it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.32,
+      "lead": 0.05,
+      "tail": 0.3,
+      "peak": 0.755,
+      "loudness": -19.4,
+      "bytes": 26792,
+      "sha256": "b364b012678422aba6f45d37f1a2d488a36797ff9ffc8ff455c42f63a84f795f",
+      "made": "2026-10-25T07:39:33.849Z",
+      "aiGenerated": true,
+      "envelope": [0,0.15,0.33,0.51,1,0.95,0.65,0.61,0.63,0.68,0.75,0.78,0.62,0.33,0.14,0.08,0.5,1,0.85,0.85,0.54,0.2,0.71,0.69,0.68,0.75,0.75,0.68,0.63,0.48,0.3,0.21,0.16,0.1,0.06,0,0,0,0,0,0,0,0,0.59,0.53,0.43,0.23,0.09,0,0,0.55,0.7,0.49,0.35,0.3,0.23,0.12,0.22,0.16,0.08,0.14,0.06,0,0,0,0,0],
+      "words": [["Then",0.16,0.4],["the",0.44,0.48],["Authority",0.56,1.12],["knew,",1.28,2.08],["and",2.16,2.24],["buried",2.48,2.8],["it.",2.88,3.36]]
+    },
+    "hero_ren_aboard_03b.woman.mp3": {
+      "line": "hero_ren_aboard_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Then the Authority knew, and buried it.",
+      "direction": "[firm]",
+      "hash": "f112f9f18e99738b8043b5bebee40e077ca5a77460f10a1e75764e93e0b3fe09",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4044552689,
+      "stitching": {
+        "previous": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking."
+      },
+      "heard": "Then the authority knew and buried it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3,
+      "lead": 0.05,
+      "tail": 0.2,
+      "peak": 0.839,
+      "loudness": -20.9,
+      "bytes": 24284,
+      "sha256": "cd096f25628443fcc5efecbb750ae89a0b0a5349164138f6aa88ba9309187214",
+      "made": "2026-10-25T07:39:34.663Z",
+      "aiGenerated": true,
+      "envelope": [0,0.18,0.24,1,1,0.75,0.44,0.47,0.28,0.52,0.66,0.56,0.19,0,0.56,0.52,0.6,0.54,0.13,0.32,0.35,0.35,0.45,0.4,0.41,0.49,0.59,0.45,0.33,0.23,0.12,0,0,0,0,0,0,0,0.62,0.47,0.26,0.09,0,0,0.58,0.66,0.41,0.38,0.39,0.23,0.11,0.29,0.21,0.18,0,0.24,0.26,0.05,0,0,0],
+      "words": [["Then",0.16,0.32],["the",0.4,0.48],["Authority",0.76,1.04],["knew,",1.2,1.84],["and",2,2.16],["buried",2.28,2.48],["it.",2.56,3.04]]
+    },
+    "hero_ren_aboard_06a.man.mp3": {
+      "line": "hero_ren_aboard_06a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Send it. Make them answer for it.",
+      "direction": "[firm]",
+      "hash": "0b3dfd60b18117b0a0df0695256bcecd5ec0fce25b368935460544b94b9fa61a",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 188611936,
+      "stitching": {
+        "previous": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "Send it. Make them answer for it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.85,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.986,
+      "loudness": -17.7,
+      "bytes": 23030,
+      "sha256": "5a2f3cf1b4a0585dc71ccab32a32eb7dbf91915f497deca8ae9dd5c34aa91e71",
+      "made": "2026-10-25T07:39:35.435Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.14,0.32,0.32,0.78,0.85,0.43,0.35,0.2,0.21,0.08,0.11,0.08,0,0,0,0,0,0,0,0,0,0.19,0.33,0.43,0.9,0.74,0.13,0.05,0.12,0.79,0.45,0.15,0,0,1,1,0.74,0.34,0.17,0.26,0.41,0.18,0.1,0.14,0.29,0.22,0.17,0.12,0.08,0.07,0.06,0,0,0,0],
+      "words": [["Send",0.16,0.4],["it.",0.48,1.12],["Make",1.28,1.44],["them",1.52,1.76],["answer",1.96,2.16],["for",2.24,2.4],["it.",2.48,2.88]]
+    },
+    "hero_ren_aboard_06a.woman.mp3": {
+      "line": "hero_ren_aboard_06a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Send it. Make them answer for it.",
+      "direction": "[firm]",
+      "hash": "be1d1d9ec41d96cb04398076288cb6b30d6aa15cd087d1b91757a320ce176d7c",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3189579166,
+      "stitching": {
+        "previous": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "Send it. Make them answer for it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.77,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.683,
+      "loudness": -21.3,
+      "bytes": 22403,
+      "sha256": "55514b116b19cca81ee596cff00b1b7342f4b2a6768c4fb1cbbd5f4bbf867a78",
+      "made": "2026-10-25T07:39:35.473Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.15,0.37,0.28,0.93,1,0.76,0.62,0.35,0.55,0.28,0.12,0.17,0.32,0.08,0,0,0,0,0,0.19,0.56,0.93,1,0.7,0.2,0.1,0.12,0.49,1,0.3,0.07,0,0.98,0.71,0.49,0.17,0.29,0.33,0.58,0.13,0.11,0.41,0.48,0.35,0.29,0.31,0.08,0.17,0.32,0.13,0,0,0,0],
+      "words": [["Send",0.16,0.4],["it.",0.48,1.04],["Make",1.12,1.36],["them",1.44,1.6],["answer",1.68,2],["for",2.08,2.24],["it.",2.32,2.8]]
+    },
+    "hero_ren_aboard_06b.man.mp3": {
+      "line": "hero_ren_aboard_06b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Wait. We don't know who's listening yet.",
+      "direction": "[plain, matter-of-fact]",
+      "hash": "517a2ab4740f9d8e940fc7f483b53a3449bcdc551f037031991a41a3dfb6cf6e",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1366960820,
+      "stitching": {
+        "previous": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "Wait, we don't know who's listening yet",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.93,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.459,
+      "loudness": -22.8,
+      "bytes": 23657,
+      "sha256": "7a9b2e787fbb4e9c24772738ae569b2707a967a821681bac99c72c0ede4a0da5",
+      "made": "2026-10-25T07:39:36.276Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.47,0.69,0.91,0.66,0.23,0.07,0.19,0.18,0.09,0,0,0,0,0,0,0,0,0,0.5,0.68,0.51,0.33,0,1,1,0.85,0.41,0.12,0.58,0.61,0.61,0.53,0.54,0.45,0.7,0.47,0.27,0.41,0.52,0.43,0.39,0.29,0.5,0.35,0.32,0.33,0.34,0.33,0.22,0.11,0.09,0,0,0,0,0,0],
+      "words": [["Wait.",0.16,0.72],["We",0.96,1.12],["don't",1.2,1.44],["know",1.52,1.68],["who's",1.76,1.92],["listening",2.12,2.32],["yet.",2.4,2.96]]
+    },
+    "hero_ren_aboard_06b.woman.mp3": {
+      "line": "hero_ren_aboard_06b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Wait. We don't know who's listening yet.",
+      "direction": "[plain, matter-of-fact]",
+      "hash": "81828f8cec4484279c9223e50027cd06d62ff9201a8098be09e7daf7e3e37641",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2172817292,
+      "stitching": {
+        "previous": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "Wait, we don't know who's listening yet",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.93,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.64,
+      "loudness": -22.9,
+      "bytes": 23657,
+      "sha256": "453d18996a1c4d384cae022f9a112bd2561d84a0c652005da4bd457749f7a5dd",
+      "made": "2026-10-25T07:39:36.324Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.46,0.62,1,0.56,0.31,0.15,0.07,0.42,0.28,0.06,0,0,0,0,0,0,0,0.23,0.69,0.47,0.12,0,0.66,0.81,0.47,0.45,0.1,0.74,0.82,1,0.98,0.98,0.78,0.58,0.27,0.62,0.53,0.34,0.24,0.49,0.44,0.44,0.32,0.37,0.57,0.44,0.35,0.39,0.38,0.34,0.15,0.24,0.39,0.07,0,0,0],
+      "words": [["Wait.",0.16,0.72],["We",0.96,1.12],["don't",1.2,1.44],["know",1.52,1.76],["who's",1.84,2],["listening",2.2,2.4],["yet.",2.56,2.96]]
     },
     "hero_ren_bridge_03a.man.mp3": {
       "line": "hero_ren_bridge_03a",
@@ -6496,6 +7844,170 @@
       "envelope": [0,0,0,0.21,0.29,0.39,0.48,0.68,0.37,1,0.73,0.42,0.78,0.57,0.63,0.74,0.4,0.31,0.61,0.57,0.54,0.55,0.46,0.17,0.44,0.54,0.23,0.06,0,0,0,0,0],
       "words": [["Maybe",0.24,0.48],["they",0.56,0.64],["were",0.72,0.8],["right.",0.88,1.6]]
     },
+    "hero_sorrel_aboard_03a.man.mp3": {
+      "line": "hero_sorrel_aboard_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Who was it?",
+      "direction": "[curious]",
+      "hash": "f0ca7fa332042150c1554d0a34dab223fdcb2c92fc602b7cc0cb006228d77675",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4039802787,
+      "stitching": {
+        "previous": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money."
+      },
+      "heard": "Who was it?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.23,
+      "lead": 0.15,
+      "tail": 0.4,
+      "peak": 0.401,
+      "loudness": -21.3,
+      "bytes": 10074,
+      "sha256": "1c161aa67f5b746c6a27ccba675dc1a288d53b41a35e0ec4d59947f90f4ffe81",
+      "made": "2026-10-25T07:39:42.166Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.13,0.98,1,0.92,0.7,0.72,1,0.86,0.44,0.62,0.52,0.19,0.16,0.16,0.05,0,0,0,0,0,0,0],
+      "words": [["Who",0.16,0.32],["was",0.4,0.56],["it?",0.64,1.04]]
+    },
+    "hero_sorrel_aboard_03a.woman.mp3": {
+      "line": "hero_sorrel_aboard_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Who was it?",
+      "direction": "[curious]",
+      "hash": "9618e4ade57b125c966a061a796229327f61e9ddaea838b81c7ae07769708927",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2518213805,
+      "stitching": {
+        "previous": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money."
+      },
+      "heard": "Who was it?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.31,
+      "lead": 0.2,
+      "tail": 0.35,
+      "peak": 0.39,
+      "loudness": -22.4,
+      "bytes": 10700,
+      "sha256": "40b1121d9fbcfd4239eedf6e41169064921ec2f7cb7793803d5cd2d00e3926d8",
+      "made": "2026-10-25T07:39:42.763Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.09,0.57,0.78,0.8,0.32,0.39,0.62,0.45,0.4,0.59,1,0.55,0.37,0.27,0,0.3,0.37,0.09,0,0,0,0,0,0],
+      "words": [["Who",0.08,0.32],["was",0.4,0.64],["it?",0.8,1.12]]
+    },
+    "hero_sorrel_aboard_03b.man.mp3": {
+      "line": "hero_sorrel_aboard_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Do you regret taking it?",
+      "direction": "[gentle]",
+      "hash": "f68896cb83dd8965fdfd82e843f3b2a6a159b80896996c4e2ba8aca4f6cac3b0",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4136146635,
+      "stitching": {
+        "previous": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money."
+      },
+      "heard": "Do you regret taking it?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 1.88,
+      "lead": 0.2,
+      "tail": 0.3,
+      "peak": 0.525,
+      "loudness": -21.2,
+      "bytes": 15298,
+      "sha256": "7949f8c78052ee87e0bc9e22b8727a0b4508fba7ad1dc292759a1a58263abe25",
+      "made": "2026-10-25T07:39:43.322Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.07,0.2,0.66,0.8,0.61,0.67,0.76,0.57,0.41,0.63,0.75,0.4,0.34,0.41,0.94,0.86,0.59,0,0,0,0.35,1,0.87,0.21,0.41,0.75,0.63,0.46,0.27,0.07,0.07,0,0,0,0],
+      "words": [["Do",0.16,0.32],["you",0.4,0.48],["regret",0.56,1.04],["taking",1.12,1.44],["it?",1.56,1.92]]
+    },
+    "hero_sorrel_aboard_03b.woman.mp3": {
+      "line": "hero_sorrel_aboard_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Do you regret taking it?",
+      "direction": "[gentle]",
+      "hash": "ad7d45247557187f131534287264c7ebe87d3fcd48ce273c1c10198671dc637b",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2910668068,
+      "stitching": {
+        "previous": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money."
+      },
+      "heard": "Do you regret taking it?",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.12,
+      "lead": 0.2,
+      "tail": 0.2,
+      "peak": 0.352,
+      "loudness": -23.4,
+      "bytes": 17179,
+      "sha256": "c56f3339afe48d333fc517431ac72b17b4ef890f9517e5a10c19b09d4ee7fca1",
+      "made": "2026-10-25T07:39:43.488Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0.21,0.75,0.78,0.45,0.74,0.66,0.48,0.49,1,0.43,0,0.07,0.71,0.93,0.59,0.84,0.49,0.08,0.27,0.48,0.07,0.31,0.52,0.66,0.32,0.14,0.5,0.56,0.59,0.7,0.78,0.31,0,0.32,0.35,0.08,0,0,0],
+      "words": [["Do",0.16,0.32],["you",0.4,0.48],["regret",0.56,1.12],["taking",1.2,1.6],["it?",1.68,2.08]]
+    },
     "hero_sorrel_dark_03a.man.mp3": {
       "line": "hero_sorrel_dark_03a",
       "speaker": "hero",
@@ -7156,6 +8668,206 @@
       "envelope": [0,0,0.05,0.75,1,1,0.59,0.14,0.24,0.58,0.39,0.36,0.5,0.38,0.69,0.52,0.45,0.61,0.6,0.46,0.31,0.08,0,0,0,0,0,0,0,0,0.1,0.56,0.05,0.16,0.73,0.48,0.06,0.44,0.43,0.55,0.32,0.14,0.41,0.55,0.4,0.28,0.45,0.4,0.23,0.13,0,0,0,0],
       "words": [["Thank",0.08,0.32],["you,",0.4,0.56],["Sorrel.",0.64,1.44],["For",1.48,1.52],["keeping",1.68,1.92],["it",1.96,2],["ready.",2.08,2.72]]
     },
+    "ilya_aboard_01a.mp3": {
+      "line": "ilya_aboard_01a",
+      "speaker": "Ilya",
+      "text": "Captain! I've been through all thirty-one nights again. The steps aren't random. They come every three days, like something keeping time.",
+      "direction": "[eager, quick]",
+      "hash": "91de96f3eddc5421347340b3a823f7d91af3c65ef71986905389a947ee29db88",
+      "voice": {
+        "id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2447283955,
+      "stitching": {
+        "next": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "Captain, I've been through all thirty-one nights again. The steps aren't random. They come every three days, like something keeping time",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 7.71,
+      "lead": 0.05,
+      "tail": 0.55,
+      "peak": 0.834,
+      "loudness": -17.9,
+      "bytes": 61900,
+      "sha256": "8e00ea525d2b5b533742e21ade95cbd1ba5bc7418a7294c06d626df5e519e0de",
+      "made": "2026-10-25T07:39:48.275Z",
+      "aiGenerated": true,
+      "envelope": [0,0.32,0.67,0.72,0.26,0.16,0.77,0.31,0.17,0,0,0,0,0,0.08,0.16,0.42,0.41,0.14,0.23,0.7,0.48,0.23,0.49,0.39,0.2,0,0.33,0.68,1,1,0.74,0.12,0,0.89,1,0.71,1,0.57,0.89,0.75,0.92,0.63,0.9,0.68,0.32,0.27,0.35,0.35,0.43,0.39,0.15,0.08,0,0,0,0,0,0,0,0.23,0.54,0.31,0.15,0.49,0.79,0.09,0.28,0.32,0,0.4,0.73,0.83,0.19,0.17,0.29,0.63,0.56,0.58,0.63,0.45,0.49,0.24,0,0,0,0,0,0,0,0,0.68,0.43,0.18,0.69,0.57,0.26,0,0.42,0.49,0.46,0.17,0.38,0.57,0.25,0,0.1,0.23,0.29,0.49,0.23,0.34,0.4,0.37,0.29,0.07,0.13,0.2,0,0,0,0.17,0.72,0.19,0.24,0.24,0.62,0.38,0.18,0.45,0.4,0.1,0.38,0.44,0.33,0.35,0.49,0.16,0,0.44,0.32,0.27,0.36,0.24,0.07,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Captain!",0.08,0.72],["I've",0.76,0.88],["been",0.96,1.04],["through",1.12,1.36],["all",1.48,1.6],["thirty-one",1.68,2.08],["nights",2.12,2.32],["again.",2.4,3.01],["The",3.07,3.12],["steps",3.28,3.44],["aren't",3.52,3.76],["random.",4.12,4.53],["They",4.59,4.64],["come",4.76,4.88],["every",4.96,5.28],["three",5.4,5.52],["days,",5.76,6.08],["like",6.16,6.24],["something",6.4,6.56],["keeping",6.72,6.88],["time.",7.28,7.76]]
+    },
+    "ilya_aboard_01b.mp3": {
+      "line": "ilya_aboard_01b",
+      "speaker": "Ilya",
+      "text": "Captain. I'm rebuilding my curve from memory, which is a stupid way to do science.",
+      "direction": "[eager, quick]",
+      "hash": "268eb0a40fc553ebe000a9e6d8f34d6cf01e8733964c21f4d81c2b934a63f4fe",
+      "voice": {
+        "id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 646885540,
+      "stitching": {
+        "next": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many."
+      },
+      "heard": "Captain, I'm rebuilding my curve from memory, which is a stupid way to do science",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.75,
+      "lead": 0.05,
+      "tail": 0.5,
+      "peak": 0.763,
+      "loudness": -19.5,
+      "bytes": 38286,
+      "sha256": "2b3c4ded07ccd9a87c96e1128982b907ee8a8406bbc62746d9146bd13489ac4f",
+      "made": "2026-10-25T07:39:47.875Z",
+      "aiGenerated": true,
+      "envelope": [0,0.44,1,0.7,0.09,0.15,0.3,0.11,0,0,0,0,0,0,0.06,0.39,0.79,0.59,0.52,0.52,0.77,0.76,0.24,1,0.85,0.39,0.57,0.53,1,0.53,0.11,0.15,0.51,0.75,0.34,0.06,0.56,0.53,0.56,0.57,0.8,0.46,0.33,0.18,0.11,0.07,0,0,0,0,0.09,0.39,0.17,0.22,0.27,0.32,0.25,0.3,0.27,0.27,0.2,0,0.14,0.66,0.63,0.15,0.63,0.34,0.26,0.38,0.48,0.29,0.34,0.33,0.38,0.22,0.28,0.25,0.3,0.35,0.47,0.31,0.09,0,0.1,0.22,0.08,0,0,0,0,0,0,0,0,0],
+      "words": [["Captain.",0.08,0.56],["I'm",0.72,0.88],["rebuilding",0.96,1.36],["my",1.44,1.52],["curve",1.64,1.76],["from",1.84,1.92],["memory,",2.2,2.53],["which",2.59,2.64],["is",2.68,2.72],["a",2.96,3],["stupid",3.04,3.36],["way",3.44,3.52],["to",3.56,3.6],["do",3.68,3.84],["science.",4.28,4.8]]
+    },
+    "ilya_aboard_02.mp3": {
+      "line": "ilya_aboard_02",
+      "speaker": "Ilya",
+      "text": "If the Cooperative at Pyre has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many.",
+      "direction": "[eager, quick]",
+      "hash": "5f50a8bc46f0fc3a09ebdac08a4909bf64ec1ad41a7f8605ba94d00878b7648f",
+      "voice": {
+        "id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1599121596,
+      "stitching": {
+        "previous": "Captain. I'm rebuilding my curve from memory, which is a stupid way to do science."
+      },
+      "heard": "If the cooperative at Pyr has a hundred years of curves, there'll be other stars in it with the same steps. We'd know how many",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.35,
+      "lead": 0.05,
+      "tail": 0.15,
+      "peak": 0.735,
+      "loudness": -18.9,
+      "bytes": 51034,
+      "sha256": "41182241a2862d32075d63e631f83697a46367ce070bd20c2e0764b6774b52ec",
+      "made": "2026-10-25T07:39:48.349Z",
+      "aiGenerated": true,
+      "envelope": [0,0.63,0.22,0.07,0.68,0.07,0.29,0.46,0.31,0.79,0.33,0.44,0.18,0.6,0.59,0.59,0.93,0.38,0,0,0.1,0.28,0.89,0.78,0.51,0.49,0.25,0.32,0.38,0.4,0.16,0.07,0,0,0.59,0.93,0.53,0.41,0.68,0.5,0.54,0.35,0.55,0.6,0.31,0.43,0.1,0.1,0.09,0.46,0.63,0.4,0.25,0.18,0.23,0.23,0,0,0,0,0,0.27,1,0.77,0.63,0.57,0.34,0.17,0.59,0.71,0.56,0.68,0.37,0.41,0.17,0.73,0.8,0.6,0.3,0.37,0.63,0.74,0.16,0.27,0.15,0.36,0.35,0.37,0.29,0.56,0.57,0.58,0.36,0.33,0.08,0.77,0.7,0.42,0,0.29,0.33,0.07,0,0,0,0,0,0.27,0.89,0.93,0.5,0.71,0.81,1,0.91,0.21,0.76,1,0.68,0.73,0.57,0.42,0.38,0.16,0,0,0],
+      "words": [["If",0.08,0.12],["the",0.16,0.24],["Cooperative",0.32,0.8],["at",0.88,0.96],["Pyre",1.08,1.28],["has",1.36,1.44],["a",1.68,1.76],["hundred",1.84,2],["years",2.08,2.24],["of",2.28,2.32],["curves,",2.4,3.07],["there'll",3.09,3.2],["be",3.28,3.36],["other",3.44,3.6],["stars",3.68,3.92],["in",3.96,4],["it",4.04,4.08],["with",4.16,4.24],["the",4.32,4.4],["same",4.52,4.64],["steps.",4.72,5.39],["We'd",5.41,5.6],["know",5.68,5.76],["how",5.84,5.92],["many.",6,6.4]]
+    },
+    "ilya_aboard_04a.mp3": {
+      "line": "ilya_aboard_04a",
+      "speaker": "Ilya",
+      "text": "Really? I mean, yes. Good. I'll be ready.",
+      "direction": "[eager, quick]",
+      "hash": "b218a4d589c8b149e9a11e1b404418feba078311d43a4f942cb286cca28bb024",
+      "voice": {
+        "id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2987959509,
+      "stitching": {
+        "previous": "Then that's where we go."
+      },
+      "heard": "Really? I mean, yes. Good. I'll be ready",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.24,
+      "lead": 0.05,
+      "tail": 0.25,
+      "peak": 0.916,
+      "loudness": -14.3,
+      "bytes": 26165,
+      "sha256": "cd12b3c8de1b16c6b3a0d2c006823c68220b35b8e38fa3b5626ba05975612085",
+      "made": "2026-10-25T07:39:49.322Z",
+      "aiGenerated": true,
+      "envelope": [0,0.1,0.51,0.67,0.98,0.3,0.46,0.51,0.14,0,0,0,0,0,0,0.33,0.79,0.57,0.44,0.37,0.11,0,0,0.06,0.3,1,0.89,0.67,0.4,0.12,0.31,0.24,0.18,0,0,0,0,0,0.17,0.76,0.99,0.96,0.26,0.08,0,0,0,0,0,0,0.58,0.94,1,0.27,0.68,0.44,0.38,0.93,0.5,0.11,0.05,0,0,0,0],
+      "words": [["Really?",0.35,0.72],["I",0.76,0.8],["mean,",0.88,1.2],["yes.",1.4,1.92],["Good.",2.04,2.48],["I'll",2.52,2.64],["be",2.72,2.8],["ready.",2.92,3.28]]
+    },
+    "ilya_aboard_04b.mp3": {
+      "line": "ilya_aboard_04b",
+      "speaker": "Ilya",
+      "text": "Then it isn't a star dying. It's something eating them, and it has been for a long time.",
+      "direction": "[quiet, frightened]",
+      "hash": "cb8123ea50e5dece55c4814847fa2c3e59635170b263fea68c515b37c04c44ec",
+      "voice": {
+        "id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3414238186,
+      "stitching": {
+        "previous": "And if there are many?"
+      },
+      "heard": "Then it isn't a star dying. It's something eating them, and it has been for a long time",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.11,
+      "lead": 0.3,
+      "tail": 0.3,
+      "peak": 0.36,
+      "loudness": -26.1,
+      "bytes": 49153,
+      "sha256": "1aad6a0d10704502486824faaf872b1b15aeadc29e63569d228e69d2de803f96",
+      "made": "2026-10-25T07:39:50.347Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0,0.07,0.1,0.42,0.62,0.4,0.74,0.19,0,0.09,0.39,0.52,0.66,0.73,0.38,0.24,0.29,0.52,0.68,0.24,0.36,0.28,0.49,0.34,0.22,0.35,0.16,0.21,0.18,0.15,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.24,0.29,0.89,0.88,0.58,1,0.47,0.17,0.87,0.79,0.06,0.06,0.54,0.5,1,1,0.88,0.39,0.08,0.19,0.14,0.08,0,0,0,0,0,0,0,0,0,0,0,0,0.33,0.63,0.24,0.11,0.17,0.2,0.57,0.7,0.89,0.42,0,0.27,0.23,0.13,0.14,0.12,0.23,0.23,0.29,0.15,0.09,0.27,0.27,0.3,0.24,0.19,0.11,0.23,0.05,0.31,0.2,0.16,0.14,0.07,0,0,0,0,0],
+      "words": [["Then",0.32,0.4],["it",0.48,0.64],["isn't",0.72,0.88],["a",0.96,1.04],["star",1.2,1.36],["dying.",1.4,2.4],["It's",2.48,2.64],["something",2.84,3.04],["eating",3.2,3.36],["them,",3.44,4.08],["and",4.16,4.24],["it",4.32,4.4],["has",4.48,4.64],["been",4.72,4.88],["for",4.96,5.04],["a",5.12,5.2],["long",5.36,5.52],["time.",5.72,6.16]]
+    },
     "ilya_dark_01a.mp3": {
       "line": "ilya_dark_01a",
       "speaker": "Ilya",
@@ -7794,6 +9506,249 @@
       "aiGenerated": true,
       "envelope": [0,0,0,0.19,0.15,0.42,0.62,0.39,0.25,0.19,0.13,0.11,0.06,0.08,0,0,0,0,0,0,0,0,0,0,0,0,0.05,0.06,0.1,0.32,0.26,0.32,0.06,0.26,0.25,0.2,0.14,0.39,0.47,0.3,0.12,0.15,0.11,0.07,0,0.06,0,0,0,0,0,0,0,0,0,0,0,0.27,1,1,0.13,0.41,0.29,0.12,0.31,0.23,0.2,0.23,0.13,0.37,0.27,0.13,0.09,0,0,0.05,0,0,0,0],
       "words": [["I",0.08,0.24],["saw",0.32,0.48],["it.",0.56,1],["I",1.28,1.36],["just",1.44,1.6],["didn't",1.68,1.92],["say",2,2.08],["it.",2.16,2.8],["Next",2.88,3.04],["time",3.12,3.28],["I'll",3.32,3.44],["say",3.52,3.6],["it.",3.68,4]]
+    },
+    "jo_aboard_01.mp3": {
+      "line": "jo_aboard_01",
+      "speaker": "Jo",
+      "text": "She's flying sweet, Captain. Sorrel's regulator went in as if it was made for her. Don't tell him I said so.",
+      "direction": "[wry, cheerful]",
+      "hash": "10b9fcf5c14a52d058e45c9c60ae273e33a4b53685a59a8e7fd260c1a92094fa",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 280624373,
+      "stitching": {
+        "next": "The turret's another story. Somebody bolted it on with more hope than bolts."
+      },
+      "heard": "She's flying sweet, Captain. Sorrel's regulator went in as if it was made for her. Don't tell him I said so",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 7,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.55,
+      "loudness": -23.3,
+      "bytes": 56258,
+      "sha256": "ad34c56807c49d2992fcb3559de21a3cfc932906a8f672656ed0cec3e40d5042",
+      "made": "2026-10-25T07:39:37.877Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.12,0.28,0.42,0.56,0.48,0.6,0.25,0.27,0.07,0,0.42,0.67,0.96,0.96,0.71,0.73,0.48,0.27,0.31,0.27,0.42,0.43,0.5,0.53,0.08,0.12,0.82,1,0.86,0.12,0.07,0.49,0.54,0.29,0.55,0.28,0.08,0,0,0,0,0,0.14,0.34,0.45,1,0.63,0.56,0.48,0.39,0.28,0.18,0.36,0.58,0.46,0.29,0.64,0.48,0.67,0.75,0.45,0.76,0.56,0.31,0.53,0.5,0.6,0.46,0.46,0.59,0.65,0.28,0.45,0.38,0.33,0.54,0.16,0.79,0.53,0.21,0.65,0.29,0.19,0.38,0.34,0.32,0.38,0.46,0.53,0.58,0.17,0.13,0.24,0.63,0.45,0.24,0.67,0.38,0.34,0.4,0.08,0,0,0,0,0,0,0,0,0.11,0.21,0.35,0.32,1,0.7,0.31,0.25,0.71,0.7,0.46,0.38,0.39,0.3,0.35,0.2,0.17,0.66,0.53,0.14,0.21,0.25,0.37,0.27,0.3,0.24,0,0,0,0],
+      "words": [["She's",0.16,0.48],["flying",0.56,0.88],["sweet,",1.04,1.32],["Captain.",1.36,2.04],["Sorrel's",2.24,2.64],["regulator",2.72,3.2],["went",3.28,3.44],["in",3.52,3.6],["as",3.68,3.76],["if",3.84,3.92],["it",3.96,4],["was",4.08,4.32],["made",4.4,4.64],["for",4.72,4.8],["her.",4.88,5.32],["Don't",5.6,5.84],["tell",5.92,6],["him",6.08,6.16],["I",6.24,6.32],["said",6.44,6.56],["so.",6.68,6.96]]
+    },
+    "jo_aboard_02.mp3": {
+      "line": "jo_aboard_02",
+      "speaker": "Jo",
+      "text": "The turret's another story. Somebody bolted it on with more hope than bolts.",
+      "direction": "[wry, cheerful]",
+      "hash": "ddc4d3ce1cab451a18056816a0bc7d0c53e651a38920467003c5cc0ba93d76b5",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3720664014,
+      "stitching": {
+        "previous": "She's flying sweet, Captain. Sorrel's regulator went in as if it was made for her. Don't tell him I said so."
+      },
+      "heard": "The turret's another story. Somebody bolted it on with more hope than bolts",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 5.15,
+      "lead": 0.1,
+      "tail": 0.15,
+      "peak": 0.554,
+      "loudness": -23,
+      "bytes": 41420,
+      "sha256": "631dcd2b638619a074ed1676b131db2d1626829761719a0fb49cbb4ae0926927",
+      "made": "2026-10-25T07:39:37.710Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.51,0.64,0.39,0,0.46,0.35,0.17,0.83,0.85,0.76,0.67,0.48,0,0.34,0.27,0.97,0.69,0.79,1,0.66,0.87,0.83,0.36,0.44,0.34,0.56,0.8,0.62,0.73,0.84,0.48,0.61,0.58,0.2,0,0,0,0,0,0,0.16,0.59,0.6,0.39,0.68,0.94,0.77,0.82,0.66,0.76,0.57,0.17,0,0.89,1,0.75,0.17,0.45,0.74,0.67,0.82,0.68,1,0.77,0.74,0.55,0.46,0.57,0.18,0.15,0.4,0.55,0.73,0.72,0.29,0.17,0.13,0.51,0.94,0.64,0.09,0.07,0,0.67,0.72,0.77,0.21,0.06,0.61,0.73,0.52,0.48,0.3,0.07,0.19,0.42,0.36,0.25,0,0,0],
+      "words": [["The",0.08,0.24],["turret's",0.32,0.8],["another",1,1.2],["story.",1.28,2.08],["Somebody",2.24,2.64],["bolted",2.72,3.04],["it",3.12,3.2],["on",3.28,3.36],["with",3.44,3.6],["more",3.72,3.84],["hope",3.92,4.16],["than",4.24,4.4],["bolts.",4.48,5.2]]
+    },
+    "jo_aboard_04a.mp3": {
+      "line": "jo_aboard_04a",
+      "speaker": "Jo",
+      "text": "Plating, a second gun, and a shield that doesn't sulk. Stations sell all three, if you've the money and they've the sense.",
+      "direction": "[wry, cheerful]",
+      "hash": "278e8d20ae00874ff7ff3f146b5aad6f779e40ae5e98c8be39f6807e3f5154a7",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 663653664,
+      "stitching": {
+        "previous": "What does she need?",
+        "next": "Anyway. You set the course; I'll keep her in one piece."
+      },
+      "heard": "Plating, a second gun, and a shield that doesn't sulk. Stations sell all three if you've the money and they've the sense",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.2,
+      "lead": 0.15,
+      "tail": 0.5,
+      "peak": 0.594,
+      "loudness": -23.5,
+      "bytes": 65871,
+      "sha256": "34351a0b735ad306ceaf5106bab079f0f6262a198518dd2e23b0c0b341f4e586",
+      "made": "2026-10-25T07:39:38.693Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.14,0.12,0.95,0.98,0.73,0.6,0.74,0.8,0.79,0.76,0.73,0.69,0.48,0.24,0.13,0.12,0.38,0.38,0.3,0.36,0.36,0.69,0.86,0.16,0.45,0.68,0.64,0.14,0.61,1,0.98,1,0.89,0.56,0.55,0.6,0.45,0.17,0.08,0.14,0.25,0.33,0.41,0.5,0.3,0.46,0.41,0.39,0.35,0.37,0.63,0.6,0.53,0.15,0.46,0.58,0.12,0.29,0.55,0.26,0.34,0.46,0.17,0.3,0.35,0.32,0.29,0.5,0.73,0.54,0.45,0.28,0,0.18,0.08,0,0,0,0,0,0,0,0.06,0.38,0.25,1,0.81,0.46,0.53,0.71,0.67,0.71,0.35,0.32,1,0.97,0.72,0.78,0.81,0.6,0.06,0.13,0.5,0.67,0.5,0.6,0.43,0.22,0.13,0,0,0,0.06,0.37,0.4,0.1,0.3,0.66,0.42,0.1,0.35,0.7,0.87,0.6,1,0.83,0.61,0.6,0.55,0.42,0.51,0.47,0.6,0.62,0.33,0.59,0.62,0.49,0.08,0.15,0.36,0.33,0.34,0.45,0.85,0.59,0.33,0.31,0.36,0.43,0.48,0.27,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Plating,",0.16,0.84],["a",0.96,1.04],["second",1.12,1.44],["gun,",1.52,2.04],["and",2.16,2.24],["a",2.32,2.4],["shield",2.48,2.8],["that",2.88,2.96],["doesn't",3.08,3.36],["sulk.",3.44,4.08],["Stations",4.32,4.72],["sell",4.8,4.96],["all",5.04,5.12],["three,",5.2,5.76],["if",5.84,5.92],["you've",5.96,6.08],["the",6.16,6.24],["money",6.32,6.64],["and",6.72,6.8],["they've",6.88,7.04],["the",7.12,7.2],["sense.",7.28,8.16]]
+    },
+    "jo_aboard_04b.mp3": {
+      "line": "jo_aboard_04b",
+      "speaker": "Jo",
+      "text": "Three of them took a job on the side, a month back. Selling parts off a wreck to a buyer who paid too well. They didn't come back.",
+      "direction": "[quiet, bitter]",
+      "hash": "266054f58c1f3c4d3363df2541fea97240787fcdb7b6fe78c94b728de4810d46",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 643847413,
+      "stitching": {
+        "previous": "Where's the rest of the surveyor's crew?",
+        "next": "The parts looked like nothing I'd ever seen. Now I think I have seen them. Flying round Ross 128."
+      },
+      "heard": "Three of them took a job on the side a month back, selling parts off a wreck to a buyer who paid too well. They didn't come back",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.67,
+      "lead": 0.15,
+      "tail": 0.5,
+      "peak": 0.615,
+      "loudness": -26.6,
+      "bytes": 69633,
+      "sha256": "4fb4539b13a040cf7320d472bcacedc7218928cfda1801838236ff2b430bf657",
+      "made": "2026-10-25T07:39:39.701Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.05,0.2,0.27,0.51,0.86,0.93,1,0.29,0.21,0.54,0.77,0.59,0.24,0.63,0.32,0.15,0.61,0.35,0.45,0.62,0.81,0.74,0.38,0.49,0.76,0.68,0.57,0.45,0.67,0.59,0.43,0.59,0.55,0.61,0.6,0.5,0.34,0.25,0.21,0.08,0,0,0,0,0.21,0.55,0.69,0.54,0.45,0.19,0.15,0,0.42,0.5,0.38,0.31,0.25,0.15,0.21,0.11,0,0,0,0,0,0,0,0,0,0.19,0.62,0.7,1,0.91,1,0.84,0.1,0.19,0.33,0.33,0.99,0.83,0.1,0.59,0.68,0.69,0.21,0.43,0.67,0.51,0.3,0.83,1,1,0.07,0.28,0.23,0.31,0.27,0.7,0.5,0.06,0,0.71,0.72,0.87,0.78,0.55,0.55,0.43,0.2,0.11,0.43,0,0.13,0.19,0.39,0.62,0.5,0.15,0.47,0.29,0.52,0.49,0.27,0.44,0.48,0.44,0.43,0.32,0.21,0,0,0,0,0,0,0,0,0,0,0,0,0.26,0.78,0.61,0.85,0.71,0.63,0.34,0.35,0.54,0.95,0.5,0.73,0.74,0.69,0.56,0.21,0.24,0.21,0.1,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Three",0.16,0.32],["of",0.4,0.48],["them",0.56,0.72],["took",0.8,0.88],["a",0.92,0.96],["job",1.04,1.2],["on",1.28,1.36],["the",1.44,1.52],["side,",1.6,2.24],["a",2.28,2.32],["month",2.4,2.64],["back.",2.72,3.6],["Selling",3.64,3.92],["parts",4,4.24],["off",4.32,4.4],["a",4.48,4.56],["wreck",4.64,4.88],["to",4.96,5.04],["a",5.12,5.2],["buyer",5.4,5.6],["who",5.68,5.76],["paid",5.84,6.08],["too",6.16,6.32],["well.",6.48,7.2],["They",7.28,7.36],["didn't",7.4,7.52],["come",7.6,7.76],["back.",7.84,8.64]]
+    },
+    "jo_aboard_05b.mp3": {
+      "line": "jo_aboard_05b",
+      "speaker": "Jo",
+      "text": "The parts looked like nothing I'd ever seen. Now I think I have seen them. Flying round Ross 128.",
+      "direction": "[quiet, uneasy]",
+      "hash": "bdde5270623779d5df76e2ac43aea38e8470b4510ab1f24f3d48f4069b62a1dc",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3185463920,
+      "stitching": {
+        "previous": "Three of them took a job on the side, a month back. Selling parts off a wreck to a buyer who paid too well. They didn't come back.",
+        "next": "Anyway. You set the course; I'll keep her in one piece."
+      },
+      "heard": "The parts looked like nothing I'd ever seen. Now I think I have seen them flying around Ross 128",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.12,
+      "lead": 0.15,
+      "tail": 0.05,
+      "peak": 0.367,
+      "loudness": -27.4,
+      "bytes": 65244,
+      "sha256": "0b1f34d86264629a2fe75deede7332b560484497bff6c4e02178830ddea927fe",
+      "made": "2026-10-25T07:39:39.648Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.09,0.38,0.09,0,0.34,0.44,0.53,0.74,0.49,0.32,0.52,0.22,0.46,0.14,0,0.4,0.61,0.14,0.29,0.39,0.23,0.55,0.39,0.2,0.17,0.54,0.37,0.36,0.51,0.43,0.27,0,0.53,0.54,0.16,0.35,0.3,0.55,0.77,0.71,0.42,0.51,0.53,0.52,0.44,0.34,0.28,0.26,0.12,0.05,0,0,0,0,0,0,0,0,0,0,0,0,0.27,0.42,0.4,0.54,0.87,0.54,0.12,0.12,0.57,0.51,0.5,0.59,0.58,0.47,0.58,0.64,0.52,0.57,0.56,0.2,0.64,0.71,0.51,0.63,0.77,0.74,0.64,0.51,0.44,0.52,0.36,0.14,0,0,0,0,0,0,0,0,0,0,0,0,0.12,0.24,0.16,0.74,0.94,1,1,1,1,0.91,0.94,0.7,0.43,0.52,0.91,0.7,0.49,0.58,0.7,0.11,0.6,0.68,0.31,0.35,0.54,0.39,0.38,0.22,0.32,0.28,0.22,0.71,0.65,0.61,0.6,0.63,0.61,0.42,0.19,0.24,0.21,0.13,0.05,0,0,0,0,0,0,0,0,0,0,0.47,0],
+      "words": [["The",0.08,0.24],["parts",0.32,0.64],["looked",0.72,0.84],["like",0.88,1.04],["nothing",1.12,1.44],["I'd",1.48,1.68],["ever",1.84,2],["seen.",2.08,3.12],["Now",3.2,3.36],["I",3.52,3.57],["think",3.63,3.68],["I",3.92,3.96],["have",4,4.24],["seen",4.32,4.48],["them.",4.56,5.36],["Flying",5.44,5.76],["round",5.88,6],["Ross",6.08,6.32],["128.",6.4,8.08]]
+    },
+    "jo_aboard_06.mp3": {
+      "line": "jo_aboard_06",
+      "speaker": "Jo",
+      "text": "Anyway. You set the course; I'll keep her in one piece.",
+      "direction": "[wry, cheerful]",
+      "hash": "1b6f4c3ac83cc943a417b42f373c64cb1f2486aeaff47516e811359c896ffad9",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 460278842,
+      "stitching": {
+        "previous": "The parts looked like nothing I'd ever seen. Now I think I have seen them. Flying round Ross 128."
+      },
+      "heard": "Anyway, you set the course, I'll keep her in one piece",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.05,
+      "lead": 0.05,
+      "tail": 0.15,
+      "peak": 0.684,
+      "loudness": -21.2,
+      "bytes": 32643,
+      "sha256": "c20ee6bcb0f56f35d11f6403ce020a3781d7f6607ef1b06cf3574f384cf1db61",
+      "made": "2026-10-25T07:39:39.758Z",
+      "aiGenerated": true,
+      "envelope": [0,0.12,0.15,1,1,0.62,0.49,0.49,0.38,0.35,0.34,0.35,0.38,0.32,0.15,0,0,0,0,0,0,0,0,0,0,0.12,0.28,0.48,0.6,0.26,0.5,0.85,0.09,0.17,0.3,0.08,0.19,0.8,0.86,0.63,0.43,0.17,0.2,0.23,0.19,0.1,0,0,0,0,0.27,0.83,0.73,0.42,0.08,0.07,0.41,0.26,0.05,0.39,0.56,0.57,0.51,0.42,0.36,0.43,0.48,0.28,0.13,0.1,0.45,0.28,0.16,0.19,0.19,0.22,0.17,0.11,0,0,0],
+      "words": [["Anyway.",0.08,1.2],["You",1.28,1.44],["set",1.52,1.6],["the",1.68,1.76],["course;",2,2.48],["I'll",2.52,2.72],["keep",2.8,2.88],["her",2.96,3.04],["in",3.12,3.2],["one",3.28,3.36],["piece.",3.44,4.08]]
     },
     "jo_bridge_01.mp3": {
       "line": "jo_bridge_01",
@@ -8630,6 +10585,248 @@
       "words": [["Calder,",0.08,0.64],["this",0.8,0.96],["is",1.04,1.12],["the",1.16,1.2],["Merrow.",1.28,1.84],["We",2.08,2.24],["see",2.32,2.4],["it.",2.64,2.91],["We've",2.93,3.04],["turned",3.12,3.28],["back.",3.44,4.08],["Whoever",4.16,4.48],["turned",4.56,4.64],["that",4.72,4.8],["relay:",4.88,5.68],["thank",5.8,5.92],["you.",6,6.4]],
       "loudness": -18.6
     },
+    "pell_aboard_01.mp3": {
+      "line": "pell_aboard_01",
+      "speaker": "Pell",
+      "text": "Captain. I've been on the bands all night. Stations along the lane going quiet, one after another. Not off. Quiet.",
+      "direction": "[low, worried]",
+      "hash": "ef5d2240b1c6273195b67b14d3e1099528d6374a6e089951bc00182daf67353b",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 4015858240,
+      "stitching": {
+        "next": "And this, an hour ago. Pyre Remnant's observatory, on their open band. They stopped in the middle of a sentence."
+      },
+      "heard": "Captain, I've been on the bands all night. Stations along the lane going quiet, one after another. Not off, quiet",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 9.33,
+      "lead": 0.15,
+      "tail": 0.25,
+      "peak": 0.35,
+      "loudness": -25,
+      "bytes": 74857,
+      "sha256": "88c277a6f4ebcee9a16b413ac4d0992ae2e70aef06cab0f42665ce592613155a",
+      "made": "2026-10-25T07:39:45.055Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.07,0.16,0.33,0.54,0.13,0,0.5,0.24,0.43,0.24,0.07,0.06,0,0,0,0,0,0,0,0,0,0,0,0.16,0.07,0,0.33,0.47,0.56,0.51,0.52,0.64,0.57,0.12,0,0.57,0.58,0.6,0.59,0.59,0.56,0.26,0,0.32,0.53,0.46,0.49,0.53,0.52,0.46,0.44,0.34,0.19,0.08,0.23,0.18,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0.13,0.45,0.4,0.39,0.7,0.77,0.94,0.63,1,0.95,0.59,0.8,0.88,1,1,1,0.83,0.8,0.67,0.75,0.96,0.92,0.94,0.76,0.41,0.66,0.66,0.71,0.57,0.11,0.16,0.13,0.23,0.43,0.41,0.46,0.2,0.17,0.1,0.07,0,0,0,0,0,0,0,0.37,0.54,0.56,0.55,0.46,0.3,0.2,0.27,0.43,0.72,0.77,0.71,0.66,0.56,0.25,0.26,0.1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.4,0.53,0.62,0.48,0.57,0.55,0.34,0.12,0.12,0.14,0.08,0,0,0,0,0,0,0,0,0,0,0.09,0.11,0.13,0.22,0.37,0.49,0.46,0.17,0.13,0.05,0.09,0.17,0,0,0,0,0],
+      "words": [["Captain.",0.16,0.92],["I've",1.2,1.36],["been",1.44,1.52],["on",1.56,1.6],["the",1.68,1.76],["bands",1.84,2.16],["all",2.24,2.48],["night.",2.68,3.24],["Stations",3.6,4],["along",4.08,4.32],["the",4.36,4.4],["lane",4.48,4.72],["going",4.88,5.04],["quiet,",5.12,5.84],["one",5.92,6],["after",6.08,6.32],["another.",6.52,7.08],["Not",7.44,7.6],["off.",7.68,8.28],["Quiet.",8.56,9.28]]
+    },
+    "pell_aboard_02.mp3": {
+      "line": "pell_aboard_02",
+      "speaker": "Pell",
+      "text": "And this, an hour ago. Pyre Remnant's observatory, on their open band. They stopped in the middle of a sentence.",
+      "direction": "[low, worried]",
+      "hash": "9e866ad09f1579cb3ee907464091387269192c41bce2c1ed843497a020375b60",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2659609296,
+      "stitching": {
+        "previous": "Captain. I've been on the bands all night. Stations along the lane going quiet, one after another. Not off. Quiet."
+      },
+      "heard": "And this, an hour ago. Pia Remnants Observatory, on their open band. They stopped in the middle of a sentence",
+      "match": 0.95,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.36,
+      "lead": 0.15,
+      "tail": 0.25,
+      "peak": 0.556,
+      "loudness": -22.2,
+      "bytes": 67125,
+      "sha256": "d523ae3d0ae3eaef5a6574ec2ef18ac87156526b900efd42cd405ba6a2f52bbb",
+      "made": "2026-10-25T07:39:45.160Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.41,0.66,0.75,0.22,0.77,0.67,0.34,0.38,0.45,0.46,0.32,0.11,0.05,0,0,0,0,0,0.09,0.45,0.65,0.1,0.21,0.68,0.52,0.57,0.58,0.43,0.34,0.25,0.07,0.24,0.15,0.13,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.08,0.19,0.17,0.62,0.77,0.94,1,0.6,0.95,1,1,1,0.9,0.61,0.34,0.52,0.42,0.15,0.46,0.48,0.66,0.82,0.69,0.19,0.22,0.12,0.27,0.13,0.2,0.1,0,0,0,0,0,0,0,0.14,0.45,0.72,0.58,0.62,0.6,0.69,0.66,0.1,0.19,0.78,0.75,0.25,0.45,0.56,0.5,0.33,0.2,0.12,0.07,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.21,0.28,0.56,0.63,0.64,0.06,0.54,0.42,0.08,0,0.4,0.42,0.67,0.62,0.73,0.65,0.59,0.49,0.47,0.53,0.53,0.15,0.47,0.46,0.63,0.47,0.52,0.5,0.39,0.26,0.11,0.16,0,0,0.21,0.19,0.08,0,0,0,0],
+      "words": [["And",0.08,0.24],["this,",0.32,0.84],["an",1.04,1.12],["hour",1.28,1.52],["ago.",1.6,2.36],["Pyre",2.8,3.04],["Remnant's",3.12,3.52],["observatory,",3.72,4.56],["on",4.64,4.72],["their",4.8,4.88],["open",5.04,5.2],["band.",5.4,6.24],["They",6.32,6.48],["stopped",6.56,6.88],["in",6.92,6.96],["the",7.04,7.12],["middle",7.2,7.28],["of",7.36,7.44],["a",7.48,7.52],["sentence.",7.6,8.4]]
+    },
+    "pell_aboard_03a.mp3": {
+      "line": "pell_aboard_03a",
+      "speaker": "Pell",
+      "text": "We're headed there already. I thought you'd want to know we may not be welcome.",
+      "direction": "[low, worried]",
+      "hash": "bb58364c6cbd00786ff6546bb136c883b8033c239c4638f71c6a8e4b3ed3c670",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3143120460,
+      "stitching": {
+        "previous": "And this, an hour ago. Pyre Remnant's observatory, on their open band. They stopped in the middle of a sentence."
+      },
+      "heard": "We're headed there already. I thought you'd want to know we may not be welcome",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.68,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.403,
+      "loudness": -23.3,
+      "bytes": 37659,
+      "sha256": "d68e1537ee75b496d7de83773a81b1e7f385369dd3fd567948e4b0ef0e3e890b",
+      "made": "2026-10-25T07:39:45.206Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.32,0.52,0.49,0.37,0.32,0.66,0.76,0.63,0.68,0.06,0.28,0.7,0.71,0.59,0.61,0.59,0.49,0.44,0.71,0.68,0.32,0.37,0.17,0.11,0.07,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.06,0.14,0.15,0.21,0.17,0.35,0.41,0.23,0.39,0.6,0.14,0.33,0.81,0.77,0.39,0.41,0.59,1,0.98,1,0.99,0.86,0.58,0.35,0.59,0.68,0.6,0.6,0.58,0.59,0.69,0.66,0.39,0.09,0.11,0.4,0.28,0.16,0.4,0.42,0.37,0.12,0.08,0.1,0.23,0.23,0.09,0,0,0,0,0],
+      "words": [["We're",0.08,0.32],["headed",0.48,0.64],["there",0.72,0.8],["already.",0.88,2],["I",2.24,2.32],["thought",2.4,2.48],["you'd",2.53,2.64],["want",2.72,2.8],["to",2.88,2.96],["know",3.04,3.2],["we",3.28,3.44],["may",3.52,3.6],["not",3.68,3.76],["be",3.84,3.92],["welcome.",4,4.72]]
+    },
+    "pell_aboard_03b.mp3": {
+      "line": "pell_aboard_03b",
+      "speaker": "Pell",
+      "text": "I know you'd set another course. I thought you'd want to hear this before we went.",
+      "direction": "[low, worried]",
+      "hash": "1b93cfc3150910ddd9bfdcf1a213396b43e59ecabd53b6d44d7b8e0cdf7506dc",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 462671811,
+      "stitching": {
+        "previous": "And this, an hour ago. Pyre Remnant's observatory, on their open band. They stopped in the middle of a sentence."
+      },
+      "heard": "I know you'd set another course. I thought you'd want to hear this before we went",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 5.15,
+      "lead": 0.15,
+      "tail": 0.2,
+      "peak": 0.378,
+      "loudness": -25.5,
+      "bytes": 41420,
+      "sha256": "c77add51d25058ee1e0305a0027db02efe046737bafb0600328e4f710d583dab",
+      "made": "2026-10-25T07:39:45.833Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.05,0.39,0.62,0.8,0.92,1,0.96,0.92,0.84,0.44,0.52,0.75,0.26,0.72,0.8,0.67,0.79,0.4,0.4,0.78,0.76,0.62,0.31,0.37,0.18,0.22,0.25,0.15,0.38,0.23,0.14,0.13,0.36,0.3,0.14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.13,0.38,0.23,0.25,0.29,1,0.96,0.41,0.22,0.83,0.51,0.32,0.98,1,0.3,0.59,0.7,0.3,0.19,0.22,0.84,0.9,0.62,0.41,0.45,0.57,0.26,0.07,0.44,0.14,0.13,0.38,0.52,0.32,0.52,0.46,0.17,0.46,0.58,0.39,0.17,0,0.13,0.09,0,0,0],
+      "words": [["I",0.08,0.24],["know",0.32,0.48],["you'd",0.56,0.8],["set",0.88,0.96],["another",1.04,1.28],["course.",1.36,2.32],["I",2.8,2.96],["thought",3.08,3.2],["you'd",3.24,3.36],["want",3.44,3.52],["to",3.6,3.68],["hear",3.8,3.92],["this",4.04,4.16],["before",4.32,4.48],["we",4.56,4.64],["went.",4.8,5.2]]
+    },
+    "pell_aboard_05a.mp3": {
+      "line": "pell_aboard_05a",
+      "speaker": "Pell",
+      "text": "\"The archive is closed for audit. Repeat, the archive is.\" Then nothing. Twice, an hour apart.",
+      "direction": "[quoting, flat, uneasy]",
+      "hash": "21d54138c4473ad13aa6f4db066be27c2abdb9c7f26b6ef6d77dcbe4678c6358",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 567623992,
+      "stitching": {
+        "previous": "What did they say before it stopped?"
+      },
+      "heard": "The archive is closed for audit. Repeat, the archive is... Then nothing. Twice, an hour apart",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.28,
+      "lead": 0.15,
+      "tail": 0.2,
+      "peak": 0.593,
+      "loudness": -22.3,
+      "bytes": 66498,
+      "sha256": "5d15d65f0e6145c0480ec72520984a64ee4679552c644db06155640816f1b0c1",
+      "made": "2026-10-25T07:39:46.812Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.08,0.17,0.66,0.69,0.93,0.96,0.74,0.16,0.23,0.32,0.78,0.83,0.58,0.2,0.59,0.45,0.25,0.08,0.21,0.1,0.46,0.75,0.65,0.59,0.32,0.13,0.08,0.26,0.39,0,0.18,0.45,0.47,0.4,0.16,0.13,0.05,0.06,0.17,0.06,0,0,0,0,0,0,0,0,0.14,0.79,0.28,0.1,0.26,0.84,0.54,0.15,0.08,0.22,0.08,0,0,0,0,0,0.28,0.44,0.15,0.16,0.59,1,1,0.15,0.21,0.36,1,1,0.79,0.2,0.56,0.65,0.4,0.26,0.3,0.12,0,0,0,0,0,0,0,0,0,0,0,0,0,0.15,0.46,0.55,0.63,0.64,0.63,0.46,0.18,0.11,0.1,0.21,0.13,0.09,0,0,0,0,0,0,0,0,0,0,0,0,0.34,0.16,0.11,0.47,0.7,0.73,0.29,0.11,0.31,0.29,0.16,0.06,0,0,0,0,0,0,0.3,0.36,0,0.21,0.57,0.62,0.72,0.62,0.59,0.62,0.33,0.06,0.11,0.28,0.34,0.2,0.12,0,0,0.1,0,0,0,0],
+      "words": [["\"The",0.08,0.24],["archive",0.32,0.72],["is",0.8,0.96],["closed",1.04,1.36],["for",1.44,1.6],["audit.",1.68,2.48],["Repeat,",2.72,3.28],["the",3.36,3.44],["archive",3.52,4],["is.\"",4.12,4.88],["Then",4.96,5.12],["nothing.",5.2,6.16],["Twice,",6.28,7.04],["an",7.12,7.2],["hour",7.28,7.52],["apart.",7.64,8.32]]
+    },
+    "pell_aboard_05b.mp3": {
+      "line": "pell_aboard_05b",
+      "speaker": "Pell",
+      "text": "I'll tell Jo.",
+      "direction": "[low, worried]",
+      "hash": "7db68eba8e7c2fd991c997a70a8ae39ed0698e4369ee2a71f824f1434e741b59",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2109116090,
+      "stitching": {
+        "previous": "Then Pyre Remnant comes first."
+      },
+      "heard": "I'll tell Joe",
+      "match": 0.667,
+      "checks": [
+        "heard 67%: \"I'll tell Joe\""
+      ],
+      "tries": 4,
+      "seconds": 1.65,
+      "lead": 0.25,
+      "tail": 0.4,
+      "peak": 0.456,
+      "loudness": -24.4,
+      "bytes": 13417,
+      "sha256": "ae875fcf6933beb85754b76c3b3c70537e3a52d415fb04fedb733e01b68bb5c6",
+      "made": "2026-10-25T07:39:46.645Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0,0.1,0.36,0.43,0.26,0.07,1,0.59,0.47,0.76,0.59,0.48,0.08,0.62,0.6,0.64,0.63,0.5,0.46,0.31,0.16,0.06,0,0,0,0,0,0,0],
+      "words": [["I'll",0.24,0.48],["tell",0.6,0.72],["Jo.",0.88,1.6]]
+    },
     "pell_escort_01.mp3": {
       "line": "pell_escort_01",
       "speaker": "Pell",
@@ -9263,6 +11460,288 @@
       "aiGenerated": true,
       "envelope": [0,0,0.05,0.26,0.46,0.67,0.83,0.75,0.55,0.41,0.71,0.83,1,0.58,0.15,0,0.34,0.78,1,0.7,0.24,0.19,0.2,0.11,0.05,0,0,0,0,0,0,0,0,0,0,0.12,1,0.79,0.3,0.31,0.63,0.76,0.85,0.7,0.67,0.06,0.23,0.41,0.49,0.46,0.36,0.29,0.21,0.17,0.11,0.06,0,0,0,0,0],
       "words": [["Ears",0.16,0.48],["I've",0.56,0.72],["got.",0.8,1.4],["Point",1.68,1.92],["me",1.96,2],["at",2.08,2.16],["a",2.2,2.24],["console.",2.32,3.04]]
+    },
+    "ren_aboard_01.mp3": {
+      "line": "ren_aboard_01",
+      "speaker": "Ren",
+      "text": "Captain. Come in; it's your ship. I've been reading the chief's file. Most of it is sealed twice, and I only had the key to once.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "a61f40d4c4cc2a93da9859063fbf256098300a1a9e9e1626c8d974da41a7e2f7",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2787066068,
+      "stitching": {
+        "next": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking."
+      },
+      "heard": "Captain, come in. It's your ship. I've been reading the chief's file. Most of it is sealed twice, and I only had the key to once",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 9.64,
+      "lead": 0.1,
+      "tail": 0.5,
+      "peak": 0.501,
+      "loudness": -22.2,
+      "bytes": 77365,
+      "sha256": "855279a5e5e7ecbf23d89393be2c118f06bb8a2b820368f778b3fcb785070705",
+      "made": "2026-10-25T07:39:33.847Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.19,0.23,0.29,0.07,0,0.2,0.12,0.13,0.14,0.07,0.05,0,0,0,0,0,0,0,0,0,0.09,0.18,0.37,0.56,0.51,0.42,0.27,0.22,0.13,0.08,0,0,0,0,0,0,0.09,0.08,0.14,0.24,0.15,0.19,0.16,0.18,0.3,0.37,0.22,0.26,0.23,0,0,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.28,0.67,0.34,0,0.59,1,0.88,0.7,0.77,0.94,0.5,0.76,0.93,1,0.61,0,0.45,0.55,0.27,0.53,0.24,0.23,0.29,0.22,0,0.09,0.32,0.3,0.3,0.22,0.14,0.12,0.08,0,0,0,0,0,0,0,0,0,0.13,0.92,1,1,0.6,0.32,0.15,0.73,0.15,0.76,0.13,0.37,0.32,0.3,0.29,0.23,0.28,0.45,0.5,0.37,0.09,0,0.19,0.15,0.06,0,0.3,0.55,0.3,0.12,0.11,0.19,0.24,0.25,0.18,0.1,0.2,0.22,0.21,0.11,0.11,0.26,0.31,0.4,0.5,0.58,0.55,0.43,0.22,0.33,0.09,0.17,0.11,0.07,0.16,0.09,0.33,0.18,0.18,0.15,0.16,0.12,0.19,0.32,0.27,0.15,0.08,0,0.15,0.25,0.23,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Captain.",0.08,0.84],["Come",1.12,1.28],["in;",1.4,1.72],["it's",1.92,2.08],["your",2.2,2.32],["ship.",2.48,3.08],["I've",3.52,3.68],["been",3.76,3.84],["reading",4,4.16],["the",4.24,4.32],["chief's",4.44,4.72],["file.",4.92,5.6],["Most",5.68,5.92],["of",5.96,6],["it",6.04,6.08],["is",6.16,6.32],["sealed",6.52,6.72],["twice,",6.8,7.32],["and",7.36,7.6],["I",7.76,7.84],["only",7.92,8],["had",8.04,8.08],["the",8.16,8.24],["key",8.32,8.48],["to",8.56,8.64],["once.",8.72,9.6]]
+    },
+    "ren_aboard_02.mp3": {
+      "line": "ren_aboard_02",
+      "speaker": "Ren",
+      "text": "What's open is a list. Antares, thirty years ago, and two stars I'd never heard of. And a request, signed by Varro, that the Authority stop looking.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "b1c552f677ffdcfcdb6d384c4ba9d873c2da739368fe43a0e2922ca528e1b8e4",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2982499062,
+      "stitching": {
+        "previous": "Captain. Come in; it's your ship. I've been reading the chief's file. Most of it is sealed twice, and I only had the key to once."
+      },
+      "heard": "What's open is a list Antares 30 years ago and two stars I'd never heard of and a request signed by Varro that the authority stop looking",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 12.2,
+      "lead": 0.2,
+      "tail": 0.15,
+      "peak": 0.582,
+      "loudness": -24.3,
+      "bytes": 97845,
+      "sha256": "dc50fd9d7b9f894811c7310742fbcead26cc00c2c1d86913ebb5b8def042b687",
+      "made": "2026-10-25T07:39:34.115Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0.3,0.42,0.06,0.28,0.34,0,0.16,0.54,0.45,0.24,0,0.1,0.24,0.42,0.5,0.5,0.31,0.19,0.29,0.25,0.32,0.31,0.29,0.27,0.41,0.47,0.28,0.14,0.19,0.28,0.27,0.26,0.15,0.24,0.06,0,0,0,0,0,0,0,0,0,0,0.07,0.4,0.65,0.45,0.06,0.34,0.2,0.18,0.49,0.63,0.56,0.39,0.25,0.2,0.14,0.14,0.13,0.26,0.25,0.13,0,0,0,0,0,0.06,0.16,0.41,0.34,0.11,0.36,0.29,0.42,0.27,0.3,0.43,0.44,0.3,0.32,0.2,0.11,0.27,0.17,0.22,0.18,0.17,0.06,0,0,0,0,0,0,0,0,0,0.49,0.32,0,0.54,0.16,0.41,0.44,0.23,0.38,0.4,0.24,0.46,0.55,0.61,0.43,0.3,0.24,0.28,0.28,0.27,0.53,0.45,0.37,0.49,0.22,0.13,0.35,0.57,0.38,0.24,0.19,0.18,0.17,0.12,0.08,0.12,0.05,0,0,0,0,0,0,0,0,0,0,0,0.27,1,0.98,1,0.84,0.65,0,0.17,0.17,0.42,1,0.49,0.25,0.23,0.32,0.28,0.23,0.21,0.07,0,0,0,0.19,0.34,0.54,0.87,1,0.98,0.26,0.4,1,0.8,0.31,0.23,0.23,0.88,0.63,0.76,0.63,0.32,0.23,0.18,0.16,0.17,0.05,0,0,0,0,0,0,0,0.3,0.33,0.13,0.58,0.59,0.4,0.13,0.05,0.08,0.88,0.91,0.89,0.45,0.07,0.52,0.25,0.29,0.34,0.39,0.36,0.32,0.16,0.45,0.36,0,0.08,0.12,0.3,0.38,0.11,0.17,0.16,0.21,0.13,0.13,0.1,0,0,0],
+      "words": [["What's",0.16,0.48],["open",0.56,0.96],["is",1.04,1.12],["a",1.2,1.28],["list.",1.36,2.4],["Antares,",2.6,3.68],["thirty",3.72,4],["years",4.16,4.32],["ago,",4.4,5.12],["and",5.24,5.36],["two",5.44,5.52],["stars",5.68,6],["I'd",6.08,6.24],["never",6.36,6.48],["heard",6.6,6.72],["of.",6.8,7.6],["And",7.68,7.76],["a",7.79,7.81],["request,",7.84,8.72],["signed",8.8,9.04],["by",9.12,9.2],["Varro,",9.36,10.16],["that",10.24,10.32],["the",10.36,10.4],["Authority",10.72,11.04],["stop",11.2,11.52],["looking.",11.6,12.24]]
+    },
+    "ren_aboard_04a.mp3": {
+      "line": "ren_aboard_04a",
+      "speaker": "Ren",
+      "text": "The Lane Office. My office. Twenty years ago it said yes, and a year ago it said the same to me.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "ee1f19db3ece29c63927b3a368010ff52b66750ae2c663097ed49360bab5ae86",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3995015643,
+      "stitching": {
+        "previous": "Who did she ask?",
+        "next": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "The Lane office, my office. Twenty years ago it said yes, and a year ago it said the same to me",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.12,
+      "lead": 0.15,
+      "tail": 0.7,
+      "peak": 0.313,
+      "loudness": -26.1,
+      "bytes": 65244,
+      "sha256": "4b584defe8ded2e294ed0f8be0f059a397957f0fe95250b1f4ebf46e93f2b1a8",
+      "made": "2026-10-25T07:39:34.588Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.18,0.59,0.67,0.67,0.78,0.69,0.71,0.65,0.53,0.53,0.24,0.18,0.17,0.18,0.24,0.18,0.4,0.4,0.38,0.28,0.09,0.05,0,0,0,0,0,0,0,0,0.23,0.42,0.51,0.45,0.51,0.48,0.4,0.34,0.18,0.14,0.09,0.15,0.2,0.28,0.36,0.41,0.22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.26,0.18,1,1,0.66,0.36,0.57,0.64,0.49,0.94,1,0.88,0.58,0.5,0.34,0.35,0.44,0.46,0.44,0.41,0.08,0.44,0.54,0.52,0.46,0.16,0.39,0.66,0.66,0.55,0.32,0.27,0.21,0.5,0.46,0.36,0.13,0,0,0,0,0,0,0,0,0,0.49,0.45,0.52,0.4,0.46,0.84,1,0.72,0.71,0.51,0.24,0.31,0.34,0.32,0.35,0.45,0.32,0.11,0.41,0.32,0.53,0,0.24,0.4,0.53,0.47,0.65,0.71,0.86,0.48,0.47,0.32,0.83,0.88,0.79,0.7,0.43,0.27,0.26,0.09,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      "words": [["The",0.16,0.24],["Lane",0.32,0.56],["Office.",0.64,1.44],["My",1.76,1.92],["office.",2,2.84],["Twenty",3.2,3.52],["years",3.6,3.84],["ago",3.96,4.08],["it",4.16,4.24],["said",4.32,4.48],["yes,",4.56,5.36],["and",5.44,5.52],["a",5.6,5.68],["year",5.76,5.92],["ago",6.08,6.24],["it",6.32,6.4],["said",6.48,6.56],["the",6.64,6.72],["same",6.84,6.96],["to",7.04,7.12],["me.",7.28,8.08]]
+    },
+    "ren_aboard_04b.mp3": {
+      "line": "ren_aboard_04b",
+      "speaker": "Ren",
+      "text": "Someone in it did. I'd like to know whether they still do.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "3cfe3dbd47b43484bc5a823cbe60ff658fcdfd2ea1e10186bdbd775b6456d0de",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1023294909,
+      "stitching": {
+        "previous": "Then the Authority knew, and buried it.",
+        "next": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there."
+      },
+      "heard": "Someone in it did. I'd like to know whether they still do",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.6,
+      "lead": 0.15,
+      "tail": 0.6,
+      "peak": 0.24,
+      "loudness": -26.5,
+      "bytes": 37032,
+      "sha256": "35503d89d33c464e911d2657137584e8f988ee5e0189bce3b1002be45beeb0d8",
+      "made": "2026-10-25T07:39:34.895Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.27,0.43,0.44,0.65,0.96,1,1,0.69,0.62,0.61,0.7,0.69,0.47,0.13,0,0,0.31,0.25,0.23,0.19,0.28,0.12,0.09,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.1,0.1,0.12,0.41,0.35,0.19,0,0.29,0.21,0.46,0.76,0.53,0.64,0.69,0.42,0.6,0.27,0.38,0.3,0.21,0.42,0.25,0.4,0.4,0.35,0.2,0.33,0.36,0.2,0.2,0,0,0.27,0.42,0.41,0.34,0.22,0.16,0.13,0.08,0,0,0,0,0,0,0,0,0,0,0],
+      "words": [["Someone",0.24,0.56],["in",0.64,0.72],["it",0.8,0.88],["did.",0.96,1.76],["I'd",2,2.16],["like",2.28,2.4],["to",2.44,2.48],["know",2.56,2.72],["whether",2.84,2.96],["they",3.08,3.2],["still",3.28,3.6],["do.",3.68,4.56]]
+    },
+    "ren_aboard_05.mp3": {
+      "line": "ren_aboard_05",
+      "speaker": "Ren",
+      "text": "I could send this to the Lane Office now. Or I could wait until we know who's still listening there.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "1c78d079590797fbd0ccfc332a3cd6098d2d64e42a859b34435fe903cddc32df",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 477679737,
+      "stitching": {
+        "previous": "Someone in it did. I'd like to know whether they still do."
+      },
+      "heard": "I could send this to the Lane office now, or I could wait until we know who's still listening there",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.35,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.28,
+      "loudness": -27.3,
+      "bytes": 51034,
+      "sha256": "f609dd5b996d7c743e8c459635831f90336a85cab3116632c9e84395ad630d66",
+      "made": "2026-10-25T07:39:35.496Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.07,0.37,0.47,0,0.34,0.6,0,0.4,0.46,0.48,0.74,0.79,0.78,0.72,0.42,0.35,0.59,0.29,0.5,0.2,0.34,0.62,0.58,0.56,0.67,0.89,1,0.7,0.54,0.31,0.16,0.24,0.45,0.57,0.48,0.36,0.63,0.64,0.6,0.59,0.55,0.29,0.24,0.2,0.19,0.08,0,0,0,0,0,0,0,0,0,0,0,0.08,0.79,1,0.81,0.41,0.31,0.37,0.47,0.72,0.21,0,0,0.14,0.37,0.39,0.22,0.31,0.28,0.35,0.32,0.92,1,0.73,0.38,0.43,0.48,0.46,0.45,0.53,0.35,0.54,0.44,0.63,0.81,0.93,0.87,0.81,0.76,0.57,0.16,0.59,0.56,0.61,0.49,0.42,0.48,0.53,0.48,0.4,0.66,0.46,0.52,0.37,0.47,0.47,0.43,0.4,0.35,0.33,0.29,0.28,0.24,0.07,0,0,0,0,0],
+      "words": [["I",0.08,0.16],["could",0.24,0.48],["send",0.6,0.72],["this",0.84,0.96],["to",1,1.04],["the",1.08,1.12],["Lane",1.2,1.44],["Office",1.64,1.84],["now.",1.92,2.64],["Or",2.96,3.28],["I",3.6,3.68],["could",3.76,3.84],["wait",3.92,4.16],["until",4.32,4.48],["we",4.56,4.64],["know",4.72,4.8],["who's",4.88,5.04],["still",5.12,5.28],["listening",5.36,5.76],["there.",5.88,6.32]]
+    },
+    "ren_aboard_07a.mp3": {
+      "line": "ren_aboard_07a",
+      "speaker": "Ren",
+      "text": "Sent. If they're clean, they'll thank us. If they're not, they'll know where we are.",
+      "direction": "[quiet, thoughtful]",
+      "hash": "c28ad8b581071dd3cd6fccc7ff3df566c71b1cf676095e13a3a71e47f51f40e4",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3263879349,
+      "stitching": {
+        "previous": "Send it. Make them answer for it."
+      },
+      "heard": "Scent. If they're clean, they'll thank us. If they're not, they'll know where we are",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.03,
+      "lead": 0.15,
+      "tail": 0.2,
+      "peak": 0.293,
+      "loudness": -26.9,
+      "bytes": 48526,
+      "sha256": "a1523381371e9050ee6ba0afe12daa78c3005baa78469f45142d2599320e0f8c",
+      "made": "2026-10-25T07:39:36.287Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.2,0.38,0.45,0.39,0.48,0.39,0.33,0.11,0,0.39,0.2,0.09,0.07,0,0,0,0,0,0,0,0,0,0,0.1,0.25,0.11,0.06,0.3,0.4,0.13,0,0.28,0.13,0.72,1,0.87,0.4,0.3,0.29,0.39,0.2,0.06,0.05,0,0.07,0.33,0.3,0.09,0,0.22,0.46,0.43,0.28,0.21,0.16,0.16,0.15,0.41,0.38,0.36,0.17,0,0,0,0,0,0,0,0,0,0,0.26,0.24,0.13,0.12,0.44,0.51,0.53,0.65,1,1,0.47,0.26,0.09,0.27,0.41,0.18,0.06,0,0,0,0,0,0,0.19,0.36,0.45,0.51,0.49,0.46,0.44,0.34,0.36,0.4,0.28,0.24,0.31,0.37,0.39,0.37,0.28,0.19,0.15,0.1,0,0,0,0],
+      "words": [["Sent.",0.56,1.2],["If",1.28,1.44],["they're",1.48,1.68],["clean,",1.88,2.32],["they'll",2.36,2.56],["thank",2.68,2.8],["us.",2.88,3.6],["If",3.68,3.84],["they're",3.88,4],["not,",4.08,4.8],["they'll",4.84,5.04],["know",5.12,5.2],["where",5.28,5.36],["we",5.44,5.52],["are.",5.6,6.08]]
+    },
+    "ren_aboard_07b.mp3": {
+      "line": "ren_aboard_07b",
+      "speaker": "Ren",
+      "text": "Careful. Good. I was hoping you'd say that.",
+      "direction": "[approving, warm]",
+      "hash": "b8657713bec6e6c45978df910a0af594b596056e7bbffa01b768befcd4e45f02",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3093657363,
+      "stitching": {
+        "previous": "Wait. We don't know who's listening yet."
+      },
+      "heard": "Careful. Good. I was hoping you'd say that",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.87,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.473,
+      "loudness": -22.6,
+      "bytes": 31180,
+      "sha256": "0562decf3962721ae26b926ba9a0df2485e5247fdc9913280e125e7f3338d995",
+      "made": "2026-10-25T07:39:36.444Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.15,0.23,0.39,0.45,0.41,0.31,0.12,0.1,0.16,0.27,0.25,0.17,0.12,0.1,0.09,0,0,0,0,0,0,0,0,0,0.23,0.7,0.52,0.72,0.84,0.62,0.29,0.19,0.16,0.24,0.09,0,0,0,0,0,0,0.1,0.49,0.4,0.38,0.42,0.32,0.22,0.27,0.42,1,1,0,0.49,0.66,0.31,0.22,0.18,0.13,0.19,0.32,0.21,0.24,0.2,0.12,0.21,0.29,0.41,0.3,0,0.1,0.06,0,0,0,0],
+      "words": [["Careful.",0.08,1.04],["Good.",1.28,2.08],["I",2.16,2.24],["was",2.36,2.48],["hoping",2.6,2.88],["you'd",2.92,3.12],["say",3.2,3.28],["that.",3.36,3.92]]
     },
     "ren_bridge_01a.mp3": {
       "line": "ren_bridge_01a",
@@ -11287,6 +13766,166 @@
       "aiGenerated": true,
       "envelope": [0,0,0,0.19,0.38,0.51,0.88,1,1,0.85,0.74,0.5,0.5,0.44,0.1,0,0,0.07,0.06,0,0,0,0,0,0.13,0.29,0.49,0.55,0.7,0.73,0.3,0.39,0.29,0.19,0.06,0,0.24,0.31,0.18,0.07,0,0,0,0,0,0.09,0.31,0.29,0.21,0,0,0.26,0.43,0.48,0.52,0.41,0.51,0.1,0.1,0.46,0.46,0.4,0.13,0.05,0.24,0.44,0.44,0.28,0.27,0.3,0.19,0.17,0.28,0.22,0.15,0.13,0.1,0.08,0,0,0,0,0,0,0,0,0,0,0.09,0.32,0.41,0.42,0.85,0.84,0.08,0.64,0.45,1,0.48,0.22,0.38,0.42,0.11,0.3,0.14,0.12,0.27,0.46,0.35,0.25,0.3,0.15,0.06,0,0,0,0,0,0,0],
       "words": [["One",0.24,0.4],["ship,",0.48,1.04],["one",1.28,1.44],["gate,",1.52,2.08],["and",2.24,2.48],["all",2.56,2.72],["of",2.8,2.88],["that",2.96,3.12],["in",3.2,3.28],["between.",3.36,4.16],["Stay",4.48,4.64],["close,",4.72,5.08],["Officer.",5.12,5.92]]
+    },
+    "sorrel_aboard_01.mp3": {
+      "line": "sorrel_aboard_01",
+      "speaker": "Sorrel",
+      "text": "Captain. I've been thinking about the halo, now there's time to think.",
+      "direction": "[soft, slow, remembering]",
+      "hash": "1751076adf6cab2668d57c6fe1a5b73614b91edbb679e1c9b629495bd90b3469",
+      "voice": {
+        "id": "pqHfZKP75CvOlQylNhV4",
+        "name": "Bill"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 391186282,
+      "stitching": {
+        "next": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money."
+      },
+      "heard": "Captain, I've been thinking about the Halo now there's time to think",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 5.72,
+      "lead": 0.15,
+      "tail": 0.3,
+      "peak": 0.304,
+      "loudness": -24.7,
+      "bytes": 46018,
+      "sha256": "7c07248dd8d2451161a7abd3528055721a6bf2c8a4013228881984738b8314b1",
+      "made": "2026-10-25T07:39:42.621Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.17,0.7,1,0.54,0.12,0,0.39,0.46,0.57,0.45,0.19,0.1,0.06,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.33,0.71,0.74,0.15,0,0.9,1,0.6,0.13,0.23,0.73,1,0.46,0.27,0.96,0.92,0.8,0.53,0.6,0.74,0.65,0.1,0.1,0.5,0.36,0.17,0.18,0.58,0.82,0.77,0.63,0.43,0.45,0.35,0.29,0.24,0.1,0,0,0,0,0,0,0,0,0,0,0,0,0.52,0.58,0.6,0.74,0.56,0.32,0.45,0.34,0.34,0.78,0.5,0.34,0.17,0.59,0.59,0.59,0.42,0.39,0.12,0.16,0.14,0.24,0.45,0.3,0.14,0,0.1,0,0,0,0,0,0],
+      "words": [["Captain.",0.16,0.72],["I've",1.6,1.84],["been",1.96,2.08],["thinking",2.24,2.4],["about",2.48,2.72],["the",2.76,2.8],["halo,",2.96,4],["now",4.08,4.32],["there's",4.4,4.64],["time",4.76,4.88],["to",4.96,5.04],["think.",5.12,5.68]]
+    },
+    "sorrel_aboard_02.mp3": {
+      "line": "sorrel_aboard_02",
+      "speaker": "Sorrel",
+      "text": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money.",
+      "direction": "[soft, slow, remembering]",
+      "hash": "a29bac2eaadb4c2db8d431878f53fffd7cbc0bd680b6454253b7bd540d3f7ede",
+      "voice": {
+        "id": "pqHfZKP75CvOlQylNhV4",
+        "name": "Bill"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2728111150,
+      "stitching": {
+        "previous": "Captain. I've been thinking about the halo, now there's time to think."
+      },
+      "heard": "Four of us on the Antares run saw it closest. The Authority paid us all to forget. One of us never took the money",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 9.17,
+      "lead": 0.15,
+      "tail": 0.25,
+      "peak": 0.404,
+      "loudness": -23.4,
+      "bytes": 73603,
+      "sha256": "3e94b170510312ca00fa1b6d1a0bf592ffa2a9ad15a191b4dadd5bcce7f81552",
+      "made": "2026-10-25T07:39:43.141Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.07,0.14,1,1,1,1,0.97,0.56,0.35,0.7,0.41,0.52,0.79,0.84,0.42,0.96,0.75,0.64,0.67,0.67,0.68,0.68,0.61,0.08,0.47,0.6,0.84,0.72,0.6,0.63,0.55,0.46,0.44,0.22,0.6,0.56,0.54,0.54,0.57,0.45,0.69,0.74,0.56,0.68,0.53,0.48,0.23,0.08,0,0.3,0.11,0.82,0.53,0.46,0.68,0.43,0.45,0.25,0.61,0.67,0.21,0.3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.32,0.67,0.54,0.32,0.14,0.48,0.99,0.97,0.88,0.68,0.37,0.45,0.45,0.22,0,0.1,0.62,0.71,0.43,0.62,0.53,0.61,0.2,0.12,0.8,0.82,0.72,0.55,0.4,0.23,0.32,0.3,0.31,0.22,0.29,0.5,0.28,0.63,0.75,0.48,0.33,0.12,0.12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.63,0.86,0.92,0.77,0.46,0.24,0.45,0.37,0.34,0.64,0.54,0.36,0.19,0,0,0,0,0.16,0.84,0.7,0.4,0.81,0.43,0,0.47,0.66,0.31,0,0,0.58,0.73,0.73,0.73,0.59,0.61,0.35,0.21,0.08,0,0,0,0],
+      "words": [["Four",0.16,0.32],["of",0.4,0.48],["us",0.56,0.8],["on",0.88,0.96],["the",1,1.04],["Antares",1.2,1.76],["run",1.92,2.08],["saw",2.16,2.32],["it",2.4,2.48],["closest.",2.56,4],["The",4.04,4.08],["Authority",4.4,4.72],["paid",4.8,4.96],["us",5.08,5.2],["all",5.28,5.52],["to",5.6,5.68],["forget.",5.92,7.04],["One",7.12,7.2],["of",7.28,7.36],["us",7.44,7.92],["never",8,8.24],["took",8.32,8.48],["the",8.56,8.64],["money.",8.8,9.2]]
+    },
+    "sorrel_aboard_04a.mp3": {
+      "line": "sorrel_aboard_04a",
+      "speaker": "Sorrel",
+      "text": "Teodor Linde, our navigator. Last I heard he went to count stars for the Cooperative. At an observatory.",
+      "direction": "[soft, slow, remembering]",
+      "hash": "b6e7ad9f5666bac91167c0c62fcb3188de46c12948e9389e9795a3f0ac3709f5",
+      "voice": {
+        "id": "pqHfZKP75CvOlQylNhV4",
+        "name": "Bill"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3068636575,
+      "stitching": {
+        "previous": "Who was it?"
+      },
+      "heard": "Theodore Linda, our navigator. Last I heard, he went to count stars for the cooperative at an observatory",
+      "match": 0.944,
+      "checks": [],
+      "tries": 1,
+      "seconds": 8.28,
+      "lead": 0.1,
+      "tail": 0.3,
+      "peak": 0.37,
+      "loudness": -22.9,
+      "bytes": 66498,
+      "sha256": "cbe8ff3eb99dad56d83ec014e32c8deb45eb24e4e81dfcbb014a4d084b661171",
+      "made": "2026-10-25T07:39:44.054Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.46,0.3,0.88,0.93,0.87,0.77,0.62,0.89,0.81,0.83,0.77,0.76,0.64,1,0.87,0.69,0.55,0.33,0.31,0.27,0.13,0.08,0,0,0,0,0,0,0,0,0,0,0.57,0.68,0.72,0.91,0.88,1,0.95,0.46,0.66,0.25,0.63,0.64,0.49,0.29,0.47,0.22,0.12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.77,0.92,1,0.74,0.63,0.65,0.87,0.81,0.69,0.4,0.53,0.69,0.64,0.78,0.48,0.46,0.74,0.72,0.51,0.62,0.61,0.14,0.58,0.33,0.18,0.36,0.89,0.66,0.41,0.31,0.65,0.68,0.26,0.52,0.73,0.66,0.66,0.57,0.39,0.4,0.48,0.18,0.41,0.46,0.56,0.13,0.22,0.68,0.8,0.72,0.7,0.15,0.21,0.6,0.3,0.3,0.29,0.13,0.07,0.07,0,0,0,0,0,0,0,0,0,0,0,0.54,0.61,0.74,0.81,0.8,0.61,0.46,0.6,0.77,1,0.7,0.34,0.6,0.17,0.33,0.28,0.55,0.4,0.24,0.16,0.06,0,0,0,0,0],
+      "words": [["Teodor",0.08,0.64],["Linde,",0.68,1.4],["our",1.68,1.84],["navigator.",2.16,2.96],["Last",3.44,3.68],["I",3.84,3.88],["heard",3.92,4.16],["he",4.24,4.32],["went",4.4,4.48],["to",4.56,4.64],["count",4.76,4.88],["stars",5.04,5.44],["for",5.52,5.6],["the",5.64,5.68],["Cooperative.",5.76,6.92],["At",6.96,7.04],["an",7.12,7.2],["observatory.",7.4,8.32]]
+    },
+    "sorrel_aboard_04b.mp3": {
+      "line": "sorrel_aboard_04b",
+      "speaker": "Sorrel",
+      "text": "Every day since Ross 128. Not before. That's the shame of it.",
+      "direction": "[quiet, ashamed]",
+      "hash": "cc997203feaee04177001b907bf38e174ebb55d2660e5fd91d56f9bee98cd910",
+      "voice": {
+        "id": "pqHfZKP75CvOlQylNhV4",
+        "name": "Bill"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3432608259,
+      "stitching": {
+        "previous": "Do you regret taking it?"
+      },
+      "heard": "Every day since Ross 128. Not before. That's the shame of it",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.61,
+      "lead": 0.2,
+      "tail": 0.25,
+      "peak": 0.475,
+      "loudness": -23.4,
+      "bytes": 53123,
+      "sha256": "9c416d948a216a89cd1b1bb1bee0f7527624f6f9c8b2863cdc07faaca65443e1",
+      "made": "2026-10-25T07:39:44.584Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0,0.58,1,1,0.58,0.94,0.84,0.48,0.56,0.71,0.75,0.49,0.73,0.76,0.76,0.52,0.8,0.67,0.35,0.27,0.74,0.73,0.61,0.34,0,0,0,0,0,0,0,0,0,0,0.54,0.63,0.74,0.72,0.72,0.71,0.51,0,0.45,0.75,0.61,0.27,0.69,0.92,0.38,0.56,0.2,0.13,0.39,0.12,0.7,0.73,0.55,0.49,0.59,0.42,0.23,0.14,0.25,0.13,0,0,0,0,0,0,0,0,0,0,0,0,0.35,1,0.86,0.71,0,0.43,0.52,0.25,0.3,0.46,0.87,0.6,0.36,0.36,0.24,0.13,0,0,0,0,0,0,0,0,0,0,0,0,0.06,0.53,0.54,0.46,0.88,0.26,0.55,0.52,0.72,0.88,0.61,0.83,0.78,0.88,0.61,0.38,0.22,0.32,0.34,0.12,0.28,0,0,0,0,0],
+      "words": [["Every",0.16,0.48],["day",0.56,0.72],["since",0.88,1.28],["Ross",1.84,2.16],["128.",2.24,3.92],["Not",4,4.16],["before.",4.72,5.32],["That's",5.36,5.6],["the",5.68,5.76],["shame",5.84,6.08],["of",6.12,6.16],["it.",6.24,6.64]]
     },
     "sorrel_dark_01.mp3": {
       "line": "sorrel_dark_01",
