@@ -29,12 +29,23 @@ describe('poses', () => {
     expect(pose.upper).toEqual({ pistol_shoot: 1 });
   });
   it('holds a long gun to the shoulder to aim and shoot, and low and ready in a fight', () => {
-    const aim = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: false, rifle: true });
+    const aim = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: false, gun: 'rifle' });
     expect(aim.upper).toEqual({ rifle_aim: 1 });
-    const shot = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: true, rifle: true });
+    const shot = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: true, gun: 'rifle' });
     expect(shot.upper).toEqual({ rifle_shoot: 1 });
-    const ready = poseWeights({ mode: 'move', speed: SPEED.walk, ready: true });
+    const ready = poseWeights({ mode: 'move', speed: SPEED.walk, ready: 'rifle' });
     expect(ready.upper).toEqual({ rifle_ready: 1 });
+    // Each long gun has its own hold, made to its model; a pistol hangs at the side.
+    expect(
+      poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: false, gun: 'shotgun' }).upper,
+    ).toEqual({ shotgun_aim: 1 });
+    expect(
+      poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: true, gun: 'marksman' }).upper,
+    ).toEqual({ marksman_shoot: 1 });
+    expect(poseWeights({ mode: 'move', speed: SPEED.walk, ready: 'pistol' }).upper).toBeNull();
+    expect(
+      poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: false, gun: 'pistol' }).upper,
+    ).toEqual({ pistol_aim: 1 });
     expect(ready.lower.walk).toBeGreaterThan(0);
   });
   it('crouches in cover and slides along it', () => {

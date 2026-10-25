@@ -163,6 +163,30 @@
       "loop": true
     },
     {
+      "name": "shotgun_aim",
+      "loop": true
+    },
+    {
+      "name": "shotgun_shoot",
+      "loop": false
+    },
+    {
+      "name": "shotgun_ready",
+      "loop": true
+    },
+    {
+      "name": "marksman_aim",
+      "loop": true
+    },
+    {
+      "name": "marksman_shoot",
+      "loop": false
+    },
+    {
+      "name": "marksman_ready",
+      "loop": true
+    },
+    {
       "name": "power_ready",
       "loop": true
     },
@@ -292,11 +316,11 @@
   "bodies": {
     "man": {
       "file": "hero-man.glb",
-      "bytes": 5399252,
+      "bytes": 5474004,
       "heightMetres": 1.817,
       "triangles": 40057,
       "bones": 53,
-      "megabytes": 5.4,
+      "megabytes": 5.47,
       "materials": [
         "man_skin",
         "man_eyes",
@@ -1932,11 +1956,11 @@
     },
     "woman": {
       "file": "hero-woman.glb",
-      "bytes": 5682888,
+      "bytes": 5757964,
       "heightMetres": 1.67,
       "triangles": 44267,
       "bones": 53,
-      "megabytes": 5.68,
+      "megabytes": 5.76,
       "materials": [
         "woman_skin",
         "woman_eyes",
@@ -3735,6 +3759,58 @@
           "bytes": 10368,
           "replaces": "baseColorTexture of material man_eyes (its alpha cuts out the cornea; keep alpha mode MASK)"
         }
+      ],
+      "outfits": [
+        {
+          "id": "armour",
+          "label": "The Banked's armour",
+          "default": false,
+          "hidden": true,
+          "file": "looks/man/armour.glb",
+          "bytes": 605272,
+          "triangles": 9308,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "man_outfit_armour"
+          ]
+        },
+        {
+          "id": "armour-light",
+          "label": "The Banked's light armour",
+          "default": false,
+          "hidden": true,
+          "file": "looks/man/armour-light.glb",
+          "bytes": 486748,
+          "triangles": 7332,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "man_outfit_armour-light"
+          ]
+        }
       ]
     },
     "woman": {
@@ -4122,6 +4198,58 @@
           "file": "looks/eyes-grey.webp",
           "bytes": 10368,
           "replaces": "baseColorTexture of material woman_eyes (its alpha cuts out the cornea; keep alpha mode MASK)"
+        }
+      ],
+      "outfits": [
+        {
+          "id": "armour",
+          "label": "The Banked's armour",
+          "default": false,
+          "hidden": true,
+          "file": "looks/woman/armour.glb",
+          "bytes": 605052,
+          "triangles": 9308,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "woman_outfit_armour"
+          ]
+        },
+        {
+          "id": "armour-light",
+          "label": "The Banked's light armour",
+          "default": false,
+          "hidden": true,
+          "file": "looks/woman/armour-light.glb",
+          "bytes": 464608,
+          "triangles": 7332,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "woman_outfit_armour-light"
+          ]
         }
       ]
     }

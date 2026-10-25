@@ -1,5 +1,6 @@
 /**
- * Voices every spoken line of the story (story/slice.ink and what it includes, story/pyre.ink) with
+ * Voices every spoken line of the story (story/slice.ink and what it includes, story/pyre.ink) and of
+ * the fights (src/game/fight-talk.ts) with
  * ElevenLabs text to speech (D-23): each person in a stock voice of the owner's plan or one from
  * ElevenLabs' library added to it (D-63), the hero twice, in a man's and a woman's voice
  * (D-09). Each take is heard back by speech to text and made again if words are lost or it is
@@ -19,6 +20,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { fightLines } from '../../src/game/fight-talk.ts';
 import { compileStory } from '../ink.ts';
 import { optionalKey, requireKey } from './env.ts';
 
@@ -80,6 +82,13 @@ const CAST: Record<string, Voice> = {
   Varro: { id: 'NtS6nEHDYMQC9QczMQuq', name: 'Katherine (library)' },
   Tilly: { id: 'C92s6vssSLlabgIln1iY', name: 'Michelle (library)' },
   Researcher: { id: 'csXxiUN2BUFflsCaDxPM', name: 'Chris Scottish (library)' },
+  // The Banked in a fight (D-67, src/game/fight-talk.ts): five voices, one for each of a squad. Harry,
+  // Callum (the auditors') and Adam (the warden at Pyre) are theirs already; Tia and Hannah from the
+  // library, the stock set's women being cast (each auditioned against two others).
+  Trooper1: { id: 'SOYHLrjzK2X1ezoPC6cr', name: 'Harry' },
+  Trooper2: { id: 'OUBnvvuqEKdDWtapoJFn', name: 'Tia (library)' },
+  Trooper3: { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum' },
+  Engineer: { id: 'M7ya1YbaeFaPXljg9BpK', name: 'Hannah (library)' },
 };
 const HERO: Record<'man' | 'woman', Voice> = {
   man: { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel' },
@@ -1011,8 +1020,15 @@ async function make(job: Job, after?: number): Promise<FileRecord> {
 const args = process.argv.slice(2);
 const again = args.includes('--again');
 const wanted = args.filter((a) => !a.startsWith('--'));
-// Every file of the story, each parsed on its own (a knot never runs across two files).
-const lines = (await Promise.all(compileStory().files.map(async (f) => parseScript(await readFile(f, 'utf8'))))).flat();
+// Every file of the story, each parsed on its own (a knot never runs across two files), and what is
+// said in fights (src/game/fight-talk.ts): each of those on its own, never stitched to another.
+const lines = [
+  ...(await Promise.all(compileStory().files.map(async (f) => parseScript(await readFile(f, 'utf8'))))).flat(),
+  ...fightLines().map((l, i): Line => {
+    LINE[l.id] = l.how;
+    return { id: l.id, speaker: l.speaker, text: l.text, knot: 'fight', stitch: '', beat: i, path: [] };
+  }),
+];
 const named = (j: { line: Line; file: string }) => wanted.includes(j.line.id) || wanted.includes(j.file);
 const unknown = wanted.filter((w) => !lines.some((l) => l.id === w || w.startsWith(`${l.id}.`)));
 if (unknown.length) throw new Error(`Not lines of the story: ${unknown.join(', ')}`);

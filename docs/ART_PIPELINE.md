@@ -125,7 +125,7 @@ The game loads:
 | Standing | `idle`, `idle_talk`, `turn_left`, `turn_right` |
 | Moving | `walk`, `walk_back`, `strafe_left`, `strafe_right`, `jog`, `jog_back`, `jog_left`, `jog_right`, `jog_fwd_left`, `jog_fwd_right`, `jog_back_left`, `jog_back_right`, `sprint` |
 | Cover and evasion | `crouch_idle`, `crouch_enter`, `crouch_exit`, `crouch_walk`, `crouch_back`, `crouch_left`, `crouch_right`, `dodge_left`, `dodge_right`, `roll`, `jump_start`, `jump_loop`, `jump_land`, `climb_ledge` |
-| Guns and powers | `pistol_idle`, `pistol_aim`, `pistol_aim_up`, `pistol_aim_down`, `pistol_shoot`, `pistol_reload`, `rifle_aim`, `rifle_shoot`, `rifle_ready`, `power_ready`, `power_cast`, `power_both_ready`, `power_both_cast` |
+| Guns and powers | `pistol_idle`, `pistol_aim`, `pistol_aim_up`, `pistol_aim_down`, `pistol_shoot`, `pistol_reload`, `rifle_aim`, `rifle_shoot`, `rifle_ready`, `shotgun_aim`, `shotgun_shoot`, `shotgun_ready`, `marksman_aim`, `marksman_shoot`, `marksman_ready`, `power_ready`, `power_cast`, `power_both_ready`, `power_both_cast` |
 | Melee | `punch_jab`, `punch_cross`, `kick`, `melee_hook`, `melee_combo` |
 | Hits and death | `hit_chest`, `hit_head`, `hit_stomach`, `hit_shoulder_left`, `hit_shoulder_right`, `hit_knockback`, `death`, `death_alt` |
 | Other | `interact` |
@@ -145,9 +145,22 @@ The game loads:
   pocket at the front of the right shoulder; the right palm on the pistol grip a stock's length
   in front of it, wrist straight, elbow down and out; the left palm up under the handguard; the
   head bowed and tilted onto the stock. The arms are solved with two-bone IK round the body's own
-  forward (UAL's pistol arms point some 45° to the right). `rifle_shoot` adds a shot's kick and
-  `rifle_ready` tips the hold 40° down. The game seats the gun's grip in the right palm and points
-  the gun along the aim (`aimHeld` in `src/game/characters.ts`).
+  forward, the direction the game turns the body to when aiming (UAL's pistol arms point some 45°
+  to the right, and its shoulders some 15°). `rifle_shoot` adds a shot's kick and `rifle_ready`
+  tips the hold 40° down. The game seats the gun's grip in the right palm and points the gun along
+  the aim (`aimHeld` in `src/game/characters.ts`).
+- **Hands on the gun** (ACT1_ART.md §6, 25 October 2026). Each hand is turned by its knuckles: its
+  palm's facing is measured from the knuckles (`common._palm_of`), not taken from the bone's axes,
+  which in this skeleton put no palm on any one axis (the first clips had both palms turned back
+  towards the shooter). The fingers then bend joint by joint towards the palm (`_close_fingers`,
+  the bends in `RIFLE["grip"]` and `RIFLE["handguard"]`): the right hand round the pistol grip,
+  the forefinger on the trigger, or laid along the guard in the `_ready` clips; the left hand
+  cupped under the forend, the thumb up its left side. The grip meets the palm's face, 2.5 cm in
+  from the hand's middle (`RIFLE["palm"]`, `PALM` in `characters.ts`). Each long gun has its own
+  hold, measured from its model side on with a 5 cm grid: the rifle's (its file held at 0.84 m so
+  its long stock meets the shoulder), the shotgun's (the left hand on the pump, 0.40 m ahead of the
+  grip, a shorter stock, the body turned 35°) and the marksman rifle's (the forend higher above
+  the grip). Where each model sits in the hand is `HELD` in `src/game/weapons.ts`.
 - **Retargeting.** `common.Retargeter` gives each bone the source bone's change of world
   rotation. How the two rest poses are matched depends on the bone. Arms, hands and fingers are
   first turned to point as the source's do, so MPFB's A-pose arms follow UAL's T-pose. Thighs
@@ -304,6 +317,31 @@ function setMorph(name: string, weight: number) {
 A part only has the morphs that move it, so a name may be missing there; that is expected. A
 skin or an eye colour is a texture swap on the named material, for example
 `(scene.getMaterialByName('woman_skin') as PBRMaterial).albedoTexture = new Texture(url, scene)`.
+
+**Outfits** (the Banked's armour, D-66; ACT1_ART.md §1). `looks.outfits` in `art/hero.json` lists
+clothes worn over the uniform by the game's own people, never offered in the creator. Each is fitted
+with the hero, so it follows the body sliders, and saved as a part beside the hair
+(`looks/<body>/<id>.glb`, with only the body's own morphs, not the face's); the game wears it as it
+wears hair (`Looks.outfit`, `wearOutfit` in `src/game/appearance.ts`). The armour is MatCreator's
+*MC-SciFi-Armor Jupiter7* (CC0), made lighter first by `scripts/art/outfits.py`: fitted to MPFB's
+default body, simplified to 35% of its faces with Blender's Decimate, and matched to the body again
+by MPFB's own MakeClothes matching (each vertex in the body's `body` group), written as a new
+asset in the MakeHuman cache (`derived/banked-armour/`); 9,300 triangles and 600 kB a body instead
+of 26,600 and 1.5 MB. Its texture is recoloured by `recolour` in `hero.py`: the grey plates
+charcoal, the white trim dull gold, the brown straps dark leather, each keeping its light and
+shade. `armour-light`, the engineer's, is the same armour with its thigh and knee plates dropped
+(the loose pieces whose middle stands between 20% and 56% of the body's height). MatCreator's
+lighter *Helios* suit was passed over: 71,000 vertices.
+
+```bash
+blender -b --factory-startup --python scripts/art/outfits.py     # the simplified armour, before hero.py
+```
+
+**Gear on a bone.** Helmets, packs and the like are Meshy models (MODELS.md) worn rigidly on one
+bone: `Character.attach(model, bone, size, offset)` in `src/game/characters.ts` sets the piece's
+bottom middle at an offset from the bone as the figure stands at rest, and the bone carries it.
+The Banked's are in `GEAR` in `src/game/banked.ts`, their offsets checked from four sides in
+Blender. A closed helmet needs no hair under it, so the Banked are shaved.
 
 ## 9. Speech and eyes (D-31)
 

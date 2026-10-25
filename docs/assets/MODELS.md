@@ -61,6 +61,14 @@ for the 22 new models, 2.2 MB for the four from the style test. Every model:
 | `stall` | Tilly's stall: two orange cargo cases under a plank counter of wares | 3 | 3 × 1.27 × 1.03 | 2,431 | 1024 | 581 | [stall](models/stall.jpg) |
 | `sapling` | The Orchard's apple sapling in a cut-down blue drum | 1.6 | 0.83 × 1.6 × 0.84 | 1,836 | 512 | 224 | [sapling](models/sapling.jpg) |
 | `desk` | A plain archive desk with a lamp and files (Ruth's, the front hall's, Linde's) | 1.8 | 1.8 × 1.56 × 0.9 | 1,344 | 512 | 187 | [desk](models/desk.jpg) |
+| `banked-helmet` | The Banked's closed helmet: charcoal, edged in gold, a narrow gold visor band (D-66, ACT1_ART.md §1); added 25 October 2026 | 0.31 | 0.23 × 0.31 × 0.27 | 2,500 | 1024 | 383 | [banked-helmet](models/banked-helmet.jpg) |
+| `banked-headset` | The Banked engineer's open helmet: a skull cap, a headset and a flip-down lens | 0.27 | 0.23 × 0.24 × 0.27 | 1,999 | 1024 | 369 | [banked-headset](models/banked-headset.jpg) |
+| `banked-projector` | The Banked warden's barrier projector, worn on the back; its straps to the front | 0.62 | 0.58 × 0.62 × 0.59 | 2,968 | 1024 | 528 | [banked-projector](models/banked-projector.jpg) |
+| `banked-pack` | The Banked engineer's frame pack with two motes in its cradle; its straps to the front | 0.5 | 0.31 × 0.5 × 0.44 | 2,361 | 1024 | 199 | [banked-pack](models/banked-pack.jpg) |
+| `gunpost` | The Rigger's Gun Post: a boxy gun head on three folding legs (D-69, ACT1_ART.md §4) | 0.65 | 0.51 × 0.57 × 0.65 | 2,958 | 1024 | 642 | [gunpost](models/gunpost.jpg) |
+| `emitter` | The Warden's Shelter emitter, landed and opened in three petals | 0.32 | 0.32 × 0.06 × 0.32 | 1,435 | 1024 | 640 | [emitter](models/emitter.jpg) |
+| `repair-drone` | The Repair Drone: a rounded body, two ducted fans, a nozzle arm, a green ring | 0.32 | 0.32 × 0.22 × 0.22 | 1,899 | 1024 | 492 | [repair-drone](models/repair-drone.jpg) |
+| `seeker-drone` | The Seeker Drone: a dart with a tail rotor and a red eye at its nose | 0.34 | 0.24 × 0.10 × 0.34 | 1,973 | 1024 | 484 | [seeker-drone](models/seeker-drone.jpg) |
 
 Each preview shows the model in the game's own Babylon.js 9.32 from six sides (front, three-quarter,
 left, back, right, top), on a grid, with its measured size and base. The full-size pictures are in
@@ -186,6 +194,8 @@ node scripts/art/models.ts preview [id ...]             # six views → art/out/
 | **Left** | **2,120** |
 | Pyre Remnant's seven (PYRE.md §10), image-to-3D with textures (30 each), 25 October 2026 | 210 |
 | **Left** | **1,910** |
+| The Banked's helmets, projector and pack, and the powers' Gun Post, emitter and two drones (ACT1_ART.md §8), image-to-3D with textures (30 each), 25 October 2026 | 240 |
+| **Left** | **1,670** |
 
 Gemini drew 33 pictures (22 concepts, two redrawn Tender concepts and nine extra views), about
 $3.30 from D-24's budget. trellis.cpp was not needed.

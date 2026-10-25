@@ -34,7 +34,7 @@ describe('fighting between orders', () => {
 
 describe('receiving orders', () => {
   it('answers each order', () => {
-    expect(receive({ kind: 'follow' }, { kind: 'follow' }).say).toBe('With you.');
+    expect(receive({ kind: 'follow' }, { kind: 'follow' }).say).toBe('follow');
     expect(receive({ kind: 'follow' }, { kind: 'hold', at: at(3, 3) }).objective).toEqual({
       kind: 'hold',
       at: at(3, 3),
@@ -68,12 +68,12 @@ describe('holding', () => {
     const hold: Objective = { kind: 'hold', at: at(5, 0), arrived: false };
     expect(decide(hold, facts()).moveTo).toEqual(at(5, 0));
     const there = decide(hold, facts({ me: at(5, 0.2) }));
-    expect(there.say).toBe('In position.');
+    expect(there.say).toBe('arrived');
     expect(there.objective).toEqual({ ...hold, arrived: true });
   });
   it('gives up on a point that cannot be reached', () => {
     const d = decide({ kind: 'hold', at: at(50, 0), arrived: false }, facts({ reachable: false }));
-    expect(d.say).toBe("I can't reach that.");
+    expect(d.say).toBe('unreachable');
     expect(d.objective.kind).toBe('follow');
   });
 });
@@ -96,7 +96,7 @@ describe('attacking', () => {
   });
   it('returns to what came before once the target is down', () => {
     const d = decide(attack, facts({ target: { alive: false, position: at(0, 10), visible: true } }));
-    expect(d.say).toBe('Target down.');
+    expect(d.say).toBe('targetDown');
     expect(d.objective).toEqual({ kind: 'follow' });
   });
 });

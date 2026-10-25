@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { BANKED_VOICES, fightLines } from '../../src/game/fight-talk.ts';
 
 /**
  * The Banked in a fight (ACT1.md increment 4; COMBAT.md, *The Banked*), on Calder's range with
@@ -117,5 +118,45 @@ test('the fight ends when the Banked are down', async ({ page }) => {
   await expect
     .poll(() => lk<{ fight: string | null }>(page, 'return lk.state()').then((s) => s.fight), { timeout: 15_000 })
     .toBeNull();
+  expect(errors).toEqual([]);
+});
+
+test('they wear their own armour, helmets and gear (D-66)', async ({ page }, testInfo) => {
+  const errors = await start(page, true);
+  // Each member's armour, fitted to the skeleton; each kind's helmet and gear on its bones.
+  const worn = await lk<{ outfits: string[]; gear: string[] }>(
+    page,
+    `const s = lk.scene;
+     return {
+       outfits: s.meshes.filter((m) => /^Outfit_armour/.test(m.name) && m.skeleton).map((m) => m.name),
+       gear: s.transformNodes.filter((n) => /^banked-\\d-(head|spine_03)-worn$/.test(n.name)).map((n) => n.name).sort(),
+     };`,
+  );
+  expect(worn.outfits.filter((n) => n === 'Outfit_armour').length).toBe(4);
+  expect(worn.outfits.filter((n) => n === 'Outfit_armour-light').length).toBe(1);
+  expect(worn.gear).toEqual([
+    'banked-0-head-worn',
+    'banked-1-head-worn',
+    'banked-2-head-worn',
+    'banked-3-head-worn',
+    'banked-3-spine_03-worn',
+    'banked-4-head-worn',
+    'banked-4-spine_03-worn',
+  ]);
+  await page.waitForTimeout(3000);
+  await page.screenshot({ path: testInfo.outputPath('armour.png') });
+  expect(errors).toEqual([]);
+});
+
+test('they talk as they fight, each line voiced (D-67)', async ({ page }) => {
+  const errors = await start(page, true);
+  // A trooper calls the hero in sight: the caption names the Banked, and says one of their lines
+  // (each has a voice: tests/unit/fight-talk.test.ts).
+  await expect(page.getByRole('status')).toContainText('Banked', { timeout: 30_000 });
+  const said = (await page.locator('body').getAttribute('data-said')) ?? '';
+  const theirs = fightLines()
+    .filter((l) => (BANKED_VOICES as readonly string[]).includes(l.speaker))
+    .map((l) => l.text);
+  expect(theirs).toContain(said);
   expect(errors).toEqual([]);
 });

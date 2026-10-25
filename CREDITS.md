@@ -49,6 +49,8 @@ its source, its licence with a link, and what we changed, as the licence asks.
 - **TheGreatEngineer**: the *Galactic Warrior* uniform, the heroes' suit (recoloured), from the
   MakeHuman [Suits 02](https://static.makehumancommunity.org/assets/assetpacks/suits02.html)
   pack (CC0).
+- **MatCreator**: *MC-SciFi-Armor Jupiter7*, the Banked's armour (simplified, recoloured, and cut
+  lighter for their engineers), from the same Suits 02 pack (CC0).
 
 **Materials**
 
@@ -84,7 +86,8 @@ commercial use; the records say how each file was made.
   [art/voices.json](art/voices.json); how in [docs/assets/VOICES.md](docs/assets/VOICES.md).
 - **3D models** (the swarm's machines, the surveyor, the station's furniture and props, the
   sidearm, helmet, locker and terminal, Pyre Remnant's great mirror, archive racks, lectern, cots,
-  trader's stall, apple sapling and desks): generated with Meshy (image-to-3D, multi-image-to-3D and
+  trader's stall, apple sapling and desks, the Banked's helmets, projector and pack, the Gun Post,
+  the Shelter's emitter and the two drones): generated with Meshy (image-to-3D, multi-image-to-3D and
   remesh) from the game's own concept pictures, made with Google Gemini (gemini-nano-banana-2.1),
   on paid plans. Records in [art/models.json](art/models.json); how in
   [docs/assets/MODELS.md](docs/assets/MODELS.md).

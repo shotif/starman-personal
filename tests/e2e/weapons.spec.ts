@@ -141,8 +141,8 @@ test('every weapon points where the crosshair looks, and a long gun is held to t
     });
     expect(angle, kind).not.toBeNull();
     expect(angle ?? 180, kind).toBeLessThan(8);
-    // The long guns are held two-handed to the shoulder; the pistol out in both hands.
-    const clip = kind === 'pistol' ? 'hero-pistol_aim' : 'hero-rifle_aim';
+    // The long guns are held two-handed to the shoulder, each by its own hold; the pistol out in both hands.
+    const clip = `hero-${kind === 'pistol' ? 'pistol' : kind}_aim`;
     const weight = await page.evaluate(
       (name) =>
         (

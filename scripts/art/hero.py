@@ -133,6 +133,12 @@ class Human:
             item = {"file": item} if isinstance(item, str) else item
             obj = self.add_asset("Clothes", MH / item["file"])
             obj["look"] = json.dumps(item)
+        # The game's own outfits (the Banked's armour: ACT1_ART.md §1) are fitted the same way, so
+        # they follow the body sliders, and each becomes a separate part (export_outfit_parts).
+        for outfit in self.cfg["looks"].get("outfits", []):
+            obj = self.add_asset("Clothes", MH / outfit["file"])
+            obj["outfit_id"] = outfit["id"]
+            obj["look"] = json.dumps(dict(outfit, name=f"outfit_{outfit['id']}"))
 
     def add_asset(self, kind, path):
         mp = self.mp
@@ -536,6 +542,31 @@ def make_material(name, base_img=None, normal_img=None, alpha="OPAQUE", roughnes
     return mat
 
 
+def recolour(px, colours):
+    """Paints an armour's plates, trim and straps in the colours given ({"plate", "trim",
+    "strap"}: linear RGB at a typical brightness), keeping each pixel's light and shade.
+    MatCreator's armour textures have grey plates, near-white trim and brown straps, so the
+    three are told apart by brightness and saturation."""
+    px = px.copy()
+    rgb = px[:, :3]
+    lum = rgb @ np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
+    top, low = rgb.max(axis=1), rgb.min(axis=1)
+    sat = (top - low) / np.maximum(top, 1e-4)
+
+    def step(a, b, x):
+        t = np.clip((x - a) / (b - a), 0.0, 1.0)
+        return t * t * (3 - 2 * t)
+
+    trim = step(0.6, 0.8, lum) * (1 - step(0.12, 0.3, sat))
+    strap = step(0.18, 0.35, sat) * (1 - trim)
+    plate = 1 - trim - strap
+    out = np.zeros_like(rgb)
+    for share, key, typical in ((plate, "plate", 0.45), (trim, "trim", 0.9), (strap, "strap", 0.3)):
+        out += share[:, None] * np.array(colours[key], dtype=np.float32) * (lum / typical)[:, None]
+    px[:, :3] = np.clip(out, 0.0, 1.0)
+    return px
+
+
 ASSET_LOOK = {
     # kind: (alpha mode, roughness, texture size key, use the normal map)
     # The eye texture's alpha cuts out the clear cornea over the iris.
@@ -587,6 +618,11 @@ def set_materials(human, cfg):
             px[:, :3] *= depth_shade(obj, w, h, colours.get("darkestBack", 0.45))[:, None]
             mouth_file = save_pixels(w, h, px, tex_dir / f"{label}.jpg", "JPEG")
             img = bpy.data.images.load(str(mouth_file), check_existing=False)
+        elif look.get("recolour"):
+            w, h, px = load_pixels(diffuse, tex_size)
+            px = recolour(grade(px, keep_alpha=False), look["recolour"])
+            armour_file = save_pixels(w, h, px, tex_dir / f"{label}.jpg", "JPEG")
+            img = bpy.data.images.load(str(armour_file), check_existing=False)
         elif kind == "Eyes" and eyes.get("irisTint"):
             w, h, px = load_pixels(diffuse, tex_size)
             eye_file = save_pixels(w, h, tint_iris(px, eyes["irisTint"]),
@@ -634,11 +670,13 @@ def build_body(name, cfg, anim_cfg, with_anim):
     deltas = human.bake_morphs(cfg["morphs"])
     used_files = set_materials(human, cfg)
 
-    # Hair styles are swappable parts, so no hair may cut the scalp away.
+    # Hair styles and outfits are swappable parts, so none may cut the body away under it.
+    outfits = [obj for _, obj, _ in human.assets if "outfit_id" in obj]
     hair_groups = {f"Delete.{Path(o['source_mhclo']).stem}" for k, o, _ in human.assets
-                   if k == "Hair"}
+                   if k == "Hair" or "outfit_id" in o}
     removed = delete_hidden_body(human.basemesh,
-                                 [obj for kind, obj, _ in human.assets if kind == "Clothes"],
+                                 [obj for kind, obj, _ in human.assets
+                                  if kind == "Clothes" and obj not in outfits],
                                  keep_groups=hair_groups)
     C.log(f"  removed {removed} hidden body vertices")
     meshes = [human.basemesh] + [obj for _, obj, _ in human.assets]
@@ -653,11 +691,13 @@ def build_body(name, cfg, anim_cfg, with_anim):
     # Every hair style becomes its own part on the same skeleton; only the default stays.
     looks = {"hair": export_hair_parts(human, cfg, deltas),
              "skins": export_skin_looks(human, cfg),
-             "eyes": export_eye_looks(human, cfg)}
+             "eyes": export_eye_looks(human, cfg),
+             "outfits": export_outfit_parts(human, cfg)}
     meshes = [human.basemesh] + [obj for kind, obj, _ in human.assets
-                                 if kind != "Hair" or obj["hair_id"] == body["hair"]]
+                                 if (kind != "Hair" or obj["hair_id"] == body["hair"])
+                                 and obj not in outfits]
     extra_hair = [obj for kind, obj, _ in human.assets
-                  if kind == "Hair" and obj["hair_id"] != body["hair"]]
+                  if kind == "Hair" and obj["hair_id"] != body["hair"]] + outfits
     human.assets = [a for a in human.assets if a[1] not in extra_hair]
     for obj in extra_hair:
         bpy.data.objects.remove(obj, do_unlink=True)
@@ -727,7 +767,8 @@ def build_body(name, cfg, anim_cfg, with_anim):
                           if body.get(k)]
             + [str(MH / cfg[k]) for k in ("teeth", "tongue") if cfg.get(k)]
             + [str(MH / h["file"]) for h in cfg["looks"]["hair"] if h.get("file")]
-            + [str(MH / clothes_file(p)) for p in body.get("clothes", [])])),
+            + [str(MH / clothes_file(p)) for p in body.get("clothes", [])]
+            + [str(MH / o["file"]) for o in cfg["looks"].get("outfits", [])])),
     }
 
 
@@ -790,6 +831,86 @@ def export_hair_parts(human, cfg, deltas):
         rows.append(row)
         C.log(f"  hair part {style['id']}: {report['bytes'] / 1e3:.0f} kB, "
               f"{report['triangles']} triangles, {len(kept)} morphs")
+    return rows
+
+
+def drop_pieces(obj, height, between):
+    """Removes the outfit's loose pieces whose middle stands between two heights (shares of the
+    body's height): a lighter cut of the same armour. Shape keys are kept."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.verts.ensure_lookup_table()
+    seen, drop, pieces = set(), [], []
+    for v in bm.verts:
+        if v.index in seen:
+            continue
+        seen.add(v.index)
+        stack, piece = [v], []
+        while stack:
+            u = stack.pop()
+            piece.append(u)
+            for e in u.link_edges:
+                w = e.other_vert(u)
+                if w.index not in seen:
+                    seen.add(w.index)
+                    stack.append(w)
+        middle = sum(u.co.z for u in piece) / len(piece) / height
+        pieces.append((round(middle, 3), len(piece)))
+        if between[0] <= middle <= between[1]:
+            drop.extend(piece)
+    bmesh.ops.delete(bm, geom=drop, context="VERTS")
+    bm.to_mesh(obj.data)
+    bm.free()
+    obj.data.update()
+    return pieces, len(drop)
+
+
+def export_outfit_parts(human, cfg):
+    """One .glb per outfit (the Banked's armour): the fitted clothes skinned to the hero's own
+    skeleton, with the body sliders' morphs that move it (not the face's), as hair parts are.
+    Returns manifest rows."""
+    rig, rows = human.rig, []
+    height = max(v.co.z for v in human.basemesh.data.vertices)
+    for outfit in cfg["looks"].get("outfits", []):
+        obj = next(o for _, o, _ in human.assets if o.get("outfit_id") == outfit["id"])
+        part = obj.copy()
+        part.data = obj.data.copy()
+        bpy.context.scene.collection.objects.link(part)
+        if outfit.get("drop"):
+            pieces, dropped = drop_pieces(part, height, outfit["drop"])
+            C.log(f"  outfit {outfit['id']}: dropped {dropped} vertices; pieces (middle, size): "
+                  f"{sorted(pieces)}")
+        keys = part.data.shape_keys.key_blocks
+        basis = np.empty(len(part.data.vertices) * 3)
+        keys[0].data.foreach_get("co", basis)
+        basis = basis.reshape(-1, 3)
+        for kb in list(keys)[1:]:
+            co = np.empty(basis.size)
+            kb.data.foreach_get("co", co)
+            delta = co.reshape(-1, 3) - basis
+            moved = np.linalg.norm(delta, axis=1)
+            # Only the body's shape: the face's morphs and the mouth's never move armour.
+            if moved.max() < HAIR_MORPH_MIN or kb.name.startswith(("viseme_", "face_", "eye")):
+                part.shape_key_remove(kb)
+                continue
+            delta[moved < HAIR_MOVE_MIN] = 0.0
+            kb.data.foreach_set("co", (basis + delta).ravel())
+        part.name = part.data.name = f"Outfit_{outfit['id']}"
+        for k in list(part.keys()):
+            del part[k]
+        raw = OUT / f"outfit-{human.name}-{outfit['id']}.raw.glb"
+        C.export_glb(raw, [rig, part], morphs=True, morph_normals=False, image_format="WEBP",
+                     copyright_text="Armour from MakeHuman assets (MatCreator, CC0); see CREDITS.md")
+        out = LOOKS / human.name / f"{outfit['id']}.glb"
+        C.finish_glb(raw, out)
+        report = C.glb_report(out)
+        bpy.data.objects.remove(part, do_unlink=True)
+        rows.append({"id": outfit["id"], "label": outfit["label"], "default": False, "hidden": True,
+                     "file": str(out.relative_to(C.OUT_CHARACTERS)), "bytes": report["bytes"],
+                     "triangles": report["triangles"], "morphs": report["morphTargets"],
+                     "material": report_material(out)})
+        C.log(f"  outfit {outfit['id']}: {report['bytes'] / 1e3:.0f} kB, "
+              f"{report['triangles']} triangles, {len(report['morphTargets'])} morphs")
     return rows
 
 

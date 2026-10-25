@@ -468,6 +468,110 @@
       "texture": 512,
       "front": "+z",
       "bytes": 192456
+    },
+    "banked-helmet": {
+      "file": "banked-helmet.glb",
+      "size": 0.31,
+      "dimensions": [
+        0.228,
+        0.31,
+        0.271
+      ],
+      "triangles": 2500,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 391700
+    },
+    "banked-headset": {
+      "file": "banked-headset.glb",
+      "size": 0.27,
+      "dimensions": [
+        0.226,
+        0.237,
+        0.27
+      ],
+      "triangles": 1999,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 378192
+    },
+    "banked-projector": {
+      "file": "banked-projector.glb",
+      "size": 0.62,
+      "dimensions": [
+        0.577,
+        0.62,
+        0.591
+      ],
+      "triangles": 2968,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 540980
+    },
+    "banked-pack": {
+      "file": "banked-pack.glb",
+      "size": 0.5,
+      "dimensions": [
+        0.312,
+        0.5,
+        0.442
+      ],
+      "triangles": 2361,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 204068
+    },
+    "gunpost": {
+      "file": "gunpost.glb",
+      "size": 0.65,
+      "dimensions": [
+        0.505,
+        0.566,
+        0.65
+      ],
+      "triangles": 2958,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 657072
+    },
+    "emitter": {
+      "file": "emitter.glb",
+      "size": 0.32,
+      "dimensions": [
+        0.32,
+        0.057,
+        0.32
+      ],
+      "triangles": 1435,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 655380
+    },
+    "repair-drone": {
+      "file": "repair-drone.glb",
+      "size": 0.32,
+      "dimensions": [
+        0.32,
+        0.216,
+        0.215
+      ],
+      "triangles": 1899,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 503756
+    },
+    "seeker-drone": {
+      "file": "seeker-drone.glb",
+      "size": 0.34,
+      "dimensions": [
+        0.238,
+        0.099,
+        0.34
+      ],
+      "triangles": 1973,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 495256
     }
   }
 }

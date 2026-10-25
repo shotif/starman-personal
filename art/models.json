@@ -9,7 +9,8 @@
     "viewFrame": "The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
     "styleTest": "(The style test's own style line, in art/concepts.json.)",
     "weapon": "Semi-realistic hard-surface product render of a firearm for a grounded near-future science-fiction game set in the 2180s: a coil gun that fires solid slugs, practical and worn, built for station crews and frontier security; matte gunmetal and dark grey polymer, scuffed edges, a small orange hazard stripe, a short row of status lights. Not glowing, not magical, no energy effects.",
-    "weaponFrame": "A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands."
+    "weaponFrame": "A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+    "banked": "Semi-realistic hard-surface product render of personal equipment for a grounded near-future science-fiction game set in the 2180s, worn by a disciplined faction: matte charcoal composite and dark metal, every edge picked out in a narrow line of dull gold, practical, worn and believable, as if made and used by people. Not ornate, not glowing except where described, no religious or royal symbols."
   },
   "meshy": {
     "ai_model": "latest",
@@ -2903,6 +2904,558 @@
             0.904
           ],
           "made": "2026-10-25T12:12:35.793Z"
+        }
+      }
+    },
+    {
+      "id": "banked-helmet",
+      "style": "banked",
+      "size": 0.31,
+      "triangles": 2500,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A closed combat helmet. A smooth rounded shell of matte charcoal composite edged in narrow dull gold, covering the whole head and face; across the eyes a single narrow horizontal visor band of gold-tinted glass, faintly lit from within, about a hand's width high and running round to the temples; below it the shell continues as a jaw guard with two small vent slots; a short ribbed neck seal at the base. Not a bubble and not a full-face visor: only the narrow band is glass.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A closed combat helmet. A smooth rounded shell of matte charcoal composite edged in narrow dull gold, covering the whole head and face; across the eyes a single narrow horizontal visor band of gold-tinted glass, faintly lit from within, about a hand's width high and running round to the temples; below it the shell continues as a jaw guard with two small vent slots; a short ribbed neck seal at the base. Not a bubble and not a full-face visor: only the narrow band is glass. Semi-realistic hard-surface product render of personal equipment for a grounded near-future science-fiction game set in the 2180s, worn by a disciplined faction: matte charcoal composite and dark metal, every edge picked out in a narrow line of dull gold, practical, worn and believable, as if made and used by people. Not ornate, not glowing except where described, no religious or royal symbols. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/banked-helmet.jpg",
+          "sha256": "a6e98d30ad80c57c3965dc63c0314fa8e0ed4dccf9bdb154e4a23a7a478d2e58",
+          "bytes": 1660268,
+          "made": "2026-10-25T14:48:00.671Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17389-043b-7044-a385-4a45324b2f22",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2500
+          },
+          "credits": 30,
+          "seconds": 97,
+          "made": "2026-10-25T14:50:18.543Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/banked-helmet.jpg",
+              "sha256": "a6e98d30ad80c57c3965dc63c0314fa8e0ed4dccf9bdb154e4a23a7a478d2e58"
+            }
+          ],
+          "output": {
+            "bytes": 8748464,
+            "sha256": "ccfbb5e28cbdf0873a27ab93914ec4a1dc4f50ed2687fb56f6f4727210a7dd20"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/banked-helmet.glb",
+          "bytes": 391700,
+          "sha256": "62887611a8b39b427f984dce09c5013a45e7c6113db2974d7830031347de256c",
+          "triangles": {
+            "made": 2538,
+            "shipped": 2500
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.228,
+            0.31,
+            0.271
+          ],
+          "made": "2026-10-25T14:53:07.311Z"
+        }
+      }
+    },
+    {
+      "id": "banked-headset",
+      "style": "banked",
+      "size": 0.27,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "An open-faced light helmet for a technician: a close-fitting skull cap of matte charcoal composite edged in narrow dull gold, covering the top, back and sides of the head down to the ears, with a slim headset over one ear, a short boom microphone, and a small flip-down lens over one eye on a hinge; the whole face is left open.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "An open-faced light helmet for a technician: a close-fitting skull cap of matte charcoal composite edged in narrow dull gold, covering the top, back and sides of the head down to the ears, with a slim headset over one ear, a short boom microphone, and a small flip-down lens over one eye on a hinge; the whole face is left open. Semi-realistic hard-surface product render of personal equipment for a grounded near-future science-fiction game set in the 2180s, worn by a disciplined faction: matte charcoal composite and dark metal, every edge picked out in a narrow line of dull gold, practical, worn and believable, as if made and used by people. Not ornate, not glowing except where described, no religious or royal symbols. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/banked-headset.jpg",
+          "sha256": "f84753214f84d8470b414e28cc814fdbd6d87a465ca3c6ef61a0ad74e8c80bc1",
+          "bytes": 1672020,
+          "made": "2026-10-25T14:47:58.963Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17389-02e4-7067-ad1c-8b8dd02e8986",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 118,
+          "made": "2026-10-25T14:50:39.409Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/banked-headset.jpg",
+              "sha256": "f84753214f84d8470b414e28cc814fdbd6d87a465ca3c6ef61a0ad74e8c80bc1"
+            }
+          ],
+          "output": {
+            "bytes": 9256288,
+            "sha256": "35d59fc1cde1856fb9ae69fe46e8ea92d7baed0fff1bd910cf5f64ba9c3387ff"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/banked-headset.glb",
+          "bytes": 378192,
+          "sha256": "a0f6f66691c99e679111e8613e9c018b5304a0c2fcdf38eda51858858573cf75",
+          "triangles": {
+            "made": 2043,
+            "shipped": 1999
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.226,
+            0.237,
+            0.27
+          ],
+          "made": "2026-10-25T14:53:07.476Z"
+        }
+      }
+    },
+    {
+      "id": "banked-projector",
+      "style": "banked",
+      "size": 0.62,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 180,
+      "prompt": "A field barrier projector worn on the back like a heavy pack: a squat, armoured housing of matte charcoal edged in dull gold, about sixty centimetres tall, with four short flat emitter vanes fanned out upward and outward from its top like the ribs of a half-open fan, each with a faint amber glow along a slot; heavy shoulder straps and a padded back plate; cables running down its sides.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A field barrier projector worn on the back like a heavy pack: a squat, armoured housing of matte charcoal edged in dull gold, about sixty centimetres tall, with four short flat emitter vanes fanned out upward and outward from its top like the ribs of a half-open fan, each with a faint amber glow along a slot; heavy shoulder straps and a padded back plate; cables running down its sides. Semi-realistic hard-surface product render of personal equipment for a grounded near-future science-fiction game set in the 2180s, worn by a disciplined faction: matte charcoal composite and dark metal, every edge picked out in a narrow line of dull gold, practical, worn and believable, as if made and used by people. Not ornate, not glowing except where described, no religious or royal symbols. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/banked-projector.jpg",
+          "sha256": "5b5c73f7e63ef651d39028c748e912f6d6adc4355bf68abaabeeb3c68acf8bc4",
+          "bytes": 2096891,
+          "made": "2026-10-25T14:48:08.361Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17389-044d-77bd-ab1e-b1fdb91449c8",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 129,
+          "made": "2026-10-25T14:50:50.290Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/banked-projector.jpg",
+              "sha256": "5b5c73f7e63ef651d39028c748e912f6d6adc4355bf68abaabeeb3c68acf8bc4"
+            }
+          ],
+          "output": {
+            "bytes": 10709420,
+            "sha256": "7edabc59bc926fff2b696db4bd8c70f7c365ea3be0165d11f6cea6c5fffe20af"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/banked-projector.glb",
+          "bytes": 540980,
+          "sha256": "9dde818b90b4286ef5df6da6a740bdbe555434a30bbaeeb8b005e0654212452a",
+          "triangles": {
+            "made": 2968,
+            "shipped": 2968
+          },
+          "textures": "1024 px WebP",
+          "turn": 180,
+          "front": "+z",
+          "dimensions": [
+            0.577,
+            0.62,
+            0.591
+          ],
+          "made": "2026-10-25T14:53:45.275Z"
+        }
+      }
+    },
+    {
+      "id": "banked-pack",
+      "style": "banked",
+      "size": 0.5,
+      "triangles": 2500,
+      "texture": 1024,
+      "turn": 180,
+      "prompt": "A technician's frame backpack: a compact pack of matte charcoal composite edged in dull gold on a light metal frame, with a cradle on its top holding two small grey spherical drones, each the size of a grapefruit with a single dark lens, in clamp rings; tool pouches on its sides and a coiled cable.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A technician's frame backpack: a compact pack of matte charcoal composite edged in dull gold on a light metal frame, with a cradle on its top holding two small grey spherical drones, each the size of a grapefruit with a single dark lens, in clamp rings; tool pouches on its sides and a coiled cable. Semi-realistic hard-surface product render of personal equipment for a grounded near-future science-fiction game set in the 2180s, worn by a disciplined faction: matte charcoal composite and dark metal, every edge picked out in a narrow line of dull gold, practical, worn and believable, as if made and used by people. Not ornate, not glowing except where described, no religious or royal symbols. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/banked-pack.jpg",
+          "sha256": "0cf9577d5bfe1f33d45fe35572e2585ac17de302d390c33674ccf9c456b3b087",
+          "bytes": 2031965,
+          "made": "2026-10-25T14:47:57.528Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17389-044a-754d-a54c-f6fdd045d0e0",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2500
+          },
+          "credits": 30,
+          "seconds": 139,
+          "made": "2026-10-25T14:51:00.378Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/banked-pack.jpg",
+              "sha256": "0cf9577d5bfe1f33d45fe35572e2585ac17de302d390c33674ccf9c456b3b087"
+            }
+          ],
+          "output": {
+            "bytes": 2495312,
+            "sha256": "f084811703eda2ad9313842dd4a5610f353285c556bac95588022cdc8dc07785"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/banked-pack.glb",
+          "bytes": 204068,
+          "sha256": "9119f69732927dd425df5b8621b699e6e10fd0aa98f3121fc60aaf31da34d4b6",
+          "triangles": {
+            "made": 2361,
+            "shipped": 2361
+          },
+          "textures": "1024 px WebP",
+          "turn": 180,
+          "front": "+z",
+          "dimensions": [
+            0.312,
+            0.5,
+            0.442
+          ],
+          "made": "2026-10-25T14:53:45.372Z"
+        }
+      }
+    },
+    {
+      "id": "gunpost",
+      "style": "station",
+      "size": 0.65,
+      "triangles": 3000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A small automated gun post set up on the floor: a compact boxy gun head with a short ventilated barrel and a round sensor lens, on a low swivel, standing on three short folding legs; the size of a toolbox, about sixty centimetres tall; a small blue status lamp on its back; scuffed slate grey panels with orange hazard markings.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A small automated gun post set up on the floor: a compact boxy gun head with a short ventilated barrel and a round sensor lens, on a low swivel, standing on three short folding legs; the size of a toolbox, about sixty centimetres tall; a small blue status lamp on its back; scuffed slate grey panels with orange hazard markings. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/gunpost.jpg",
+          "sha256": "c486a96c2fe2c16b816259bbc5746b9e7985c619e362fbd0804e221a4a9e1205",
+          "bytes": 1899060,
+          "made": "2026-10-25T14:47:53.840Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17389-043e-7159-99ab-27b097731953",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3000
+          },
+          "credits": 30,
+          "seconds": 108,
+          "made": "2026-10-25T14:50:29.182Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/gunpost.jpg",
+              "sha256": "c486a96c2fe2c16b816259bbc5746b9e7985c619e362fbd0804e221a4a9e1205"
+            }
+          ],
+          "output": {
+            "bytes": 12201048,
+            "sha256": "d0d993858504fc6b15c75421c1d30fe7703e89937e83321a6896683fefbd6d0d"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/gunpost.glb",
+          "bytes": 657072,
+          "sha256": "0edeb335db019e680d6f31ba2e9a3c27befd50666bc26d8082e5899246c4daec",
+          "triangles": {
+            "made": 2958,
+            "shipped": 2958
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.505,
+            0.566,
+            0.65
+          ],
+          "made": "2026-10-25T14:53:07.930Z"
+        }
+      }
+    },
+    {
+      "id": "emitter",
+      "style": "station",
+      "size": 0.32,
+      "triangles": 1500,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A thrown field emitter that has landed and opened on the floor: a low round puck of dark metal about thirty centimetres across, split into three short petals folded open from its centre, each petal with a ring of small emitter studs, and a cool blue glow in the core; scuffed slate grey with an orange hazard edge.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A thrown field emitter that has landed and opened on the floor: a low round puck of dark metal about thirty centimetres across, split into three short petals folded open from its centre, each petal with a ring of small emitter studs, and a cool blue glow in the core; scuffed slate grey with an orange hazard edge. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/emitter.jpg",
+          "sha256": "3d7ebb91524fd1b78cc9712b9be28ed544e935a8f5410d198c7e4418a168964e",
+          "bytes": 2532756,
+          "made": "2026-10-25T14:48:00.217Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a1738a-7f57-7754-b3ed-bbedaca29384",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 118,
+          "made": "2026-10-25T14:52:16.542Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/emitter.jpg",
+              "sha256": "3d7ebb91524fd1b78cc9712b9be28ed544e935a8f5410d198c7e4418a168964e"
+            }
+          ],
+          "output": {
+            "bytes": 12972744,
+            "sha256": "3ac28fd0a96bb8a04dfe97cb723c6657617c7316f89a14b5c44eeb220c463c45"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/emitter.glb",
+          "bytes": 655380,
+          "sha256": "0a331f9674f07031325018ad95976a32bedde83bf3840e32906370e2c4b724a7",
+          "triangles": {
+            "made": 1435,
+            "shipped": 1435
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.32,
+            0.057,
+            0.32
+          ],
+          "made": "2026-10-25T14:53:08.111Z"
+        }
+      }
+    },
+    {
+      "id": "repair-drone",
+      "style": "station",
+      "size": 0.32,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A small medical repair drone that hovers: a rounded body of off-white and slate grey the size of a large grapefruit, two small ducted fans on short arms either side, a slim jointed arm underneath ending in a fine spray nozzle, and a soft green status ring of light round its middle.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A small medical repair drone that hovers: a rounded body of off-white and slate grey the size of a large grapefruit, two small ducted fans on short arms either side, a slim jointed arm underneath ending in a fine spray nozzle, and a soft green status ring of light round its middle. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/repair-drone.jpg",
+          "sha256": "329ddc8829a124764b83ee7d40eaef37542b849a5af1b5d87fcf5f19c6f7690f",
+          "bytes": 2068327,
+          "made": "2026-10-25T14:48:14.674Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a1738a-a857-7682-83f3-345e2e1192d8",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 107,
+          "made": "2026-10-25T14:52:16.101Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/repair-drone.jpg",
+              "sha256": "329ddc8829a124764b83ee7d40eaef37542b849a5af1b5d87fcf5f19c6f7690f"
+            }
+          ],
+          "output": {
+            "bytes": 11405484,
+            "sha256": "d2e8549d2f925f96fb198d0ce190ece50dd71dbda32e80a8187c49f7df4b76d2"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/repair-drone.glb",
+          "bytes": 503756,
+          "sha256": "56df326e14d43da6b0f66a4bb5e2a1b84fa8efaf4503f7f2764cdfa2b073a240",
+          "triangles": {
+            "made": 1899,
+            "shipped": 1899
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.32,
+            0.216,
+            0.215
+          ],
+          "made": "2026-10-25T14:53:08.281Z"
+        }
+      }
+    },
+    {
+      "id": "seeker-drone",
+      "style": "station",
+      "size": 0.34,
+      "triangles": 2000,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A small seeker drone: a sleek dart-shaped body of slate grey with orange hazard markings, a single ducted rotor at its tail, two stubby fins, and a red sensor eye at its nose; about thirty centimetres long.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A small seeker drone: a sleek dart-shaped body of slate grey with orange hazard markings, a single ducted rotor at its tail, two stubby fins, and a red sensor eye at its nose; about thirty centimetres long. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/seeker-drone.jpg",
+          "sha256": "e8586c2bab6d95ec3a27a585889542aa15fadfbda001ec4ab051113ca872d0f1",
+          "bytes": 2033358,
+          "made": "2026-10-25T14:48:20.769Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a1738a-d04b-7222-8103-639c9d67a01f",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 86,
+          "made": "2026-10-25T14:52:05.638Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/seeker-drone.jpg",
+              "sha256": "e8586c2bab6d95ec3a27a585889542aa15fadfbda001ec4ab051113ca872d0f1"
+            }
+          ],
+          "output": {
+            "bytes": 10837732,
+            "sha256": "1a69d8f116979aaa589727685793e2b55c9753a8b99abab13e4feccf118b60b1"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/seeker-drone.glb",
+          "bytes": 495256,
+          "sha256": "13c2402dac36aee13b9be28bf7eda5add90b90ac355f689f3c0f6483faaf9b44",
+          "triangles": {
+            "made": 1973,
+            "shipped": 1973
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.238,
+            0.099,
+            0.34
+          ],
+          "made": "2026-10-25T14:53:45.540Z"
         }
       }
     }

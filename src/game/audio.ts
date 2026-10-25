@@ -61,8 +61,11 @@ export interface GameAudio {
   /** Starts the sound system; call from a user's touch or key. */
   unlock(): void;
   play(id: string, options?: { at?: Vec3; volume?: number; rate?: number; loop?: boolean }): Playing | null;
-  /** A spoken line, by its id (the hero's in the hero's voice); null if it has no voice yet. */
-  voice(lineId: string, heroBody: 'man' | 'woman'): Voice | null;
+  /**
+   * A spoken line, by its id (the hero's in the hero's voice); null if it has no voice yet. With
+   * `at`, it is heard from there (battle talk); otherwise close, as a conversation is.
+   */
+  voice(lineId: string, heroBody: 'man' | 'woman', options?: { at?: Vec3 }): Voice | null;
   /** The music for a mood; null for silence. Crossfades. */
   music(id: string | null): void;
   /** A looping ambience for a place; null for none. */
@@ -331,13 +334,26 @@ export function createAudio(): GameAudio {
         },
       };
     },
-    voice(lineId, heroBody) {
+    voice(lineId, heroBody, options = {}) {
       const entry = voices?.lines[lineId] ?? voices?.hero?.[lineId]?.[heroBody] ?? null;
       if (!context || !entry || !bus.voice) return null;
       const ctx = context;
       const gain = ctx.createGain();
       gain.gain.value = entry.gain ?? 1;
       let chain: AudioNode = gain;
+      if (options.at) {
+        // Called across a fight: heard from where it is said, carrying further than a footstep.
+        const panner = ctx.createPanner();
+        panner.panningModel = 'equalpower';
+        panner.distanceModel = 'inverse';
+        panner.refDistance = 5;
+        panner.rolloffFactor = 0.8;
+        panner.positionX.value = options.at.x;
+        panner.positionY.value = options.at.y;
+        panner.positionZ.value = z(options.at.z);
+        gain.connect(panner);
+        chain = panner;
+      }
       if (entry.radio) {
         // A comms band: the low and high ends cut, a little edge.
         const low = ctx.createBiquadFilter();
@@ -346,7 +362,7 @@ export function createAudio(): GameAudio {
         const high = ctx.createBiquadFilter();
         high.type = 'lowpass';
         high.frequency.value = 3200;
-        gain.connect(low).connect(high);
+        chain.connect(low).connect(high);
         chain = high;
       }
       chain.connect(bus.voice);

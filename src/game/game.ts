@@ -50,6 +50,21 @@ import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
 import {
+  BANKED_NAMES,
+  BANKED_VOICES,
+  type BankedCall,
+  bankedLines,
+  bankedSays,
+  type CompanionCall,
+  type CompanionName,
+  companionLines,
+  type FightLine,
+  newTalk,
+  nextLine,
+  TALK,
+  type TalkState,
+} from './fight-talk.ts';
+import {
   COMPANION_POWERS,
   type CompanionGrowth,
   companionAuto,
@@ -94,11 +109,13 @@ import {
   carriedWeight,
   damageAt,
   fitted,
+  HELD,
   KINDS,
   type Kit,
   MODS,
   type ModId,
   modsOn,
+  SIDEARM,
   soundKit,
   spreadAfter,
   swap as swapKit,
@@ -341,23 +358,6 @@ const COMMAND_TIME = 0.05;
 const LIFTOFF_SECONDS = 8;
 /** Without aim, a power takes the nearest target within this angle of where the hero faces (70°). */
 const POWER_CONE_COS = Math.cos((70 * Math.PI) / 180);
-/**
- * The sidearm in the hand: its length, and how it sits in the hand bone. Solved from the aiming pose
- * so the barrel runs along the forearm, upright, with the grip in the palm (the gun model's barrel
- * is its +x and its top +y); a probe looked at it from four sides.
- */
-const SIDEARM = {
-  length: 0.21,
-  rotation: [0.093, -1.141, 1.672] as [number, number, number],
-  offset: [-0.01, -0.125, -0.008] as [number, number, number],
-};
-/** Each weapon's model in the hand: its length, and how far it slides forward to put its grip in the hand. */
-const HELD: Record<WeaponKind, { length: number; along: number; lift: number }> = {
-  pistol: { length: SIDEARM.length, along: 0, lift: 0.03 },
-  rifle: { length: 0.95, along: 0.17, lift: 0.07 },
-  shotgun: { length: 0.9, along: 0.12, lift: 0.06 },
-  marksman: { length: 1.15, along: 0.22, lift: 0.06 },
-};
 /** Who speaks a line, by the name its tag gives, in the cast. */
 const SPEAKERS: Record<string, string> = {
   Ren: 'ren',
@@ -609,7 +609,46 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     groundUnder,
     power: (name: string, target: number, eye: Vector3) => companionPower(name, target, eye),
   };
-  const sayAs = (name: string) => (line: string) => options.onSay(name, line, null);
+  /**
+   * Battle talk (D-67): one voice at a time, heard from where it is said, with the speaker's mouth
+   * moving; the story's own lines come first, and a call made while one is spoken is dropped.
+   */
+  let talkNow: { voice: Voice; who: Character | null } | null = null;
+  const saidInFights = new Map<string, number>();
+  const talk = (line: FightLine, who: Character | null) => {
+    if (voiceNow && !voiceNow.voice.ended()) return;
+    talkNow?.voice.stop();
+    talkNow?.who?.speak(0);
+    talkNow = null;
+    options.onSay(line.speaker, line.text, line.id);
+    const at = who ? who.root.position.add(new Vector3(0, 1.6, 0)) : undefined;
+    const voice = audio.voice(line.id, options.looks.body, { at });
+    if (voice) talkNow = { voice, who };
+  };
+  const callAs = (name: CompanionName) => (call: CompanionCall) => {
+    const line = nextLine(companionLines(name, call), saidInFights);
+    if (line) talk(line, characterOf(name.toLowerCase()) ?? null);
+  };
+  /** The Banked's talk this fight (fight-talk.ts's rules), and the companions' answers to it. */
+  let bankedTalk: TalkState = newTalk(0);
+  let companionCalled = Number.NEGATIVE_INFINITY;
+  let tauntTry = 0;
+  /** Calls a companion makes a moment after what they saw (so the Banked's own line comes first). */
+  const pendingCalls: { at: number; call: CompanionCall }[] = [];
+  const now = () => performance.now() / 1000;
+  const bankedSay = (call: BankedCall, member: number) => {
+    const voice = BANKED_VOICES[member];
+    if (!voice || !banked) return;
+    const busy = !!talkNow && !talkNow.voice.ended();
+    const said = bankedSays(bankedTalk, bankedLines(voice, call), call, now(), busy);
+    bankedTalk = said.state;
+    if (said.line) talk({ ...said.line, speaker: BANKED_NAMES[voice] }, banked.speaker(member));
+  };
+  const companionAnswers = (call: CompanionCall) => {
+    if (now() - companionCalled < TALK.companionGap) return;
+    companionCalled = now();
+    pendingCalls.push({ at: now() + 1.4, call });
+  };
   const ren = spawnCompanion(
     scene,
     'Ren',
@@ -617,12 +656,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     characters.ren ?? hero,
     place.marks.ren?.at ?? Vector3.Zero(),
     world,
-    sayAs('Ren'),
+    callAs('Ren'),
   );
-  const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, sayAs('Jo'));
+  const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, callAs('Jo'));
   jo.show(false);
   const mira = characters.mira
-    ? spawnCompanion(scene, 'Mira', nav, characters.mira, new Vector3(-11.3, 0, 6), world, sayAs('Mira'))
+    ? spawnCompanion(scene, 'Mira', nav, characters.mira, new Vector3(-11.3, 0, 6), world, callAs('Mira'))
     : null;
   mira?.show(false);
   const companionsById: Record<string, Companion> = mira ? { ren, jo, mira } : { ren, jo };
@@ -1026,6 +1065,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const startEncounter = (id: string) => {
     fight = startFight(id);
     helpUsed = false;
+    bankedTalk = newTalk(now());
     snapshot = {
       hero: hero.root.position.clone(),
       yaw: heroYaw,
@@ -1413,12 +1453,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       for (const [i, c] of team.entries()) c.order({ kind: 'follow' }, i > 0);
     } else if (kind === 'attack') {
       const id = pickAssistTarget(range.candidates(from), dir, ASSIST_CONE * 1.5);
-      if (id === null) options.onSay(team[0]?.name ?? 'Ren', 'No target there.', null);
+      if (id === null) callAs((team[0]?.name ?? 'Ren') as CompanionName)('noTarget');
       else for (const [i, c] of team.entries()) c.order({ kind: 'attack', target: id }, i > 0);
     } else {
       const struck = cast(from.add(dir.scale(0.3)), from.add(dir.scale(SHOT_RANGE)), true);
       const target = range.droneOf(struck?.body);
-      if (!struck) options.onSay(team[0]?.name ?? 'Ren', "I can't reach that.", null);
+      if (!struck) callAs((team[0]?.name ?? 'Ren') as CompanionName)('unreachable');
       else if (target !== null) for (const [i, c] of team.entries()) c.order({ kind: 'attack', target }, i > 0);
       else {
         // On the floor, that spot; against a wall or a crate, just in front of it.
@@ -1771,8 +1811,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           speed: groundSpeed,
           direction: push > 0 ? { x: move.x / push, y: move.y / push } : { x: 0, y: 0 },
           firing: shotPose > 0,
-          // The long guns are held to the shoulder (rifle clips made in Blender, ACT1.md increment 3).
-          rifle: kit.carried[0] !== 'pistol',
+          // The long guns are held to the shoulder, each by its own hold (made in Blender).
+          gun: kit.carried[0],
         }),
         dt,
       );
@@ -1797,7 +1837,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         desired.set(castPose > 0 ? unit.x * SPEED.walk * push : 0, 0, castPose > 0 ? unit.z * SPEED.walk * push : 0);
       }
       // In a fight a long gun is held low and ready; a pistol hangs at the side.
-      const pose = poseWeights({ mode: 'move', speed: groundSpeed, ready: !!fight && kit.carried[0] !== 'pistol' });
+      const pose = poseWeights({ mode: 'move', speed: groundSpeed, ready: fight ? kit.carried[0] : null });
       hero.setPose(castPose > 0 ? { ...pose, upper: { power_cast: 1 } } : pose, dt);
     }
     heroForward.set(Math.sin(heroYaw), 0, Math.cos(heroYaw));
@@ -1898,6 +1938,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (r.down) {
           condition = fall(helpUsed);
           input.release();
+          const near = banked
+            ?.inspect()
+            .filter((b) => banked?.alive(b.id))
+            .sort(
+              (a, b) =>
+                Vector3.Distance(Vector3.FromArray(a.at), hero.root.position) -
+                Vector3.Distance(Vector3.FromArray(b.at), hero.root.position),
+            )[0];
+          if (near) bankedSay('heroDown', near.id);
         }
       } else {
         team.find((c) => c.name === id)?.hurt(amount);
@@ -1933,7 +1982,30 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         else if (e.kind === 'shield') audio.play('barrier', { at: e.at, volume: 0.6 });
         else if (e.kind === 'motes') audio.play('tender_spawn', { at: e.at, volume: 0.7 });
         else if (e.kind === 'barrier') audio.play('shield_hit', { at: e.at, volume: 0.5, rate: 0.7 });
+        else if (e.kind === 'talk' && e.call && e.member !== undefined) {
+          bankedSay(e.call, e.member);
+          // The companions call out what matters: the engineer's shields, the barrier down, motes.
+          if (e.call === 'shield') companionAnswers('engineer');
+          else if (e.call === 'barrierDown') companionAnswers('barrierDown');
+          else if (e.call === 'motes') companionAnswers('motes');
+        }
       }
+      // Once a fight, in a quiet moment, one of them speaks to the hero (the rules decide when).
+      tauntTry -= worldDt;
+      if (fight && tauntTry <= 0) {
+        tauntTry = 1;
+        const standing = banked.inspect().filter((b) => banked?.alive(b.id));
+        const who = standing[Math.floor(Math.random() * standing.length)];
+        if (who) bankedSay('taunt', who.id);
+      }
+    }
+    for (let i = pendingCalls.length - 1; i >= 0; i--) {
+      const p = pendingCalls[i];
+      if (!p || p.at > now()) continue;
+      pendingCalls.splice(i, 1);
+      const team = [...joined].filter((c) => !c.down && c.character.root.isEnabled());
+      const who = team[Math.floor(Math.random() * team.length)];
+      if (who) callAs(who.name as CompanionName)(p.call);
     }
 
     // What the swarm did, heard where it happened.
@@ -2193,6 +2265,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // The ears go with the camera; the speaking mouth moves; the music follows the fight.
     audio.listen(from, lookAt.subtract(from).normalize());
+    if (talkNow) {
+      talkNow.who?.speak(talkNow.voice.level());
+      if (talkNow.voice.ended()) {
+        talkNow.who?.speak(0);
+        talkNow = null;
+      }
+    }
     if (voiceNow) {
       voiceNow.who?.speak(voiceNow.voice.level());
       if (voiceNow.voice.ended()) {

@@ -28,6 +28,30 @@ export interface WeaponSpec {
   says: string;
 }
 
+/**
+ * The sidearm's model in the hand: its length, and how it sits in the hand bone. Solved from the
+ * aiming pose so the barrel runs along the forearm, upright, with the grip in the palm (the gun
+ * model's barrel is its +x and its top +y); a probe looked at it from four sides.
+ */
+export const SIDEARM = {
+  length: 0.21,
+  rotation: [0.093, -1.141, 1.672] as [number, number, number],
+  offset: [-0.01, -0.125, -0.008] as [number, number, number],
+};
+
+/**
+ * Each kind's model in the hand (characters.ts `hold`): its length, and how far its middle sits
+ * ahead of and above the grip, so the grip is in the palm. Measured from each long gun's file side
+ * on (ACT1_ART.md §6); the rifle is held a little shorter than its file so its long stock meets the
+ * shoulder. Each long gun has its own hold (`<kind>_aim`, `_shoot`, `_ready` in art/animations.json).
+ */
+export const HELD: Record<WeaponKind, { length: number; along: number; lift: number }> = {
+  pistol: { length: SIDEARM.length, along: 0, lift: 0.03 },
+  rifle: { length: 0.84, along: 0.095, lift: 0.061 },
+  shotgun: { length: 0.9, along: 0.223, lift: 0.06 },
+  marksman: { length: 1.15, along: 0.261, lift: 0.107 },
+};
+
 export const WEAPONS: Record<WeaponKind, WeaponSpec> = {
   pistol: {
     kind: 'pistol',

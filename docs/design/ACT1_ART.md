@@ -215,3 +215,33 @@ already paid for, and within D-24.
 
 Round 10 in [DECISIONS.md](../DECISIONS.md): D-66 the Banked's look, D-67 battle talk, D-68 the
 weapons' sounds and the music for fights with people, D-69 the powers' things, D-70 the lane.
+**Decided:** all five as recommended, 25 October 2026.
+
+## 9. As built
+
+The steps of §8, as each is pushed.
+
+1. **Hands on the rifle, and the companions' calls voiced** (25 October 2026). Looking closely
+   showed more than open fingers: the rifle clips were built along the pistol pose's shoulders,
+   about 15° off the direction the game points the gun, and both palms faced back towards the
+   shooter, so neither hand could meet the gun. The clips are now built round the body's forward,
+   each hand is turned by its knuckles, and the fingers close round the grip (the forefinger on
+   the trigger, along the guard when ready) and under the forend. Each long gun has its own hold,
+   measured from its model: the rifle, the shotgun (the left hand on the pump) and the marksman
+   rifle; the rifle is held at 0.84 m so its long stock meets the shoulder (ART_PIPELINE.md).
+   Ren, Jo and Mira answer orders and call out in their own words (`src/game/fight-talk.ts`),
+   39 lines voiced, heard from where they stand.
+2. **The Banked's armour, helmets, projector and pack** (25 October 2026). MatCreator's CC0
+   armour, simplified and recoloured charcoal and dull gold, fitted to both bodies and worn over a
+   near-black uniform; the engineer's is the same without thigh and knee plates. The closed helmet,
+   the engineer's open helmet, her pack with two motes and the warden's projector are Meshy models
+   on the head and the upper spine (`GEAR` in `src/game/banked.ts`). Built with the same run: the
+   Gun Post, the Shelter's emitter and the two drones, for step 5 (240 Meshy credits, 1,670 left).
+3. **Battle talk** (25 October 2026). The Banked call what they do and see, and once a fight say
+   something to the hero (`src/game/fight-talk.ts`: 16 calls, 113 takes in five voices); `banked.ts`
+   raises each moment (in sight, into cover, going round, falling back, dug in, a shield given, motes
+   sent, a shield or the barrier lost or back, a fall, the last one, lifted or blinded) and the game
+   says a line by the rules: one voice at a time, 2.5 seconds apart, no line again within 30, a
+   death and a broken barrier first, the story's own lines always before them. Ren, Jo and Mira
+   answer three of those moments (the engineer's shields, the barrier down, motes) a moment later,
+   at most once every six seconds.

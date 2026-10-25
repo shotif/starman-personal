@@ -123,6 +123,8 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
   const ownHairId = manifest.bodies[body].defaultLooks.hair;
   let worn: AbstractMesh[] = [];
   let wornHair = ownHairId;
+  let outfit: AbstractMesh[] = [];
+  let wornOutfit: string | null = null;
   let sliders: Record<string, number> = {};
   const textures = new Map<string, Texture>();
 
@@ -138,6 +140,23 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
     return t;
   };
 
+  /** A part made on the same skeleton (a hair style, an outfit), loaded and given the character's bones. */
+  const loadPart = async (file: string) => {
+    const part = await LoadAssetContainerAsync(`${CHARACTERS}${file}`, scene);
+    part.addAllToScene();
+    const parent = ownHair[0]?.parent ?? character.model;
+    const meshes = part.meshes.filter((m) => m.skeleton);
+    for (const m of meshes) {
+      // Same bones, order and inverse bind matrices as the hero (ART_PIPELINE.md §8).
+      m.skeleton = character.skeleton;
+      m.parent = parent;
+    }
+    for (const s of part.skeletons) s.dispose();
+    for (const n of part.transformNodes) n.dispose();
+    part.meshes.find((m) => m.name === '__root__')?.dispose();
+    return meshes;
+  };
+
   const wearHair = async (id: string) => {
     if (id === wornHair) return;
     for (const m of worn) m.dispose();
@@ -146,22 +165,32 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
     for (const m of ownHair) m.setEnabled(id === ownHairId);
     const option = manifest.looks[body].hair.find((h) => h.id === id);
     if (id === ownHairId || !option?.file || !character.skeleton) return;
-    const part = await LoadAssetContainerAsync(`${CHARACTERS}${option.file}`, scene);
-    if (wornHair !== id) return; // another style was chosen while this one loaded
-    part.addAllToScene();
-    const parent = ownHair[0]?.parent ?? character.model;
-    const hair = part.meshes.filter((m) => m.skeleton);
-    for (const m of hair) {
-      // Same bones, order and inverse bind matrices as the hero (ART_PIPELINE.md §8).
-      m.skeleton = character.skeleton;
-      m.parent = parent;
+    const hair = await loadPart(option.file);
+    if (wornHair !== id) {
+      // Another style was chosen while this one loaded.
+      for (const m of hair) m.dispose();
+      return;
     }
-    for (const s of part.skeletons) s.dispose();
-    for (const n of part.transformNodes) n.dispose();
-    part.meshes.find((m) => m.name === '__root__')?.dispose();
     worn = hair;
     character.fitBounds(worn);
     bakeSliders(worn, sliders);
+  };
+
+  const wearOutfit = async (id: string | null) => {
+    if (id === wornOutfit) return;
+    for (const m of outfit) m.dispose();
+    outfit = [];
+    wornOutfit = id;
+    const option = id ? manifest.looks[body].outfits?.find((o) => o.id === id) : null;
+    if (!option?.file || !character.skeleton) return;
+    const parts = await loadPart(option.file);
+    if (wornOutfit !== id) {
+      for (const m of parts) m.dispose();
+      return;
+    }
+    outfit = parts;
+    character.fitBounds(outfit);
+    bakeSliders(outfit, sliders);
   };
 
   let lastLevel = 0;
@@ -192,8 +221,9 @@ export function wardrobe(scene: Scene, character: Character, manifest: Manifest,
       if (skin && skinFile) skin.albedoTexture = texture(skinFile, false, skin.albedoTexture);
       const eyeFile = manifest.looks[body].eyes.find((e) => e.id === looks.eyes)?.file;
       if (eyes && eyeFile) eyes.albedoTexture = texture(eyeFile, true, eyes.albedoTexture);
-      await wearHair(looks.hair);
+      await Promise.all([wearHair(looks.hair), wearOutfit(looks.outfit ?? null)]);
       bakeSliders(worn, sliders);
+      bakeSliders(outfit, sliders);
     },
   };
 }

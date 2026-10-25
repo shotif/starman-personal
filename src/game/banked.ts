@@ -31,12 +31,14 @@ import {
 import type { Character } from './characters.ts';
 import type { Damage, TargetGroup } from './combat.ts';
 import { type Defences, type Difficulty, recover, takeHit } from './defences.ts';
+import type { BankedCall } from './fight-talk.ts';
 import { modelsAt } from './kit.ts';
 import { applyLineage, type Body, defaultLooks, type Looks, type Manifest } from './looks.ts';
 import { turnTowards, yawOf } from './motion.ts';
 import type { AgentHandle, Navigation } from './navigation.ts';
 import { dress } from './people.ts';
 import { poseWeights } from './pose.ts';
+import { HELD, SIDEARM } from './weapons.ts';
 
 /**
  * The Banked in a fight (D-51; ACT1.md increment 4; COMBAT.md, *The Banked*): people who take
@@ -60,9 +62,12 @@ export interface BankedWorld {
 }
 
 export interface BankedEvent {
-  kind: 'fire' | 'glint' | 'down' | 'shield' | 'motes' | 'barrier';
+  kind: 'fire' | 'glint' | 'down' | 'shield' | 'motes' | 'barrier' | 'talk';
   who: BankedKind;
   at: Vector3;
+  /** For `talk`: what there is to say (D-67), and which of the squad would say it. */
+  call?: BankedCall;
+  member?: number;
 }
 
 export interface BankedGroup extends TargetGroup {
@@ -85,6 +90,8 @@ export interface BankedGroup extends TargetGroup {
   burst(at: Vector3, radius: number, damage: Damage, by: string): number;
   unprime(id: number): void;
   drainEvents(): BankedEvent[];
+  /** The figure of one of the squad (by its place in the group), for its voice and mouth. */
+  speaker(member: number): Character | null;
   inspect(): {
     /** Its place in the group (for `strikeMachine` and the powers' list after the swarm's). */
     id: number;
@@ -104,18 +111,46 @@ export interface BankedGroup extends TargetGroup {
 /** Banked collision group: the hero's and the companions' shots meet it; the people's bodies do not. */
 export const BANKED_GROUP = 8;
 
-/** Who they are under the gold: the people of every power (D-37), from the creator's options. */
-const LOOKS: { body: Body; lineage: string; skin: string; hair: string; eyes: string; height?: number }[] = [
-  { body: 'man', lineage: 'heavyworlder', skin: 'tone4', hair: 'shaved', eyes: 'brown' },
-  { body: 'woman', lineage: 'spacer', skin: 'tone2', hair: 'short', eyes: 'grey' },
-  { body: 'man', lineage: 'earthborn', skin: 'tone5', hair: 'cropped', eyes: 'brown' },
-  { body: 'woman', lineage: 'earthborn', skin: 'tone3', hair: 'bun', eyes: 'green' },
-  { body: 'man', lineage: 'heavyworlder', skin: 'tone1', hair: 'shaved', eyes: 'blue', height: 1.12 },
+/**
+ * Who they are under the armour: the people of every power (D-37), from the creator's options. The
+ * troopers and the warden wear the Banked's armour, the engineer its light cut (D-66).
+ */
+const LOOKS: {
+  body: Body;
+  lineage: string;
+  skin: string;
+  hair: string;
+  eyes: string;
+  height?: number;
+  outfit: string;
+}[] = [
+  { body: 'man', lineage: 'heavyworlder', skin: 'tone4', hair: 'shaved', eyes: 'brown', outfit: 'armour' },
+  { body: 'woman', lineage: 'spacer', skin: 'tone2', hair: 'shaved', eyes: 'grey', outfit: 'armour' },
+  { body: 'man', lineage: 'earthborn', skin: 'tone5', hair: 'shaved', eyes: 'brown', outfit: 'armour' },
+  { body: 'woman', lineage: 'earthborn', skin: 'tone3', hair: 'shaved', eyes: 'green', outfit: 'armour-light' },
+  { body: 'man', lineage: 'heavyworlder', skin: 'tone1', hair: 'shaved', eyes: 'blue', height: 1.12, outfit: 'armour' },
 ];
+/**
+ * What each kind wears besides the armour (D-66; models in art/models.json): a closed helmet for
+ * the troopers and the warden, an open one for the engineer, whose face is seen; the engineer's
+ * pack, where her motes ride, and the warden's barrier projector. Each on a bone: its size, and its
+ * bottom's offset from the bone at rest (to the figure's right, up, forward), checked from four sides.
+ */
+const GEAR: Record<BankedKind, { model: string; bone: string; size: number; offset: [number, number, number] }[]> = {
+  trooper: [{ model: 'banked-helmet', bone: 'head', size: 0.31, offset: [0, -0.1, 0.0] }],
+  engineer: [
+    { model: 'banked-headset', bone: 'head', size: 0.27, offset: [0, -0.02, -0.01] },
+    { model: 'banked-pack', bone: 'spine_03', size: 0.5, offset: [0, -0.3, -0.11] },
+  ],
+  warden: [
+    { model: 'banked-helmet', bone: 'head', size: 0.31, offset: [0, -0.1, 0.0] },
+    { model: 'banked-projector', bone: 'spine_03', size: 0.62, offset: [0, -0.3, -0.14] },
+  ],
+};
 /** The pool: three troopers, an engineer and a warden; a squad is at most five (ACT1.md). */
 const POOL: BankedKind[] = ['trooper', 'trooper', 'trooper', 'engineer', 'warden'];
-/** The dull gold of banked light, on the shared uniform, until their own armour (increment 6). */
-const GOLD = new Color3(2.6, 1.95, 0.85);
+/** The uniform under the armour: near-black, so the charcoal plates and their gold read (D-66). */
+const UNDER = new Color3(0.32, 0.32, 0.35);
 const EYE = 1.55;
 const CHEST = 1.2;
 const LYING = 6;
@@ -185,13 +220,18 @@ export async function buildBanked(
     load(`${import.meta.env.BASE_URL}assets/props/sidearm-meshy.glb`),
     load(`${modelsAt(setup.detailed)}shotgun.glb`),
   ]);
+  const gearModels = new Map(
+    await Promise.all(
+      [...new Set(Object.values(GEAR).flatMap((g) => g.map((x) => x.model)))].map(
+        async (id) => [id, await load(`${modelsAt(setup.detailed)}${id}.glb`)] as const,
+      ),
+    ),
+  );
   const GUNS = {
-    rifle: { model: rifle, length: 0.95, along: 0.17, lift: 0.07, long: true },
-    pistol: { model: pistol, length: 0.21, along: 0, lift: 0.03, long: false },
-    shotgun: { model: shotgun, length: 0.9, along: 0.12, lift: 0.06, long: true },
+    rifle: { model: rifle, ...HELD.rifle, long: true },
+    pistol: { model: pistol, ...HELD.pistol, long: false },
+    shotgun: { model: shotgun, ...HELD.shotgun, long: true },
   };
-  const SIDEARM_ROTATION: [number, number, number] = [0.093, -1.141, 1.672];
-  const SIDEARM_OFFSET: [number, number, number] = [-0.01, -0.125, -0.008];
 
   const members: Member[] = await Promise.all(
     POOL.map(async (kind, i) => {
@@ -204,14 +244,19 @@ export async function buildBanked(
         hair: spec?.hair ?? base.hair,
         eyes: spec?.eyes ?? base.eyes,
         height: spec?.height ?? base.height,
+        outfit: spec?.outfit,
       };
       const id = `banked-${i}`;
       const character = await dress(scene, setup.templates, setup.manifest, id, looks);
       for (const mesh of character.meshes) {
         const material = mesh.material;
         if (material instanceof PBRMaterial && material.name.endsWith(`${looks.body}_suit`)) {
-          material.albedoColor = GOLD.clone();
+          material.albedoColor = UNDER.clone();
         }
+      }
+      for (const g of GEAR[kind]) {
+        const model = gearModels.get(g.model);
+        if (model) character.attach(model, g.bone, g.size, g.offset);
       }
       if (kind === 'warden') character.root.scaling.scaleInPlace(1.08);
       const gun = GUNS[BANKED[kind].carries];
@@ -219,8 +264,8 @@ export async function buildBanked(
         const grip = character.hold(
           gun.model,
           gun.length,
-          SIDEARM_ROTATION,
-          SIDEARM_OFFSET,
+          SIDEARM.rotation,
+          SIDEARM.offset,
           gun.along,
           gun.long,
           gun.lift,
@@ -305,6 +350,11 @@ export async function buildBanked(
   const heard = (kind: BankedEvent['kind'], who: BankedKind, at: Vector3) => events.push({ kind, who, at: at.clone() });
   const flying = (m: Member) => m.active && m.alive;
   const chestOf = (m: Member) => m.character.root.position.add(new Vector3(0, CHEST, 0));
+  /** Something one of them could say (D-67): the game decides, by the rules of fight-talk.ts. */
+  const call = (c: BankedCall, m: Member) =>
+    events.push({ kind: 'talk', who: m.kind, at: chestOf(m), call: c, member: members.indexOf(m) });
+  /** Whether a trooper has called the hero in sight yet, this fight. */
+  let spotted = false;
   let heroHidden = 0;
   let difficulty: Difficulty = 'standard';
 
@@ -320,6 +370,17 @@ export async function buildBanked(
     m.character.aimHeld(null);
     if (m.shell) m.shell.setEnabled(false);
     heard('down', m.kind, chestOf(m));
+    // The others see it: the nearest says so, or the last one left knows it is alone.
+    const left = members.filter(flying);
+    const fell = m.character.root.position;
+    const nearest = left.reduce<Member | null>(
+      (a, b) =>
+        !a || Vector3.Distance(b.character.root.position, fell) < Vector3.Distance(a.character.root.position, fell)
+          ? b
+          : a,
+      null,
+    );
+    if (nearest) call(left.length === 1 ? 'last' : 'allyDown', nearest);
   };
   const retire = (m: Member) => {
     m.active = false;
@@ -336,17 +397,21 @@ export async function buildBanked(
       const at = m.character.root.position;
       const facing = { x: Math.sin(m.yaw), z: Math.cos(m.yaw) };
       if (barrierStops(m.barrier, facing, { x: at.x, z: at.z }, { x: from.x, z: from.z })) {
+        const had = m.barrier;
         if (damage.kind !== 'field') {
           m.barrier = Math.max(0, m.barrier - damage.amount * (damage.kind === 'arc' ? 2 : 1));
         }
         m.barrierSince = 0;
         heard('barrier', m.kind, chestOf(m));
+        if (had > 0 && m.barrier <= 0) call('barrierDown', m);
         return false;
       }
     }
+    const shielded = m.defences.shield > 0;
     const result = takeHit(m.defences, damage.amount * (m.marked > 0 ? 1.5 : 1), damage.kind, damage.plate ?? 0);
     m.defences = result.defences;
     if (result.down) bringDown(m);
+    else if (m.kind === 'engineer' && shielded && m.defences.shield <= 0) call('exposed', m);
     return result.down;
   };
 
@@ -369,6 +434,8 @@ export async function buildBanked(
       return true;
     },
     wake(kinds, at) {
+      // A new fight: nobody has called the hero in sight yet.
+      if (!members.some(flying)) spotted = false;
       kinds.forEach((kind, i) => {
         // One out of the fight, or else one lying where they fell (the next wave may come before they
         // would have been cleared away).
@@ -423,10 +490,13 @@ export async function buildBanked(
       if (!m || !flying(m)) return;
       // A shield stops field powers: no lifting a shielded trooper (D-42). Spoof is for machines.
       if ((effect === 'lift' || effect === 'pull') && (m.defences.shield > 0 || m.barrier > 0)) return;
-      if (effect === 'lift') m.lifted = seconds;
-      else if (effect === 'pull') {
+      if (effect === 'lift') {
+        m.lifted = seconds;
+        call('lifted', m);
+      } else if (effect === 'pull') {
         m.pulled = seconds;
         m.pullTo = towards?.clone() ?? null;
+        call('lifted', m);
       } else if (effect === 'prime') m.primed = seconds;
       else if (effect === 'mark') {
         m.marked = seconds;
@@ -435,7 +505,10 @@ export async function buildBanked(
           mesh.outlineColor = new Color3(1, 0.7, 0.2);
           mesh.outlineWidth = 0.01;
         }
-      } else if (effect === 'blind') m.blinded = seconds;
+      } else if (effect === 'blind') {
+        m.blinded = seconds;
+        call('blinded', m);
+      }
     },
     burst(at, radius, damage, by) {
       let struck = 0;
@@ -451,6 +524,9 @@ export async function buildBanked(
     unprime(id) {
       const m = members[id];
       if (m) m.primed = 0;
+    },
+    speaker(member) {
+      return members[member]?.character ?? null;
     },
     drainEvents() {
       const out = events;
@@ -481,8 +557,11 @@ export async function buildBanked(
       const heroSeen =
         !!hero &&
         squad.some((m) => !world.obstacle(m.character.root.position.add(new Vector3(0, EYE, 0)), chestAt(hero)));
+      const hidden = heroHidden;
       heroHidden = heroSeen ? 0 : heroHidden + dt;
       const troopers = squad.filter((m) => m.kind === 'trooper');
+      // The hero dug in: one of the troopers says to pin them down.
+      if (hidden < 4 && heroHidden >= 4 && troopers[0]) call('suppress', troopers[0]);
       const flanker = troopers.length >= 2 ? troopers[0] : null;
       const held = squad.map((m) => m.state.cover).filter((c): c is number => c !== null);
 
@@ -510,7 +589,10 @@ export async function buildBanked(
             m.shell.setEnabled(m.barrier > 0);
             m.shell.visibility = 0.35 + 0.65 * (m.barrier / BARRIER.strength);
           }
-          if (was <= 0 && m.barrier > 0) heard('barrier', m.kind, chestOf(m));
+          if (was <= 0 && m.barrier > 0) {
+            heard('barrier', m.kind, chestOf(m));
+            call('barrierBack', m);
+          }
         }
         m.body.position.set(root.position.x, root.position.y + 0.88, root.position.z);
 
@@ -555,6 +637,7 @@ export async function buildBanked(
         coverArea.forEach((area, i) => {
           if (area !== room) taken.add(i);
         });
+        const before = m.state;
         const step = bankedStep(
           m.state,
           {
@@ -573,6 +656,10 @@ export async function buildBanked(
           dt,
         );
         m.state = step.state;
+        // What it does, said: falling back, going round, into cover.
+        if (!before.fellBack && step.state.fellBack) call('fallBack', m);
+        else if (step.state.flankWait > before.flankWait + 1 && step.moveTo) call('flank', m);
+        else if (before.mode === 'seek' && step.state.mode === 'hide') call('cover', m);
         if (step.state.cover !== null) held.push(step.state.cover);
         if (step.moveTo) m.agent?.goTo(new Vector3(step.moveTo.x, here.y, step.moveTo.z));
         else m.agent?.stop();
@@ -608,7 +695,13 @@ export async function buildBanked(
         if (step.glint) {
           m.glint.position.copyFrom(m.character.muzzle());
           m.glint.scaling.setAll(0.8 + Math.random() * 0.6);
-          if (!m.glint.metadata?.heard) heard('glint', m.kind, m.glint.position);
+          if (!m.glint.metadata?.heard) {
+            heard('glint', m.kind, m.glint.position);
+            if (!spotted && m.kind === 'trooper') {
+              spotted = true;
+              call('spotted', m);
+            }
+          }
           m.glint.metadata = { heard: true };
         } else m.glint.metadata = null;
         m.shotPose -= dt;
@@ -627,11 +720,11 @@ export async function buildBanked(
               speed,
               direction: speed > 0.3 ? { x: 0, y: 1 } : { x: 0, y: 0 },
               firing: m.shotPose > 0,
-              rifle: long,
+              gun: BANKED[m.kind].carries,
             }),
             dt,
           );
-        } else m.character.setPose(poseWeights({ mode: 'move', speed, ready: long }), dt);
+        } else m.character.setPose(poseWeights({ mode: 'move', speed, ready: BANKED[m.kind].carries }), dt);
 
         // The engineer: a shield on whoever needs it, and the engines' motes.
         if (m.kind === 'engineer') {
@@ -661,6 +754,7 @@ export async function buildBanked(
               };
               flashAt(chestOf(ally));
               heard('shield', m.kind, chestOf(ally));
+              call('shield', m);
             }
           }
           if (
@@ -674,6 +768,7 @@ export async function buildBanked(
               [up.add(new Vector3(0.6, 0, 0)), up.add(new Vector3(-0.6, 0.3, 0))].slice(0, SUPPORT.motes),
             );
             heard('motes', m.kind, up);
+            call('motes', m);
           }
         }
       }

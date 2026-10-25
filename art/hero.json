@@ -776,6 +776,70 @@
           "hidden": true
         }
       ]
-    }
+    },
+    "outfits": [
+      {
+        "id": "armour",
+        "label": "The Banked's armour",
+        "file": "derived/banked-armour/banked-armour.mhclo",
+        "recolour": {
+          "plate": [
+            0.2,
+            0.205,
+            0.22
+          ],
+          "trim": [
+            0.62,
+            0.48,
+            0.22
+          ],
+          "strap": [
+            0.14,
+            0.1,
+            0.07
+          ]
+        },
+        "roughness": 0.62,
+        "textureSize": 1024,
+        "note": "MatCreator's MC-SciFi-Armor Jupiter7 (CC0), simplified to 35% of its faces by scripts/art/outfits.py, charcoal plates edged in dull gold (D-66), for troopers and wardens",
+        "simplify": {
+          "from": "suits02/clothes/matcreator_mc-scifi-armor_jupiter7/matcreator_mc-scifi-armor_jupiter7.mhclo",
+          "ratio": 0.35
+        }
+      },
+      {
+        "id": "armour-light",
+        "label": "The Banked's light armour",
+        "file": "derived/banked-armour/banked-armour.mhclo",
+        "recolour": {
+          "plate": [
+            0.2,
+            0.205,
+            0.22
+          ],
+          "trim": [
+            0.62,
+            0.48,
+            0.22
+          ],
+          "strap": [
+            0.14,
+            0.1,
+            0.07
+          ]
+        },
+        "roughness": 0.62,
+        "textureSize": 1024,
+        "drop": [
+          0.2,
+          0.56
+        ],
+        "note": "the same armour without its thigh and knee plates, for engineers (Helios, the lighter suit, has 71,000 vertices: too heavy for a phone)",
+        "simplify": {
+          "from": "suits02/clothes/matcreator_mc-scifi-armor_jupiter7/matcreator_mc-scifi-armor_jupiter7.mhclo",
+          "ratio": 0.35
+        }
+      }
+    ]
   }
 }

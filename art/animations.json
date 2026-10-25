@@ -299,8 +299,115 @@
       "derived": "rifle",
       "from": "pistol_aim",
       "lower_deg": 40,
+      "trigger": false,
       "loop": true,
-      "note": "rifle_aim tipped 40 degrees down about the right shoulder: a low ready, for a fight while not aiming"
+      "note": "rifle_aim tipped 40 degrees down about the right shoulder: a low ready, for a fight while not aiming; the forefinger off the trigger, along the guard"
+    },
+    {
+      "name": "shotgun_aim",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "loop": true,
+      "note": "rifle_aim with the shotgun's own hold: the left hand on the pump, farther forward, the stock shorter, the body turned more (measured from public/assets/models/shotgun.glb at 0.9 m)",
+      "forend": [
+        0.4,
+        0.04,
+        0.0
+      ],
+      "pull": 0.26,
+      "twist_deg": 35
+    },
+    {
+      "name": "shotgun_shoot",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "recoil": [
+        0,
+        0.05,
+        0.04,
+        0.026,
+        0.015,
+        0.008,
+        0.004,
+        0.002,
+        0.0,
+        0.0
+      ],
+      "loop": false,
+      "note": "rifle_shoot with the shotgun's own hold: the left hand on the pump, farther forward, the stock shorter, the body turned more (measured from public/assets/models/shotgun.glb at 0.9 m)",
+      "forend": [
+        0.4,
+        0.04,
+        0.0
+      ],
+      "pull": 0.26,
+      "twist_deg": 35
+    },
+    {
+      "name": "shotgun_ready",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "lower_deg": 40,
+      "trigger": false,
+      "loop": true,
+      "note": "rifle_ready with the shotgun's own hold: the left hand on the pump, farther forward, the stock shorter, the body turned more (measured from public/assets/models/shotgun.glb at 0.9 m)",
+      "forend": [
+        0.4,
+        0.04,
+        0.0
+      ],
+      "pull": 0.26,
+      "twist_deg": 35
+    },
+    {
+      "name": "marksman_aim",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "loop": true,
+      "note": "rifle_aim with the marksman rifle's own hold: the left hand under the barrel's shroud, which sits higher above the grip (measured from public/assets/models/marksman.glb at 1.15 m)",
+      "forend": [
+        0.33,
+        0.075,
+        0.0
+      ]
+    },
+    {
+      "name": "marksman_shoot",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "recoil": [
+        0,
+        0.05,
+        0.04,
+        0.026,
+        0.015,
+        0.008,
+        0.004,
+        0.002,
+        0.0,
+        0.0
+      ],
+      "loop": false,
+      "note": "rifle_shoot with the marksman rifle's own hold: the left hand under the barrel's shroud, which sits higher above the grip (measured from public/assets/models/marksman.glb at 1.15 m)",
+      "forend": [
+        0.33,
+        0.075,
+        0.0
+      ]
+    },
+    {
+      "name": "marksman_ready",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "lower_deg": 40,
+      "trigger": false,
+      "loop": true,
+      "note": "rifle_ready with the marksman rifle's own hold: the left hand under the barrel's shroud, which sits higher above the grip (measured from public/assets/models/marksman.glb at 1.15 m)",
+      "forend": [
+        0.33,
+        0.075,
+        0.0
+      ]
     },
     {
       "name": "power_ready",

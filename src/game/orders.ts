@@ -1,6 +1,9 @@
+import type { CompanionCall } from './fight-talk.ts';
+
 /**
  * A companion's objectives and how she decides what to do about them (D-16, ORDERS.md). Pure:
- * the game measures the facts, this decides.
+ * the game measures the facts, this decides; what she says is her own words for the call
+ * (src/game/fight-talk.ts).
  */
 export interface Point {
   x: number;
@@ -34,8 +37,8 @@ export interface Decision {
   moveTo: Point | null;
   /** Which target to shoot at this moment, or null. */
   shootAt: number | null;
-  /** A line for the HUD, or null. */
-  say: string | null;
+  /** What she calls out, or null. */
+  say: CompanionCall | null;
 }
 
 export const ORDERS = {
@@ -52,13 +55,13 @@ export const ORDERS = {
 
 const flat = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.z - b.z);
 
-/** The objective an order gives, and what she says on hearing it. */
-export function receive(current: Objective, order: Order): { objective: Objective; say: string } {
-  if (order.kind === 'follow') return { objective: { kind: 'follow' }, say: 'With you.' };
-  if (order.kind === 'hold') return { objective: { kind: 'hold', at: order.at, arrived: false }, say: 'Moving.' };
+/** The objective an order gives, and what she calls on hearing it. */
+export function receive(current: Objective, order: Order): { objective: Objective; say: CompanionCall } {
+  if (order.kind === 'follow') return { objective: { kind: 'follow' }, say: 'follow' };
+  if (order.kind === 'hold') return { objective: { kind: 'hold', at: order.at, arrived: false }, say: 'hold' };
   // An attack returns to what she was doing before it, but never to another attack.
   const after = current.kind === 'attack' ? current.after : current;
-  return { objective: { kind: 'attack', target: order.target, after }, say: 'On it.' };
+  return { objective: { kind: 'attack', target: order.target, after }, say: 'attack' };
 }
 
 /** Where she stands when following: behind the hero and to the left. */
@@ -78,10 +81,10 @@ export function decide(objective: Objective, facts: Facts): Decision {
   }
   if (objective.kind === 'hold') {
     if (!facts.reachable) {
-      return { objective: { kind: 'follow' }, moveTo: null, shootAt: null, say: "I can't reach that." };
+      return { objective: { kind: 'follow' }, moveTo: null, shootAt: null, say: 'unreachable' };
     }
     if (!objective.arrived && flat(facts.me, objective.at) <= ORDERS.arrive) {
-      return { objective: { ...objective, arrived: true }, moveTo: null, shootAt: threat, say: 'In position.' };
+      return { objective: { ...objective, arrived: true }, moveTo: null, shootAt: threat, say: 'arrived' };
     }
     return {
       objective,
@@ -93,14 +96,14 @@ export function decide(objective: Objective, facts: Facts): Decision {
   const target = facts.target;
   if (!target?.alive) {
     const after = objective.after.kind === 'hold' ? { ...objective.after, arrived: false } : objective.after;
-    return { objective: after, moveTo: null, shootAt: null, say: 'Target down.' };
+    return { objective: after, moveTo: null, shootAt: null, say: 'targetDown' };
   }
   const distance = Math.hypot(target.position.x - facts.me.x, target.position.z - facts.me.z);
   if (target.visible && distance <= ORDERS.range) {
     return { objective, moveTo: null, shootAt: objective.target, say: null };
   }
   if (!facts.reachable) {
-    return { objective: objective.after, moveTo: null, shootAt: null, say: "I can't reach that." };
+    return { objective: objective.after, moveTo: null, shootAt: null, say: 'unreachable' };
   }
   // Close in along the line to the target until it is in range and in sight.
   const k = distance > 0 ? Math.max(0, distance - ORDERS.approach) / distance : 0;

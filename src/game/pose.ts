@@ -21,6 +21,12 @@ export const CLIPS = [
   'rifle_aim',
   'rifle_shoot',
   'rifle_ready',
+  'shotgun_aim',
+  'shotgun_shoot',
+  'shotgun_ready',
+  'marksman_aim',
+  'marksman_shoot',
+  'marksman_ready',
   'power_cast',
   'punch_jab',
   'punch_cross',
@@ -45,14 +51,25 @@ export const ONE_SHOT: readonly Clip[] = [
 ];
 export type Weights = Partial<Record<Clip, number>>;
 
+/** The gun in hand; each long gun has its own hold, made to its model (ACT1_ART.md §6). */
+export type Gun = 'pistol' | 'rifle' | 'shotgun' | 'marksman';
+const HOLDS: Record<Exclude<Gun, 'pistol'>, { aim: Clip; shoot: Clip; ready: Clip }> = {
+  rifle: { aim: 'rifle_aim', shoot: 'rifle_shoot', ready: 'rifle_ready' },
+  shotgun: { aim: 'shotgun_aim', shoot: 'shotgun_shoot', ready: 'shotgun_ready' },
+  marksman: { aim: 'marksman_aim', shoot: 'marksman_shoot', ready: 'marksman_ready' },
+};
+
 export type PoseState =
-  /** Moving freely: idle, walk, jog and sprint by ground speed; `ready` holds a long gun low (a fight). */
-  | { mode: 'move'; speed: number; ready?: boolean }
+  /**
+   * Moving freely: idle, walk, jog and sprint by ground speed; `ready` holds that long gun low (a
+   * fight); a pistol hangs at the side.
+   */
+  | { mode: 'move'; speed: number; ready?: Gun | null }
   /**
    * Aiming: walking in any direction (x right, y forward, relative to the hero) with the arms up;
-   * `rifle` holds a long gun to the shoulder rather than a pistol out.
+   * a long gun held to the shoulder, a pistol out.
    */
-  | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean; rifle?: boolean }
+  | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean; gun?: Gun }
   /** In low cover, facing it; `slide` is -1 (left) to 1 (right) along it. */
   | { mode: 'cover'; slide: number }
   /** In a conversation: standing, gesturing while speaking (DIALOGUE.md). */
@@ -101,7 +118,7 @@ export function poseWeights(state: PoseState): Pose {
     const w = locomotionWeights(state.speed);
     return {
       lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint },
-      upper: state.ready ? { rifle_ready: 1 } : null,
+      upper: state.ready && state.ready !== 'pistol' ? { [HOLDS[state.ready].ready]: 1 } : null,
     };
   }
   if (state.mode === 'down') return { lower: { death: 1 }, upper: null, blend: 5 };
@@ -121,6 +138,9 @@ export function poseWeights(state: PoseState): Pose {
   for (const [clip, w] of Object.entries(directionalWeights(state.direction)) as [Clip, number][]) {
     lower[clip] = w * moving;
   }
-  if (state.rifle) return { lower, upper: state.firing ? { rifle_shoot: 1 } : { rifle_aim: 1 } };
+  if (state.gun && state.gun !== 'pistol') {
+    const hold = HOLDS[state.gun];
+    return { lower, upper: { [state.firing ? hold.shoot : hold.aim]: 1 } };
+  }
   return { lower, upper: state.firing ? { pistol_shoot: 1 } : { pistol_aim: 1 } };
 }

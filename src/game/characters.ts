@@ -65,6 +65,13 @@ export interface Character {
   aimHeld(direction: Vector3 | null): void;
   /** Which held model the shots come from (the weapon in hand, D-56), and its length. */
   wield(node: TransformNode, length: number): void;
+  /**
+   * Wears a rigid piece on a bone (a helmet on the head, a pack on the back: D-66): scaled to `size`
+   * metres along its longest side, its bottom's middle set `offset` metres from the bone (in the
+   * figure's own frame: x to its right, y up, z forward) as the figure stands at rest, then carried
+   * by the bone.
+   */
+  attach(model: AssetContainer, bone: string, size: number, offset: [number, number, number]): TransformNode | null;
   /** Fades the whole figure: 1 drawn as usual, 0 hidden. */
   setFade(visibility: number): void;
 }
@@ -140,8 +147,11 @@ export async function loadCharacterTemplate(scene: Scene, url: string): Promise<
   }
 }
 
-/** Where the right palm is from the wrist in the rifle clips, along the aim and down (metres). */
-const PALM = { forward: 0.075, down: 0.035 };
+/**
+ * Where a long gun's grip is from the right wrist in the rifle clips: along the aim, down, and in
+ * towards the body's middle, where the palm's face meets it (metres; RIFLE["palm"] in common.py).
+ */
+const PALM = { forward: 0.075, down: 0.035, inward: 0.025 };
 
 /** The bones the aim and shoot clips own while aiming: the spine, arms, hands, neck and head. */
 const UPPER_BODY = /^(spine_0[123]|clavicle_|upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_|neck_|head)/i;
@@ -151,6 +161,12 @@ const UPPER_CLIPS: readonly Clip[] = [
   'rifle_aim',
   'rifle_shoot',
   'rifle_ready',
+  'shotgun_aim',
+  'shotgun_shoot',
+  'shotgun_ready',
+  'marksman_aim',
+  'marksman_shoot',
+  'marksman_ready',
   'power_cast',
 ];
 
@@ -234,11 +250,16 @@ export function spawnCharacter(
         if (aimed && aimDirection && hand) {
           grip.computeWorldMatrix(true);
           if (gun.long) {
-            // The rifle clips put the right palm a little forward of and below the wrist, along
-            // the aim (PALM, matching RIFLE["palm"] in scripts/art/common.py): the grip goes there.
+            // The rifle clips put the grip a little forward of, below and inside the right wrist
+            // (PALM, matching RIFLE["palm"] in scripts/art/common.py): it goes there.
             const up = Vector3.Up().subtract(aimDirection.scale(aimDirection.y)).normalize();
+            const right = Vector3.Cross(up, aimDirection).normalize();
             gun.free.position.copyFrom(
-              hand.getAbsolutePosition().add(aimDirection.scale(PALM.forward)).subtract(up.scale(PALM.down)),
+              hand
+                .getAbsolutePosition()
+                .add(aimDirection.scale(PALM.forward))
+                .subtract(up.scale(PALM.down))
+                .subtract(right.scale(PALM.inward)),
             );
           } else gun.free.position.copyFrom(grip.getAbsolutePosition());
           // Babylon's look rotation turns -Z towards the direction given: asked for the opposite,
@@ -345,7 +366,7 @@ export function spawnCharacter(
       for (const [clip, group] of upper) fade(group, torsoWeights[clip] ?? 0, t);
     },
     fire() {
-      for (const clip of ['pistol_shoot', 'rifle_shoot'] as const) {
+      for (const clip of ['pistol_shoot', 'rifle_shoot', 'shotgun_shoot', 'marksman_shoot'] as const) {
         const shoot = upper.get(clip);
         if (shoot) shoot.goToFrame(shoot.from);
       }
@@ -365,6 +386,43 @@ export function spawnCharacter(
     },
     aimHeld(direction) {
       aimDirection = direction && direction.lengthSquared() > 1e-8 ? direction.normalizeToNew() : null;
+    },
+    attach(part, boneName, size, offset) {
+      const bone = nodes.find((n) => sourceName(n.name).toLowerCase() === boneName) ?? null;
+      if (!bone) return null;
+      const entries = part.instantiateModelsToScene((n) => `${name}-${boneName}-${n}`, false, {
+        doNotInstantiate: false,
+      });
+      const holder = new TransformNode(`${name}-${boneName}-worn`, scene);
+      for (const node of entries.rootNodes) node.parent = holder;
+      const meshes = holder.getChildMeshes(false);
+      const min = new Vector3(Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
+      const max = min.scale(-1);
+      for (const mesh of meshes) {
+        mesh.computeWorldMatrix(true);
+        min.minimizeInPlace(mesh.getBoundingInfo().boundingBox.minimumWorld);
+        max.maximizeInPlace(mesh.getBoundingInfo().boundingBox.maximumWorld);
+        mesh.isPickable = false;
+      }
+      const extent = max.subtract(min);
+      const k = size / Math.max(extent.x, extent.y, extent.z, 1e-6);
+      // Its bottom's middle at the holder's origin, at its size.
+      const bottom = new Vector3((min.x + max.x) / 2, min.y, (min.z + max.z) / 2);
+      const inner = new TransformNode(`${name}-${boneName}-part`, scene);
+      inner.parent = holder;
+      for (const node of entries.rootNodes) node.parent = inner;
+      inner.position = bottom.scale(-1);
+      holder.scaling.setAll(k);
+      // Where the bone stands at rest, in the figure's own frame, and the piece there; then the bone
+      // carries it, keeping where it is.
+      root.computeWorldMatrix(true);
+      for (const n of nodes) n.computeWorldMatrix(true);
+      const inRoot = Vector3.TransformCoordinates(bone.getAbsolutePosition(), root.getWorldMatrix().clone().invert());
+      holder.parent = root;
+      holder.position.copyFrom(inRoot.add(new Vector3(...offset)));
+      holder.computeWorldMatrix(true);
+      holder.setParent(bone);
+      return holder;
     },
     hold(model, length, rotation, offset, along = 0, reversed = false, lift = 0) {
       if (!hand) return null;
@@ -446,6 +504,7 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     setPose() {},
     aimHeld() {},
     wield() {},
+    attach: () => null,
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),
   };

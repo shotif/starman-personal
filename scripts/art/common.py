@@ -660,7 +660,68 @@ def _turn_about(arm, pb, axis, angle):
     bpy.context.view_layer.update()
 
 
-def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, loop=True):
+def _palm_of(arm, side):
+    """Which way a hand's palm faces (armature space), from its knuckles: across them, from the
+    little finger to the index, and along the middle finger."""
+    pb = arm.pose.bones
+    across = pb[_find(arm, f"index_01_{side}")].head - pb[_find(arm, f"pinky_01_{side}")].head
+    along = pb[_find(arm, f"middle_02_{side}")].head - pb[_find(arm, f"middle_01_{side}")].head
+    palm = across.cross(along) if side == "r" else along.cross(across)
+    return palm.normalized()
+
+
+def _straighten_fingers(arm, side):
+    """Puts a hand's fingers back to their rest (straight), so its knuckles show its own frame."""
+    pb = arm.pose.bones
+    for f in ("index", "middle", "ring", "pinky", "thumb"):
+        for i in (1, 2, 3):
+            pb[_find(arm, f"{f}_0{i}_{side}")].matrix_basis = Matrix()
+    bpy.context.view_layer.update()
+
+
+def _turn_hand(arm, side, fingers, palm):
+    """Turns a hand about its wrist so that its knuckles point along `fingers` and its palm faces
+    `palm` (armature space). The frame is measured from the hand itself (_palm_of), not assumed
+    from the bone's axes: the skeleton's hand bones are not rolled with the palm on any one axis."""
+    pb = arm.pose.bones
+    hand = pb[_find(arm, f"hand_{side}")]
+    _straighten_fingers(arm, side)
+
+    def frame(along, facing):
+        y = along.normalized()
+        z = (facing - y * facing.dot(y)).normalized()
+        return Matrix((y.cross(z), y, z)).transposed()
+
+    along = pb[_find(arm, f"middle_01_{side}")].head - hand.head
+    turn = frame(fingers, palm) @ frame(along, _palm_of(arm, side)).inverted()
+    m = hand.matrix.copy()
+    hand.matrix = Matrix.Translation(m.translation) @ (turn @ m.to_3x3()).to_4x4()
+    bpy.context.view_layer.update()
+
+
+def _close_fingers(arm, side, bends):
+    """Sets a hand's fingers from straight, each joint bent towards the palm by `bends`
+    ({finger: (base, middle, tip) degrees}); the thumb is first turned across the front of the
+    palm by its own first number, then bent by the other three."""
+    pb = arm.pose.bones
+    chain = {f: [pb[_find(arm, f"{f}_0{i}_{side}")] for i in (1, 2, 3)]
+             for f in ("index", "middle", "ring", "pinky", "thumb")}
+    _straighten_fingers(arm, side)
+    palm = _palm_of(arm, side)
+    for finger, bones in chain.items():
+        angles = bends[finger]
+        if finger == "thumb":
+            along = (pb[_find(arm, f"middle_01_{side}")].head - pb[_find(arm, f"hand_{side}")].head).normalized()
+            _turn_about(arm, bones[0], along, math.radians(angles[0]) * (1 if side == "r" else -1))
+            angles = angles[1:]
+        bent = (bones[1].head - bones[0].head).normalized()
+        axis = bent.cross(palm).normalized()
+        for b, deg in zip(bones, angles):
+            _turn_about(arm, b, axis, math.radians(deg))
+
+
+def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, loop=True, trigger=True,
+               forend=None, pull=None):
     """A two-handed long-gun clip made on the same skeleton from the pistol's aim (base); UAL
     has no rifle clips (ACT1.md, increment 3). Built to photographs of a rifle held to the
     shoulder, round the body's own forward (the character faces -Y here), level: the chest
@@ -671,7 +732,11 @@ def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, l
     tilted onto the stock. The game seats the gun's grip in the right palm and points it along
     the aim (src/game/characters.ts, PALM there matching RIFLE["palm"] here). `lower_deg` tips
     the hold down about the right shoulder (a low ready); `recoil` is metres of kick back along
-    the aim at each frame (a shot)."""
+    the aim at each frame (a shot). The fingers close on the grip and under the handguard
+    (RIFLE["grip"], RIFLE["handguard"]); the forefinger is on the trigger, or laid along the
+    guard when `trigger` is false. `forend` is the left palm from the right (forward, up,
+    inward) and `pull` the stock's length when a gun's are not the rifle's (RIFLE): the shotgun's
+    pump is farther forward and its stock shorter."""
     scene = bpy.context.scene
     rows_in = sample_basis(arm, base)
     frames = len(recoil) if recoil else len(rows_in)
@@ -685,13 +750,11 @@ def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, l
         for bname, m in rows_in[i % len(rows_in)].items():
             arm.pose.bones[bname].matrix_basis = m.copy()
         bpy.context.view_layer.update()
+        # The game turns the body to the camera and points the gun along it, so the hold is built
+        # round the body's own forward, not the line of the pistol pose's shoulders (turned ~15°).
         up = Vector((0, 0, 1))
-        right = pb["upperarm_r"].head - pb["upperarm_l"].head
-        right.z = 0
-        right.normalize()
-        aim = up.cross(right).normalized()
-        if aim.y > 0:
-            aim.negate()
+        aim = Vector((0, -1, 0))
+        right = aim.cross(up)
         # The chest turns (left shoulder forward) and leans in; the neck and head turn back to the
         # aim, then bow and tilt onto the stock.
         sign = -1.0 if up.cross(right).dot(aim) > 0 else 1.0
@@ -710,27 +773,26 @@ def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, l
         shoulder = pb["upperarm_r"].head.copy()
         pocket = shoulder + aim * k["pocket"][0] + up * k["pocket"][1] - right * k["pocket"][2]
         # The right palm on the grip, the left under the handguard; each wrist a palm behind.
-        palm_r = pocket + aim * (k["pull"] - kick) - up * (k["drop"] - kick * 0.3)
-        palm_l = palm_r + aim * k["forend"][0] + up * k["forend"][1] - right * k["forend"][2]
-        wrist_r = palm_r - aim * k["palm"][0] + up * k["palm"][1]
+        palm_r = pocket + aim * ((pull or k["pull"]) - kick) - up * (k["drop"] - kick * 0.3)
+        reach = forend or k["forend"]
+        palm_l = palm_r + aim * reach[0] + up * reach[1] - right * reach[2]
+        wrist_r = palm_r - aim * k["palm"][0] + up * k["palm"][1] + right * k["palm"][2]
         fingers_l = (aim * 0.45 + right * 0.85 + up * 0.25).normalized()
         wrist_l = palm_l - fingers_l * k["palm"][0]
         # Hands: the right's fingers (its +Y) forward and down the grip, its palm (+Z) inward;
         # the left's palm up, its fingers wrapping across the handguard.
-        fingers_r = (aim * math.cos(math.radians(30)) - up * math.sin(math.radians(30))
-                     - right * 0.1).normalized()
+        fingers_r = (aim * math.cos(math.radians(30)) - up * math.sin(math.radians(30))).normalized()
         palm_in = -right - fingers_r * (-right).dot(fingers_r)
         palm_in.normalize()
-        rot_r = Matrix((fingers_r.cross(palm_in), fingers_r, palm_in)).transposed()
         palm_up = up - fingers_l * up.dot(fingers_l)
         palm_up.normalize()
-        rot_l = Matrix((fingers_l.cross(palm_up), fingers_l, palm_up)).transposed()
         _two_bone(arm, pb["upperarm_r"], pb["lowerarm_r"], wrist_r, -up + right * 0.5)
         _two_bone(arm, pb["upperarm_l"], pb["lowerarm_l"], wrist_l, -up - right * 0.2)
-        for side, rot in (("hand_r", rot_r), ("hand_l", rot_l)):
-            head = pb[side].head.copy()
-            pb[side].matrix = Matrix.Translation(head) @ rot.to_4x4()
-            bpy.context.view_layer.update()
+        _turn_hand(arm, "r", fingers_r, palm_in)
+        _turn_hand(arm, "l", fingers_l, palm_up)
+        grip = dict(k["grip"], index=k["trigger" if trigger else "guard"])
+        _close_fingers(arm, "r", grip)
+        _close_fingers(arm, "l", k["handguard"])
         rows.append({p.name: p.matrix_basis.copy() for p in arm.pose.bones})
     scene.frame_set(0)
     assign_action(arm, None)
@@ -739,10 +801,19 @@ def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, l
 
 # The rifle hold's measures, in metres and degrees (rifle_clip): the shoulder pocket from the
 # shoulder joint (forward, up, inward); the length of pull (pocket to the grip); how far the grip
-# hangs below the bore; the left palm from the right (forward, up, inward); a palm's reach from
-# its wrist (along the fingers, and down); the chest's lean, the neck's bow and the head's tilt.
-RIFLE = {"pocket": (0.06, 0.03, 0.02), "pull": 0.30, "drop": 0.10, "forend": (0.26, 0.04, 0.06),
-         "palm": (0.075, 0.035), "lean_deg": 6, "bow_deg": 12, "tilt_deg": 10}
+# hangs below the bore; the left palm from the right (forward, up, inward); the grip from the right
+# wrist (forward, down, and inward: the palm's face, not the hand's middle, meets the grip); the
+# chest's lean, the neck's bow and the head's tilt.
+RIFLE = {"pocket": (0.06, 0.03, 0.02), "pull": 0.30, "drop": 0.10, "forend": (0.30, 0.042, 0.0),
+         "palm": (0.075, 0.035, 0.025), "lean_deg": 6, "bow_deg": 12, "tilt_deg": 10,
+         # The fingers' bends, base to tip, in degrees (_close_fingers): round the pistol grip,
+         # the forefinger on the trigger or straight along the guard; and cupped under the
+         # handguard, the thumb up its other side.
+         "grip": {"middle": (70, 85, 45), "ring": (72, 85, 45), "pinky": (75, 85, 45),
+                  "thumb": (40, 25, 20, 10)},
+         "trigger": (25, 40, 20), "guard": (5, 5, 0),
+         "handguard": {"index": (50, 55, 35), "middle": (55, 60, 35), "ring": (58, 60, 35),
+                       "pinky": (60, 60, 35), "thumb": (25, 20, 15, 10)}}
 
 
 # How each part of the skeleton is matched between rest poses (see Retargeter): the trunk
@@ -835,7 +906,8 @@ def build_clips(dst, clips, sources, dst_to_src_for, hips, root, retarget):
         if clip["derived"] == "rifle":
             made[clip["name"]] = rifle_clip(
                 dst, made[clip["from"]], clip["name"], lower_deg=clip.get("lower_deg", 0.0),
-                recoil=clip.get("recoil"), loop=clip["loop"])
+                recoil=clip.get("recoil"), loop=clip["loop"], trigger=clip.get("trigger", True),
+                forend=clip.get("forend"), pull=clip.get("pull"), twist_deg=clip.get("twist_deg", 25.0))
             continue
         made[clip["name"]] = derive_clip(
             dst, made[clip["from"]], clip["name"], reverse=clip.get("reverse", False),

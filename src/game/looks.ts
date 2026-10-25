@@ -37,7 +37,7 @@ export interface Manifest {
     Body,
     { file: string; morphs: MorphInfo[]; defaultLooks: { skin: string; hair: string; eyes: string } }
   >;
-  looks: Record<Body, { skins: LookOption[]; hair: LookOption[]; eyes: LookOption[] }>;
+  looks: Record<Body, { skins: LookOption[]; hair: LookOption[]; eyes: LookOption[]; outfits?: LookOption[] }>;
 }
 
 export interface Looks {
@@ -55,6 +55,8 @@ export interface Looks {
   skin: string;
   hair: string;
   eyes: string;
+  /** Worn over the uniform: the game's own people only (the Banked's armour: D-66). */
+  outfit?: string;
 }
 
 /** The skins, hair and eyes a player may choose: the manifest's, less those kept for the game's own people. */

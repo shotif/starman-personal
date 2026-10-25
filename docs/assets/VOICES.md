@@ -9,12 +9,12 @@ a woman's voice (D-09). The voices are made by ElevenLabs text to speech from
 
 | | |
 | --- | --- |
-| Lines voiced | **653** (every line with `#speaker:` and `#line:`), 193 of them the hero's: the prologue's 225 (162 in the first run, the rest as the slice grew), and 428 for Act 1 so far, nearly all Pyre Remnant's (PYRE.md), made on 25 October 2026 |
-| Files | **846** MP3s in `public/assets/voices/`: 460 for the cast, 193 × 2 for the hero |
-| Length | About 52 minutes in all (one hero voice) |
-| Size | **29 MB** of MP3 with the manifest. A player hears one hero voice, so less is ever fetched |
+| Lines voiced | **814**, 193 of them the hero's: every line of the story with `#speaker:` and `#line:` (the prologue's 225, 162 in the first run and the rest as the slice grew, and 428 for Act 1 so far, nearly all Pyre Remnant's, made on 25 October 2026), and 161 said in fights (`src/game/fight-talk.ts`, ACT1_ART.md §2): Ren's, Jo's and Mira's answers to orders and calls (48), and the Banked's calls and lines to the hero in five voices (113) |
+| Files | **1,007** MP3s in `public/assets/voices/`: 621 for the cast, 193 × 2 for the hero |
+| Length | About 57 minutes in all (one hero voice); the fight lines about five minutes |
+| Size | **31 MB** of MP3 with the manifest. A player hears one hero voice, so less is ever fetched |
 | Format | MP3, mono, 44.1 kHz, 64 kbps (`mp3_44100_64`), about 8 KB a second |
-| Heard back | Every take heard back by speech to text; three are flagged only for homophones ("crews" heard as "cruise", "Pell" as "pal") and kept |
+| Heard back | Every take heard back by speech to text; the few still flagged are homophones ("crews" heard as "cruise", "Pell" as "pal", Jo's "Aye" as "I") and are kept |
 | Not voiced | none: no spoken line holds ink logic (`{...}`) |
 
 Commands (`>>>`) and choice text in brackets are not spoken. The hero's spoken line under each
@@ -56,12 +56,18 @@ after.
 | Varro | Lightkeeper Ansa Varro, recorded twenty years ago | **Katherine** (library) | `NtS6nEHDYMQC9QczMQuq` | calm and ordinary; heard back word for word at audition, against two others |
 | Tilly | Tilly Brennan, a free trader | **Michelle** (library) | `C92s6vssSLlabgIln1iY` | a Northern Irish straight talker; auditioned against two others |
 | Researcher | Arno, who heckles Quaye | **Chris** (library, Scottish) | `csXxiUN2BUFflsCaDxPM` | sceptical; one line |
+| Trooper1 | A Banked trooper in a fight (D-67) | **Harry** | `SOYHLrjzK2X1ezoPC6cr` | the Banked's voice at Pyre already; rough |
+| Trooper2 | A Banked trooper in a fight | **Tia** (library, Indian English) | `OUBnvvuqEKdDWtapoJFn` | crisp and commanding; Gemini rated her best of three listening (Zara, Arabella) |
+| Trooper3 | A Banked trooper in a fight | **Callum** | `N2lVS1w4EtoT3dr4eOWO` | the auditors' voice: they are the Banked too |
+| Engineer | The Banked engineer in a fight | **Hannah** (library, Australian) | `M7ya1YbaeFaPXljg9BpK` | calm and precise under fire; best of three (Isla, Nicola) |
+| Warden | The Banked warden, in the stacks and in every fight | **Adam** | `pNInz6obpgDQGcFmaJgB` | deep and firm |
 
 **Pyre Remnant's cast** (D-63, 25 October 2026): the stock voices wherever one suits, of any accent
 ("not all the voices have to be British", the owner); four from ElevenLabs' library where the stock
 set had nothing fitting (an older man for Linde, Varro, Tilly, and a voice for Arno). Each library
 voice was auditioned with `scripts/art/audition.ts` against others and the ones not chosen were
-taken off the account again; four voice slots are used of 30,000 (325 in all). Takes and measures
+taken off the account again; four voice slots are used of 30,000 (325 in all), and two more for
+the Banked's fight voices, Tia and Hannah (ACT1_ART.md §2; 327 in all). Takes and measures
 are in `art/out/voices/audition/` (not in git).
 
 The prologue has ten different voices; no two people who talk to each other share one, at Pyre

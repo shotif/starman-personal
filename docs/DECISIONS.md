@@ -77,11 +77,11 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-63 | Voices for the new people | Decided 2026-10-25 | **As recommended**: library voices where the stock set falls short |
 | D-64 | Whether Varro is heard at Pyre | Decided 2026-10-25 | **As recommended**: one recorded line, twenty years old |
 | D-65 | How Pyre's people look in this increment | Decided 2026-10-25 | **As recommended**: tinted uniforms, older faces, Mira's own look |
-| D-66 | The Banked's own look | **Open** | Recommended: charcoal plate and banked gold ([concepts](design/ACT1_ART.md#1-the-bankeds-own-look-d-66)) |
-| D-67 | Battle talk | **Open** | Recommended: both sides talk as they fight, the Banked now and then to the hero |
-| D-68 | The weapons' sounds, and music for fights with people | **Open** | Recommended: a sound for each gun and side, and a fight piece for the Banked |
-| D-69 | The powers' things | **Open** | Recommended: models for the Gun Post, the Shelter's emitter and the drones; one field surface |
-| D-70 | The lane | **Open** | Recommended: Reborn's tunnel of light, seen from inside *Lantern* |
+| D-66 | The Banked's own look | Decided 2026-10-25 | **As recommended**: charcoal plate and banked gold ([concepts](design/ACT1_ART.md#1-the-bankeds-own-look-d-66)) |
+| D-67 | Battle talk | Decided 2026-10-25 | **As recommended**: both sides talk as they fight, the Banked now and then to the hero |
+| D-68 | The weapons' sounds, and music for fights with people | Decided 2026-10-25 | **As recommended**: a sound for each gun and side, and a fight piece for the Banked |
+| D-69 | The powers' things | Decided 2026-10-25 | **As recommended**: models for the Gun Post, the Shelter's emitter and the drones; one field surface |
+| D-70 | The lane | Decided 2026-10-25 | **As recommended**: Reborn's tunnel of light, seen from inside *Lantern* |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -889,14 +889,16 @@ about twenty people, some of them old. The Banked's own look stays the owner's f
 
 **Recommendation: A.** Readable at a glance on a phone, little to load, and the old look old.
 
-## Round 10: the art and sound pass — open
+## Round 10: the art and sound pass — decided 25 October 2026
 
 The proposal is [design/ACT1_ART.md](design/ACT1_ART.md): increment 6 of ACT1.md, the Banked in
 armour of their own, both sides talking in a fight, a sound for each weapon, the powers' things
 made as models, the lane, hands that close on the rifle, and a play-test on a phone and a desktop.
 Hands on the rifle need no decision and are listed under *Made without waiting*.
 
-### D-66 · The Banked's own look — **Open**
+**Decided:** all five as recommended, 25 October 2026 ("As recommended").
+
+### D-66 · The Banked's own look — **Decided**
 
 D-65 left it to this increment. The armour is MakeHuman's CC0 armour by MatCreator, fitted to the
 bodies as the uniform is, so it moves with them; helmets, the warden's barrier projector and the
@@ -913,7 +915,7 @@ engineer's pack are made with Meshy. What is to decide is how they look. The con
 reads by colour, and gold is already the Banked's (D-65). B's coveralls suit the unlisted's
 future crews in Act 2 better than soldiers.
 
-### D-67 · Battle talk — **Open**
+### D-67 · Battle talk — **Decided**
 
 ACT1.md increment 4 promised that the Banked would talk as they fight. Today they say one line as a
 fight starts, and the companions' calls in a fight are captions without a voice.
@@ -927,7 +929,7 @@ fight starts, and the companions' calls in a fight are captions without a voice.
 **Recommendation: A.** The Banked are people with reasons (D-37, D-51); a fight is where most
 players meet them, so a little of the reason belongs there too.
 
-### D-68 · The weapons' sounds, and music for fights with people — **Open**
+### D-68 · The weapons' sounds, and music for fights with people — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -937,7 +939,7 @@ players meet them, so a little of the reason belongs there too.
 
 **Recommendation: A.**
 
-### D-69 · The powers' things — **Open**
+### D-69 · The powers' things — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -948,7 +950,7 @@ players meet them, so a little of the reason belongs there too.
 **Recommendation: A.** Mira's Repair Drone is in every fight now, and the warden's barrier is the
 Banked's best-known sight; making them all of one family costs little more than the two.
 
-### D-70 · The lane — **Open**
+### D-70 · The lane — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -1035,3 +1037,7 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-25 | Older people are aged by MPFB's own age macro, as a body shape (`age_old`), with MakeHuman's old skins and greyed hair; these are kept out of the creator | D-65's older faces; the hero is about thirty and voiced so |
 | 2026-10-25 | Increment 6's design is its own file, [ACT1_ART.md](design/ACT1_ART.md); its concept pictures for D-66 are kept in `docs/assets/concepts/` (Gemini, recorded in IMAGES.md) | a decision about a look is easier to make from pictures; they are not game assets |
 | 2026-10-25 | The rifle clips' fingers close on the grip and the handguard, the forefinger along the guard (ACT1_ART.md §6) | polish to an animation already decided; no new look |
+| 2026-10-25 | The rifle clips are built round the body's forward and each hand is turned by its knuckles; the fingers close on the grip and the forend; each long gun has its own hold (`shotgun_*`, `marksman_*`), and the rifle is held at 0.84 m, not its file's 0.95 m | the first clips aimed along the pistol pose's shoulders (about 15° off the gun) with both palms turned back, so the hands never met the gun; each model's grip, stock and forend are measured (ART_PIPELINE.md) |
+| 2026-10-25 | What companions say in a fight is in `src/game/fight-talk.ts`, each in their own words, voiced with the story's lines; a fight line is dropped while a story line is spoken, and heard from where it is said | battle talk (D-67) needs lines the game picks by event, and every line voiced (D-23) |
+| 2026-10-25 | The Banked's armour is MatCreator's Jupiter7 (CC0), simplified to 35% of its faces and recoloured charcoal and dull gold; the engineer wears it without its thigh and knee plates; helmets, the engineer's pack and the warden's projector are Meshy models worn on the head and the upper spine | D-66's look; the fitted armour moves with the body and follows its sliders, and the simplified copy costs a phone 9,300 triangles and 600 kB a body (ART_PIPELINE.md §8) |
+| 2026-10-25 | The Banked's two new voices, from ElevenLabs' library: Tia (Indian English) for a trooper and Hannah (Australian) for the engineer; Callum, the auditors' voice, is the third trooper; Harry and Adam keep theirs | every stock voice is cast already, and no Banked may borrow the voice of someone met at Pyre; each chosen by Gemini listening against two others, the others taken off the account again (D-63) |

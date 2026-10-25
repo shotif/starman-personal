@@ -5,6 +5,7 @@ import type { Scene } from '@babylonjs/core/scene';
 import type { Character } from './characters.ts';
 import type { Range } from './combat.ts';
 import { DAMAGE, type Defences, personDefences, recover, restored, takeHit } from './defences.ts';
+import type { CompanionCall } from './fight-talk.ts';
 import { turnTowards, yawOf } from './motion.ts';
 import type { AgentHandle, Navigation } from './navigation.ts';
 import { decide, type Objective, type Order, type Point, receive } from './orders.ts';
@@ -81,7 +82,7 @@ export function spawnCompanion(
   character: Character,
   start: Vector3,
   world: World,
-  say: (line: string) => void,
+  say: (call: CompanionCall) => void,
 ): Companion {
   character.root.position.copyFrom(start);
   let yaw = 0;
@@ -107,7 +108,7 @@ export function spawnCompanion(
       down: false,
       helping: false,
       order(order) {
-        say(order.kind === 'follow' ? 'With you.' : "I can't reach that.");
+        say(order.kind === 'follow' ? 'follow' : 'unreachable');
       },
       converse() {},
       help() {},
@@ -239,7 +240,7 @@ export function spawnCompanion(
         isDown = true;
         shootAt = null;
         stop();
-        say('I’m down!');
+        say('down');
       }
       return result.down;
     },
