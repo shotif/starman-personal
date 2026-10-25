@@ -1,3 +1,4 @@
+import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -9,6 +10,7 @@ import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
 import type { Damage } from './combat.ts';
+import { FIELD_BLUE, fieldMaterial } from './fields.ts';
 import {
   COMBO,
   type Cooldowns,
@@ -76,7 +78,12 @@ export interface AbilityContext {
   say(text: string): void;
   /** A sound from the audio manifest, placed where it happens. */
   sound(id: string, at: Vector3): void;
+  /** One of the powers' models (D-69; MODELS.md), or null while it loads or if it could not. */
+  model(id: PowerModel): AssetContainer | null;
 }
+
+/** The things the powers put in the world, made as models (ACT1_ART.md §4). */
+export type PowerModel = 'gunpost' | 'emitter' | 'repair-drone' | 'seeker-drone';
 
 export interface Abilities {
   /** Uses a power; false if it is not ready or has nothing to act on. */
@@ -138,7 +145,9 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
   };
   /** Things in flight: a charge arcing to the ground, a seeker drone homing on a machine. */
   const flights: {
-    mesh: Mesh;
+    mesh: TransformNode;
+    /** A model in flight turns to face where it goes; a glowing ball is let go with its material. */
+    model: boolean;
     from: Vector3;
     to: () => Vector3;
     t: number;
@@ -154,13 +163,31 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
     to: () => Vector3,
     land: () => void,
     start?: Vector3,
+    model?: PowerModel,
   ) => {
-    const mesh = CreateSphere('power-flight', { diameter: size, segments: 10 }, scene);
-    mesh.material = glow('power-flight', colour);
-    mesh.isPickable = false;
     const from = start ?? ctx.heroChest();
+    const made = model ? place(model, `power-flight-${model}`) : null;
+    let mesh: TransformNode;
+    if (made) mesh = made;
+    else {
+      const ball = CreateSphere('power-flight', { diameter: size, segments: 10 }, scene);
+      ball.material = glow('power-flight', colour);
+      ball.isPickable = false;
+      mesh = ball;
+    }
     mesh.position.copyFrom(from);
-    flights.push({ mesh, from, to, t: 0, time, arc, land });
+    flights.push({ mesh, model: !!made, from, to, t: 0, time, arc, land });
+  };
+
+  /** A copy of one of the powers' models under a node of its own; null until it has loaded. */
+  const place = (id: PowerModel, name: string): TransformNode | null => {
+    const model = ctx.model(id);
+    if (!model) return null;
+    const node = new TransformNode(name, scene);
+    const entries = model.instantiateModelsToScene((n) => `${name}-${n}`, false, { doNotInstantiate: false });
+    for (const root of entries.rootNodes) root.parent = node;
+    for (const m of node.getChildMeshes(false)) m.isPickable = false;
+    return node;
   };
 
   // The hero's own effects, and their looks.
@@ -174,26 +201,46 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
     shelter: null as { at: Vector3; radius: number } | null,
   };
   let shelterLeft = 0;
-  const dome = CreateSphere('shelter-dome', { diameter: 2, segments: 20, slice: 0.5 }, scene);
-  dome.material = glow('shelter-dome', new Color3(0.45, 0.85, 1), 0.14);
-  dome.material.backFaceCulling = false;
+  // Shelter: a dome of field over the emitter the Warden throws down.
+  const dome = CreateSphere('shelter-dome', { diameter: 2, segments: 24, slice: 0.5 }, scene);
+  dome.material = fieldMaterial(scene, 'shelter-dome', FIELD_BLUE);
   dome.isPickable = false;
   dome.setEnabled(false);
-  /** Gun posts set down: where, how long left, and the time to the next shot. */
-  const posts: { node: TransformNode; at: Vector3; left: number; next: number; spec: PowerSpec }[] = [];
+  let emitter: TransformNode | null = null;
+  let shelterFor = 0;
+  /**
+   * Gun posts set down: where, how long left and how long up, the time to the next shot, whether it
+   * has begun to wind down, and its model's node (null for the stand-in boxes).
+   */
+  const posts: {
+    node: TransformNode;
+    at: Vector3;
+    left: number;
+    age: number;
+    next: number;
+    spec: PowerSpec;
+    winding: boolean;
+    model: boolean;
+  }[] = [];
   /** Sinks: knots of bent space that drag machines in while they last. */
   const sinks: { mesh: Mesh; at: Vector3; left: number; radius: number }[] = [];
   let barrierShield = 0;
   let decoyLeft = 0;
   let repairLeft = 0;
-  const shell = CreateSphere('barrier-shell', { diameter: 2.3, segments: 16 }, scene);
-  shell.material = glow('barrier-shell', BLUE, 0.16);
+  const shell = CreateSphere('barrier-shell', { diameter: 2.3, segments: 20 }, scene);
+  shell.material = fieldMaterial(scene, 'barrier-shell', FIELD_BLUE, 0.55);
   shell.isPickable = false;
   shell.setEnabled(false);
-  const drone = CreateSphere('repair-drone', { diameter: 0.3, segments: 10 }, scene);
-  drone.material = glow('repair-drone', GREEN);
-  drone.isPickable = false;
-  drone.setEnabled(false);
+  // The Repair Drone: its model once loaded, a green ball until then.
+  const droneBall = CreateSphere('repair-drone', { diameter: 0.3, segments: 10 }, scene);
+  droneBall.material = glow('repair-drone', GREEN);
+  droneBall.isPickable = false;
+  droneBall.setEnabled(false);
+  let droneModel: TransformNode | null = null;
+  const repairDrone = (): TransformNode => {
+    droneModel ??= place('repair-drone', 'repair-drone-model');
+    return droneModel ?? droneBall;
+  };
   const flare = CreateSphere('decoy-flare', { diameter: 0.35, segments: 10 }, scene);
   flare.material = glow('decoy-flare', ORANGE);
   flare.isPickable = false;
@@ -302,7 +349,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
         break;
       case 'repair':
         repairLeft = spec.lasts ?? 4;
-        drone.setEnabled(true);
+        repairDrone().setEnabled(true);
         break;
       case 'flare': {
         const spot = at.clone();
@@ -357,7 +404,10 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
             hitMachine('seeker', machine);
             flash(swarm.status(machine)?.at ?? at, BLUE, 0.8, 0.35, 2.5);
           },
+          undefined,
+          'seeker-drone',
         );
+        ctx.sound('drone', ctx.heroChest());
         break;
       }
       case 'overload':
@@ -417,6 +467,26 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
         flash(ctx.heroChest(), GREEN, 1.2, 0.5, 2.4);
         break;
       case 'gunpost': {
+        const spot = new Vector3(at.x, at.y - 0.2, at.z);
+        // The model unfolds where it lands (D-69); three boxes stand in until it has loaded.
+        const made = place('gunpost', 'gun-post');
+        if (made) {
+          made.position.copyFrom(spot);
+          made.rotation.y = Math.atan2(spot.x - ctx.heroChest().x, spot.z - ctx.heroChest().z);
+          made.scaling.set(1, 0.05, 1);
+          posts.push({
+            node: made,
+            at: spot.add(new Vector3(0, 0.47, 0)),
+            left: spec.lasts ?? 12,
+            age: 0,
+            next: 0.6,
+            spec,
+            winding: false,
+            model: true,
+          });
+          ctx.sound('gunpost_deploy', spot);
+          break;
+        }
         const node = new TransformNode('gun-post', scene);
         const base = CreateCylinder(
           'gun-post-legs',
@@ -436,9 +506,17 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
           m.parent = node;
           m.isPickable = false;
         }
-        const spot = new Vector3(at.x, at.y - 0.2, at.z);
         node.position.copyFrom(spot);
-        posts.push({ node, at: spot.add(new Vector3(0, 0.62, 0)), left: spec.lasts ?? 12, next: 0.4, spec });
+        posts.push({
+          node,
+          at: spot.add(new Vector3(0, 0.62, 0)),
+          left: spec.lasts ?? 12,
+          age: 0,
+          next: 0.4,
+          spec,
+          winding: false,
+          model: false,
+        });
         break;
       }
       case 'cascade': {
@@ -510,12 +588,26 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       }
       case 'shelter': {
         const radius = spec.radius ?? 2;
-        const ground = ctx.heroChest().subtract(new Vector3(0, 1.2, 0));
+        // Thrown a step ahead: the emitter lands there, and the dome round it covers the hero.
+        const ahead = ctx.heroForward();
+        const ground = ctx
+          .heroChest()
+          .subtract(new Vector3(0, 1.2, 0))
+          .add(new Vector3(ahead.x, 0, ahead.z).scale(0.7));
         effects.shelter = { at: ground, radius };
         shelterLeft = spec.lasts ?? 8;
+        shelterFor = 0;
         dome.position.copyFrom(ground);
-        dome.scaling.setAll(radius);
+        dome.scaling.setAll(0.05);
+        dome.visibility = 1;
         dome.setEnabled(true);
+        // The emitter, thrown down, opens; the dome grows from it.
+        emitter ??= place('emitter', 'shelter-emitter');
+        if (emitter) {
+          emitter.position.copyFrom(ground);
+          emitter.setEnabled(true);
+        }
+        ctx.sound('barrier', ground);
         break;
       }
       case 'shove': {
@@ -567,6 +659,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
             flash(swarm.status(machine)?.at ?? status.at, BLUE, 0.8, 0.35, 2.5);
           },
           from,
+          'seeker-drone',
         );
         ctx.sound('drone', from);
         return true;
@@ -582,7 +675,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       shell.setEnabled(true);
     } else if (spec.id === 'repair') {
       repairLeft = spec.lasts ?? 4;
-      drone.setEnabled(true);
+      repairDrone().setEnabled(true);
     }
   };
 
@@ -628,7 +721,9 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       decoyLeft = 0;
       repairLeft = 0;
       shell.setEnabled(false);
-      drone.setEnabled(false);
+      droneBall.setEnabled(false);
+      droneModel?.setEnabled(false);
+      emitter?.setEnabled(false);
       flare.setEnabled(false);
       flareLight.intensity = 0;
     },
@@ -647,9 +742,15 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       effects.longshot = Math.max(0, effects.longshot - dt);
       if (shelterLeft > 0) {
         shelterLeft -= dt;
+        shelterFor += dt;
+        // It grows from the emitter in a third of a second, and fades in its last second.
+        const r = effects.shelter?.radius ?? 2;
+        dome.scaling.setAll(r * Math.min(1, 0.05 + shelterFor / 0.3));
+        dome.visibility = Math.min(1, shelterLeft);
         if (shelterLeft <= 0) {
           effects.shelter = null;
           dome.setEnabled(false);
+          emitter?.setEnabled(false);
         }
       }
       // Gun posts: each shoots the nearest machine it can see, twice a second, until it runs down.
@@ -657,7 +758,16 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
         const p = posts[i];
         if (!p) continue;
         p.left -= dt;
+        p.age += dt;
         p.next -= dt;
+        // A model unfolds in its first half-second and folds in its last.
+        if (p.model) {
+          p.node.scaling.y = Math.max(0.05, Math.min(1, p.age / 0.5, p.left / 0.5));
+          if (!p.winding && p.left <= 0.6) {
+            p.winding = true;
+            ctx.sound('gunpost_down', p.at);
+          }
+        }
         if (p.next <= 0) {
           p.next = 0.45;
           let best: { m: number; at: Vector3; d: number } | null = null;
@@ -668,13 +778,19 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
             if (d > (p.spec.radius ?? 22) || (best && d >= best.d) || !ctx.sees(p.at, s.at)) continue;
             best = { m, at: s.at, d };
           }
-          if (best) {
-            // It turns to what it shoots.
+          if (best && !p.winding && p.age >= 0.5) {
+            // It turns to what it shoots; the flash at its muzzle.
             p.node.rotation.y = Math.atan2(best.at.x - p.at.x, best.at.z - p.at.z);
             swarm.strikeMachine(best.m, p.spec.damage ?? { amount: 12, kind: 'kinetic' }, 'hero');
             flash(best.at, new Color3(1, 0.85, 0.5), 0.25, 0.15, 1.2);
-            flash(p.at, new Color3(1, 0.9, 0.6), 0.18, 0.1, 1);
-            ctx.sound('pistol_ally', p.at);
+            const muzzle = p.at.add(
+              best.at
+                .subtract(p.at)
+                .normalize()
+                .scale(p.model ? 0.36 : 0.25),
+            );
+            flash(muzzle, new Color3(1, 0.9, 0.6), 0.18, 0.1, 1);
+            ctx.sound('gunpost_fire', p.at);
           }
         }
         if (p.left <= 0) {
@@ -699,8 +815,15 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
         repairLeft -= dt;
         ctx.heal(10 * dt);
         const c = ctx.heroChest();
-        drone.position.set(c.x + Math.cos(clock * 3) * 0.9, c.y + 0.6, c.z + Math.sin(clock * 3) * 0.9);
-        if (repairLeft <= 0) drone.setEnabled(false);
+        // It circles the hero, bobbing a little, its nozzle towards them.
+        const d = repairDrone();
+        d.position.set(
+          c.x + Math.cos(clock * 3) * 0.9,
+          c.y + 0.5 + Math.sin(clock * 7) * 0.05,
+          c.z + Math.sin(clock * 3) * 0.9,
+        );
+        if (d !== droneBall) d.lookAt(c);
+        if (repairLeft <= 0) d.setEnabled(false);
       }
       if (decoyLeft > 0) {
         decoyLeft -= dt;
@@ -717,11 +840,14 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
         f.t += dt;
         const k = Math.min(1, f.t / f.time);
         const to = f.to();
-        f.mesh.position = Vector3.Lerp(f.from, to, k).add(new Vector3(0, Math.sin(k * Math.PI) * f.arc, 0));
+        const next = Vector3.Lerp(f.from, to, k).add(new Vector3(0, Math.sin(k * Math.PI) * f.arc, 0));
+        // A drone faces where it is going.
+        if (f.model && Vector3.DistanceSquared(next, f.mesh.position) > 1e-6) f.mesh.lookAt(next);
+        f.mesh.position = next;
         if (k >= 1) {
           f.land();
-          f.mesh.material?.dispose();
-          f.mesh.dispose();
+          if (!f.model) (f.mesh as Mesh).material?.dispose();
+          f.mesh.dispose(false, !f.model);
           flights.splice(i, 1);
         }
       }

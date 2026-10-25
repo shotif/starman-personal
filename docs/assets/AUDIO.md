@@ -10,10 +10,10 @@ overrule any choice.
 
 | | |
 | --- | --- |
-| Sound effects | **46** files in `public/assets/audio/sfx/`, **1.5 MB** in all: 37 from ElevenLabs, 8 from Kenney (CC0), 1 from OpenGameArt (CC0) |
-| Music | **5** pieces in `public/assets/audio/music/`, **8.2 MB** in all: all made with Lyria 3.5 |
+| Sound effects | **61** files in `public/assets/audio/sfx/`, **1.7 MB** in all: 49 from ElevenLabs, 11 from Kenney (CC0), 1 from OpenGameArt (CC0) |
+| Music | **8** pieces in `public/assets/audio/music/`, **13 MB** in all: all made with Lyria 3.5 |
 | Manifest | `public/assets/audio/audio.json`, which the game reads |
-| Total | **9.7 MB** (the limit was about 25 MB) |
+| Total | **15 MB** (the limit was about 25 MB) |
 | Effects format | MP3, mono, 44.1 kHz, 96 kbps, with the LAME header that tells browsers to trim the encoder's delay |
 | Music format | MP3, stereo, 44.1 kHz, 128 kbps |
 | Level | Effects: their loudest 400 ms at −16 LUFS (loops: −18 LUFS over the whole), peaks at most −1.5 dBFS. Music: −18 LUFS over the whole, as Control's music |
@@ -65,6 +65,18 @@ overrule any choice.
 | `revive` | A companion brings the hero back up | ElevenLabs (take 4 of 4) | 1.93 s | 0.7 |
 | `liftoff` | The ship lifts off and escapes | ElevenLabs (take 1 of 2) | 6.86 s | 1.0 |
 | `relay` | A relay console turned by hand | ElevenLabs (take 1 of 2) | 1.82 s | 0.7 |
+| `rifle` | The hero's rifle, one shot of nine a second (D-68, ACT1_ART.md §3) | ElevenLabs (take 3 of 3) | 0.44 s | 0.85 |
+| `shotgun` | The hero's shotgun | ElevenLabs (take 3 of 3) | 1.2 s | 1.0 |
+| `marksman` | The hero's marksman rifle, with its long tail | ElevenLabs (take 2 of 3) | 1.47 s | 1.0 |
+| `banked_rifle` | A Banked trooper's rifle, heard across a room: harsher, their own make | ElevenLabs (take 3 of 3) | 0.6 s | 0.8 |
+| `warden_charge` | The Banked warden's cannon charging, the second before it fires | ElevenLabs (take 1 of 3) | 0.9 s | 0.75 |
+| `warden_fire` | The warden's cannon firing | ElevenLabs (take 3 of 3) | 1.2 s | 0.95 |
+| `gunpost_fire` | The Gun Post's shot | ElevenLabs (take 3 of 3) | 0.48 s | 0.75 |
+| `gunpost_deploy` | The Gun Post unfolding | ElevenLabs (take 1 of 3) | 0.8 s | 0.7 |
+| `gunpost_down` | The Gun Post winding down | ElevenLabs (take 2 of 3) | 1.0 s | 0.7 |
+| `round_hit_1` to `_3` | A slug striking metal: cover, a wall, the deck | Kenney *Impact Sounds*: `impactMetal_light_000`, `impactMetal_light_002`, `impactMetal_medium_001` | 0.1 to 0.23 s | 0.55 |
+| `round_snap_1`, `_2` | A slug snapping past the hero's ear (a Banked near miss) | ElevenLabs (take 1 of 4; take 2 of 4) | 0.48 s; 0.37 s | 0.7 |
+| `lane_hum` | Aboard *Lantern* in the lane: the hull's hum in the tunnel of light (D-70) | ElevenLabs (take 3 of 3) | 15.2 s, loop | 0.4 |
 
 *Volume* is a suggested starting mix (0–1), on top of the levelling. The footsteps and the click
 are short, so their peaks, not their loudness, set their level; they are already about 10 dB under
@@ -72,7 +84,7 @@ the others, and their suggested volume allows for that.
 
 ### Music
 
-All six share one palette, written once in `art/audio.json` (`lyria.style`): warm synthesiser
+All eight share one palette, written once in `art/audio.json` (`lyria.style`): warm synthesiser
 pads, low strings, sparse felt piano and glassy textures, instrumental only. No prompt names an
 artist, a composer or a work.
 
@@ -84,6 +96,8 @@ artist, a composer or a work.
 | `combat` | Fights with the swarm | 5 of 7 | 115.1 s | Inside the piece: from the top once, then 19.0 → 115.00 s (200 beats at 125 BPM, 50 bars) | 1.76 MB |
 | `ending` | The bridge, the escape and the ending | 1 of 2 | 109.0 s | Plays once and fades | 1.66 MB |
 | `pyre` | Pyre Remnant's quieter chapters: the dock, the commons, the clinic, afterwards (PYRE.md) | 4 of 4 (Gemini, listening, scored it 9.5 against 6 to 6.5) | 119.8 s | The whole piece: 3.0 → 119.70 s | 1.83 MB |
+| `combat_banked` | Fights with the Banked: people, not machines (D-68): hand-played low strings and drums, a plaintive viola | 4 of 4 (scored 6.5 against 5 to 6: the only one with no cymbal washes and a steady pattern that loops) | 105.1 s | Inside the piece: 9.0 → 105.0 s | 1.60 MB |
+| `lane` | In the lane aboard *Lantern* (D-70): pads, high strings, a drifting celesta | 1 of 4 (scored 8.5 against 6.5 to 8: two others had a choir) | 119.0 s | The whole piece, its quiet end crossfaded into its opening: 3.0 → 118.91 s | 1.82 MB |
 
 ## 2. How the game plays them
 
@@ -120,10 +134,10 @@ The manifest gives each file's length, whether it loops, and a suggested volume:
 
 | Source | Licence | Used for |
 | --- | --- | --- |
-| [Kenney](https://kenney.nl) *Impact Sounds*, *Interface Sounds*, *UI Audio* | CC0 1.0 (the `License.txt` in each pack) | Footsteps, health hit, click, choice, checkpoint |
+| [Kenney](https://kenney.nl) *Impact Sounds*, *Interface Sounds*, *UI Audio* | CC0 1.0 (the `License.txt` in each pack) | Footsteps, health hit, click, choice, checkpoint, slugs striking metal |
 | [OpenGameArt](https://opengameart.org/content/space-ship-shield-sounds) *Space Ship Shield Sounds* by bart | CC0 1.0 (as the page lists it) | The shield hit |
-| ElevenLabs sound effects, model `eleven_text_to_sound_v3`, on the owner's paid account | Made for this project; ElevenLabs' terms give the output to the account holder and allow commercial use. No third party holds rights in it. AI-generated | The other 37 effects |
-| Google Lyria (`lyria-3.5`) through the Gemini API, on the owner's key | Made for this project; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated | All five pieces |
+| ElevenLabs sound effects, model `eleven_text_to_sound_v3`, on the owner's paid account | Made for this project; ElevenLabs' terms give the output to the account holder and allow commercial use. No third party holds rights in it. AI-generated | The other 49 effects |
+| Google Lyria (`lyria-3.5`) through the Gemini API, on the owner's key | Made for this project; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated | All eight pieces |
 
 - **Also listened to and not used:** Kenney's *Sci-Fi Sounds* (tried first for the bolt's hit,
   the shield hit, the doors and the three explosions, and *Impact Sounds*' punch; heard side by

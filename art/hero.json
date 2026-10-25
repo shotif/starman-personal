@@ -839,6 +839,68 @@
           "from": "suits02/clothes/matcreator_mc-scifi-armor_jupiter7/matcreator_mc-scifi-armor_jupiter7.mhclo",
           "ratio": 0.35
         }
+      },
+      {
+        "id": "armour-low",
+        "label": "The Banked's armour, low tier",
+        "file": "derived/banked-armour-low/banked-armour-low.mhclo",
+        "recolour": {
+          "plate": [
+            0.2,
+            0.205,
+            0.22
+          ],
+          "trim": [
+            0.62,
+            0.48,
+            0.22
+          ],
+          "strap": [
+            0.14,
+            0.1,
+            0.07
+          ]
+        },
+        "roughness": 0.62,
+        "textureSize": 512,
+        "note": "the armour simplified to 15% of its faces with a 512 px texture, for the low quality tier (a phone's busiest fights)",
+        "simplify": {
+          "from": "suits02/clothes/matcreator_mc-scifi-armor_jupiter7/matcreator_mc-scifi-armor_jupiter7.mhclo",
+          "ratio": 0.15
+        }
+      },
+      {
+        "id": "armour-light-low",
+        "label": "The Banked's light armour, low tier",
+        "file": "derived/banked-armour-low/banked-armour-low.mhclo",
+        "recolour": {
+          "plate": [
+            0.2,
+            0.205,
+            0.22
+          ],
+          "trim": [
+            0.62,
+            0.48,
+            0.22
+          ],
+          "strap": [
+            0.14,
+            0.1,
+            0.07
+          ]
+        },
+        "roughness": 0.62,
+        "textureSize": 512,
+        "drop": [
+          0.2,
+          0.56
+        ],
+        "note": "the light cut of the low tier's armour",
+        "simplify": {
+          "from": "suits02/clothes/matcreator_mc-scifi-armor_jupiter7/matcreator_mc-scifi-armor_jupiter7.mhclo",
+          "ratio": 0.15
+        }
       }
     ]
   }

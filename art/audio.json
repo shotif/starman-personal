@@ -737,6 +737,190 @@
       },
       "fadeOut": 0.15,
       "volume": 0.7
+    },
+    {
+      "id": "rifle",
+      "what": "The hero's rifle (D-68): one shot of a compact automatic coil rifle, close; it repeats nine times a second",
+      "eleven": {
+        "prompt": "Single shot from a compact automatic coilgun rifle fired by the listener: a quick, dry, sharp crack with a thin electric snap, very short and tight, no echo, no reverb tail, no music.",
+        "seconds": 0.5,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.08,
+      "volume": 0.85
+    },
+    {
+      "id": "shotgun",
+      "what": "The hero's shotgun: one blast of a heavy coil shotgun, close",
+      "eleven": {
+        "prompt": "Single blast from a heavy coilgun shotgun fired by the listener: a deep, wide, punchy boom with a hiss of electric coils discharging and a short metallic clack, no echo, no music.",
+        "seconds": 1.2,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.2,
+      "volume": 1
+    },
+    {
+      "id": "marksman",
+      "what": "The hero's marksman rifle: one heavy shot, close, with a long tail",
+      "eleven": {
+        "prompt": "Single shot from a long, heavy marksman coilgun rifle fired by the listener: a powerful cracking report with a sharp electric snap and a long rolling tail, no music.",
+        "seconds": 1.8,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.4,
+      "volume": 1
+    },
+    {
+      "id": "banked_rifle",
+      "what": "A Banked trooper's rifle, heard from across a room: their own make, harsher",
+      "eleven": {
+        "prompt": "Single shot from a military coilgun rifle heard from about ten metres away: a harsh, snappy crack with a rough electric buzz, a little distant, no music.",
+        "seconds": 0.6,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.1,
+      "volume": 0.8
+    },
+    {
+      "id": "warden_charge",
+      "what": "The Banked warden's field cannon charging for a second before it fires",
+      "eleven": {
+        "prompt": "A heavy shoulder-fired field cannon charging for one second: a low electric hum rising quickly in pitch with a dry crackle, stopping at its peak, no explosion, no music.",
+        "seconds": 1,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.03,
+      "volume": 0.75
+    },
+    {
+      "id": "warden_fire",
+      "what": "The Banked warden's field cannon firing its heavy bolt",
+      "eleven": {
+        "prompt": "A heavy field cannon fires one bolt: a deep concussive thump with a brief electric crack and a short low rumble, no music.",
+        "seconds": 1.2,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.25,
+      "volume": 0.95
+    },
+    {
+      "id": "gunpost_fire",
+      "what": "The Gun Post's shot: a light, fast tack",
+      "eleven": {
+        "prompt": "A small automated gun turret fires a single shot: a light, fast mechanical tack with a tiny electric snap, close, no echo, no music.",
+        "seconds": 0.5,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.06,
+      "volume": 0.75
+    },
+    {
+      "id": "gunpost_deploy",
+      "what": "The Gun Post unfolds on its three legs",
+      "eleven": {
+        "prompt": "A compact gun turret unfolds on three legs: quick mechanical clicks and a short servo whir, ending in a firm lock, no music.",
+        "seconds": 0.8,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.1,
+      "volume": 0.7
+    },
+    {
+      "id": "gunpost_down",
+      "what": "The Gun Post runs down and folds away",
+      "eleven": {
+        "prompt": "A small gun turret winds down and folds away: a falling servo whine and two soft mechanical clicks, no music.",
+        "seconds": 1,
+        "influence": 0.6,
+        "candidates": 3
+      },
+      "fadeOut": 0.15,
+      "volume": 0.7
+    },
+    {
+      "id": "round_snap_1",
+      "what": "A slug passing close to the hero's ear (one of two)",
+      "eleven": {
+        "prompt": "A supersonic slug passes very close to the listener's ear: one sharp snap, a short whip-like crack, no impact, no gunshot, no music.",
+        "seconds": 0.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.05,
+      "volume": 0.7
+    },
+    {
+      "id": "round_snap_2",
+      "what": "A slug passing close to the hero's ear (two of two)",
+      "eleven": {
+        "prompt": "A fast metal slug zips past very close to the listener's head: a short sharp crack and a brief whistle, no impact, no gunshot, no music.",
+        "seconds": 0.5,
+        "influence": 0.6,
+        "candidates": 4
+      },
+      "fadeOut": 0.05,
+      "volume": 0.7
+    },
+    {
+      "id": "round_hit_1",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactMetal_light_000.ogg"
+        }
+      ],
+      "filter": "highpass=f=120",
+      "fadeOut": 0.05,
+      "volume": 0.55
+    },
+    {
+      "id": "round_hit_2",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactMetal_light_002.ogg"
+        }
+      ],
+      "filter": "highpass=f=120",
+      "fadeOut": 0.05,
+      "volume": 0.55
+    },
+    {
+      "id": "round_hit_3",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "library": [
+        {
+          "pack": "impact-sounds",
+          "file": "Audio/impactMetal_medium_001.ogg"
+        }
+      ],
+      "filter": "highpass=f=120",
+      "fadeOut": 0.05,
+      "volume": 0.55
+    },
+    {
+      "id": "lane_hum",
+      "what": "Inside the lane, aboard Lantern: the ship's low hum in the tunnel of light (loop)",
+      "eleven": {
+        "prompt": "Inside a small spaceship travelling at great speed through a tunnel of light: a deep, soft, steady hum of the hull, a faint airy shimmer like wind over glass, a slow gentle pulse, constant, no voices, no music.",
+        "seconds": 15,
+        "influence": 0.6,
+        "candidates": 3,
+        "loop": true
+      },
+      "volume": 0.4,
+      "loop": {}
     }
   ],
   "music": [
@@ -802,6 +986,26 @@
         "maxS": 130
       },
       "candidates": 4
+    },
+    {
+      "id": "combat_banked",
+      "what": "Fights with the Banked: people, not machines (loop; D-68)",
+      "subject": "Tense, human music for a firefight between people in the corridors of a research station. About two minutes long. About 100 BPM, in D minor. A driving ostinato of low strings played by hand, cellos and basses digging in, over hand-played drums: low frame drums and toms with a steady, urgent pattern; a solo viola rising now and then with a plaintive phrase; a low drone underneath. Serious and urgent, never heroic or triumphant: these are people on both sides. No brass, no choir, no electronic arpeggios, no cymbal crashes. The same intensity throughout, without a fade-in or an ending, so it can loop.",
+      "loop": {
+        "minS": 95,
+        "maxS": 130
+      },
+      "candidates": 4
+    },
+    {
+      "id": "lane",
+      "what": "In the lane: Lantern travelling in the tunnel of light between stars (loop; D-70)",
+      "subject": "Quiet, wondering ambient music for a small ship travelling inside a tunnel of flowing violet and blue light between the stars, its crew resting. About two minutes long. Very slow, about 56 BPM, in F major turning to D minor and back. Warm, slowly breathing synthesiser pads, soft high strings, a gentle celesta or harp figure of a few notes that drifts and returns, a faint glassy shimmer like light moving, a deep calm drone underneath. Peaceful but vast, with a little longing. No drums, no brass, no choir, no climax. Without a fade-out, so it can loop.",
+      "loop": {
+        "minS": 75,
+        "maxS": 108
+      },
+      "candidates": 4
     }
   ],
   "outputs": {
@@ -846,6 +1050,45 @@
       "sha256": "1f3ecf2b02ad9f24915f3b011ad0c4afe674df5c2f0cae3e075cd5059e56add1",
       "built": "2026-10-24"
     },
+    "music/combat_banked.mp3": {
+      "id": "combat_banked",
+      "what": "Fights with the Banked: people, not machines (loop; D-68)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nTense, human music for a firefight between people in the corridors of a research station. About two minutes long. About 100 BPM, in D minor. A driving ostinato of low strings played by hand, cellos and basses digging in, over hand-played drums: low frame drums and toms with a steady, urgent pattern; a solo viola rising now and then with a plaintive phrase; a low drone underneath. Serious and urgent, never heroic or triumphant: these are people on both sides. No brass, no choir, no electronic arpeggios, no cymbal crashes. The same intensity throughout, without a fade-in or an ending, so it can loop.",
+          "made": "2026-10-25T15:06:33.615Z",
+          "note": "[[A0]]\n[[A1]]\n[[A2]]\n[[A3]]\n[[A4]]",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening",
+          "candidateSha256": "f711ef3f1ee81e3fef1e489b71bf3ffb9dca2364cefe4319e6ec898b59dbf09d",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "inside the piece, where the music either side of both points matched",
+          "loopStart": 9,
+          "loopEnd": 105,
+          "bestMatchInsideDb": 2.568,
+          "onsetMatch": 0.58,
+          "crossfadeSeconds": 1.5,
+          "candidateSeconds": 119.5
+        },
+        "gainDb": -5.3,
+        "loudness": "-17.9 LUFS integrated",
+        "peakDb": -4.3,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 105.1,
+      "bytes": 1682702,
+      "sha256": "fe8c1f880f5be1b9b251e43fcfc823689c8893df29fa966b12681103f33dbacb",
+      "built": "2026-10-25"
+    },
     "music/ending.mp3": {
       "id": "ending",
       "what": "The bridge, the escape and the ending (plays once)",
@@ -876,6 +1119,44 @@
       "bytes": 1744560,
       "sha256": "e73815ec9623f975644844d3919019c7ed00be4d98b99624b117c5def0c9b103",
       "built": "2026-10-24"
+    },
+    "music/lane.mp3": {
+      "id": "lane",
+      "what": "In the lane: Lantern travelling in the tunnel of light between stars (loop; D-70)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nQuiet, wondering ambient music for a small ship travelling inside a tunnel of flowing violet and blue light between the stars, its crew resting. About two minutes long. Very slow, about 56 BPM, in F major turning to D minor and back. Warm, slowly breathing synthesiser pads, soft high strings, a gentle celesta or harp figure of a few notes that drifts and returns, a faint glassy shimmer like light moving, a deep calm drone underneath. Peaceful but vast, with a little longing. No drums, no brass, no choir, no climax. Without a fade-out, so it can loop.",
+          "made": "2026-10-25T15:06:37.846Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]\n[[E4]]",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening",
+          "candidateSha256": "ab5cee2863d6b5479b6de2a0116817b1224d1dc503f371395386b57b38883a0b",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "the whole piece: no close match inside it, so its end is crossfaded into its opening",
+          "loopStart": 3,
+          "loopEnd": 118.9117,
+          "bestMatchInsideDb": 5.811,
+          "crossfadeSeconds": 3,
+          "candidateSeconds": 118.9
+        },
+        "gainDb": -5.3,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -5.5,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 119.012,
+      "bytes": 1905057,
+      "sha256": "5c325d7d3fcd8f8ba8340c572ef3171eba00dd72c3ba6c0f9b0afbc35d63dd8d",
+      "built": "2026-10-25"
     },
     "music/night.mp3": {
       "id": "night",
@@ -1148,6 +1429,39 @@
       "bytes": 243252,
       "sha256": "5798744170a065ed85b0884fd8a81ea3ab5976dc37a0bc3c4729f1efa2fa8ccb",
       "built": "2026-10-24"
+    },
+    "sfx/banked_rifle.mp3": {
+      "id": "banked_rifle",
+      "what": "A Banked trooper's rifle, heard from across a room: their own make, harsher",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single shot from a military coilgun rifle heard from about ten metres away: a harsh, snappy crack with a rough electric buzz, a little distant, no music.",
+          "seconds": 0.6,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:05:44.781Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "667084407e95973db3abb085e05bfcad743e41f4088b8a4852c7f84279f09a75",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 4.6,
+        "loudness": "-17.1 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.6,
+      "bytes": 7836,
+      "sha256": "95f1e443f1e3880838af1aafe67da96dbc9285a2cb6277dd36f6d1084499ea11",
+      "built": "2026-10-25"
     },
     "sfx/barrier.mp3": {
       "id": "barrier",
@@ -1556,6 +1870,105 @@
       "sha256": "51960f263e44c0359a98596dc078c278e178174a7f9aeac9c26f9fd939e091e7",
       "built": "2026-10-24"
     },
+    "sfx/gunpost_deploy.mp3": {
+      "id": "gunpost_deploy",
+      "what": "The Gun Post unfolds on its three legs",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A compact gun turret unfolds on three legs: quick mechanical clicks and a short servo whir, ending in a firm lock, no music.",
+          "seconds": 0.8,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:20.869Z",
+          "candidate": 1,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "6b8aa7283d0ace5c2549970bf0436eea2158a058ef3f11ce6d62459a56dcb1f4",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.1,
+        "gainDb": 9.7,
+        "loudness": "-17.4 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.8,
+      "bytes": 10344,
+      "sha256": "c4e32584e6226474d422985ac98995c8715c0765f2c97c39c20c2b72816f9ae0",
+      "built": "2026-10-25"
+    },
+    "sfx/gunpost_down.mp3": {
+      "id": "gunpost_down",
+      "what": "The Gun Post runs down and folds away",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A small gun turret winds down and folds away: a falling servo whine and two soft mechanical clicks, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:22.363Z",
+          "candidate": 2,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "e9b23d726ad7c43e0774411e126d9d638c4e9da2146e22d16862b03675a2e4c7",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.15,
+        "gainDb": 5,
+        "loudness": "-16.6 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1,
+      "bytes": 12852,
+      "sha256": "fa9ac61571ab06cb6f72e407f79edbf3524b54617472af07f5f105c40291459f",
+      "built": "2026-10-25"
+    },
+    "sfx/gunpost_fire.mp3": {
+      "id": "gunpost_fire",
+      "what": "The Gun Post's shot: a light, fast tack",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A small automated gun turret fires a single shot: a light, fast mechanical tack with a tiny electric snap, close, no echo, no music.",
+          "seconds": 0.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:20.545Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "786e390ac1cccd083c0a8e353e578ee4a3dd2585765698389b6e09b8b61c248f",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.06,
+        "gainDb": 12.8,
+        "loudness": "-17.3 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.48,
+      "bytes": 6582,
+      "sha256": "1eda46f87485808b920f248ed0f3f318ff09e8e424bc2ceb8d6c63c7f0f7ae80",
+      "built": "2026-10-25"
+    },
     "sfx/health_hit.mp3": {
       "id": "health_hit",
       "what": "A hit on the hero's health, under the shield (a thud)",
@@ -1632,6 +2045,46 @@
       "bytes": 41691,
       "sha256": "9dc2b6a10b9d37cfad464e2ae8fabeab3d4e49d2321fe146f1bf2bed25d7c0f2",
       "built": "2026-10-24"
+    },
+    "sfx/lane_hum.mp3": {
+      "id": "lane_hum",
+      "what": "Inside the lane, aboard Lantern: the ship's low hum in the tunnel of light (loop)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Inside a small spaceship travelling at great speed through a tunnel of light: a deep, soft, steady hum of the hull, a faint airy shimmer like wind over glass, a slow gentle pulse, constant, no voices, no music.",
+          "seconds": 15,
+          "loop": true,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:28.420Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "e0176280e57264b1d4f2f6a4fd5b8201fdb15bb6dcad185cfb8976719d922179",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "loop": {
+          "generatorJoin": {
+            "jumpRatio": 1.29,
+            "levelStepDb": 2.7,
+            "usualStepDb": 2.94
+          },
+          "crossfadeSeconds": 0,
+          "why": "the generator's own join measured clean and is kept"
+        },
+        "gainDb": 17.1,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -3.4,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 15.2,
+      "bytes": 183066,
+      "sha256": "109ec656404e1f6db8181c71d3833c6a58df7462e8f7cac2d618a80a90d5da64",
+      "built": "2026-10-25"
     },
     "sfx/lattice_break.mp3": {
       "id": "lattice_break",
@@ -1732,6 +2185,39 @@
       "bytes": 10971,
       "sha256": "85c6d398701968f0e5df7df5e1612d9947997d666324c3a766987b816b6cf070",
       "built": "2026-10-24"
+    },
+    "sfx/marksman.mp3": {
+      "id": "marksman",
+      "what": "The hero's marksman rifle: one heavy shot, close, with a long tail",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single shot from a long, heavy marksman coilgun rifle fired by the listener: a powerful cracking report with a sharp electric snap and a long rolling tail, no music.",
+          "seconds": 1.8,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:05:42.909Z",
+          "candidate": 2,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "2f252439b8eecca1372935b8410b5d729e9ad95361892e99be9805b7dd0bed3d",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.4,
+        "gainDb": 9.7,
+        "loudness": "-16.4 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.473,
+      "bytes": 18494,
+      "sha256": "d34460b574a2dd5d4903789878c093acc86df877f5dfbc13253fc1f94057e691",
+      "built": "2026-10-25"
     },
     "sfx/mote_hum.mp3": {
       "id": "mote_hum",
@@ -2137,6 +2623,189 @@
       "sha256": "2cbbc382846c444a6fea71354af79f7b04d8a6bb918cd824f28a02252fe6dd5b",
       "built": "2026-10-24"
     },
+    "sfx/rifle.mp3": {
+      "id": "rifle",
+      "what": "The hero's rifle (D-68): one shot of a compact automatic coil rifle, close; it repeats nine times a second",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single shot from a compact automatic coilgun rifle fired by the listener: a quick, dry, sharp crack with a thin electric snap, very short and tight, no echo, no reverb tail, no music.",
+          "seconds": 0.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:05:40.681Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "d90567d23cb757c53329a6bee2a3e0d063fb1b79321f9989f4b193b963b272b1",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.08,
+        "gainDb": 4.4,
+        "loudness": "-21.3 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.442,
+      "bytes": 5955,
+      "sha256": "2b93f5fe2c4ccbaa3707b6fb50e6a00feca081d80b25a213aaee618d4799a6a2",
+      "built": "2026-10-25"
+    },
+    "sfx/round_hit_1.mp3": {
+      "id": "round_hit_1",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactMetal_light_000.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=120",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 0.3,
+        "loudness": "-17.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.23,
+      "bytes": 3448,
+      "sha256": "5864cf7f6cead6a2d2e7b93322de3889f805ebe6f830a25bed5965673bf98783",
+      "built": "2026-10-25"
+    },
+    "sfx/round_hit_2.mp3": {
+      "id": "round_hit_2",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactMetal_light_002.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=120",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 1.9,
+        "loudness": "-20.3 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.159,
+      "bytes": 2821,
+      "sha256": "53666ba5dbb20e3c449df41a5514552befb2d5c156ee82a395c784301ae12c3c",
+      "built": "2026-10-25"
+    },
+    "sfx/round_hit_3.mp3": {
+      "id": "round_hit_3",
+      "what": "A slug striking metal: cover, a wall, the deck (one of three)",
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "kind": "Kenney",
+          "pack": "Impact Sounds 1.0",
+          "author": "Kenney (www.kenney.nl)",
+          "page": "https://kenney.nl/assets/impact-sounds",
+          "file": "Audio/impactMetal_medium_001.ogg",
+          "licence": "CC0-1.0"
+        }
+      ],
+      "processing": {
+        "filter": "highpass=f=120",
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 6,
+        "loudness": "-20.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.098,
+      "bytes": 1880,
+      "sha256": "50d5d2376f9d19377879ed15f87e2e6571a943d6864032fd79edffad503edab0",
+      "built": "2026-10-25"
+    },
+    "sfx/round_snap_1.mp3": {
+      "id": "round_snap_1",
+      "what": "A slug passing close to the hero's ear (one of two)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A supersonic slug passes very close to the listener's ear: one sharp snap, a short whip-like crack, no impact, no gunshot, no music.",
+          "seconds": 0.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:22.844Z",
+          "candidate": 1,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "8b2d417f40a84b688775b6cffc0ddd1ea0d54da6525a0e389c6b15fe8395588c",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 2.9,
+        "loudness": "-18.5 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.48,
+      "bytes": 6582,
+      "sha256": "8fe4edf7c9165deaee1d125fa858ccd8abfdea738247c921c2b4054e62414ffa",
+      "built": "2026-10-25"
+    },
+    "sfx/round_snap_2.mp3": {
+      "id": "round_snap_2",
+      "what": "A slug passing close to the hero's ear (two of two)",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A fast metal slug zips past very close to the listener's head: a short sharp crack and a brief whistle, no impact, no gunshot, no music.",
+          "seconds": 0.5,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:24.715Z",
+          "candidate": 2,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "a4496ed8dcd5688a0ecfd527082db94fa7de75606db98dd5d50b7b4be2eab245",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.05,
+        "gainDb": 2.4,
+        "loudness": "-16.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.367,
+      "bytes": 5329,
+      "sha256": "2692982acc613497eba51b96adb7f3b38894f451995a8ab2fb85823866fe67e9",
+      "built": "2026-10-25"
+    },
     "sfx/saved.mp3": {
       "id": "saved",
       "what": "A checkpoint is saved (subtle)",
@@ -2224,6 +2893,39 @@
       "bytes": 13165,
       "sha256": "ad38b89f287c8201144bcca3ad67bd7ed9ee26ce3628d3cd0931d9f4614df62a",
       "built": "2026-10-24"
+    },
+    "sfx/shotgun.mp3": {
+      "id": "shotgun",
+      "what": "The hero's shotgun: one blast of a heavy coil shotgun, close",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "Single blast from a heavy coilgun shotgun fired by the listener: a deep, wide, punchy boom with a hiss of electric coils discharging and a short metallic clack, no echo, no music.",
+          "seconds": 1.2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:05:42.426Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "231ad9efde1c006ceb7d4bad940d1952cda2142ac6945dcae1a1e509af80843c",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.2,
+        "gainDb": 3.4,
+        "loudness": "-16.5 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.2,
+      "bytes": 15046,
+      "sha256": "3b4ab9d13478ae55e987e06280eca8e1429f5e13dd8497632d208f4bd76879a0",
+      "built": "2026-10-25"
     },
     "sfx/step_1.mp3": {
       "id": "step_1",
@@ -2560,6 +3262,72 @@
       "bytes": 17554,
       "sha256": "96c64af97d289217a635b05e82f331ec0d28f1bc76f2395dfa0ba615565f0093",
       "built": "2026-10-24"
+    },
+    "sfx/warden_charge.mp3": {
+      "id": "warden_charge",
+      "what": "The Banked warden's field cannon charging for a second before it fires",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A heavy shoulder-fired field cannon charging for one second: a low electric hum rising quickly in pitch with a dry crackle, stopping at its peak, no explosion, no music.",
+          "seconds": 1,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:05:45.893Z",
+          "candidate": 1,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "a5a4c4c96b003be63b6d45bb29d8ce103676dda2f7408ea3da83f9246b974416",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.03,
+        "gainDb": 1.4,
+        "loudness": "-17.9 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 0.897,
+      "bytes": 11598,
+      "sha256": "8c08f7122edd13de0fafb9dec64984fc7003578f73f61abab4952ca2dbfdf6f1",
+      "built": "2026-10-25"
+    },
+    "sfx/warden_fire.mp3": {
+      "id": "warden_fire",
+      "what": "The Banked warden's field cannon firing its heavy bolt",
+      "licence": "Generated for this project on the owner's paid ElevenLabs plan, whose terms give the output to the account holder and allow commercial use. No third party holds rights in it; it is shared here as part of the game. AI-generated.",
+      "sources": [
+        {
+          "kind": "ElevenLabs",
+          "model": "eleven_text_to_sound_v3",
+          "prompt": "A heavy field cannon fires one bolt: a deep concussive thump with a brief electric crack and a short low rumble, no music.",
+          "seconds": 1.2,
+          "loop": false,
+          "promptInfluence": 0.6,
+          "made": "2026-10-25T15:07:19.560Z",
+          "candidate": 3,
+          "of": 3,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening, asked twice in opposite orders",
+          "candidateSha256": "9c11d159ca605bebd46e3ce5051f247c3c452f7f68ef09488c6972feee652f3c",
+          "aiGenerated": true
+        }
+      ],
+      "processing": {
+        "trimmed": "quiet before and after",
+        "fadeOutSeconds": 0.25,
+        "gainDb": 8.7,
+        "loudness": "-16.2 LUFS momentary maximum",
+        "peakDb": -1.5,
+        "encoding": "MP3 mono 44.1 kHz 96k"
+      },
+      "seconds": 1.2,
+      "bytes": 15046,
+      "sha256": "9fbb96be83f6dc197a150f4056944549924311a39cec1825fdbc05678bc12bae",
+      "built": "2026-10-25"
     },
     "sfx/wind.mp3": {
       "id": "wind",

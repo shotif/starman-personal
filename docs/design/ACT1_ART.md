@@ -245,3 +245,30 @@ The steps of §8, as each is pushed.
    death and a broken barrier first, the story's own lines always before them. Ren, Jo and Mira
    answer three of those moments (the engineer's shields, the barrier down, motes) a moment later,
    at most once every six seconds.
+4. **The weapons' sounds and the fight music** (25 October 2026). Each of the hero's guns its own
+   shot; the Banked's rifle, the warden's cannon charging and firing, the Gun Post's shot; slugs
+   striking metal (Kenney's CC0 impacts) and snapping past the hero's ear on a near miss. Nothing CC0
+   sounds like a coil gun firing a slug, so the shots are ElevenLabs takes, each chosen by Gemini
+   listening against two or three others (AUDIO.md). A fight with the Banked plays its own piece,
+   `combat_banked`, to its end; the lane's piece and hum are made for step 6.
+5. **The powers' things** (25 October 2026). The Gun Post unfolds where it lands, turns to what it
+   shoots, flashes at its muzzle and folds away; the Shelter's emitter lands a step ahead and the
+   dome grows from it; the Repair Drone circles the hero, the Seeker Drone flies nose first. Every
+   field (the Shelter, the Barrier, the warden's barrier) is one look (`src/game/fields.ts`): Babylon's
+   Fresnel material, added light only, faint in the middle and bright at the edge, a fine lattice
+   drifting across it, and a ring spreading where a shot strikes it; blue for the hero's side, amber
+   for the Banked. The first try blended normally and darkened what was behind the dome; added light
+   reads as a field.
+6. **The lane** (25 October 2026). A tube of violet-to-blue streaks flowing back along the course,
+   with the gate's glow far ahead, centred on the camera as the sky is (`buildLane` in
+   `src/game/sky.ts`); seen through the bridge's window and the mess's. The lane chapter plays its
+   own piece and the hull's hum. Not done: a moving light from the tunnel across the bridge's
+   interior; the bridge keeps its own lamps.
+7. **Measured** (25 October 2026), at phone size (390 × 844 at twice the pixels) on the low tier, on
+   the Mac's GPU, as meshes and triangles drawn a frame (what carries over to a phone; the Mac draws
+   all of it at 60 a second). The commons: 75 meshes, 151,000 triangles. The stacks in a fight with
+   three of the Banked in view: 124 meshes and 405,000 triangles, of which the armour and gear were
+   37,000 (a tenth), so the low tier now wears a lighter copy of the armour (4,000 triangles, 280 kB
+   a body; ART_PIPELINE.md §8): 13,000 of 325,000 with two in view. The stacks themselves are the
+   heavy part of that frame (the long archive racks), which is for a later pass. The owner's phone
+   is the real test.

@@ -31,6 +31,19 @@ type Lk = {
 const lk = <T>(page: Page, body: string): Promise<T> =>
   page.evaluate((s) => new Function('lk', s)((window as unknown as { lightkeeper: Lk }).lightkeeper), body);
 const machines = (page: Page) => lk<Machine[]>(page, 'return lk.state().swarm.machines');
+/** Whether a power's model stands in the scene: its node, enabled, with the model's meshes under it. */
+const worn = (page: Page, node: string) =>
+  page.evaluate((name) => {
+    const scene = (
+      window as unknown as {
+        lightkeeper: {
+          scene: { transformNodes: { name: string; isEnabled(): boolean; getChildMeshes(): unknown[] }[] };
+        };
+      }
+    ).lightkeeper.scene;
+    const n = scene.transformNodes.find((x) => x.name === name && x.isEnabled());
+    return !!n && n.getChildMeshes().length > 0;
+  }, node);
 const total = async (page: Page) => (await machines(page)).reduce((n, m) => n + m.health, 0);
 
 /** On the range at level 6 as a class, with three motes awake ahead and settled. */
@@ -95,6 +108,8 @@ test('Rigger: a Gun Post shoots the machines; Cascade leaps to more than one', a
   const feet = await lk<number[]>(page, 'return lk.state().feet');
   await lk(page, `lk.aimAt([${feet[0]}, ${(feet[1] ?? 0) + 0.1}, ${(feet[2] ?? 0) + 3}])`);
   expect(await lk<boolean>(page, "return lk.power('gunpost')")).toBe(true);
+  // The Gun Post as its model (D-69), unfolded where it landed.
+  expect(await worn(page, 'gun-post')).toBe(true);
   await expect.poll(() => total(page), { timeout: 10_000 }).toBeLessThan(struck);
   expect(errors).toEqual([]);
 });
@@ -136,6 +151,8 @@ test('Warden: Lift from the Fieldwright, and Shelter’s dome', async ({ page })
   await expect.poll(() => total(page)).toBeLessThan(before);
   expect(await lk<boolean>(page, "return lk.power('shelter')")).toBe(true);
   expect((await lk<{ shelter: unknown }>(page, 'return lk.effects()')).shelter).not.toBeNull();
+  // The emitter the Warden throws down, as its model (D-69).
+  expect(await worn(page, 'shelter-emitter')).toBe(true);
   expect(errors).toEqual([]);
 });
 

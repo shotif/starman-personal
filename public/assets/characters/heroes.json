@@ -3810,6 +3810,56 @@
           "material": [
             "man_outfit_armour-light"
           ]
+        },
+        {
+          "id": "armour-low",
+          "label": "The Banked's armour, low tier",
+          "default": false,
+          "hidden": true,
+          "file": "looks/man/armour-low.glb",
+          "bytes": 284500,
+          "triangles": 3988,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "man_outfit_armour-low"
+          ]
+        },
+        {
+          "id": "armour-light-low",
+          "label": "The Banked's light armour, low tier",
+          "default": false,
+          "hidden": true,
+          "file": "looks/man/armour-light-low.glb",
+          "bytes": 228496,
+          "triangles": 3136,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "man_outfit_armour-light-low"
+          ]
         }
       ]
     },
@@ -4249,6 +4299,56 @@
           ],
           "material": [
             "woman_outfit_armour-light"
+          ]
+        },
+        {
+          "id": "armour-low",
+          "label": "The Banked's armour, low tier",
+          "default": false,
+          "hidden": true,
+          "file": "looks/woman/armour-low.glb",
+          "bytes": 284392,
+          "triangles": 3988,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "woman_outfit_armour-low"
+          ]
+        },
+        {
+          "id": "armour-light-low",
+          "label": "The Banked's light armour, low tier",
+          "default": false,
+          "hidden": true,
+          "file": "looks/woman/armour-light-low.glb",
+          "bytes": 228388,
+          "triangles": 3136,
+          "morphs": [
+            "body_heavy",
+            "body_slim",
+            "body_muscular",
+            "body_soft",
+            "body_lean",
+            "body_stocky",
+            "body_shoulders_broad",
+            "body_hips_wide",
+            "body_chest",
+            "body_neck_thick",
+            "age_old"
+          ],
+          "material": [
+            "woman_outfit_armour-light-low"
           ]
         }
       ]

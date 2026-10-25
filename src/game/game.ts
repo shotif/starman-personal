@@ -1,3 +1,4 @@
+import type { AssetContainer } from '@babylonjs/core/assetContainer';
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
@@ -23,7 +24,7 @@ import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
 import slice from '../../story/slice.ink';
-import { buildAbilities, type Foes } from './abilities.ts';
+import { buildAbilities, type Foes, type PowerModel } from './abilities.ts';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { CHARACTERS } from './appearance.ts';
 import { buildAtmosphere } from './atmosphere.ts';
@@ -49,6 +50,7 @@ import { type Command, Director } from './director.ts';
 import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
+import { FIELD_BLUE, ripple, struckAt } from './fields.ts';
 import {
   BANKED_NAMES,
   BANKED_VOICES,
@@ -552,17 +554,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   const range = buildRange(scene, place.drones, q.maxLights);
   range.onShot = (from, shooter) => {
-    // The companions' sidearms have a voice of their own, so the player hears who fired; the hero's
-    // heavier weapons sound deeper (until each has a sound of its own).
-    const pitch: Record<WeaponKind, { rate: number; volume: number }> = {
-      pistol: { rate: 1, volume: 1 },
-      rifle: { rate: 1.15, volume: 0.8 },
-      shotgun: { rate: 0.7, volume: 1.2 },
-      marksman: { rate: 0.6, volume: 1.2 },
-    };
-    const p = shooter === 0 ? pitch[kit.carried[0]] : { rate: 1, volume: 0.8 };
-    audio.play(shooter === 0 ? 'pistol' : 'pistol_ally', { at: from, volume: p.volume, rate: p.rate });
+    // Each of the hero's weapons has its own shot (D-68); the companions' sidearms a voice of their
+    // own, so the player hears who fired. The rifle, nine a second, varies a little in pitch.
+    const kind: WeaponKind = kit.carried[0];
+    if (shooter === 0) audio.play(kind, { at: from, rate: kind === 'rifle' ? 0.95 + Math.random() * 0.1 : 1 });
+    else audio.play('pistol_ally', { at: from, volume: 0.8 });
   };
+  /** A slug striking metal (cover, a wall, the deck): one of three, varied. */
+  const roundHit = (at: Vector3, volume = 0.6) =>
+    audio.play(`round_hit_${1 + Math.floor(Math.random() * 3)}`, { at, volume, rate: 0.9 + Math.random() * 0.2 });
   const swarm = buildSwarm(scene, q.maxLights, q.detailMaps);
   range.join(swarm);
   const input = new Input(canvas);
@@ -629,6 +629,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const line = nextLine(companionLines(name, call), saidInFights);
     if (line) talk(line, characterOf(name.toLowerCase()) ?? null);
   };
+  /** Whether the ship is in a lane (the sky's lane: its hum). */
+  let inLane = false;
+  /** Whether this fight has had the Banked in it (their music plays to its end). */
+  let fightWithPeople = false;
   /** The Banked's talk this fight (fight-talk.ts's rules), and the companions' answers to it. */
   let bankedTalk: TalkState = newTalk(0);
   let companionCalled = Number.NEGATIVE_INFINITY;
@@ -864,6 +868,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (out.heal !== undefined) out.heal *= mods.healScale;
     return out;
   };
+  /** The powers' models (D-69), loaded once; each power uses a stand-in until its own is here. */
+  const powerModels = new Map<PowerModel, AssetContainer>();
+  for (const id of ['gunpost', 'emitter', 'repair-drone', 'seeker-drone'] as const) {
+    void LoadAssetContainerAsync(`${modelsAt(q.detailMaps)}${id}.glb`, scene)
+      .then((m) => powerModels.set(id, m))
+      .catch(() => {
+        // Not loaded: the stand-in shapes serve.
+      });
+  }
   const abilities = buildAbilities({
     scene,
     swarm: foes,
@@ -915,6 +928,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     sound: (id, at) => {
       audio.play(id, { at });
     },
+    model: (id) => powerModels.get(id) ?? null,
   });
   /** The companions' powers' cooldowns, and how long each is veiled (Ren's Veil). */
   const crewCooldowns: Record<string, Cooldowns> = {};
@@ -1225,6 +1239,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         place.sky.pyre(c.args.includes('pyre'));
         place.atPyre?.(c.args.includes('pyre'));
         place.lane(c.args.includes('lane'));
+        inLane = c.args.includes('lane');
         break;
       case 'start':
         // A companion stands a little behind the hero's mark; anyone else on their own.
@@ -1559,6 +1574,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
     hero.fire();
     if (shown) range.shot(hero.muzzle(), shown.point, shown.hit);
+    // A slug that meets a wall or cover rings off it.
+    if (shown && struck && !shown.hit) roundHit(shown.point, 0.5);
     shotPose = SHOT_POSE;
   };
 
@@ -1922,11 +1939,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         Vector3.Distance(from, dome.at) > dome.radius
       ) {
         audio.play('shield_hit', { at: feet, volume: 0.5 });
+        const struck = struckAt(dome.at, dome.radius, from);
+        ripple(scene, struck.at, struck.normal, FIELD_BLUE);
         return;
       }
       if (id === 'hero') {
         if (condition.kind === 'down' || grace > 0) return;
-        // Braced, the hero takes half; a barrier takes what it can first.
+        // Braced, the hero takes half; a barrier takes what it can first, and ripples where struck.
+        if (abilities.effects.barrier > 0) {
+          const struck = struckAt(hero.root.position.add(new Vector3(0, 1.2, 0)), 1.15, from);
+          ripple(scene, struck.at, struck.normal, FIELD_BLUE);
+        }
         const left = abilities.absorb(amount * (abilities.effects.brace > 0 ? 0.5 : 1));
         const shielded = heroDefences.shield > 0;
         const r = takeHit(heroDefences, left, 'kinetic');
@@ -1975,9 +1998,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       // What the Banked did, heard where it happened.
       for (const e of banked.drainEvents()) {
         if (e.kind === 'fire') {
-          if (e.who === 'warden') audio.play('beam_fire', { at: e.at, volume: 0.9 });
-          else audio.play('pistol_ally', { at: e.at, volume: 0.7, rate: e.who === 'trooper' ? 0.8 : 1.1 });
-        } else if (e.kind === 'glint' && e.who === 'warden') audio.play('beam_charge', { at: e.at, volume: 0.7 });
+          // Their own guns (D-68): the troopers' rifles, the engineer's pistol, the warden's cannon.
+          if (e.who === 'warden') audio.play('warden_fire', { at: e.at, volume: 0.9 });
+          else if (e.who === 'trooper')
+            audio.play('banked_rifle', { at: e.at, volume: 0.8, rate: 0.95 + Math.random() * 0.1 });
+          else audio.play('pistol_ally', { at: e.at, volume: 0.7, rate: 1.1 });
+        } else if (e.kind === 'glint' && e.who === 'warden') audio.play('warden_charge', { at: e.at, volume: 0.75 });
+        else if (e.kind === 'impact') roundHit(e.at);
+        else if (e.kind === 'miss')
+          audio.play(`round_snap_${1 + Math.floor(Math.random() * 2)}`, { at: e.at, volume: 0.7 });
         else if (e.kind === 'down') audio.play('health_hit', { at: e.at, volume: 0.7, rate: 0.8 });
         else if (e.kind === 'shield') audio.play('barrier', { at: e.at, volume: 0.6 });
         else if (e.kind === 'motes') audio.play('tender_spawn', { at: e.at, volume: 0.7 });
@@ -2279,8 +2308,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         voiceNow = null;
       }
     }
-    audio.music(fight ? 'combat' : chapterMusic);
-    audio.ambience(liftoff ? null : (AMBIENCE[area ?? ''] ?? 'ambience_station'));
+    // A fight with the Banked has its own piece (D-68), the swarm's the machines'.
+    if (!fight) fightWithPeople = false;
+    else if (banked && banked.live > 0) fightWithPeople = true;
+    audio.music(fight ? (fightWithPeople ? 'combat_banked' : 'combat') : chapterMusic);
+    // In the lane the hull hums with the tunnel of light outside (D-70).
+    audio.ambience(liftoff ? null : inLane ? 'lane_hum' : (AMBIENCE[area ?? ''] ?? 'ambience_station'));
     const wounded = condition.kind === 'up' && heroDefences.health / heroDefences.healthMax < 0.35;
     if (wounded && !heartbeat) heartbeat = audio.play('heartbeat', { loop: true, volume: 0.6 });
     if (!wounded && heartbeat) {

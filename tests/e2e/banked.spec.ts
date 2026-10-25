@@ -132,8 +132,9 @@ test('they wear their own armour, helmets and gear (D-66)', async ({ page }, tes
        gear: s.transformNodes.filter((n) => /^banked-\\d-(head|spine_03)-worn$/.test(n.name)).map((n) => n.name).sort(),
      };`,
   );
-  expect(worn.outfits.filter((n) => n === 'Outfit_armour').length).toBe(4);
-  expect(worn.outfits.filter((n) => n === 'Outfit_armour-light').length).toBe(1);
+  // The journeys play on the low tier: the armour's lighter copy.
+  expect(worn.outfits.filter((n) => n === 'Outfit_armour-low').length).toBe(4);
+  expect(worn.outfits.filter((n) => n === 'Outfit_armour-light-low').length).toBe(1);
   expect(worn.gear).toEqual([
     'banked-0-head-worn',
     'banked-1-head-worn',

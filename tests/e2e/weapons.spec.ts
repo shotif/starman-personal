@@ -92,7 +92,12 @@ test('each kind fires as its numbers say', async ({ page }, testInfo) => {
   // The shotgun, close: eight slugs at a mote take most of it at once.
   await lk(page, "lk.arm({ carried: ['shotgun', 'pistol'] })");
   await lk(page, 'lk.wake(1)');
-  await page.waitForTimeout(1200);
+  // Up and flying before it is measured (under load it can take a moment).
+  await expect
+    .poll(async () => (await lk<Machine[]>(page, 'return lk.state().swarm.machines'))[0]?.health ?? 0, {
+      timeout: 15_000,
+    })
+    .toBeGreaterThan(0);
   const [mote] = await lk<Machine[]>(page, 'return lk.state().swarm.machines');
   const at = mote?.at ?? [0, 0, 0];
   await lk(page, `lk.teleport(${at[0]}, ${(at[2] ?? 0) - 4}, 0, 1.3)`);

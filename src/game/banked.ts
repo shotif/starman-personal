@@ -31,6 +31,7 @@ import {
 import type { Character } from './characters.ts';
 import type { Damage, TargetGroup } from './combat.ts';
 import { type Defences, type Difficulty, recover, takeHit } from './defences.ts';
+import { FIELD_AMBER, fieldMaterial, ripple, struckAt } from './fields.ts';
 import type { BankedCall } from './fight-talk.ts';
 import { modelsAt } from './kit.ts';
 import { applyLineage, type Body, defaultLooks, type Looks, type Manifest } from './looks.ts';
@@ -62,7 +63,7 @@ export interface BankedWorld {
 }
 
 export interface BankedEvent {
-  kind: 'fire' | 'glint' | 'down' | 'shield' | 'motes' | 'barrier' | 'talk';
+  kind: 'fire' | 'glint' | 'down' | 'shield' | 'motes' | 'barrier' | 'talk' | 'impact' | 'miss';
   who: BankedKind;
   at: Vector3;
   /** For `talk`: what there is to say (D-67), and which of the squad would say it. */
@@ -209,8 +210,8 @@ export async function buildBanked(
   };
   const glintMaterial = glow('banked-glint', new Color3(1, 0.75, 0.3));
   const tracerMaterial = glow('banked-tracer', new Color3(1, 0.7, 0.35));
-  const barrierMaterial = glow('banked-barrier', new Color3(1, 0.62, 0.2), 0.22);
-  barrierMaterial.backFaceCulling = false;
+  // The warden's barrier is a field, drawn as every field is, in the Banked's amber (D-69).
+  const barrierMaterial = fieldMaterial(scene, 'banked-barrier', FIELD_AMBER);
   const flashMaterial = glow('banked-shield', new Color3(0.4, 0.75, 1), 0.35);
 
   // Their weapons: the hero's models (src/game/weapons.ts), held as the hero holds them.
@@ -244,7 +245,8 @@ export async function buildBanked(
         hair: spec?.hair ?? base.hair,
         eyes: spec?.eyes ?? base.eyes,
         height: spec?.height ?? base.height,
-        outfit: spec?.outfit,
+        // On the low tier, the armour's lighter copy (ART_PIPELINE.md §8): a phone's busiest fights.
+        outfit: spec ? (setup.detailed ? spec.outfit : `${spec.outfit}-low`) : undefined,
       };
       const id = `banked-${i}`;
       const character = await dress(scene, setup.templates, setup.manifest, id, looks);
@@ -403,6 +405,8 @@ export async function buildBanked(
         }
         m.barrierSince = 0;
         heard('barrier', m.kind, chestOf(m));
+        const struck = struckAt(at.add(new Vector3(0, 1.05 * m.character.root.scaling.y, 0)), 1.15, from);
+        ripple(scene, struck.at, struck.normal, FIELD_AMBER);
         if (had > 0 && m.barrier <= 0) call('barrierDown', m);
         return false;
       }
@@ -781,8 +785,10 @@ export async function buildBanked(
     const aim = chestAt(target);
     const blocked = world.obstacle(from, aim);
     let end: Vector3;
-    if (blocked) end = blocked;
-    else {
+    if (blocked) {
+      end = blocked;
+      heard('impact', m.kind, blocked);
+    } else {
       const chance = hitChance(Vector3.Distance(from, aim), target.moving, world.difficulty);
       if (Math.random() < chance) {
         world.onHit(target.id, from, BANKED[m.kind].weapon.damage);
@@ -791,6 +797,8 @@ export async function buildBanked(
         end = aim.add(
           new Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.3) * 1.0, (Math.random() - 0.5) * 1.4),
         );
+        // A near miss snaps past whoever it was meant for.
+        heard('miss', m.kind, aim);
       }
     }
     m.tracer.position = Vector3.Lerp(from, end, 0.5);

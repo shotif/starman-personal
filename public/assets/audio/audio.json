@@ -290,6 +290,98 @@
       "seconds": 1.816,
       "loop": false,
       "volume": 0.7
+    },
+    "rifle": {
+      "file": "sfx/rifle.mp3",
+      "seconds": 0.442,
+      "loop": false,
+      "volume": 0.85
+    },
+    "shotgun": {
+      "file": "sfx/shotgun.mp3",
+      "seconds": 1.2,
+      "loop": false,
+      "volume": 1
+    },
+    "marksman": {
+      "file": "sfx/marksman.mp3",
+      "seconds": 1.473,
+      "loop": false,
+      "volume": 1
+    },
+    "banked_rifle": {
+      "file": "sfx/banked_rifle.mp3",
+      "seconds": 0.6,
+      "loop": false,
+      "volume": 0.8
+    },
+    "warden_charge": {
+      "file": "sfx/warden_charge.mp3",
+      "seconds": 0.897,
+      "loop": false,
+      "volume": 0.75
+    },
+    "warden_fire": {
+      "file": "sfx/warden_fire.mp3",
+      "seconds": 1.2,
+      "loop": false,
+      "volume": 0.95
+    },
+    "gunpost_fire": {
+      "file": "sfx/gunpost_fire.mp3",
+      "seconds": 0.48,
+      "loop": false,
+      "volume": 0.75
+    },
+    "gunpost_deploy": {
+      "file": "sfx/gunpost_deploy.mp3",
+      "seconds": 0.8,
+      "loop": false,
+      "volume": 0.7
+    },
+    "gunpost_down": {
+      "file": "sfx/gunpost_down.mp3",
+      "seconds": 1,
+      "loop": false,
+      "volume": 0.7
+    },
+    "round_snap_1": {
+      "file": "sfx/round_snap_1.mp3",
+      "seconds": 0.48,
+      "loop": false,
+      "volume": 0.7
+    },
+    "round_snap_2": {
+      "file": "sfx/round_snap_2.mp3",
+      "seconds": 0.367,
+      "loop": false,
+      "volume": 0.7
+    },
+    "round_hit_1": {
+      "file": "sfx/round_hit_1.mp3",
+      "seconds": 0.23,
+      "loop": false,
+      "volume": 0.55
+    },
+    "round_hit_2": {
+      "file": "sfx/round_hit_2.mp3",
+      "seconds": 0.159,
+      "loop": false,
+      "volume": 0.55
+    },
+    "round_hit_3": {
+      "file": "sfx/round_hit_3.mp3",
+      "seconds": 0.098,
+      "loop": false,
+      "volume": 0.55
+    },
+    "lane_hum": {
+      "file": "sfx/lane_hum.mp3",
+      "seconds": 15.2,
+      "loop": true,
+      "loopStart": 0.1,
+      "loopEnd": 15.1,
+      "volume": 0.4
     }
   },
   "music": {
@@ -332,6 +424,20 @@
       "loop": true,
       "loopStart": 3,
       "loopEnd": 119.6991
+    },
+    "combat_banked": {
+      "file": "music/combat_banked.mp3",
+      "seconds": 105.1,
+      "loop": true,
+      "loopStart": 9,
+      "loopEnd": 105
+    },
+    "lane": {
+      "file": "music/lane.mp3",
+      "seconds": 119.012,
+      "loop": true,
+      "loopStart": 3,
+      "loopEnd": 118.9117
     }
   }
 }

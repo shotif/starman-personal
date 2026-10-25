@@ -331,7 +331,9 @@ of 26,600 and 1.5 MB. Its texture is recoloured by `recolour` in `hero.py`: the 
 charcoal, the white trim dull gold, the brown straps dark leather, each keeping its light and
 shade. `armour-light`, the engineer's, is the same armour with its thigh and knee plates dropped
 (the loose pieces whose middle stands between 20% and 56% of the body's height). MatCreator's
-lighter *Helios* suit was passed over: 71,000 vertices.
+lighter *Helios* suit was passed over: 71,000 vertices. The low quality tier wears `armour-low` and
+`armour-light-low`: the same armour simplified to 15% of its faces with a 512 px texture (4,000
+triangles, 280 kB a body).
 
 ```bash
 blender -b --factory-startup --python scripts/art/outfits.py     # the simplified armour, before hero.py

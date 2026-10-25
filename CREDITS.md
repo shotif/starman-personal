@@ -91,7 +91,7 @@ commercial use; the records say how each file was made.
   remesh) from the game's own concept pictures, made with Google Gemini (gemini-nano-banana-2.1),
   on paid plans. Records in [art/models.json](art/models.json); how in
   [docs/assets/MODELS.md](docs/assets/MODELS.md).
-- **Sound effects:** the other 37, generated with ElevenLabs' sound effects; **music:** all six
+- **Sound effects:** the other 49, generated with ElevenLabs' sound effects; **music:** all eight
   pieces, generated with Google's Lyria through the Gemini API (each carries Google's inaudible
   SynthID watermark). Records in [art/audio.json](art/audio.json); how in
   [docs/assets/AUDIO.md](docs/assets/AUDIO.md).

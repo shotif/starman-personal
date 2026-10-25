@@ -1,9 +1,11 @@
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
+import { Constants } from '@babylonjs/core/Engines/constants';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
+import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
 import { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder';
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -173,6 +175,7 @@ export function buildSky(scene: Scene): Sky {
   }
 
   let remnant: Mesh[] | null = null;
+  let lane: { meshes: Mesh[]; flow: DynamicTexture; gate: Mesh } | null = null;
   /** What the sky is showing: each mode is kept, and the meshes follow all of them together. */
   const mode = { swarm: false, space: false, lane: false, pyre: false };
   const apply = () => {
@@ -184,14 +187,17 @@ export function buildSky(scene: Scene): Sky {
     lowStars?.setEnabled(inSpace);
     if (mode.pyre && !remnant) remnant = buildRemnant(scene);
     for (const m of remnant ?? []) m.setEnabled(mode.pyre && !mode.lane);
+    if (mode.lane && !lane) lane = buildLane(scene);
+    for (const m of lane?.meshes ?? []) m.setEnabled(mode.lane);
     starMaterial.emissiveColor = mode.lane ? new Color3(0.55, 0.75, 1.15) : starColour;
     scene.clearColor = mode.lane
-      ? new Color4(0.006, 0.02, 0.05, 1)
+      ? new Color4(0.012, 0.008, 0.045, 1)
       : mode.pyre
         ? new Color4(0.012, 0.006, 0.012, 1)
         : new Color4(0.01, 0.01, 0.02, 1);
   };
   let turn = 0;
+  let laneTime = 0;
   return {
     sun,
     swarm(visible) {
@@ -211,6 +217,12 @@ export function buildSky(scene: Scene): Sky {
       apply();
     },
     update(dt) {
+      // In the lane the light flows past, and the gate ahead breathes.
+      if (lane && mode.lane) {
+        lane.flow.vOffset = (lane.flow.vOffset - dt * 0.05) % 1;
+        laneTime += dt;
+        lane.gate.scaling.setAll(1 + 0.06 * Math.sin(laneTime * 0.9));
+      }
       if (!ring?.isEnabled()) return;
       turn += dt * 0.03;
       ring.rotationQuaternion = Quaternion.RotationAxis(sun, turn);
@@ -231,6 +243,111 @@ const COMPANION_APART = (3.9 * Math.PI) / 180;
  * companion (about 5, a K4 dwarf, faint and orange); Canopus itself, high to the north. The black hole
  * cannot be seen: a few tens of kilometres across, it shows only in the mirror, by the light it bends.
  */
+/** The lane's course: Lantern's nose, and the bridge's window, look west (src/game/lantern.ts). */
+const LANE_AHEAD = new Vector3(-1, 0, 0);
+/** Reborn's jump: violet to blue light (its createJumpTunnel's two colours). */
+const LANE_VIOLET = new Color3(0.28, 0.12, 0.75);
+const LANE_CYAN = new Color3(0.35, 0.85, 1);
+
+/**
+ * Inside a lane (D-70; ACT1_ART.md §5): a tunnel of light round the ship, drawn as Starman Reborn
+ * draws a jump, seen from inside. Streaks of violet to blue flow back along its walls, and far ahead
+ * the gate's light. A tube about the camera, like the sky, that only adds light: one mesh and one
+ * texture, drawn once and scrolled.
+ */
+function buildLane(scene: Scene): { meshes: Mesh[]; flow: DynamicTexture; gate: Mesh } {
+  const flow = new DynamicTexture('lane-flow', { width: 512, height: 1024 }, scene, true);
+  const g = flow.getContext() as CanvasRenderingContext2D;
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, 512, 1024);
+  let seed = 11;
+  const random = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  // A faint glow along the whole wall, then streaks: long, thin, each fading at both ends.
+  for (let i = 0; i < 40; i++) {
+    const x = random() * 512;
+    const c = Color3.Lerp(LANE_VIOLET, LANE_CYAN, random()).scale(0.25);
+    const band = g.createLinearGradient(x - 18, 0, x + 18, 0);
+    band.addColorStop(0, 'rgba(0,0,0,0)');
+    band.addColorStop(0.5, c.toHexString());
+    band.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = band;
+    g.fillRect(x - 18, 0, 36, 1024);
+  }
+  for (let i = 0; i < 260; i++) {
+    const x = random() * 512;
+    const y = random() * 1024;
+    const length = 60 + random() * 380;
+    const c = Color3.Lerp(LANE_VIOLET, LANE_CYAN, random()).scale(0.5 + random() * 0.9);
+    c.clampToRef(0, 1, c);
+    const streak = g.createLinearGradient(0, y, 0, y + length);
+    streak.addColorStop(0, 'rgba(0,0,0,0)');
+    streak.addColorStop(0.5, c.toHexString());
+    streak.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = streak;
+    const w = 1 + random() * 2.5;
+    // Drawn twice where it runs off the end, so the texture wraps without a seam.
+    g.fillRect(x, y, w, length);
+    if (y + length > 1024) g.fillRect(x, y - 1024, w, length);
+  }
+  flow.update();
+  flow.wrapU = DynamicTexture.WRAP_ADDRESSMODE;
+  flow.wrapV = DynamicTexture.WRAP_ADDRESSMODE;
+  flow.uScale = 3;
+  flow.vScale = 4;
+
+  const tube = CreateCylinder(
+    'lane-tube',
+    { height: 1600, diameter: 140, tessellation: 48, cap: Mesh.NO_CAP, sideOrientation: Mesh.BACKSIDE },
+    scene,
+  );
+  // Its length along the course.
+  tube.rotation.z = Math.PI / 2;
+  const tubeMaterial = new StandardMaterial('lane-tube', scene);
+  tubeMaterial.disableLighting = true;
+  tubeMaterial.diffuseColor = Color3.Black();
+  tubeMaterial.emissiveTexture = flow;
+  tubeMaterial.emissiveColor = new Color3(0.04, 0.02, 0.1);
+  tubeMaterial.alphaMode = Constants.ALPHA_ADD;
+  tubeMaterial.disableDepthWrite = true;
+  tubeMaterial.backFaceCulling = false;
+  tube.material = tubeMaterial;
+
+  // The gate: the lane's far end, a soft white-violet light straight ahead.
+  const glow = new DynamicTexture('lane-gate', { width: 256, height: 256 }, scene, false);
+  const gg = glow.getContext() as CanvasRenderingContext2D;
+  const radial = gg.createRadialGradient(128, 128, 0, 128, 128, 128);
+  radial.addColorStop(0, 'rgba(240,230,255,1)');
+  radial.addColorStop(0.12, 'rgba(190,170,255,0.85)');
+  radial.addColorStop(0.45, 'rgba(110,90,230,0.25)');
+  radial.addColorStop(1, 'rgba(0,0,0,0)');
+  gg.fillStyle = radial;
+  gg.fillRect(0, 0, 256, 256);
+  glow.update();
+  glow.hasAlpha = true;
+  const gate = CreateDisc('lane-gate', { radius: 90, tessellation: 32 }, scene);
+  gate.position = LANE_AHEAD.scale(700);
+  gate.lookAt(Vector3.Zero());
+  const gateMaterial = new StandardMaterial('lane-gate', scene);
+  gateMaterial.disableLighting = true;
+  gateMaterial.emissiveTexture = glow;
+  gateMaterial.opacityTexture = glow;
+  gateMaterial.alphaMode = Constants.ALPHA_ADD;
+  gateMaterial.disableDepthWrite = true;
+  gateMaterial.backFaceCulling = false;
+  gate.material = gateMaterial;
+
+  for (const m of [tube, gate]) {
+    m.infiniteDistance = true;
+    m.isPickable = false;
+    m.applyFog = false;
+    m.setEnabled(false);
+  }
+  return { meshes: [tube, gate], flow, gate };
+}
+
 function buildRemnant(scene: Scene): Mesh[] {
   const size = 1024;
   const texture = new DynamicTexture('remnant', { width: size, height: size / 2 }, scene, true);
