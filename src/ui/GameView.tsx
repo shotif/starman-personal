@@ -7,6 +7,7 @@ import type { Renderer } from '../game/engine.ts';
 import type { Ending, Game, GameStats, OrderKind, Prompt, SaveData, Vitals } from '../game/game.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
+import { Armoury } from './Armoury.tsx';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
 import { GrowthScreen } from './Growth.tsx';
@@ -119,6 +120,9 @@ export function GameView({
   /** The star map, open over the bridge. */
   const [map, setMap] = useState(false);
   const mapNow = useRef(false);
+  /** The armoury, open in the store room; the game waits while it is. */
+  const [armoury, setArmoury] = useState(false);
+  const screenOpen = map || armoury;
   const [flash, setFlash] = useState<number | null>(null);
   /** A shot to watch (the ship leaving): the controls step aside. */
   const [shot, setShot] = useState(false);
@@ -201,9 +205,12 @@ export function GameView({
             });
           },
           onTravel: (s) => onTravel(s),
-          onMap: () => {
+          onScreen: (id) => {
             mapNow.current = true;
-            setMap(true);
+            if (id === 'armoury') {
+              started?.setPaused(true);
+              setArmoury(true);
+            } else setMap(true);
           },
           onFlash: () => setFlash(performance.now()),
           onShot: setShot,
@@ -378,7 +385,7 @@ export function GameView({
   return (
     <main class="stage">
       <canvas ref={canvas} class="scene" aria-label="Calder Station" />
-      {status.kind === 'ready' && !ending && !card && !map && !shot && (
+      {status.kind === 'ready' && !ending && !card && !screenOpen && !shot && (
         <header class="hud">
           {objective && !conversation && (
             <p class="objective" key={objective}>
@@ -418,7 +425,7 @@ export function GameView({
           )}
         </header>
       )}
-      {status.kind === 'ready' && !ending && !card && !map && !shot && (
+      {status.kind === 'ready' && !ending && !card && !screenOpen && !shot && (
         <button type="button" class="pause-button" aria-label="Pause" onClick={() => pause(true)}>
           ❚❚
         </button>
@@ -439,7 +446,7 @@ export function GameView({
           <p class="notice__detail">{status.message}</p>
         </div>
       )}
-      {caption && !map && (
+      {caption && !screenOpen && (
         <p class="caption" key={caption.id}>
           {caption.text}
         </p>
@@ -455,7 +462,7 @@ export function GameView({
           {note.text}
         </p>
       )}
-      {vitals && !touch && !conversation && !ending && !card && !map && !shot && status.kind === 'ready' && (
+      {vitals && !touch && !conversation && !ending && !card && !screenOpen && !shot && status.kind === 'ready' && (
         <section class="powers" aria-label="Powers">
           {vitals.powers.map((p, i) => (
             <button
@@ -470,12 +477,16 @@ export function GameView({
             </button>
           ))}
           {vitals.effects.length > 0 && <p class="powers__effects">{vitals.effects.join(' · ')}</p>}
+          <p class="powers__weapon">
+            {vitals.weapon.name}
+            {vitals.weapon.other && <span class="powers__other"> · X or the wheel: {vitals.weapon.other}</span>}
+          </p>
         </section>
       )}
       {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
       {hit && <div class={`hit hit--${hit.side}`} key={hit.id} aria-hidden="true" />}
       {vitals && vitals.health < 0.35 && vitals.condition.kind === 'up' && <div class="wounded" aria-hidden="true" />}
-      {prompt && !conversation && !commanding && !touch && !map && (
+      {prompt && !conversation && !commanding && !touch && !screenOpen && (
         <p class="talk-prompt">
           <kbd>E</kbd>
           {prompt.label}
@@ -536,13 +547,15 @@ export function GameView({
           </div>
         </div>
       )}
-      {touch && game && !ending && !card && !map && !shot && (
+      {touch && game && !ending && !card && !screenOpen && !shot && (
         <TouchControls
           input={game.input}
           commanding={commanding}
           talking={conversation !== null || paused || !!down}
           prompt={prompt}
           powers={vitals?.powers ?? []}
+          weapon={vitals?.weapon ?? null}
+          onSwap={() => game.swapWeapon()}
           onPower={(i) => game.usePower(i)}
           onOrders={() => openCommand(true)}
           onInteract={() => game.interact()}
@@ -595,6 +608,17 @@ export function GameView({
       )}
       {black && <div class="fade" aria-hidden="true" />}
       {flash && <div key={flash} class="flash" aria-hidden="true" />}
+      {armoury && game && (
+        <Armoury
+          game={game}
+          heroClass={looks.heroClass}
+          onClose={() => {
+            mapNow.current = false;
+            setArmoury(false);
+            game.setPaused(false);
+          }}
+        />
+      )}
       {map && game && (
         <StarMap
           game={game}

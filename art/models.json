@@ -7,7 +7,9 @@
     "frame": "A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
     "sameObject": "Turn this object around: draw the very same object as in the picture, identical in shape, parts, proportions, colours and wear, from the opposite side, as if the camera had walked half-way round it, so that the parts facing the viewer in the picture now face away and are hidden. Now it is seen",
     "viewFrame": "The whole object in frame, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
-    "styleTest": "(The style test's own style line, in art/concepts.json.)"
+    "styleTest": "(The style test's own style line, in art/concepts.json.)",
+    "weapon": "Semi-realistic hard-surface product render of a firearm for a grounded near-future science-fiction game set in the 2180s: a coil gun that fires solid slugs, practical and worn, built for station crews and frontier security; matte gunmetal and dark grey polymer, scuffed edges, a small orange hazard stripe, a short row of status lights. Not glowing, not magical, no energy effects.",
+    "weaponFrame": "A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands."
   },
   "meshy": {
     "ai_model": "latest",
@@ -2193,6 +2195,216 @@
             "bytes": 20826192,
             "sha256": "717a49c53c0814091b653deb1339d3db0f42bb12827688a095f52179cae4e7dc"
           }
+        }
+      }
+    },
+    {
+      "id": "rifle",
+      "style": "weapon",
+      "frame": "weaponFrame",
+      "size": 0.95,
+      "triangles": 3500,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A compact automatic coil rifle: a straight boxy receiver with coil housings along the barrel, a short ventilated barrel shroud, a pistol grip with a slab magazine of slugs in front of it, a fixed skeleton stock, a small top rail with a plain sight.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A compact automatic coil rifle: a straight boxy receiver with coil housings along the barrel, a short ventilated barrel shroud, a pistol grip with a slab magazine of slugs in front of it, a fixed skeleton stock, a small top rail with a plain sight. Semi-realistic hard-surface product render of a firearm for a grounded near-future science-fiction game set in the 2180s: a coil gun that fires solid slugs, practical and worn, built for station crews and frontier security; matte gunmetal and dark grey polymer, scuffed edges, a small orange hazard stripe, a short row of status lights. Not glowing, not magical, no energy effects. A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/rifle.jpg",
+          "sha256": "8d8fd01472a911eebbf7a0d56d132e960aa93a0aa968e7a978df54fb77be872e",
+          "bytes": 1667760,
+          "made": "2026-10-25T09:06:34.109Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17250-1b35-7375-ba6c-4f3ef8e34349",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3500
+          },
+          "credits": 30,
+          "seconds": 77,
+          "made": "2026-10-25T09:08:11.136Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/rifle.jpg",
+              "sha256": "8d8fd01472a911eebbf7a0d56d132e960aa93a0aa968e7a978df54fb77be872e"
+            }
+          ],
+          "output": {
+            "bytes": 9934132,
+            "sha256": "0470eabc7cbea0d7ef37667f1fb0ad79e9df7fcabcae94326674dbc3159f9141"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/rifle.glb",
+          "bytes": 511628,
+          "sha256": "64823788a2036f8fcd3776d921b58a786364ee66ab25b77c229f1083094803b0",
+          "triangles": {
+            "made": 3407,
+            "shipped": 3407
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.101,
+            0.367,
+            0.95
+          ],
+          "made": "2026-10-25T09:09:05.580Z"
+        }
+      }
+    },
+    {
+      "id": "shotgun",
+      "style": "weapon",
+      "frame": "weaponFrame",
+      "size": 0.9,
+      "triangles": 3500,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A heavy pump-action coil shotgun for boarding: a thick wide barrel with a flared muzzle, a ribbed pump grip under it, a chunky receiver, a pistol grip, a short padded stock, a drum of slugs under the receiver.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A heavy pump-action coil shotgun for boarding: a thick wide barrel with a flared muzzle, a ribbed pump grip under it, a chunky receiver, a pistol grip, a short padded stock, a drum of slugs under the receiver. Semi-realistic hard-surface product render of a firearm for a grounded near-future science-fiction game set in the 2180s: a coil gun that fires solid slugs, practical and worn, built for station crews and frontier security; matte gunmetal and dark grey polymer, scuffed edges, a small orange hazard stripe, a short row of status lights. Not glowing, not magical, no energy effects. A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/shotgun.jpg",
+          "sha256": "d7b5c2f7405a1d82eb703ef4a59d6bb76915f6cfef46dd3176f0f8cd1d844c88",
+          "bytes": 1478923,
+          "made": "2026-10-25T09:06:33.246Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17250-1b34-77ec-a168-02f432499bd5",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3500
+          },
+          "credits": 30,
+          "seconds": 87,
+          "made": "2026-10-25T09:08:21.450Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/shotgun.jpg",
+              "sha256": "d7b5c2f7405a1d82eb703ef4a59d6bb76915f6cfef46dd3176f0f8cd1d844c88"
+            }
+          ],
+          "output": {
+            "bytes": 9792672,
+            "sha256": "1ed5b4f3f4f4c05d939373f1e3832b67b63bf0b899dfdbeaf0a4e3674b1cf84b"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/shotgun.glb",
+          "bytes": 500032,
+          "sha256": "ac4721b385560ead95b8476f44789bfb6d587e21144ec7e045faeecd3055859c",
+          "triangles": {
+            "made": 3439,
+            "shipped": 3439
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.168,
+            0.33,
+            0.9
+          ],
+          "made": "2026-10-25T09:09:05.761Z"
+        }
+      }
+    },
+    {
+      "id": "marksman",
+      "style": "weapon",
+      "frame": "weaponFrame",
+      "size": 1.15,
+      "triangles": 3500,
+      "texture": 1024,
+      "turn": 90,
+      "prompt": "A long marksman coil rifle: a long slim barrel inside a ring of coil housings, a muzzle brake, a long scope on top, a bolt-action receiver, a folding bipod under the front, an adjustable stock with a cheek rest.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A long marksman coil rifle: a long slim barrel inside a ring of coil housings, a muzzle brake, a long scope on top, a bolt-action receiver, a folding bipod under the front, an adjustable stock with a cheek rest. Semi-realistic hard-surface product render of a firearm for a grounded near-future science-fiction game set in the 2180s: a coil gun that fires solid slugs, practical and worn, built for station crews and frontier security; matte gunmetal and dark grey polymer, scuffed edges, a small orange hazard stripe, a short row of status lights. Not glowing, not magical, no energy effects. A single object, whole and centred, seen from its left side and slightly from the front and above, the muzzle pointing to the right, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/marksman.jpg",
+          "sha256": "f59e6d429ff035c7ee329797d6136682edbeef4d4d8f416c68a0b35998dcdff2",
+          "bytes": 1394209,
+          "made": "2026-10-25T09:06:32.153Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a17250-19de-7163-88fa-5a06de6823d4",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 3500
+          },
+          "credits": 30,
+          "seconds": 76,
+          "made": "2026-10-25T09:08:10.611Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/marksman.jpg",
+              "sha256": "f59e6d429ff035c7ee329797d6136682edbeef4d4d8f416c68a0b35998dcdff2"
+            }
+          ],
+          "output": {
+            "bytes": 11139984,
+            "sha256": "30123a56923a6ab04f8d3c3cd317515de1909796bc989bc2f251d1e068b213e4"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/marksman.glb",
+          "bytes": 599252,
+          "sha256": "d7fbce4fae68172ed15a19d3b70e3dbdac16a1837474da4ac95bcbfbfcc9e9f6",
+          "triangles": {
+            "made": 3595,
+            "shipped": 3500
+          },
+          "textures": "1024 px WebP",
+          "turn": 90,
+          "front": "+z",
+          "dimensions": [
+            0.141,
+            0.357,
+            1.15
+          ],
+          "made": "2026-10-25T09:09:05.949Z"
         }
       }
     }

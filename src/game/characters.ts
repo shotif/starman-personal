@@ -52,7 +52,11 @@ export interface Character {
     length: number,
     rotation: [number, number, number],
     offset: [number, number, number],
+    along?: number,
+    reversed?: boolean,
   ): TransformNode | null;
+  /** Which held model the shots come from (the weapon in hand, D-56), and its length. */
+  wield(node: TransformNode, length: number): void;
   /** Fades the whole figure: 1 drawn as usual, 0 hidden. */
   setFade(visibility: number): void;
 }
@@ -285,7 +289,11 @@ export function spawnCharacter(
       if (hand) return hand.getAbsolutePosition().clone();
       return root.position.add(new Vector3(0, 1.4, 0));
     },
-    hold(model, length, rotation, offset) {
+    wield(node, length) {
+      held = node;
+      heldLength = length;
+    },
+    hold(model, length, rotation, offset, along = 0, reversed = false) {
       if (!hand) return null;
       const entries = model.instantiateModelsToScene((n) => `${name}-held-${n}`, false, { doNotInstantiate: false });
       const holder = new TransformNode(`${name}-held`, scene);
@@ -305,7 +313,12 @@ export function spawnCharacter(
       const grip = new TransformNode(`${name}-grip`, scene);
       holder.parent = grip;
       holder.scaling.setAll(k);
-      holder.position.set(-centre.x * k, -centre.y * k, -centre.z * k);
+      // A long gun slides forward along its barrel (its +Z), so its grip, not its middle, is in the hand.
+      // A model that faces the other way from the sidearm's file is turned half round first.
+      if (reversed) {
+        holder.rotation.y = Math.PI;
+        holder.position.set(centre.x * k, -centre.y * k, centre.z * k - along);
+      } else holder.position.set(-centre.x * k, -centre.y * k, -centre.z * k + along);
       // The hand bone carries the character's scale (the model's units) and the import's mirror of one
       // axis; undo both so the size holds and a rotation can seat the gun.
       grip.parent = hand;
@@ -349,6 +362,7 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     setFade: fader(root),
     speak() {},
     setPose() {},
+    wield() {},
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),
   };

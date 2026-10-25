@@ -20,6 +20,8 @@ export type Shooter = string;
 export interface Damage {
   amount: number;
   kind: DamageKind;
+  /** A share more against plate (heavy rounds). */
+  plate?: number;
 }
 
 /**

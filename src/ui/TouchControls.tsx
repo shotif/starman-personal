@@ -18,6 +18,8 @@ export function TouchControls({
   talking,
   prompt,
   powers,
+  weapon,
+  onSwap,
   onPower,
   onOrders,
   onInteract,
@@ -31,6 +33,9 @@ export function TouchControls({
   prompt: Prompt | null;
   /** The hero's three powers, and how far each is from ready. */
   powers: { id: string; name: string; waiting: number }[];
+  /** The weapon in hand and the other carried (D-56): a button swaps them. */
+  weapon: { name: string; other: string | null } | null;
+  onSwap: () => void;
   onPower: (slot: number) => void;
   onOrders: () => void;
   onInteract: () => void;
@@ -226,6 +231,19 @@ export function TouchControls({
               <span class="touch__power-name">{p.name}</span>
             </button>
           ))}
+          {weapon?.other && (
+            <button
+              type="button"
+              class="touch__swap"
+              aria-label={`Swap to ${weapon.other}`}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                onSwap();
+              }}
+            >
+              ⇄ {weapon.other}
+            </button>
+          )}
           <button
             type="button"
             class="touch__strike"

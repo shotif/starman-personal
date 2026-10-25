@@ -84,7 +84,7 @@ export interface HitResult {
  * power does nothing to a shielded body); then plate (blast does double and is not blunted; kinetic
  * is blunted by the plate's block; arc does half); whatever is left reaches health.
  */
-export function takeHit(d: Defences, amount: number, kind: DamageKind): HitResult {
+export function takeHit(d: Defences, amount: number, kind: DamageKind, plateBonus = 0): HitResult {
   const next = { ...d, sinceHit: 0 };
   let broke: HitResult['broke'] = null;
   let left = amount;
@@ -101,7 +101,8 @@ export function takeHit(d: Defences, amount: number, kind: DamageKind): HitResul
     }
   }
   if (left > 0 && next.plate > 0) {
-    const scale = kind === 'blast' ? 2 : kind === 'arc' ? 0.5 : 1;
+    // Heavy rounds (a weapon's mod, D-56) do a share more to plate.
+    const scale = (kind === 'blast' ? 2 : kind === 'arc' ? 0.5 : 1) * (1 + plateBonus);
     const blunted = kind === 'kinetic' ? Math.max(left * 0.2, left - next.plateBlock) : left;
     const taken = Math.min(next.plate, blunted * scale);
     next.plate -= taken;

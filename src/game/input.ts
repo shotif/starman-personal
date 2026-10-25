@@ -17,6 +17,8 @@ export class Input {
   /** A strike or a dodge asked for since the game last looked (F and Space, or the touch controls). */
   strike = false;
   dodge = false;
+  /** The other carried weapon asked for (X or the wheel on a desktop, a button on a phone). */
+  swap = false;
   private readonly keys = new Set<string>();
   private aimMouse = false;
   private fireMouse = false;
@@ -36,6 +38,7 @@ export class Input {
         if (e.repeat) return;
         if (e.code === 'KeyF') this.strike = true;
         if (e.code === 'Space') this.dodge = true;
+        if (e.code === 'KeyX') this.swap = true;
       },
       { signal },
     );
@@ -72,6 +75,17 @@ export class Input {
     window.addEventListener('pointermove', buttons, { signal });
     window.addEventListener('pointerup', buttons, { signal });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault(), { signal });
+    // The wheel swaps weapons, a notch at a time.
+    let wheelAt = 0;
+    canvas.addEventListener(
+      'wheel',
+      (e) => {
+        if (Math.abs(e.deltaY) < 4 || performance.now() - wheelAt < 300) return;
+        wheelAt = performance.now();
+        this.swap = true;
+      },
+      { signal, passive: true },
+    );
     window.addEventListener(
       'mousemove',
       (e) => {
@@ -127,6 +141,13 @@ export class Input {
     return asked;
   }
 
+  /** A swap of weapons asked for since the last call, then cleared. */
+  takeSwap(): boolean {
+    const asked = this.swap;
+    this.swap = false;
+    return asked;
+  }
+
   /** Lets go of everything held, and frees the mouse: a conversation needs the pointer for its choices. */
   release(): void {
     this.stick = { x: 0, y: 0 };
@@ -134,6 +155,7 @@ export class Input {
     this.fireMouse = false;
     this.strike = false;
     this.dodge = false;
+    this.swap = false;
     if (document.pointerLockElement === this.canvas) document.exitPointerLock();
   }
 

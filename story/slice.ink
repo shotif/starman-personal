@@ -94,6 +94,7 @@ VAR sorrel_named_linde = false
 >>> lock hangar_gate
 >>> lights on
 >>> open range_door
+>>> find range_stabiliser range_kit stabiliser Take the range's spare stabiliser
 >>> objective Run the drill on the range
 >>> marker drill
 >>> wait enter:range
@@ -363,6 +364,7 @@ Gate's open. Don't wait for me. Control out. #speaker: Hale #line: hale_gate_01
     >>> start ilya hangar_ilya
 }
 >>> lights out
+>>> find hangar_heavy hangar_crate heavy Take the heavy rounds
 >>> show jo
 >>> place jo jo
 >>> scene jo jo_meet
@@ -460,6 +462,9 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> caption Lantern · a day out from Ross 128
 >>> objective Speak with your crew
 >>> look captain captain_locker look_captain Look at the old captain's things
+>>> screen armoury armoury Open the armoury
+>>> find captain_scope captain_desk scope Take the old captain's scope
+>>> find engineering_coil engineering_bench coil Take the cooled coil from the bench
 >>> talk ren ren_aboard
 >>> talk jo jo_aboard
 >>> talk dena dena_aboard
@@ -475,7 +480,7 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> wait talked:pell_aboard
 >>> objective Set a course on the star map
 >>> marker starmap
->>> map starmap starmap Open the star map
+>>> screen starmap starmap Open the star map
 >>> wait course:pyre
 >>> xp 50 A course for Pyre Remnant
 // The map is still over the screen: the crew take their places unseen.
@@ -510,6 +515,7 @@ All hands, this is the bridge. We're breaking orbit. Hold on to something. #spea
 }
 >>> stay ren
 >>> stay jo
+>>> screen armoury armoury Open the armoury
 >>> caption In the lanes · eleven jumps to Pyre Remnant
 In the lane. First of eleven. She's holding together. #speaker: Jo #line: jo_lane_01
 Ross 128's behind us. First time in my life I can't see it from where I sleep. #speaker: Pell #line: pell_lane_01

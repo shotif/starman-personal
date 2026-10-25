@@ -338,6 +338,45 @@
       "texture": 1024,
       "front": "+z",
       "bytes": 525704
+    },
+    "rifle": {
+      "file": "rifle.glb",
+      "size": 0.95,
+      "dimensions": [
+        0.101,
+        0.367,
+        0.95
+      ],
+      "triangles": 3407,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 511628
+    },
+    "shotgun": {
+      "file": "shotgun.glb",
+      "size": 0.9,
+      "dimensions": [
+        0.168,
+        0.33,
+        0.9
+      ],
+      "triangles": 3439,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 500032
+    },
+    "marksman": {
+      "file": "marksman.glb",
+      "size": 1.15,
+      "dimensions": [
+        0.141,
+        0.357,
+        1.15
+      ],
+      "triangles": 3500,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 599252
     }
   }
 }

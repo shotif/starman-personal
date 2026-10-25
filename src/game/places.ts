@@ -48,6 +48,9 @@ export const MARKS: Record<string, MarkData> = {
   sorrel: { x: 5.2, z: 5.4, yaw: -90 * DEG },
   ilya: { x: 1.2, z: 3.2, yaw: 180 * DEG },
   drill: { x: 1, z: 24, yaw: 0 },
+  // Finds (D-56): the range's kit box by the door, a crate in the hangar.
+  range_kit: { x: 4.4, z: 21.2 },
+  hangar_crate: { x: 22, z: 59.2 },
   hale: { x: 31.2, z: 9.5, yaw: -90 * DEG },
   pell: { x: 33.4, z: 3.7, yaw: 180 * DEG },
   control: { x: 25, z: 7, yaw: 90 * DEG },
@@ -186,6 +189,10 @@ export const LANTERN_MARKS: Record<string, MarkData> = {
   medbay: { x: 21, z: 4, yaw: 0 },
   engineering_jo: { x: 34.5, z: 2.6, yaw: 90 * DEG },
   engineering_sorrel: { x: 33, z: -3.6, yaw: 180 * DEG },
+  // The armoury: the store's lockers (D-56); and two finds aboard.
+  armoury: { x: 25.4, z: -5.3, yaw: 180 * DEG },
+  captain_desk: { x: 9, z: -4, yaw: -90 * DEG },
+  engineering_bench: { x: 31.6, z: -4.4 },
   // The navigation station, where a course is set; and the old captain's locker.
   starmap: { x: 2.5, z: -3.1, yaw: 180 * DEG },
   captain_locker: { x: 12, z: -4.4 },

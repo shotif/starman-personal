@@ -491,7 +491,7 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
     hit(body, by, damage: Damage) {
       const m = machines.find((x) => flying(x) && !!body && x.aggregate?.body === body);
       if (!m) return false;
-      const result = takeHit(m.defences, damage.amount * (m.marked > 0 ? 1.5 : 1), damage.kind);
+      const result = takeHit(m.defences, damage.amount * (m.marked > 0 ? 1.5 : 1), damage.kind, damage.plate ?? 0);
       m.defences = result.defences;
       m.flash = 0.12;
       // It turns on whoever shot it; a mote moves at once.

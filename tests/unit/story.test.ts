@@ -10,6 +10,7 @@ import { levelOf, XP_BEFORE } from '../../src/game/growth.ts';
 import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
 import { ALL_MARKS, AREAS, CAST, DOORS, LANTERN_AREAS, PLACES } from '../../src/game/places.ts';
 import { LEADS } from '../../src/game/starmap.ts';
+import { MODS, WEAPONS } from '../../src/game/weapons.ts';
 
 const SOURCE = readFileSync(join('story', 'slice.ink'), 'utf8');
 
@@ -92,7 +93,8 @@ const VERBS = new Set([
   'liftoff',
   'travel',
   'card',
-  'map',
+  'screen',
+  'find',
   'depart',
   'xp',
   'end',
@@ -136,7 +138,12 @@ describe('the slice script', () => {
       }
       if (['open', 'close', 'lock', 'unlock'].includes(c.verb)) expect(doors.has(a), `unknown door: ${a}`).toBe(true);
       if (c.verb === 'marker') expect(marks.has(a), `unknown mark: ${a}`).toBe(true);
-      if (c.verb === 'use' || c.verb === 'map') expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
+      if (['use', 'screen', 'find'].includes(c.verb)) expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
+      if (c.verb === 'screen') expect(['starmap', 'armoury'], `unknown screen: ${a}`).toContain(a);
+      if (c.verb === 'find') {
+        const what = c.args[2] ?? '';
+        expect(what in WEAPONS || what in MODS, `unknown find: ${what}`).toBe(true);
+      }
       if (c.verb === 'look') {
         expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
         expect(knots.has(c.args[2] ?? ''), `unknown remark: ${c.args[2]}`).toBe(true);

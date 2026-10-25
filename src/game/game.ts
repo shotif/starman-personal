@@ -34,7 +34,6 @@ import { type Companion, spawnCompanion } from './companion.ts';
 import { type Conversation, type Line, StoryRunner } from './conversation.ts';
 import { COVER, type CoverProbe, type CoverState, coverStep } from './cover.ts';
 import {
-  DAMAGE,
   type Defences,
   DIFFICULTY,
   type Difficulty,
@@ -63,6 +62,7 @@ import {
   XP_BEFORE,
 } from './growth.ts';
 import { Input } from './input.ts';
+import { modelsAt } from './kit.ts';
 import { buildLantern } from './lantern.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
 import { buildSwarm } from './motes.ts';
@@ -86,6 +86,23 @@ import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 import { buildStation, type Mark } from './station.ts';
 import { hitSide } from './swarm.ts';
+import {
+  carriedWeight,
+  damageAt,
+  fitted,
+  KINDS,
+  type Kit,
+  MODS,
+  type ModId,
+  modsOn,
+  soundKit,
+  spreadAfter,
+  swap as swapKit,
+  take,
+  WEAPONS,
+  type WeaponKind,
+  weightScale,
+} from './weapons.ts';
 
 export interface GameStats {
   fps: number;
@@ -107,6 +124,8 @@ export interface Vitals {
   inCover: boolean;
   /** The hero's three powers: how far each is from ready (0 ready, 1 just used). */
   powers: { id: PowerId; name: string; waiting: number }[];
+  /** The weapon in hand, and the other carried, by name. */
+  weapon: { name: string; other: string | null };
   /** The hero's own effects now running. */
   effects: string[];
 }
@@ -143,6 +162,8 @@ export interface SaveData {
   script?: string;
   /** The hero's growth and the companions' (ACT1.md, increment 3); a save from before it is given its chapter's. */
   growth?: SavedGrowth;
+  /** The weapons and mods the hero has, and the two carried (D-56). */
+  kit?: Kit;
 }
 
 export interface SavedGrowth {
@@ -188,6 +209,12 @@ export interface Game {
   growth(): SavedGrowth & { fighting: boolean; crewKnown: string[] };
   /** Applies the growth screen's changes (made by growth.ts's rules); false during a fight. */
   setGrowth(next: SavedGrowth): boolean;
+  /** The weapons and mods, for the armoury; `fighting` while changes wait. */
+  kit(): { kit: Kit; fighting: boolean };
+  /** Applies the armoury's changes (made by weapons.ts's rules); false during a fight. */
+  setKit(next: Kit): boolean;
+  /** The other carried weapon to hand. */
+  swapWeapon(): void;
   setDifficulty(difficulty: Difficulty): void;
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
@@ -248,8 +275,11 @@ export interface GameOptions {
   onTravel(save: SaveData): void;
   /** The story opened an entry of the codex (src/game/codex.ts). */
   onCodex(id: string): void;
-  /** The star map was used: the screen opens it, and calls `showMap` and `setCourse`. */
-  onMap(): void;
+  /**
+   * A screen was opened from the world: the star map (which calls `showMap` and `setCourse`), or the
+   * armoury (which calls `setKit`).
+   */
+  onScreen(id: string): void;
   /** A level reached, and the powers it brought (by name). */
   onLevel(level: number, powers: string[]): void;
   /** The growth changed: the points the hero and the companions have to spend. */
@@ -281,7 +311,6 @@ const UP = Vector3.Up();
 const DOWN = Vector3.Down();
 const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, maxBeta: 1.85, fov: 0.95, aimFov: 0.72 };
 /** Seconds between shots, and how long the shooting clip shows after each. */
-const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
 /** The chapters before Jo is met in the hangar. */
@@ -303,6 +332,13 @@ const SIDEARM = {
   length: 0.21,
   rotation: [0.093, -1.141, 1.672] as [number, number, number],
   offset: [-0.01, -0.125, -0.008] as [number, number, number],
+};
+/** Each weapon's model in the hand: its length, and how far it slides forward to put its grip in the hand. */
+const HELD: Record<WeaponKind, { length: number; along: number }> = {
+  pistol: { length: SIDEARM.length, along: 0 },
+  rifle: { length: 0.95, along: 0.17 },
+  shotgun: { length: 0.9, along: 0.12 },
+  marksman: { length: 1.15, along: 0.22 },
 };
 /** Who speaks a line, by the name its tag gives, in the cast. */
 const SPEAKERS: Record<string, string> = {
@@ -403,18 +439,43 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   for (const c of [hero, characters.ren, characters.jo]) for (const mesh of c?.meshes ?? []) place.castShadow(mesh);
   // The sidearm (the style test's Meshy model) in the hands of those who fight.
   // It is drawn only in a fight, or while the hero aims: nobody carries a gun to the galley.
-  const grips: { hero: boolean; node: TransformNode }[] = [];
+  /** The weapons and mods (D-56), and how long the trigger has been held (the rifle strays). */
+  let kit: Kit = soundKit(options.save?.kit, options.looks.heroClass);
+  let triggerHeld = 0;
+  const weaponNow = () => fitted(kit.carried[0], modsOn(kit, kit.carried[0]));
+  // The hero has the long guns too (D-56): each its own Meshy model, the one in hand drawn.
+  const grips: { hero: boolean; node: TransformNode; kind: WeaponKind }[] = [];
+  /** The hero's shots come from the weapon in hand. */
+  const wieldNow = () => {
+    const g = grips.find((x) => x.hero && x.kind === kit.carried[0]);
+    if (g) hero.wield(g.node, HELD[g.kind].length);
+  };
   void LoadAssetContainerAsync(`${import.meta.env.BASE_URL}assets/props/sidearm-meshy.glb`, scene)
     .then((gun) => {
       for (const c of [hero, characters.ren, characters.jo]) {
         const node = c?.hold(gun, SIDEARM.length, SIDEARM.rotation, SIDEARM.offset);
-        if (node) grips.push({ hero: c === hero, node });
+        if (node) grips.push({ hero: c === hero, node, kind: 'pistol' });
         node?.setEnabled(false);
       }
+      wieldNow();
     })
     .catch(() => {
       // No sidearm: empty hands still fire.
     });
+  for (const kind of ['rifle', 'shotgun', 'marksman'] as const) {
+    void LoadAssetContainerAsync(`${modelsAt(q.detailMaps)}${kind}.glb`, scene)
+      .then((gun) => {
+        const held = HELD[kind];
+        // The long guns' files face +Z; the sidearm's (the style test's) faces the other way.
+        const node = hero.hold(gun, held.length, SIDEARM.rotation, SIDEARM.offset, held.along, true);
+        if (node) grips.push({ hero: true, node, kind });
+        node?.setEnabled(false);
+        wieldNow();
+      })
+      .catch(() => {
+        // Not loaded: the shots still come, from the hand.
+      });
+  }
 
   const controller = new PhysicsCharacterController(
     place.heroStart.at.add(new Vector3(0, CAPSULE_HEIGHT / 2 + 0.05, 0)),
@@ -448,8 +509,16 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   const range = buildRange(scene, place.drones, q.maxLights);
   range.onShot = (from, shooter) => {
-    // The companions' sidearms have a voice of their own, so the player hears who fired.
-    audio.play(shooter === 0 ? 'pistol' : 'pistol_ally', { at: from, volume: shooter === 0 ? 1 : 0.8 });
+    // The companions' sidearms have a voice of their own, so the player hears who fired; the hero's
+    // heavier weapons sound deeper (until each has a sound of its own).
+    const pitch: Record<WeaponKind, { rate: number; volume: number }> = {
+      pistol: { rate: 1, volume: 1 },
+      rifle: { rate: 1.15, volume: 0.8 },
+      shotgun: { rate: 0.7, volume: 1.2 },
+      marksman: { rate: 0.6, volume: 1.2 },
+    };
+    const p = shooter === 0 ? pitch[kit.carried[0]] : { rate: 1, volume: 0.8 };
+    audio.play(shooter === 0 ? 'pistol' : 'pistol_ally', { at: from, volume: p.volume, rate: p.rate });
   };
   const swarm = buildSwarm(scene, q.maxLights, q.detailMaps);
   range.join(swarm);
@@ -575,7 +644,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
    * Things that can be used, by id; a thing to look at has the knot of the hero's remark, and the
    * star map stays to be used again.
    */
-  const usable = new Map<string, { at: Vector3; label: string; knot?: string; map?: true }>();
+  const usable = new Map<
+    string,
+    { at: Vector3; label: string; knot?: string; screen?: string; find?: WeaponKind | ModId }
+  >();
   /** Remarks to say, one after another, and the seconds before the next. */
   const remarks: Line[] = [];
   let remarkWait = 0;
@@ -667,7 +739,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   /** A power as the hero has it: its rank, the training's and talents' changes (growth.ts). */
   const powerSpec = (id: PowerId): PowerSpec => {
     const ranked = atRank(POWERS[id], rankOf(growth, id));
-    const out: PowerSpec = { ...ranked, cooldown: ranked.cooldown * mods.cooldownScale };
+    // What is carried weighs on the powers (D-56).
+    const out: PowerSpec = {
+      ...ranked,
+      cooldown: ranked.cooldown * mods.cooldownScale * weightScale(carriedWeight(kit)),
+    };
     if (out.damage?.kind === 'field') out.damage = { ...out.damage, amount: out.damage.amount * mods.fieldDamage };
     if (id === 'mark') out.range *= mods.markReach;
     if (out.heal !== undefined) out.heal *= mods.healScale;
@@ -758,6 +834,19 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
     return false;
   }
+
+  /** The other carried weapon to hand (X, the wheel, or the phone's button). */
+  const swapWeapon = () => {
+    const next = swapKit(kit);
+    if (next === kit) return;
+    kit = next;
+    wieldNow();
+    triggerHeld = 0;
+    fireCooldown = Math.max(fireCooldown, 0.35);
+    audio.play('ui_choice', { volume: 0.6 });
+    options.onNote(WEAPONS[kit.carried[0]].name);
+    keepGrowth();
+  };
 
   /** Uses the hero's power in a slot, facing where the camera looks, the casting arm up. */
   const usePower = (slot: number) => {
@@ -863,7 +952,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let lastSave: SaveData | null = options.save ?? null;
   const keepGrowth = () => {
     if (lastSave) {
-      lastSave = { ...lastSave, growth: { hero: growth, crew: { ...crew } } };
+      lastSave = { ...lastSave, growth: { hero: growth, crew: { ...crew } }, kit };
       options.onSave(lastSave, true);
     }
     options.onGrowth(pointsToSpend());
@@ -1022,9 +1111,18 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' ') });
         break;
       }
-      case 'map': {
+      case 'screen': {
+        // A thing that opens a screen (the star map, the armoury), and stays to be used again.
         const m = markOf(b);
-        if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' '), map: true });
+        if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' '), screen: a });
+        break;
+      }
+      case 'find': {
+        // A weapon or a mod to take (D-56), once only: a chapter played again does not offer it twice.
+        const m = markOf(b);
+        const what = c.args[2] as WeaponKind | ModId;
+        if (m && !kit.found.includes(`find:${a}`))
+          usable.set(a, { at: m.at, label: c.args.slice(3).join(' '), find: what });
         break;
       }
       case 'depart': {
@@ -1085,6 +1183,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           script: SCRIPT,
           place: a as PlaceId,
           growth: { hero: growth, crew: { ...crew } },
+          kit,
         };
         options.onSave(save);
         options.onTravel(save);
@@ -1112,6 +1211,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         script: SCRIPT,
         place: placeId,
         growth: { hero: growth, crew: { ...crew } },
+        kit,
       };
       options.onSave(lastSave);
     },
@@ -1187,7 +1287,20 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     };
   };
 
+  /** A direction turned at random within a cone of `degrees` (a weapon's spread). */
+  const stray = (dir: Vector3, degrees: number): Vector3 => {
+    if (degrees <= 0) return dir;
+    const side = Vector3.Cross(dir, Vector3.Up()).normalize();
+    const up = Vector3.Cross(side, dir).normalize();
+    const r = Math.tan((degrees * Math.PI) / 180) * Math.sqrt(Math.random());
+    const a = Math.random() * Math.PI * 2;
+    return dir
+      .add(side.scale(Math.cos(a) * r))
+      .add(up.scale(Math.sin(a) * r))
+      .normalize();
+  };
   const shoot = () => {
+    const w = weaponNow();
     const from = camera.globalPosition.clone();
     let dir = camera.getTarget().subtract(from).normalize();
     // Aim assist on phones (D-17), and on Story for everyone; stronger or weaker by difficulty.
@@ -1195,9 +1308,6 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       const id = pickAssistTarget(range.candidates(from), dir, ASSIST_CONE * DIFFICULTY[difficulty].assist);
       if (id !== null) dir = range.centre(id).subtract(from).normalize();
     }
-    const end = from.add(dir.scale(SHOT_RANGE));
-    const struck = cast(from.add(dir.scale(0.3)), end, true);
-    const point = struck ? struck.point : end;
     // Out of the Veil, the first shot does double; shooting gives the hero away.
     const bonus = abilities.effects.veil > 0 ? 2 : 1;
     abilities.effects.veil = 0;
@@ -1205,21 +1315,36 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const longShot = abilities.effects.longshot > 0;
     if (longShot) abilities.spendLongShot();
     const drive = mods.weaponDamage * (momentum > 0 ? 1 + mods.momentum : 1) * (longShot ? 3 : 1);
-    const damage = { amount: DAMAGE.pistol * bonus * drive, kind: 'kinetic' as const };
-    const hitTarget = range.hit(struck?.body, 'hero', damage);
+    // Each slug strays within the weapon's spread (the rifle's grows while it fires; the Shade's
+    // training and a stabiliser narrow it), and weakens with distance (the shotgun's).
+    const spread = spreadAfter(w, triggerHeld) * mods.spreadScale;
+    let shown: { point: Vector3; hit: boolean } | null = null;
+    let struck: ReturnType<typeof cast> = null;
+    for (let i = 0; i < w.pellets; i++) {
+      const d = stray(dir, spread);
+      const end = from.add(d.scale(w.reach));
+      const met = cast(from.add(d.scale(0.3)), end, true);
+      const amount = damageAt(w, met?.distance ?? w.reach) * bonus * drive;
+      const hit = range.hit(met?.body, 'hero', { amount, kind: 'kinetic', plate: w.plateBonus });
+      if (i === 0) {
+        struck = met;
+        shown = { point: met ? met.point : end, hit };
+      }
+    }
+    const damage = { amount: w.damage * bonus * drive, kind: 'kinetic' as const, plate: w.plateBonus };
     if (longShot) {
       for (let m = 0; m < swarm.size; m++) {
         const s = swarm.status(m);
         if (!s?.alive || (struck && Vector3.Distance(s.at, struck.point) < 1)) continue;
         const to = s.at.subtract(from);
         const along = Vector3.Dot(to, dir);
-        if (along > 0 && along < SHOT_RANGE && to.subtract(dir.scale(along)).length() < 0.7) {
+        if (along > 0 && along < w.reach && to.subtract(dir.scale(along)).length() < 0.7) {
           swarm.strikeMachine(m, damage, 'hero');
         }
       }
     }
     hero.fire();
-    range.shot(hero.muzzle(), point, hitTarget);
+    if (shown) range.shot(hero.muzzle(), shown.point, shown.hit);
     shotPose = SHOT_POSE;
   };
 
@@ -1518,9 +1643,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     fireCooldown -= dt;
     shotPose -= dt;
     if (!held && input.firing && fireCooldown <= 0) {
-      fireCooldown = FIRE_INTERVAL;
+      fireCooldown = weaponNow().interval;
       shoot();
     }
+    // The trigger held: the rifle strays more; let go, it steadies.
+    triggerHeld = !held && input.firing ? triggerHeld + dt : Math.max(0, triggerHeld - dt * 3);
+    if (input.takeSwap() && !held) swapWeapon();
     abilities.update(dt);
     for (const who of Object.keys(crewCooldowns)) crewCooldowns[who] = cool(crewCooldowns[who] ?? {}, dt);
     for (const who of Object.keys(crewVeil)) crewVeil[who] = Math.max(0, (crewVeil[who] ?? 0) - dt);
@@ -1754,13 +1882,16 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // The camera: the player's view, a conversation's shots, or the lift-off.
     aimBlend = lerp(aimBlend, aiming || commanding ? 1 : 0, Math.min(1, real * 9));
-    for (const g of grips) g.node.setEnabled(fight !== null || (g.hero && aiming));
+    for (const g of grips) {
+      g.node.setEnabled((fight !== null || (g.hero && aiming)) && (!g.hero || g.kind === kit.carried[0]));
+    }
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);
     const shoulder = lerp(framing.shoulder, Math.max(framing.shoulder, 0.6), aimBlend);
     const eye = lerp(fallen ? 0.7 : CAMERA.eye, CAMERA.coverEye, coverBlend);
-    camera.fov = lerp(CAMERA.fov, CAMERA.aimFov, aimBlend);
+    // Aiming narrows the view, the marksman rifle (and a scope) further.
+    camera.fov = lerp(CAMERA.fov, CAMERA.aimFov * weaponNow().zoom, aimBlend);
     const right = { x: forward.z, z: -forward.x };
     const pivot = new Vector3(feet.x + right.x * shoulder, feet.y + eye, feet.z + right.z * shoulder);
     const back = new Vector3(
@@ -1876,6 +2007,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         helpComing: !!helper && !helpUsed,
         inCover: cover.inCover,
         powers: growth.hand.map((id) => ({ id, name: POWERS[id].name, waiting: abilities.waiting(id) })),
+        weapon: {
+          name: WEAPONS[kit.carried[0]].name,
+          other: kit.carried[1] ? WEAPONS[kit.carried[1]].name : null,
+        },
         effects: [
           abilities.effects.stim > 0 ? 'Stim' : '',
           abilities.effects.brace > 0 ? 'Braced' : '',
@@ -1909,6 +2044,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     Object.assign(window, {
       lightkeeper: {
         scene,
+        /** Gives the hero weapons and mods, as the armoury would (a kit's parts, made sound). */
+        arm: (k: Partial<Kit>) => {
+          kit = soundKit({ ...kit, ...k }, heroClass);
+          wieldNow();
+        },
+        kit: () => kit,
+        fov: () => camera.fov,
         /** Uses a power whether or not it is in hand, as the hero has it; true if it acted. */
         power: (id: PowerId) => abilities.use(id),
         effects: () => ({ ...abilities.effects, defences: heroDefences }),
@@ -2075,6 +2217,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     setCourse(id) {
       director.event(`course:${id}`);
     },
+    kit: () => ({ kit, fighting: !!fight }),
+    setKit(next) {
+      if (fight) return false;
+      kit = soundKit(next, heroClass);
+      wieldNow();
+      keepGrowth();
+      return true;
+    },
+    swapWeapon: () => swapWeapon(),
     growth: () => ({
       hero: growth,
       crew: { ...crew },
@@ -2112,10 +2263,25 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       } else {
         const id = promptTarget.id;
         const thing = usable.get(id);
-        if (thing?.map) {
+        if (thing?.screen) {
           audio.play('ui_click');
           input.release();
-          options.onMap();
+          // The armoury's rack: the old captain's weapons, there for the taking the first time.
+          if (thing.screen === 'armoury') {
+            for (const k of KINDS) kit = take(kit, `armoury:${k}`, k);
+            keepGrowth();
+          }
+          options.onScreen(thing.screen);
+          director.event(`used:${id}`);
+          return;
+        }
+        if (thing?.find) {
+          kit = take(kit, `find:${id}`, thing.find);
+          usable.delete(id);
+          audio.play('ui_click');
+          const found = thing.find in MODS ? MODS[thing.find as ModId].name : WEAPONS[thing.find as WeaponKind].name;
+          options.onNote(`Found: ${found}. Fit it at the armoury.`);
+          keepGrowth();
           director.event(`used:${id}`);
           return;
         }
