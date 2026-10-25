@@ -9,7 +9,16 @@ import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
-import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
+import {
+  DIFFICULTY_KEY,
+  isTouch,
+  LOADING_PICTURE,
+  PICTURES,
+  QUALITY_KEY,
+  SAVE_KEY,
+  SOUND_ROUTE_KEY,
+  save,
+} from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
@@ -107,6 +116,7 @@ export function GameView({
   const [note, setNote] = useState<{ text: string; id: number } | null>(null);
   const [codex, setCodex] = useState<string[]>(readCodex);
   const [sound, setSound] = useState<SoundStatus>(() => audio.status());
+  const [plain, setPlain] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
   const touch = isTouch();
   const chapterAtStart = saved?.checkpoint ?? new URLSearchParams(location.search).get('chapter') ?? 'night_shift';
@@ -259,11 +269,29 @@ export function GameView({
     setPaused(on);
     game?.setPaused(on);
   };
-  /** Starts the sound from this tap, plays a chime, and shows what the sound reports a moment later. */
+  /**
+   * The sound check: from this tap, Ren's first line played the plain way (a page audio element, as
+   * any web page plays sound), then the game's own chime; what the sound reports, a moment later.
+   * Which of the two is heard says where a silent phone loses the sound.
+   */
   const checkSound = () => {
     audio.unlock();
+    const plain = new Audio(`${import.meta.env.BASE_URL}assets/voices/ren_night_01.mp3`);
+    setPlain('playing');
+    plain.play().then(
+      () => undefined,
+      (e: unknown) => setPlain(`blocked (${e instanceof Error ? e.message : String(e)})`),
+    );
+    window.setTimeout(() => audio.play('objective'), 3600);
+    window.setTimeout(() => setSound(audio.status()), 4000);
+  };
+  const switchRoute = () => {
+    const next = sound.route === 'direct' ? 'media' : 'direct';
+    audio.unlock();
+    audio.setRoute(next);
+    save(SOUND_ROUTE_KEY, next);
+    setSound(audio.status());
     audio.play('objective');
-    window.setTimeout(() => setSound(audio.status()), 600);
   };
   const changeDifficulty = () => {
     const next = DIFFICULTIES[(DIFFICULTIES.indexOf(difficulty) + 1) % DIFFICULTIES.length] ?? 'standard';
@@ -497,8 +525,12 @@ export function GameView({
             Sound check
           </button>
           <p class="pause__note" data-testid="sound-status">
+            {plain && `You should hear Ren, then a chime. Ren's line: ${plain}. `}
             {soundLine(sound)}
           </p>
+          <button type="button" onClick={switchRoute}>
+            Sound out: {sound.route === 'direct' ? 'standard' : 'through the page'}
+          </button>
           <button type="button" onClick={changeQuality}>
             Quality: {tier}
           </button>

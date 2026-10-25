@@ -73,11 +73,20 @@ export interface GameAudio {
   readonly ready: boolean;
   /** What the sound is doing, for the pause menu's sound check. */
   status(): SoundStatus;
+  /**
+   * Where the sound goes out: straight to the speakers (`direct`), or through a page audio element
+   * (`media`), the way a plain web page's audio plays, for a phone whose web sound stays silent.
+   * Call from a touch or click.
+   */
+  setRoute(route: SoundRoute): void;
 }
+
+export type SoundRoute = 'direct' | 'media';
 
 export interface SoundStatus {
   /** 'none' until the first touch or key; then the browser's own word: running, suspended… */
   state: string;
+  route: SoundRoute;
   /** Sounds fetched and decoded, and those that failed. */
   loaded: number;
   failed: number;
@@ -99,6 +108,27 @@ export function createAudio(): GameAudio {
   const buffers = new Map<string, Promise<AudioBuffer | null>>();
   let loaded = 0;
   let failed = 0;
+  let route: SoundRoute = 'direct';
+  /** The page audio element the `media` route plays through. */
+  let element: HTMLAudioElement | null = null;
+  let stream: MediaStreamAudioDestinationNode | null = null;
+  /** Sends the master out the chosen way. */
+  const connectOut = () => {
+    if (!context || !master) return;
+    master.disconnect();
+    if (route === 'direct') {
+      element?.pause();
+      master.connect(context.destination);
+      return;
+    }
+    stream ??= context.createMediaStreamDestination();
+    master.connect(stream);
+    if (!element) {
+      element = new Audio();
+      element.srcObject = stream.stream;
+    }
+    void element.play().catch((e: unknown) => fail('media route', e));
+  };
   let lastError: string | null = null;
   const fail = (what: string, e: unknown) => {
     failed += 1;
@@ -207,7 +237,7 @@ export function createAudio(): GameAudio {
       }
       context = new Ctor();
       master = context.createGain();
-      master.connect(context.destination);
+      connectOut();
       for (const [name, level] of Object.entries(BUSES) as [keyof typeof BUSES, number][]) {
         const g = context.createGain();
         g.gain.value = level;
@@ -224,7 +254,11 @@ export function createAudio(): GameAudio {
       if (ambienceWanted) api.ambience(ambienceWanted);
     },
     status() {
-      return { state: context?.state ?? 'none', loaded, failed, error: lastError };
+      return { state: context?.state ?? 'none', route, loaded, failed, error: lastError };
+    },
+    setRoute(next) {
+      route = next;
+      connectOut();
     },
     play(id, options = {}) {
       const entry = manifest?.sfx[id];

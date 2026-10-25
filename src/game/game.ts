@@ -1597,6 +1597,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         view: (from: number[] | null, to?: number[]) => {
           debugView = from && to ? { from: Vector3.FromArray(from), to: Vector3.FromArray(to) } : null;
         },
+        /** Where a walker from `from` would end up on the way to `to` (it stops short of what it cannot reach). */
+        route: (from: number[], to: number[]) => {
+          const path = nav?.path(Vector3.FromArray(from), Vector3.FromArray(to)) ?? [];
+          return path.length > 0 ? (path[path.length - 1] as Vector3).asArray() : null;
+        },
         /** Where a node is (a bone, by name), for placing a view. */
         where: (name: string) => scene.getTransformNodeByName(name)?.getAbsolutePosition().asArray() ?? null,
         /** Sets how the sidearm sits in the hand (for finding the grip by eye). */

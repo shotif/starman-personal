@@ -516,8 +516,10 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
     },
     { fit: 'box' },
   );
+  // The booth's walls, with its doorway at the west end of the south wall (it had none: the owner
+  // found Pell walled in, 25 October 2026).
   kit.solid([0.2, 2.6, 4.6], [38.2, 1.3, 45.3], s.hull);
-  kit.solid([5.6, 2.6, 0.2], [41, 1.3, 43], s.hull, { nav: true });
+  kit.solid([3.6, 2.6, 0.2], [42, 1.3, 43], s.hull, { nav: true });
   kit.prop('console', [41.8, 0, 46.9], Math.PI, [2, 1.4, 0.7], (box) => {
     box([2, 1, 0.7], [0, 0.5, 0], s.hullDark);
     box([2, 0.7, 0.05], [0, 1.4, -0.4], s.screen);
@@ -600,17 +602,25 @@ function serviceAndMast(kit: Kit, addDoor: (d: Door) => void) {
   // Crates left on the walk: cover in the open.
   kit.solid([1.4, 1, 1.2], [63, 0.5, 30.2], s.crateOrange);
   kit.solid([1.4, 1, 1.2], [73.5, 0.5, 31.8], s.crateOrange);
-  // The ramp up to the platform: 10 m long, 3 m up (about 17°).
+  // The ramp up to the platform: 10 m long, 3 m up (about 17°), its walking surface running from the
+  // catwalk's floor at x 81 to the platform's edge at x 91, flush with both. (Its top once ended a
+  // metre inside the platform, leaving a 30 cm step at the edge: the hero, who has no jump, could
+  // not get up, nor could Ren; the owner's phone, 25 October 2026.)
   const rise = 3;
   const run = 10;
   const slope = Math.atan2(rise, run);
+  const thick = 0.3;
+  const length = Math.hypot(run, rise);
+  // The box's centre, so that the middle of its top face is at (86, 1.5).
+  const rampX = 91 - run / 2 + (thick / 2) * Math.sin(slope);
+  const rampY = rise / 2 - (thick / 2) * Math.cos(slope);
   // Rolled about z so that its east end, towards the platform, is the high one.
-  kit.solid([Math.hypot(run, rise), 0.3, 4], [87, rise / 2 - 0.15, 31], s.grate, {
+  kit.solid([length, thick, 4], [rampX, rampY, 31], s.grate, {
     name: 'mast-ramp',
     rot: [0, 0, slope],
   });
   for (const z of [29.05, 32.95]) {
-    kit.solid([Math.hypot(run, rise), 1.05, 0.1], [87, rise / 2 + 0.525, z], s.trim, { rot: [0, 0, slope] });
+    kit.solid([length, 1.05, 0.1], [rampX, rise / 2 + 0.525, z], s.trim, { rot: [0, 0, slope] });
   }
   kit.solid([10, 0.3, 10], [96, rise - 0.15, 31], s.grate, { name: 'mast-platform' });
   for (const [x, z, w, d] of [

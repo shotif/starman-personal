@@ -5,6 +5,8 @@ export const HERO_KEY = 'lightkeeper.hero';
 /** The saved game: the story's state at its last checkpoint (src/game/game.ts, SaveData). */
 export const SAVE_KEY = 'lightkeeper.save';
 export const DIFFICULTY_KEY = 'lightkeeper.difficulty';
+/** How the sound goes out (src/game/audio.ts, SoundRoute). */
+export const SOUND_ROUTE_KEY = 'lightkeeper.soundRoute';
 
 /** The 2D pictures (docs/assets/IMAGES.md). */
 export const PICTURES = `${import.meta.env.BASE_URL}assets/textures/`;

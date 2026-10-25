@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { BRIDGE_Z, MARKS } from '../../src/game/places.ts';
 
 /**
  * Journeys through Calder Station on a phone and a desktop (D-02): starting, moving, cover, aiming,
@@ -11,6 +12,7 @@ type Lightkeeper = {
   fight(id: string): void;
   event(name: string): void;
   state(): {
+    feet: number[];
     cover: { inCover: boolean };
     condition: { kind: string };
     area: string | null;
@@ -385,4 +387,53 @@ test('a scene that starts under a finger leaves the camera free after it', async
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await page.waitForTimeout(300);
   expect(Math.abs((await alpha()) - before)).toBeGreaterThan(0.1);
+});
+
+test('every place the story sends the hero can be walked to', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the station is the same on both');
+  await page.goto('./?play&debug&quality=low');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  const start = MARKS.hero_start;
+  if (!start) throw new Error('no start');
+  // Lantern's bridge and hold are another place, reached by the lift-off; the people and things the
+  // story sends the hero to on the station must all be reachable on foot (Pell's booth had no door).
+  const marks = Object.entries(MARKS).filter(([, m]) => m.z > BRIDGE_Z + 100);
+  const unreachable: string[] = [];
+  for (const [name, m] of marks) {
+    const end = await page.evaluate(
+      ([from, to]) =>
+        (window as unknown as { lightkeeper: { route(a: number[], b: number[]): number[] | null } }).lightkeeper.route(
+          from,
+          to,
+        ),
+      [
+        [start.x, 0, start.z],
+        [m.x, m.y ?? 0, m.z],
+      ],
+    );
+    const gap = end ? Math.hypot((end[0] ?? 0) - m.x, (end[2] ?? 0) - m.z) : Number.POSITIVE_INFINITY;
+    // Within reach: three metres to talk, two to use, and a person's mark may stand in furniture.
+    if (gap > 1.8) unreachable.push(`${name} (${gap.toFixed(1)} m short)`);
+  }
+  expect(unreachable).toEqual([]);
+});
+
+test('the hero walks up the ramp onto the mast platform', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
+  await page.goto('./?play&debug&quality=low&chapter=mast');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await page.locator('canvas').click();
+  await call(page, (lk) => lk.teleport(80, 31, Math.PI / 2, 1.3));
+  await page.keyboard.down('KeyW');
+  // The hero has no jump: the ramp must meet the platform without a step (it once left 30 cm).
+  await expect
+    .poll(
+      async () => {
+        const feet = (await call(page, (lk) => lk.state().feet)) as number[];
+        return (feet[0] ?? 0) > 92 && Math.abs((feet[1] ?? 0) - 3) < 0.1;
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(true);
+  await page.keyboard.up('KeyW');
 });

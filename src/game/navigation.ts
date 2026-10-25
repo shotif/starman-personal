@@ -44,6 +44,8 @@ export async function createNavigation(scene: Scene, meshes: Mesh[]) {
   const crowd = navigation.createCrowd(24, 0.5, scene);
   return {
     closest: (p: Vector3) => navigation.getClosestPoint(p),
+    /** The way a walker would go from one point to another; it ends short of a place it cannot reach. */
+    path: (from: Vector3, to: Vector3) => navigation.computePath(navigation.getClosestPoint(from), to),
     setTimeFactor(factor: number) {
       navigation.timeFactor = factor;
     },
