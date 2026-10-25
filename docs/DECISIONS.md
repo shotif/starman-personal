@@ -64,6 +64,10 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-50 | Weapons | Decided 2026-10-25 | **As recommended**: pistol, rifle, shotgun, marksman rifle by class; two carried; mods found and bought |
 | D-51 | The Banked, and Pyre Remnant's outline | Decided 2026-10-25 | **As recommended**: three kinds of Banked fighter, and the outline in ACT1.md §6 |
 | D-52 | Labelling fiction | Decided 2026-10-25 (owner's direction) | **Not labelled**: a game is plainly fiction; real astronomy stays accurate |
+| D-53 | Powers in hand | **Open** (round 8) | Recommended: three at a time, chosen aboard or from the growth screen |
+| D-54 | The new powers at levels 3 and 6 | **Open** (round 8) | Recommended: the table in [ACT1.md](design/ACT1.md), increment 3 |
+| D-55 | Talents | **Open** (round 8) | Recommended: the backstory's talents work in play, and a class training with three ranks |
+| D-56 | How the four weapons differ | **Open** (round 8) | Recommended: no ammunition; rate, reach, spread and weight; two carried; five mods |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -694,6 +698,53 @@ Until now everything invented was labelled *Fiction* in the game and the docs (t
 the codex's headings, the map). The owner, 25 October 2026: "don't force marking anything as
 fiction, it is clear there is fiction in a game so you don't need to emphasize it." The labels go;
 real astronomy stays accurate, and the codex simply gives the real facts and the story together.
+
+## Round 8: growth and weapons — open
+
+The proposal is increment 3 in [design/ACT1.md](design/ACT1.md): experience from the story, twelve
+levels, ranks, two new powers for each class, talents, and the four weapons. D-49 and D-50 decided
+the shape; these four questions decide how it feels in the hand.
+
+### D-53 · Powers in hand — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Three at a time** (recommended) | Five powers by level 6, three of them in hand, chosen aboard or from the growth screen outside a fight. The phone's arc stays three buttons, the desktop's keys 1, 2 and 3; choosing which three matters |
+| B. All of them | An arc of five on a phone, keys 1 to 5 on a desktop; nothing to choose, more to reach for in a fight |
+| C. Four | A middle way: four buttons, one power left out |
+
+**Recommendation: A.** The phone's controls are already full; a choice of three is a build to make.
+
+### D-54 · The new powers at levels 3 and 6 — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Two for each class, as in the table** (recommended) | Nine new powers (Shrapnel Round, Second Wind, Gun Post, Cascade, Sink, Shear, Blind, Long Shot, Shelter); the two hybrids without a new power of their own borrow from the pure classes (Striker: Brace, Shear; Warden: Lift) |
+| B. Chosen from the class's disciplines | At levels 3 and 6 the player picks any power of their disciplines; more freedom, classes less distinct |
+| C. One new power, at level 4 | Fewer to build now; less growth to feel in Act 1 |
+
+**Recommendation: A.** Each class keeps its character, and every new power works by technology with
+a cost, as D-05 asks.
+
+### D-55 · Talents — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. The backstory's talents in play, and a class training** (recommended) | The origin's and moment's talents become small steady effects (a fifth more health for the survivor, a tenth more shield for the Beltborn, and so on); each class has one training of three ranks bought with points |
+| B. A talent tree | A tree of small bonuses per class; more to choose, more to balance, more screens on a phone |
+| C. The backstory only | No training; points go to powers alone |
+
+**Recommendation: A.** The past the player chose does something, and the points have two uses.
+
+### D-56 · How the four weapons differ — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. No ammunition; rate, reach, spread and weight** (recommended) | The pistol, rifle, shotgun and marksman rifle differ in how fast and far they shoot and how much they weigh; weight slows the powers; two carried; five mods (scope, stabiliser, heavy rounds, long barrel, cooled coil) |
+| B. Magazines and reloading | A reload button and its timing; more to manage on a phone |
+| C. Heat that vents | Each weapon heats as it fires and must cool; a bar to watch |
+
+**Recommendation: A.** A phone player never fumbles a reload mid-fight; weight keeps the choice a real one.
 
 ## Made without waiting
 

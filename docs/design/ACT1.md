@@ -126,7 +126,7 @@ increments, each playable and deployed (D-01):
    leads, the way along the lanes), `src/game/mapScene.ts` (the map, a second scene on the game's
    engine), `src/ui/StarMap.tsx` (its screen), `src/data/stars.json` (from Control); the course is
    set on the bridge, Jo lays it in, and Lantern leaves Ross 128 for the lanes (the `lane` chapter).*
-3. The hero's growth and the weapons.
+3. The hero's growth and the weapons. *Designed below; decisions D-53 to D-56 wait for the owner.*
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.
@@ -220,6 +220,108 @@ then Pyre, and its lengths add up), choosing by a tap (the nearest within reach,
 camera), and the story's commands. Browser, on a phone and a desktop: open the map on the bridge,
 turn it, choose a star by its label and read it, see the two later leads say so, set the course,
 watch the leaving and reach the card.
+
+## Increment 3 in detail: the hero's growth and the weapons
+
+D-49 and D-50 set the shape: experience from missions and choices, ranks, new powers, talents; four
+kinds of weapon, two carried, mods. This is the detail, with four questions for the owner (round 8,
+D-53 to D-56). The numbers are first guesses, tuned in play and tested as rules.
+
+### Experience and levels
+
+- **Where it comes from.** The story gives it, never a kill: a chapter or a mission done (100 to
+  300), a side story (150 to 400), a hard choice (50, the same for mercy as for resolve), a thing
+  found that matters (25). Each grant is a story command (`>>> xp 150 The hold is safe`), so the
+  script says what earns it and a note on the screen says why.
+- **Levels.** Twelve in the whole game. The prologue reaches level 2; one lead, about level 4; the
+  end of Act 1, about level 6 (thresholds 300, 750, 1,300, 2,000, 2,800, then 900 more a level). A
+  game saved before growth existed is given the prologue's experience when it next loads.
+- **Points.** Each level gives two points. A power's second rank costs one and its third two; the
+  class's training the same.
+
+### Powers: ranks, and two new ones
+
+- **Ranks.** Every power has three. The second makes it stronger (a third more damage, time, or
+  healing); the third makes it quicker and wider (a quarter off its cooldown, a third more reach or
+  area). One rule for all, so every rank is plain and tested; powers may get ranks of their own later.
+- **New powers at levels 3 and 6** (D-54). Recommended, two for each class, nine of them new:
+
+| Class | Level 3 | Level 6 |
+| --- | --- | --- |
+| Breacher | **Shrapnel Round**: an underslung round that bursts in a 3 m blast (strong against plate; sets off a primed body) | **Second Wind**: a quarter of health and the whole shield back at once; a long cooldown |
+| Rigger | **Gun Post**: a small automated gun set on a spot, shooting the nearest machine or enemy for 12 s | **Cascade**: an overload that leaps on to two more machines within 6 m |
+| Fieldwright | **Sink**: a knot of bent space ahead that drags light bodies in and holds them 5 s (primes) | **Shear**: a line of torn field 10 m ahead, hurting everything along it (sets off primed bodies) |
+| Shade | **Blind**: a burst of light and noise in every machine's sensors within 5 m; they lose the hero for 4 s | **Long Shot**: the next marksman shot within 6 s does three times the damage and passes through |
+| Striker | **Brace** (the Breacher's) | **Shear** (the Fieldwright's) |
+| Warden | **Lift** (the Fieldwright's) | **Shelter**: a field dome 4 m across for 8 s that stops bolts from outside |
+
+- **Powers in hand** (D-53). Recommended: **three at a time**, chosen aboard or from the growth
+  screen whenever no fight is on. The phone's arc above *Fire* stays three buttons, the desktop's
+  keys stay 1, 2 and 3; which three is a choice that matters.
+
+### Talents (D-55)
+
+Recommended: **the backstory's talents work in play from the start, and each class has a training
+to rank**. Origin and moment talents become small, steady effects, each stated on the creator's
+cards and in the growth screen: *Hard to kill* (the survivor) a fifth more health; *Inspire* (the
+hero of the line) companions' powers return a tenth sooner; *Seeker* (the one who lost someone)
+markers and *Mark* reach half again as far; *Hard vacuum* (Beltborn) a tenth more shield; *Spacer*
+(Laneborn) aboard ships, a tenth faster; *Make do* (Steader) mods cost less; *Street sense*
+(Den-raised) the Wake's traders sell to you; *Paperwork* (Ringborn), *First words* (Borderer) and
+*Resolve* (the hard call) open lines in conversations, as now. Each class's training, three ranks:
+Breacher *Plate drill* (plate on the hero), Rigger *Tinkerer* (powers return sooner), Fieldwright
+*Tuning* (field damage), Shade *Steady hand* (weapon damage, less spread), Striker *Momentum*
+(weapon damage for a few seconds after a power), Warden *Field medic* (healing and the shield's
+return).
+
+### Weapons (D-56)
+
+| Kind | Fires | Damage | Reach | Weight | Trained |
+| --- | --- | --- | --- | --- | --- |
+| **Pistol** (the sidearm the hero holds now) | 4.5 a second | 34 | 60 m | 1 | every class |
+| **Rifle** | 9 a second, held | 20 | 70 m; spread grows while held | 2 | Breacher, Rigger, Shade, Striker, Warden |
+| **Shotgun** | 1.2 a second | 8 pellets of 14 | best within 12 m | 2 | Breacher, Fieldwright, Striker |
+| **Marksman rifle** | 0.9 a second | 120 | 120 m; zooms when aiming | 3 | Breacher, Shade |
+
+- **Recommended: no ammunition to count.** Each kind is balanced by its rate, reach, spread and
+  weight, so a phone player never fumbles a reload mid-fight. Weight is the cost: above 3 carried,
+  each point makes powers return a tenth more slowly (COMBAT.md already promised this).
+- **Two carried, switched** with a button beside *Fire* on a phone, and **X** or the wheel on a
+  desktop. Damage kinds as now: every round is kinetic (blunted by plate); *Heavy rounds* help.
+- **Mods**, two slots a weapon: *Scope* (zoom), *Stabiliser* (a third less spread), *Heavy rounds*
+  (a quarter more against plate, more weight), *Long barrel* (a third more reach), *Cooled coil*
+  (fires a seventh faster). Found on missions in this increment (a find is a thing in the world, as
+  the captain's locker is); bought from traders when Pyre Remnant has one (increment 5, with money).
+- **Where.** *Lantern*'s store room becomes the armoury: a locker where weapons and mods are fitted.
+  The growth screen opens from the pause menu, with a mark when there are points to spend.
+
+### Companions
+
+Ren and Jo level with the hero and rank their powers by themselves, as the story suits them; their
+page in the growth screen lets the player spend their points instead.
+
+### Screens, phone and desktop
+
+The **growth screen**: the hero, Ren and Jo as tabs; level, experience, points; each power with its
+rank pips and a button for the next; the three in hand; the training; the talents, read only. On a
+phone a single column, large buttons; on a desktop two columns. The **armoury**: two slots, the
+weapons trained and found, each with its numbers and its mods. A level reached is a short note on
+the screen and a sound, never a pause in a fight.
+
+### Art and tests
+
+Three new weapon models (rifle, shotgun, marksman rifle) from Meshy, about 90 credits of the 2,210,
+held in the same grip as the pistol; the low tier's copies as for every model. Rules as pure
+functions with unit tests: experience to levels, points and their costs, ranks' effects on a
+power, the in-hand three, weight and cooldowns, each weapon's numbers and its mods, the talents.
+Browser journeys on a phone and a desktop: a level reached, a rank bought, a power swapped in hand,
+a weapon switched and fired, the armoury.
+
+### Out of scope
+
+Money and traders (increment 5), armour pieces (later), unique third ranks for each power, the
+mid-story specialisation (D-10, Act 2), and companions' own new powers (each gains one when their
+personal quest's first step is done, later in Act 1).
 
 ## The decisions it needs
 
