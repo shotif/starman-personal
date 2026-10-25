@@ -6,6 +6,7 @@ import { CODEX } from '../../src/game/codex.ts';
 import { type Beat, type HeroFacts, parseTags, StoryRunner } from '../../src/game/conversation.ts';
 import { type Command, Director, parseCommand } from '../../src/game/director.ts';
 import { ENCOUNTERS } from '../../src/game/encounters.ts';
+import { levelOf, XP_BEFORE } from '../../src/game/growth.ts';
 import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
 import { ALL_MARKS, AREAS, CAST, DOORS, LANTERN_AREAS, PLACES } from '../../src/game/places.ts';
 import { LEADS } from '../../src/game/starmap.ts';
@@ -93,6 +94,7 @@ const VERBS = new Set([
   'card',
   'map',
   'depart',
+  'xp',
   'end',
 ]);
 
@@ -146,6 +148,10 @@ describe('the slice script', () => {
         ).toBe(true);
       if (c.verb === 'encounter') expect(ENCOUNTERS[a], `unknown fight: ${a}`).toBeDefined();
       if (c.verb === 'travel') expect(Object.keys(PLACES), `unknown place: ${a}`).toContain(a);
+      if (c.verb === 'xp') {
+        expect(Number(a), `experience must be a number: ${c.rest}`).toBeGreaterThan(0);
+        expect(c.args.length, `experience needs a reason: ${c.rest}`).toBeGreaterThan(1);
+      }
       if (c.verb === 'wait' && !Number.isFinite(Number(a))) {
         for (const event of c.rest.split('|').map((e) => e.trim())) {
           const [kind, what = ''] = event.split(':');
@@ -186,20 +192,29 @@ describe('the slice script', () => {
     const runner = new StoryRunner(JSON_STORY, facts('beltborn', 'striker'));
     const commands: Command[] = [];
     const checkpoints: string[] = [];
+    /** Experience given so far, and at each checkpoint. */
+    let xp = 0;
+    const xpAt: Record<string, number> = {};
     const director = new Director(runner, {
-      command: (c) => commands.push(c),
+      command: (c) => {
+        commands.push(c);
+        if (c.verb === 'xp') xp += Number(c.args[0]);
+      },
       bark: (line) => {
         expect(line.speaker, `a bark without a speaker: "${line.text}"`).not.toBe('narrator');
         expect(line.id).not.toBeNull();
+        xp += line.xp ?? 0;
       },
       checkpoint: (name, state) => {
         expect(state.length).toBeGreaterThan(100);
         checkpoints.push(name);
+        xpAt[name] = xp;
       },
     });
     const talk = (knot: string) => {
       const conversation = runner.converse(knot);
       for (let beat: Beat = conversation.next(); beat.kind !== 'end'; beat = conversation.next()) {
+        if (beat.kind === 'line') xp += beat.xp ?? 0;
         if (beat.kind !== 'choices') continue;
         const decision = beat.choices.find((c) => (mast ? /mast/.test(c.text) : /Our people/.test(c.text)));
         conversation.choose((knot === 'pell_gate' ? decision : beat.choices[0])?.index ?? 0);
@@ -216,7 +231,7 @@ describe('the slice script', () => {
       else director.event(event);
     }
     expect(director.ended).toBe(true);
-    return { commands, checkpoints, runner };
+    return { commands, checkpoints, runner, xp, xpAt };
   }
 
   it('plays from the night shift to the bridge by the mast, and by the escort', () => {
@@ -241,6 +256,27 @@ describe('the slice script', () => {
       expect(run.commands.at(-1)?.verb).toBe('end');
       expect(run.runner.variable('first_lead')).not.toBe('');
     }
+  });
+
+  it('gives experience for the story, reaching level 2 in the prologue and not yet 3 (ACT1.md, increment 3)', () => {
+    const runs = [play(true), play(false)];
+    for (const run of runs) {
+      // The prologue ends at the bridge's card: level 2 by then.
+      expect(levelOf(run.xpAt.aboard ?? 0)).toBe(2);
+      // Level 3 waits for Pyre Remnant, whose powers come with increment 3's second part.
+      expect(levelOf(run.xp)).toBe(2);
+    }
+    // A save from before growth is given the least any way to its chapter gave.
+    for (const [chapter, xp] of Object.entries(XP_BEFORE)) {
+      const seen = runs.map((r) => r.xpAt[chapter]).filter((n): n is number => n !== undefined);
+      expect(seen.length, `${chapter} is a checkpoint`).toBeGreaterThan(0);
+      expect(Math.min(...seen), chapter).toBe(xp);
+    }
+    const chapters = [...SOURCE.matchAll(/^>>> checkpoint (\w+)/gm)].map((m) => m[1] as string);
+    for (const c of chapters) expect(XP_BEFORE[c], `XP_BEFORE has ${c}`).toBeDefined();
+    // Each grant has a reason of its own: its key, so it is given once.
+    const reasons = [...SOURCE.matchAll(/^>>> xp \d+ (.+)$/gm)].map((m) => m[1]);
+    expect(new Set(reasons).size).toBe(reasons.length);
   });
 
   it('opens only codex entries that exist', () => {

@@ -15,7 +15,7 @@ export interface DialogueProps {
   /** Who is speaking now, for the game's staging. */
   onSpeaker(who: 'hero' | 'partner' | null): void;
   /** A line is on screen: its voice plays; how long it lasts, or null if it has no voice. */
-  onLine(line: { speaker: string; id: string | null; codex?: string }): number | null;
+  onLine(line: { speaker: string; id: string | null; codex?: string; xp?: number }): number | null;
   /** A voiced line was skipped. */
   onSkip(): void;
   onChoose(): void;
@@ -51,7 +51,7 @@ export function Dialogue({ conversation, heroName, touch, onSpeaker, onLine, onS
     if (autoNext.current) window.clearTimeout(autoNext.current);
     autoNext.current = null;
     if (next.kind === 'line') {
-      const seconds = onLine({ speaker: next.speaker, id: next.id, codex: next.codex });
+      const seconds = onLine({ speaker: next.speaker, id: next.id, codex: next.codex, xp: next.xp });
       if (seconds !== null) autoNext.current = window.setTimeout(() => advance(true), (seconds + 0.55) * 1000);
     }
   };

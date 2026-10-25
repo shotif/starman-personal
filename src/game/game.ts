@@ -48,6 +48,19 @@ import { type Command, Director } from './director.ts';
 import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
+import {
+  type CompanionGrowth,
+  companionAuto,
+  type Growth,
+  gainOnce,
+  levelOf,
+  type Modifiers,
+  modifiers,
+  newCompanionGrowth,
+  rankOf,
+  sound as soundGrowth,
+  XP_BEFORE,
+} from './growth.ts';
 import { Input } from './input.ts';
 import { buildLantern } from './lantern.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
@@ -67,7 +80,7 @@ import { createNavigation, type Navigation } from './navigation.ts';
 import { dress, looksOf, type Person, spawnPerson } from './people.ts';
 import { type PlaceId, placeOf } from './places.ts';
 import { poseWeights } from './pose.ts';
-import { CLASS_POWERS, POWERS, type PowerId } from './powers.ts';
+import { atRank, POWERS, type PowerId, type PowerSpec } from './powers.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 import { buildStation, type Mark } from './station.ts';
@@ -127,6 +140,13 @@ export interface SaveData {
   place?: PlaceId;
   /** Which script the story's state belongs to; a save from another resumes at its checkpoint. */
   script?: string;
+  /** The hero's growth and the companions' (ACT1.md, increment 3); a save from before it is given its chapter's. */
+  growth?: SavedGrowth;
+}
+
+export interface SavedGrowth {
+  hero: Growth;
+  crew: Record<string, CompanionGrowth>;
 }
 
 /** A short fingerprint of the compiled script (FNV-1a), to tell saves from an older one. */
@@ -160,11 +180,18 @@ export interface Game {
   showMap(view: { render(): void } | null): void;
   /** A course set on the star map, to a lead (`pyre`): the story waits for it. */
   setCourse(id: string): void;
+  /**
+   * The hero's growth and the companions', for the growth screen: `fighting` while changes wait, and
+   * the companions met so far.
+   */
+  growth(): SavedGrowth & { fighting: boolean; crewKnown: string[] };
+  /** Applies the growth screen's changes (made by growth.ts's rules); false during a fight. */
+  setGrowth(next: SavedGrowth): boolean;
   setDifficulty(difficulty: Difficulty): void;
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
   /** A conversation's line is on screen: its voice plays, the speaker's mouth moves. Seconds long, or null. */
-  speak(line: { speaker: string; id: string | null; codex?: string }): number | null;
+  speak(line: { speaker: string; id: string | null; codex?: string; xp?: number }): number | null;
   /** Stops the voice now speaking (a line skipped). */
   hush(): void;
   /** The companions with the hero now. */
@@ -208,7 +235,8 @@ export interface GameOptions {
   onVitals(vitals: Vitals): void;
   /** The screen fades to black, or back. */
   onFade(black: boolean): void;
-  onSave(save: SaveData): void;
+  /** A save to keep; `quiet` when only growth changed, with no sound or note. */
+  onSave(save: SaveData, quiet?: boolean): void;
   onEnd(ending: Ending): void;
   /** A chapter's card, between parts of the story (`prologue`); the story waits for `continueStory`. */
   onCard(card: string, ending: Ending): void;
@@ -221,6 +249,10 @@ export interface GameOptions {
   onCodex(id: string): void;
   /** The star map was used: the screen opens it, and calls `showMap` and `setCourse`. */
   onMap(): void;
+  /** A level reached, and the powers it brought (by name). */
+  onLevel(level: number, powers: string[]): void;
+  /** The growth changed: the points the hero and the companions have to spend. */
+  onGrowth(points: number): void;
   /** A white flash (the lane taking the ship). */
   onFlash(): void;
   /** A shot the player watches (the ship leaving): the controls and the powers step aside. */
@@ -251,6 +283,8 @@ const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, max
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
+/** The chapters before Jo is met in the hangar. */
+const BEFORE_JO = ['night_shift', 'range', 'to_control', 'control', 'concourse', 'mast', 'escort', 'gate'];
 /** How long *Lantern*'s leaving is watched: breaking orbit, the lane's flash, and a moment in it. */
 const DEPART_SECONDS = 8.5;
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -491,15 +525,31 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let wasAiming = false;
   let fireCooldown = 0;
   let shotPose = 0;
-  let heroDefences: Defences = personDefences();
+  // Growth (ACT1.md, increment 3): the hero's, kept in saves; a save from before it is given what its
+  // chapter had reached.
+  const heroClass = options.looks.heroClass;
+  const savedGrowth = options.save?.growth;
+  let growth: Growth = soundGrowth(
+    savedGrowth?.hero ?? (options.save ? { xp: XP_BEFORE[options.save.checkpoint] ?? 0 } : undefined),
+    heroClass,
+  );
+  const crew: Record<string, CompanionGrowth> = {
+    ren: savedGrowth?.crew?.ren ?? newCompanionGrowth(),
+    jo: savedGrowth?.crew?.jo ?? newCompanionGrowth(),
+  };
+  for (const who of Object.keys(crew))
+    crew[who] = companionAuto(crew[who] ?? newCompanionGrowth(), who, levelOf(growth.xp));
+  let mods: Modifiers = modifiers(options.looks, growth.training);
+  /** Seconds left of the Striker's momentum after a power. */
+  let momentum = 0;
+  let heroDefences: Defences = personDefences(mods);
   let condition: Condition = { kind: 'up' };
   let helpUsed = false;
   let helper: Companion | null = null;
   /** Seconds of grace after being helped up: getting up under fire is not a second fall. */
   let grace = 0;
   let commanding = false;
-  /** The hero's class's three powers (D-33), and how long the casting arm stays up. */
-  const powers: PowerId[] = [...(CLASS_POWERS[options.looks.heroClass] ?? CLASS_POWERS.breacher ?? [])];
+  /** How long the casting arm stays up. The powers in hand are `growth.hand` (D-53). */
   let castPose = 0;
   /** A strike (two blows) or a dodge in progress (COMBAT.md). */
   let strike: { t: number; blows: number } | null = null;
@@ -608,9 +658,19 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
     return best;
   };
+  /** A power as the hero has it: its rank, the training's and talents' changes (growth.ts). */
+  const powerSpec = (id: PowerId): PowerSpec => {
+    const ranked = atRank(POWERS[id], rankOf(growth, id));
+    const out: PowerSpec = { ...ranked, cooldown: ranked.cooldown * mods.cooldownScale };
+    if (out.damage?.kind === 'field') out.damage = { ...out.damage, amount: out.damage.amount * mods.fieldDamage };
+    if (id === 'mark') out.range *= mods.markReach;
+    if (out.heal !== undefined) out.heal *= mods.healScale;
+    return out;
+  };
   const abilities = buildAbilities({
     scene,
     swarm,
+    spec: powerSpec,
     machineAhead: (reach) => {
       const id = powerTarget(reach, (c) => c >= swarmFirst);
       return id === null ? null : id - swarmFirst;
@@ -638,7 +698,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       orbit.beta = beta;
     },
     heal: (amount) => {
-      heroDefences = { ...heroDefences, health: Math.min(heroDefences.healthMax, heroDefences.health + amount) };
+      heroDefences = {
+        ...heroDefences,
+        health: Math.min(heroDefences.healthMax, heroDefences.health + amount * mods.healScale),
+      };
     },
     say: (text) => options.onNote(text),
     sound: (id, at) => {
@@ -647,10 +710,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   });
   /** Uses the hero's power in a slot, facing where the camera looks, the casting arm up. */
   const usePower = (slot: number) => {
-    const id = powers[slot];
+    const id = growth.hand[slot];
     if (!id || commanding || talking || condition.kind !== 'up' || liftoff || ended) return;
     if (abilities.use(id)) {
       castPose = 0.55;
+      momentum = 4;
       heroYaw = yawOf({ x: -Math.cos(orbit.alpha), z: -Math.sin(orbit.alpha) });
       if (POWERS[id].id !== 'veil') abilities.effects.veil = 0;
     }
@@ -738,9 +802,46 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     joApproval: Number(runner.variable('jo_approval') ?? 0),
   });
 
+  /** The points the hero and the companions have to spend, for the pause menu's mark. */
+  const pointsToSpend = () => {
+    const level = levelOf(growth.xp);
+    const crewPoints = Object.values(crew).reduce((n, c) => n + (c.auto ? 0 : 2 * (level - 1) - c.spent), 0);
+    return Math.max(0, 2 * (level - 1) - growth.spent) + Math.max(0, crewPoints);
+  };
+  /** The last save made, so a change to growth can be kept at once with the same story. */
+  let lastSave: SaveData | null = options.save ?? null;
+  const keepGrowth = () => {
+    if (lastSave) {
+      lastSave = { ...lastSave, growth: { hero: growth, crew: { ...crew } } };
+      options.onSave(lastSave, true);
+    }
+    options.onGrowth(pointsToSpend());
+  };
+  /**
+   * Experience the story gives (never a kill), once for each key: a note, and a level's news when one
+   * is reached.
+   */
+  const grant = (amount: number, why: string, key: string) => {
+    if (!Number.isFinite(amount) || amount <= 0 || growth.got.includes(key)) return;
+    const g = gainOnce(growth, heroClass, key, amount);
+    growth = g.growth;
+    options.onNote(`+${amount} · ${why}`);
+    if (g.levels.length > 0) {
+      const level = levelOf(growth.xp);
+      for (const who of Object.keys(crew)) crew[who] = companionAuto(crew[who] ?? newCompanionGrowth(), who, level);
+      audio.play('objective');
+      options.onLevel(
+        level,
+        g.powers.map((p) => POWERS[p].name),
+      );
+    }
+    keepGrowth();
+  };
+
   /** Plays a line's voice, the speaker's mouth moving with it; its length in seconds, or null. */
-  const speakLine = (line: { speaker: string; id: string | null; codex?: string }): number | null => {
+  const speakLine = (line: { speaker: string; id: string | null; codex?: string; xp?: number }): number | null => {
     if (line.codex) options.onCodex(line.codex);
+    if (line.xp) grant(line.xp, 'A hard choice', `line:${line.id ?? line.speaker}`);
     voiceNow?.voice.stop();
     voiceNow?.who?.speak(0);
     voiceNow = null;
@@ -894,6 +995,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       case 'codex':
         options.onCodex(a);
         break;
+      case 'xp':
+        grant(Number(a), c.args.slice(1).join(' '), `xp:${c.args.slice(1).join(' ')}`);
+        break;
       case 'down':
         people[a]?.fall();
         break;
@@ -929,6 +1033,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           at: Date.now(),
           script: SCRIPT,
           place: a as PlaceId,
+          growth: { hero: growth, crew: { ...crew } },
         };
         options.onSave(save);
         options.onTravel(save);
@@ -946,7 +1051,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     },
     checkpoint: (name, state) => {
       lastCheckpoint = name;
-      options.onSave({
+      lastSave = {
         version: 1,
         looks: options.looks,
         story: state,
@@ -955,7 +1060,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         at: Date.now(),
         script: SCRIPT,
         place: placeId,
-      });
+        growth: { hero: growth, crew: { ...crew } },
+      };
+      options.onSave(lastSave);
     },
   });
   if (options.save) {
@@ -1043,7 +1150,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // Out of the Veil, the first shot does double; shooting gives the hero away.
     const bonus = abilities.effects.veil > 0 ? 2 : 1;
     abilities.effects.veil = 0;
-    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol * bonus, kind: 'kinetic' });
+    const drive = mods.weaponDamage * (momentum > 0 ? 1 + mods.momentum : 1);
+    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol * bonus * drive, kind: 'kinetic' });
     hero.fire();
     range.shot(hero.muzzle(), point, hitTarget);
     shotPose = SHOT_POSE;
@@ -1286,7 +1394,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       hero.setPose(poseWeights({ mode: 'talk', speaking: talking.speaker === 'hero' }), dt);
     } else if (aiming) {
       // Aiming: face where the camera looks and walk in any direction; from cover, stand and aim.
-      const speed = cover.inCover ? 0 : SPEED.walk * push;
+      // Aboard a ship the Laneborn are at home (D-55).
+      const speed = cover.inCover ? 0 : SPEED.walk * push * (placeId === 'lantern' ? mods.shipSpeed : 1);
       desired.set(unit.x * speed, 0, unit.z * speed);
       heroYaw = turnTowards(heroYaw, yawOf(forward), 14 * dt);
       hero.setPose(
@@ -1447,7 +1556,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     }
 
     // The hero's shield and health return out of fire; down, a companion may come (D-43).
-    if (condition.kind === 'up') heroDefences = recover(heroDefences, dt);
+    if (condition.kind === 'up') heroDefences = recover(heroDefences, dt, mods.shieldSooner);
+    momentum = Math.max(0, momentum - dt);
     if (condition.kind === 'down' && !helper) {
       helper =
         team
@@ -1679,7 +1789,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         condition,
         helpComing: !!helper && !helpUsed,
         inCover: cover.inCover,
-        powers: powers.map((id) => ({ id, name: POWERS[id].name, waiting: abilities.waiting(id) })),
+        powers: growth.hand.map((id) => ({ id, name: POWERS[id].name, waiting: abilities.waiting(id) })),
         effects: [
           abilities.effects.stim > 0 ? 'Stim' : '',
           abilities.effects.brace > 0 ? 'Braced' : '',
@@ -1711,6 +1821,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     Object.assign(window, {
       lightkeeper: {
         scene,
+        /** Experience, as the story gives it. */
+        xp: (amount: number) => grant(amount, 'Testing', `test:${performance.now()}`),
+        growth: () => ({ hero: growth, crew, mods, defences: heroDefences }),
         state: () => ({
           feet: hero.root.position.asArray(),
           area,
@@ -1835,6 +1948,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (!ready) {
       ready = true;
       options.onReady();
+      options.onGrowth(pointsToSpend());
       director.step();
       // The chapter's scene is set; from here `start` commands are for a resumed game only. (Cleared
       // in the first frame's update instead, it came before this step, and a resumed game left the
@@ -1869,6 +1983,26 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     },
     setCourse(id) {
       director.event(`course:${id}`);
+    },
+    growth: () => ({
+      hero: growth,
+      crew: { ...crew },
+      fighting: !!fight,
+      // Jo is met in the hangar.
+      crewKnown: ['ren', ...(BEFORE_JO.includes(lastCheckpoint) ? [] : ['jo'])],
+    }),
+    setGrowth(next) {
+      if (fight) return false;
+      growth = soundGrowth(next.hero, heroClass);
+      for (const who of Object.keys(crew)) {
+        const c = next.crew[who];
+        if (c) crew[who] = companionAuto(c, who, levelOf(growth.xp));
+      }
+      mods = modifiers(options.looks, growth.training);
+      // Out of a fight the hero is whole, and the new limits hold at once.
+      heroDefences = restored(personDefences(mods));
+      keepGrowth();
+      return true;
     },
     setCommandView,
     order,

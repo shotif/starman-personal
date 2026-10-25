@@ -22,7 +22,16 @@ export type PowerId =
   | 'hop'
   | 'shove'
   | 'barrier'
-  | 'repair';
+  | 'repair'
+  | 'shrapnel'
+  | 'secondwind'
+  | 'gunpost'
+  | 'cascade'
+  | 'sink'
+  | 'shear'
+  | 'blind'
+  | 'longshot'
+  | 'shelter';
 
 export interface PowerSpec {
   id: PowerId;
@@ -41,6 +50,10 @@ export interface PowerSpec {
   detonates?: boolean;
   /** How long its effect lasts, in seconds. */
   lasts?: number;
+  /** How far round its point it reaches (a burst, a knot of field, a dome, a leap), in metres. */
+  radius?: number;
+  /** What it mends: a share of health. */
+  heal?: number;
   /** One line for the screen. */
   says: string;
 }
@@ -198,6 +211,99 @@ export const POWERS: Record<PowerId, PowerSpec> = {
     lasts: 4,
     says: 'Mends you and those near you.',
   },
+  // Gained at levels 3 and 6 (D-54, ACT1.md increment 3).
+  shrapnel: {
+    id: 'shrapnel',
+    name: 'Shrapnel Round',
+    cooldown: 9,
+    target: 'ground',
+    range: 30,
+    damage: { amount: 75, kind: 'blast' },
+    detonates: true,
+    radius: 3,
+    says: 'An underslung round that bursts.',
+  },
+  secondwind: {
+    id: 'secondwind',
+    name: 'Second Wind',
+    cooldown: 40,
+    target: 'self',
+    range: 0,
+    heal: 0.25,
+    says: 'A quarter of your health and all your shield, back.',
+  },
+  gunpost: {
+    id: 'gunpost',
+    name: 'Gun Post',
+    cooldown: 22,
+    target: 'ground',
+    range: 12,
+    damage: { amount: 12, kind: 'kinetic' },
+    lasts: 12,
+    radius: 22,
+    says: 'A small gun set down to hold a spot.',
+  },
+  cascade: {
+    id: 'cascade',
+    name: 'Cascade',
+    cooldown: 10,
+    target: 'machine',
+    range: 30,
+    damage: { amount: 55, kind: 'arc' },
+    radius: 6,
+    says: 'An overload that leaps to two more.',
+  },
+  sink: {
+    id: 'sink',
+    name: 'Sink',
+    cooldown: 12,
+    target: 'ground',
+    range: 25,
+    damage: { amount: 10, kind: 'field' },
+    primes: true,
+    lasts: 5,
+    radius: 4,
+    says: 'A knot of bent space that drags machines in.',
+  },
+  shear: {
+    id: 'shear',
+    name: 'Shear',
+    cooldown: 11,
+    target: 'self',
+    range: 10,
+    damage: { amount: 90, kind: 'field' },
+    detonates: true,
+    says: 'A line of torn field ahead of you.',
+  },
+  blind: {
+    id: 'blind',
+    name: 'Blind',
+    cooldown: 16,
+    target: 'self',
+    range: 0,
+    lasts: 4,
+    radius: 5,
+    says: 'Light and noise in every machine near you: you are lost to them.',
+  },
+  longshot: {
+    id: 'longshot',
+    name: 'Long Shot',
+    cooldown: 14,
+    target: 'self',
+    range: 0,
+    lasts: 6,
+    says: 'The next shot does three times, and goes through.',
+  },
+  shelter: {
+    id: 'shelter',
+    name: 'Shelter',
+    cooldown: 24,
+    target: 'self',
+    range: 0,
+    lasts: 8,
+    radius: 2,
+    says: 'A field dome that stops bolts from outside.',
+  },
 };
 
 /** Each class's three starting powers (D-33), in the order of their keys and buttons. */
@@ -209,6 +315,37 @@ export const CLASS_POWERS: Record<string, [PowerId, PowerId, PowerId]> = {
   striker: ['hop', 'shove', 'stim'],
   warden: ['pull', 'barrier', 'repair'],
 };
+
+/** The two powers each class gains, at levels 3 and 6 (D-54). */
+export const CLASS_GAINS: Record<string, [PowerId, PowerId]> = {
+  breacher: ['shrapnel', 'secondwind'],
+  rigger: ['gunpost', 'cascade'],
+  fieldwright: ['sink', 'shear'],
+  shade: ['blind', 'longshot'],
+  striker: ['brace', 'shear'],
+  warden: ['lift', 'shelter'],
+};
+
+/**
+ * A power at a rank (ACT1.md, increment 3): the second rank makes it a third stronger (its damage,
+ * how long it lasts, what it mends); the third makes it quicker and wider (a quarter off its
+ * cooldown, a third more reach and area). One rule for every power.
+ */
+export function atRank(spec: PowerSpec, rank: number): PowerSpec {
+  const r = Math.max(1, Math.min(3, Math.round(rank)));
+  if (r === 1) return spec;
+  const more = 4 / 3;
+  const out: PowerSpec = { ...spec };
+  if (spec.damage) out.damage = { ...spec.damage, amount: spec.damage.amount * more };
+  if (spec.lasts !== undefined) out.lasts = spec.lasts * more;
+  if (spec.heal !== undefined) out.heal = spec.heal * more;
+  if (r === 3) {
+    out.cooldown = spec.cooldown * 0.75;
+    out.range = spec.range * more;
+    if (spec.radius !== undefined) out.radius = spec.radius * more;
+  }
+  return out;
+}
 
 /** The burst when a primed machine is set off (COMBAT.md's one combination). */
 export const COMBO = { amount: 70, kind: 'blast' as DamageKind, radius: 4.5 };
@@ -231,9 +368,9 @@ export function ready(cooldowns: Cooldowns, id: PowerId): boolean {
   return (cooldowns[id] ?? 0) <= 0;
 }
 
-/** The share of a power's cooldown still to run, 0 when ready, for the buttons. */
-export function waiting(cooldowns: Cooldowns, id: PowerId): number {
-  return Math.min(1, (cooldowns[id] ?? 0) / POWERS[id].cooldown);
+/** The share of a power's cooldown (its full length at its rank) still to run, 0 when ready, for the buttons. */
+export function waiting(cooldowns: Cooldowns, id: PowerId, full = POWERS[id].cooldown): number {
+  return Math.min(1, (cooldowns[id] ?? 0) / full);
 }
 
 /**
@@ -242,10 +379,10 @@ export function waiting(cooldowns: Cooldowns, id: PowerId): number {
  * but strip a little of nothing: shields stop it (D-42).
  */
 export function strike(
-  id: PowerId,
+  power: PowerId | PowerSpec,
   target: { primed: boolean; shielded: boolean },
 ): { damage: { amount: number; kind: DamageKind } | null; combo: boolean; primes: boolean } {
-  const spec = POWERS[id];
+  const spec = typeof power === 'string' ? POWERS[power] : power;
   const fieldBlocked = spec.damage?.kind === 'field' && target.shielded;
   return {
     damage: spec.damage ?? null,

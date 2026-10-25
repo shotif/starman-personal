@@ -58,8 +58,15 @@ const layers = (shield: number, plate: number, plateBlock: number, health: numbe
   sinceHit: Number.POSITIVE_INFINITY,
 });
 
-/** The hero, and a companion: a shield over health. */
-export const personDefences = (): Defences => layers(100, 0, 0, 100);
+/** The hero, and a companion: a shield over health; the hero's talents and training may add plate (D-55). */
+export const personDefences = (
+  m: { shieldScale: number; healthScale: number; plate: number; plateBlock: number } = {
+    shieldScale: 1,
+    healthScale: 1,
+    plate: 0,
+    plateBlock: 0,
+  },
+): Defences => layers(100 * m.shieldScale, m.plate, m.plateBlock, 100 * m.healthScale);
 
 /** A mote: light plate over a small frame, scaled by the difficulty's toughness. */
 export const moteDefences = (toughness = 1): Defences => layers(0, 40 * toughness, 6, 40 * toughness);
@@ -112,9 +119,9 @@ export function takeHit(d: Defences, amount: number, kind: DamageKind): HitResul
  * Recovery out of fire (D-42): after a few seconds untouched the shield returns in full, and health
  * returns only to the top of the quarter it is in. Plate never returns in a fight.
  */
-export function recover(d: Defences, dt: number): Defences {
+export function recover(d: Defences, dt: number, sooner = 0): Defences {
   const sinceHit = d.sinceHit + dt;
-  if (sinceHit < RECOVERY.delay || d.health <= 0) return { ...d, sinceHit };
+  if (sinceHit < RECOVERY.delay - sooner || d.health <= 0) return { ...d, sinceHit };
   const quarter = d.healthMax * RECOVERY.quarter;
   const ceiling = Math.min(d.healthMax, Math.ceil(d.health / quarter - 1e-9) * quarter);
   return {

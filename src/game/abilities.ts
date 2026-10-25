@@ -6,7 +6,17 @@ import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import type { Scene } from '@babylonjs/core/scene';
 import type { Swarm } from './motes.ts';
-import { COMBO, type Cooldowns, cool, POWERS, type PowerId, PRIMED_SECONDS, ready, strike, waiting } from './powers.ts';
+import {
+  COMBO,
+  type Cooldowns,
+  cool,
+  type PowerId,
+  type PowerSpec,
+  PRIMED_SECONDS,
+  ready,
+  strike,
+  waiting,
+} from './powers.ts';
 
 /**
  * The powers in the game (COMBAT.md, src/game/powers.ts): what each does to the swarm and to the
@@ -15,6 +25,8 @@ import { COMBO, type Cooldowns, cool, POWERS, type PowerId, PRIMED_SECONDS, read
 export interface AbilityContext {
   scene: Scene;
   swarm: Swarm;
+  /** A power as the hero has it: at its rank, with the training's and the weight's changes (growth.ts). */
+  spec(id: PowerId): PowerSpec;
   /** The swarm machine under the crosshair (with a generous assist), within a range, or null. */
   machineAhead(range: number): number | null;
   /** A practice drone on the range under the crosshair (when no machine is), within reach. */
@@ -120,7 +132,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
   const hitMachine = (id: PowerId, machine: number) => {
     const status = swarm.status(machine);
     if (!status?.alive) return;
-    const result = strike(id, { primed: status.primed, shielded: status.shielded });
+    const result = strike(ctx.spec(id), { primed: status.primed, shielded: status.shielded });
     if (result.combo) {
       swarm.unprime(machine);
       swarm.burst(status.at, COMBO.radius, { amount: COMBO.amount, kind: COMBO.kind }, 'hero');
@@ -134,7 +146,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
 
   const use = (id: PowerId): boolean => {
     if (!ready(cooldowns, id)) return false;
-    const spec = POWERS[id];
+    const spec = ctx.spec(id);
     let target: number | null = null;
     if (spec.target === 'machine') {
       target = ctx.machineAhead(spec.range);
@@ -310,7 +322,7 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       return cooldowns;
     },
     effects,
-    waiting: (id) => waiting(cooldowns, id),
+    waiting: (id) => waiting(cooldowns, id, ctx.spec(id).cooldown),
     absorb(amount) {
       if (barrierShield <= 0) return amount;
       const taken = Math.min(barrierShield, amount);

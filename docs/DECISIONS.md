@@ -64,10 +64,10 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-50 | Weapons | Decided 2026-10-25 | **As recommended**: pistol, rifle, shotgun, marksman rifle by class; two carried; mods found and bought |
 | D-51 | The Banked, and Pyre Remnant's outline | Decided 2026-10-25 | **As recommended**: three kinds of Banked fighter, and the outline in ACT1.md §6 |
 | D-52 | Labelling fiction | Decided 2026-10-25 (owner's direction) | **Not labelled**: a game is plainly fiction; real astronomy stays accurate |
-| D-53 | Powers in hand | **Open** (round 8) | Recommended: three at a time, chosen aboard or from the growth screen |
-| D-54 | The new powers at levels 3 and 6 | **Open** (round 8) | Recommended: the table in [ACT1.md](design/ACT1.md), increment 3 |
-| D-55 | Talents | **Open** (round 8) | Recommended: the backstory's talents work in play, and a class training with three ranks |
-| D-56 | How the four weapons differ | **Open** (round 8) | Recommended: no ammunition; rate, reach, spread and weight; two carried; five mods |
+| D-53 | Powers in hand | Decided 2026-10-25 | **As recommended**: three at a time, chosen aboard or from the growth screen |
+| D-54 | The new powers at levels 3 and 6 | Decided 2026-10-25 | **As recommended**: the table in [ACT1.md](design/ACT1.md), increment 3 |
+| D-55 | Talents | Decided 2026-10-25 | **As recommended**: the backstory's talents work in play, and a class training with three ranks |
+| D-56 | How the four weapons differ | Decided 2026-10-25 | **As recommended**: no ammunition; rate, reach, spread and weight; two carried; five mods |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -699,13 +699,15 @@ the codex's headings, the map). The owner, 25 October 2026: "don't force marking
 fiction, it is clear there is fiction in a game so you don't need to emphasize it." The labels go;
 real astronomy stays accurate, and the codex simply gives the real facts and the story together.
 
-## Round 8: growth and weapons — open
+## Round 8: growth and weapons — decided 25 October 2026
 
 The proposal is increment 3 in [design/ACT1.md](design/ACT1.md): experience from the story, twelve
 levels, ranks, two new powers for each class, talents, and the four weapons. D-49 and D-50 decided
 the shape; these four questions decide how it feels in the hand.
 
-### D-53 · Powers in hand — **Open**
+**Decided:** all four as recommended, 25 October 2026 ("As recommended").
+
+### D-53 · Powers in hand — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -715,7 +717,7 @@ the shape; these four questions decide how it feels in the hand.
 
 **Recommendation: A.** The phone's controls are already full; a choice of three is a build to make.
 
-### D-54 · The new powers at levels 3 and 6 — **Open**
+### D-54 · The new powers at levels 3 and 6 — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -726,7 +728,7 @@ the shape; these four questions decide how it feels in the hand.
 **Recommendation: A.** Each class keeps its character, and every new power works by technology with
 a cost, as D-05 asks.
 
-### D-55 · Talents — **Open**
+### D-55 · Talents — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -736,7 +738,7 @@ a cost, as D-05 asks.
 
 **Recommendation: A.** The past the player chose does something, and the points have two uses.
 
-### D-56 · How the four weapons differ — **Open**
+### D-56 · How the four weapons differ — **Decided**
 
 | Option | What it means |
 | --- | --- |

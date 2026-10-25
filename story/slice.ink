@@ -4,7 +4,9 @@
 // (`>>> look`) runs a knot of remarks, said in the world. A line's `#codex:` tag opens that entry of
 // the codex (src/game/codex.ts) when it is said. Every spoken line carries its
 // speaker and an id for its voice (D-23); every choice its manner (D-12). People call the hero
-// "Officer" and never by name, so every line can be voiced.
+// "Officer" and never by name, so every line can be voiced. `>>> xp <amount> <why>` gives experience
+// for what the story says was done, never a kill; a line's `#xp:` tag gives it for a hard choice,
+// the same whichever way it goes (ACT1.md, increment 3).
 
 VAR hero_name = ""
 VAR hero_class = ""
@@ -105,6 +107,7 @@ Good. Now use me. Open your orders and send me at one; I'm quicker when I'm told
 That's how we'll work. Last round: your own kit. Show me what you trained for. #speaker: Ren #line: ren_drill_powers
 >>> hint powers
 >>> drill
+>>> xp 40 The drill, run clean
 Clean. Hale's going to want a report on that star before— #speaker: Ren #line: ren_drill_02
 >>> lights out
 >>> sky swarm
@@ -212,6 +215,7 @@ Those aren't stars round it. They're moving. #speaker: Ren #line: ren_spine_02
 Contacts! High, by the vents! #speaker: Ren #line: ren_concourse_01
 >>> hint powers
 >>> encounter concourse_1
+>>> xp 60 The concourse held
 That's the last of them. For now. #speaker: Ren #line: ren_concourse_02
 >>> objective Talk to Pell at the comms booth
 >>> marker booth
@@ -256,6 +260,7 @@ Thousands of them round the star, and they still sent some down for a beacon sta
 >>> wait used:relay
 Signal's going out. Merrow, Merrow, this is Calder Station. Turn back. Do not come in. #speaker: Pell #line: pell_relay_01
 They've got it. They're answering. Officer, they've got it! #speaker: Pell #line: pell_relay_02
+>>> xp 120 The Merrow warned
 >>> wait 2
 Something's at the clinic door. It's at the— Officer, they're inside! #speaker: Pell #line: pell_relay_03
 >>> down ilya
@@ -301,6 +306,7 @@ Something's at the clinic door. It's at the— Officer, they're inside! #speaker
 >>> wait enter:concourse
 Movement! Get them down! #speaker: Ren #line: ren_escort_01
 >>> encounter escort
+>>> xp 80 The night shift brought through
 I tried the Merrow. Nothing. They'll be in it before they hear us. #speaker: Pell #line: pell_escort_01
 Keep walking, all of you. Eyes on the officer's back. Don't look up. #speaker: Dena #line: dena_escort_04
 -> gate
@@ -373,6 +379,7 @@ Here they come. Through the roof! #speaker: Jo #line: jo_hangar_01
 >>> encounter hangar_1
 That big one's making more of them. Kill it and they stop. #speaker: Jo #line: jo_hangar_02
 >>> encounter hangar_2
+>>> xp 80 The hangar held
 That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_hangar_03
 >>> objective Board the surveyor
 >>> marker ramp
@@ -424,6 +431,7 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> talk jo jo_bridge
 >>> wait talked:ren_bridge
 >>> wait talked:jo_bridge
+>>> xp 60 Out of Ross 128, with everyone you could carry
 >>> card prologue
 -> aboard
 
@@ -469,6 +477,7 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> marker starmap
 >>> map starmap starmap Open the star map
 >>> wait course:pyre
+>>> xp 50 A course for Pyre Remnant
 // The map is still over the screen: the crew take their places unseen.
 >>> forget starmap
 >>> marker none
@@ -678,13 +687,13 @@ Can't send the night shift on their own, though. Somebody has to bring them thro
     I think whatever we choose, someone pays for it. Choose the one you can carry. #speaker: Ren #line: ren_pell_gate_06b
     -> ask
 * [I'll go to the mast. Keep them in the clinic. #manner: resolve]
-    I'll go to the mast. Keep them in the clinic, and keep the door shut. #speaker: hero #line: hero_pell_gate_07a
+    I'll go to the mast. Keep them in the clinic, and keep the door shut. #speaker: hero #line: hero_pell_gate_07a #xp: 50
     ~ took_mast = true
     Out past the airlock, up the ramp. The console's on the platform. Be quick, Officer. #speaker: Pell #line: pell_gate_08a
     Nine strangers against our own. I hope you're right. #speaker: Ren #line: ren_pell_gate_09a
     -> DONE
 * [Our people first. The Merrow will have to take its chances. #manner: plain]
-    Our people first. The Merrow will have to take its chances. #speaker: hero #line: hero_pell_gate_07b
+    Our people first. The Merrow will have to take its chances. #speaker: hero #line: hero_pell_gate_07b #xp: 50
     ~ took_mast = false
     I'll keep trying the band. Maybe something gets through. #speaker: Pell #line: pell_gate_08b
     Can't save everyone. Doesn't stop you wishing. #speaker: Ren #line: ren_pell_gate_09b
@@ -957,11 +966,11 @@ What's open is a list. Antares, thirty years ago, and two stars I'd never heard 
     Someone in it did. I'd like to know whether they still do. #speaker: Ren #line: ren_aboard_04b
 - I could send this to the Lane Office now. Or I could wait until we know who's still listening there. #speaker: Ren #line: ren_aboard_05
 * [Send it. Make them answer for it. #manner: resolve]
-    Send it. Make them answer for it. #speaker: hero #line: hero_ren_aboard_06a
+    Send it. Make them answer for it. #speaker: hero #line: hero_ren_aboard_06a #xp: 50
     ~ ren_sent_file = true
     Sent. If they're clean, they'll thank us. If they're not, they'll know where we are. #speaker: Ren #line: ren_aboard_07a
 * [Wait. We don't know who's listening. #manner: plain]
-    Wait. We don't know who's listening yet. #speaker: hero #line: hero_ren_aboard_06b
+    Wait. We don't know who's listening yet. #speaker: hero #line: hero_ren_aboard_06b #xp: 50
     ~ ren_sent_file = false
     ~ ren_approval += 1
     Careful. Good. I was hoping you'd say that. #speaker: Ren #line: ren_aboard_07b

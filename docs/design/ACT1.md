@@ -126,7 +126,7 @@ increments, each playable and deployed (D-01):
    leads, the way along the lanes), `src/game/mapScene.ts` (the map, a second scene on the game's
    engine), `src/ui/StarMap.tsx` (its screen), `src/data/stars.json` (from Control); the course is
    set on the bridge, Jo lays it in, and Lantern leaves Ross 128 for the lanes (the `lane` chapter).*
-3. The hero's growth and the weapons. *Designed below; decisions D-53 to D-56 wait for the owner.*
+3. The hero's growth and the weapons. *Designed below; D-53 to D-56 decided as recommended, 25 October 2026; being built.*
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.

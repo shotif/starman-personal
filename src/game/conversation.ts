@@ -14,6 +14,8 @@ export interface Line {
   id: string | null;
   /** A codex entry the line opens when it is said (src/game/codex.ts). */
   codex?: string;
+  /** Experience the line gives when it is said: the hero's words on a hard choice (`#xp:`). */
+  xp?: number;
 }
 
 export type Beat =
@@ -109,7 +111,14 @@ export class Conversation {
       const text = (this.story.Continue() ?? '').trim();
       if (!text) continue;
       const tags = parseTags(this.story.currentTags);
-      return { kind: 'line', speaker: tags.speaker ?? 'narrator', text, id: tags.line ?? null, codex: tags.codex };
+      return {
+        kind: 'line',
+        speaker: tags.speaker ?? 'narrator',
+        text,
+        id: tags.line ?? null,
+        codex: tags.codex,
+        ...(tags.xp ? { xp: Number(tags.xp) } : {}),
+      };
     }
     const choices = this.story.currentChoices;
     if (choices.length > 0) {

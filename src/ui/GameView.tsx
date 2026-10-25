@@ -9,6 +9,7 @@ import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
+import { GrowthScreen } from './Growth.tsx';
 import { StarMap } from './StarMap.tsx';
 import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
@@ -121,6 +122,10 @@ export function GameView({
   const [flash, setFlash] = useState<number | null>(null);
   /** A shot to watch (the ship leaving): the controls step aside. */
   const [shot, setShot] = useState(false);
+  /** Points the hero and companions have to spend, the growth screen, and a level's news. */
+  const [growthPoints, setGrowthPoints] = useState(0);
+  const [growing, setGrowing] = useState(false);
+  const [levelNews, setLevelNews] = useState<{ level: number; powers: string[]; id: number } | null>(null);
   const touch = isTouch();
   const chapterAtStart = saved?.checkpoint ?? new URLSearchParams(location.search).get('chapter') ?? 'night_shift';
   const debug = new URLSearchParams(location.search).has('debug');
@@ -178,9 +183,10 @@ export function GameView({
             document.body.dataset.health = v.health.toFixed(2);
           },
           onFade: setBlack,
-          onSave: (data) => {
-            audio.play('saved', { volume: 0.4 });
+          onSave: (data, quiet) => {
             save(SAVE_KEY, JSON.stringify(data));
+            if (quiet) return;
+            audio.play('saved', { volume: 0.4 });
             setSavedAt(performance.now());
             document.body.dataset.checkpoint = data.checkpoint;
           },
@@ -201,6 +207,14 @@ export function GameView({
           },
           onFlash: () => setFlash(performance.now()),
           onShot: setShot,
+          onLevel: (level, powers) => {
+            setLevelNews({ level, powers, id: performance.now() });
+            document.body.dataset.level = String(level);
+          },
+          onGrowth: (points) => {
+            setGrowthPoints(points);
+            document.body.dataset.growthPoints = String(points);
+          },
           onCard: (_card, e) => {
             setCard(e);
             document.body.dataset.card = 'prologue';
@@ -255,6 +269,11 @@ export function GameView({
     return () => clearTimeout(timer);
   }, [note]);
   useEffect(() => {
+    if (!levelNews) return;
+    const timer = setTimeout(() => setLevelNews(null), 6000);
+    return () => clearTimeout(timer);
+  }, [levelNews]);
+  useEffect(() => {
     if (!flash) return;
     const timer = setTimeout(() => setFlash(null), 1200);
     return () => clearTimeout(timer);
@@ -282,7 +301,10 @@ export function GameView({
     setConversation(null);
   };
   const pause = (on: boolean) => {
-    if (!on) setReading(false);
+    if (!on) {
+      setReading(false);
+      setGrowing(false);
+    }
     if (on) setSound(audio.status());
     pausedNow.current = on;
     setPaused(on);
@@ -532,6 +554,9 @@ export function GameView({
           <button type="button" onClick={() => pause(false)}>
             Resume
           </button>
+          <button type="button" onClick={() => setGrowing(true)}>
+            Growth{growthPoints > 0 && <span class="pause__badge"> · {growthPoints} to spend</span>}
+          </button>
           <button type="button" onClick={() => setReading(true)}>
             Codex ({codex.length})
           </button>
@@ -556,6 +581,14 @@ export function GameView({
         </div>
       )}
       {paused && reading && <Codex open={codex} onClose={() => setReading(false)} />}
+      {paused && growing && game && <GrowthScreen game={game} looks={looks} onClose={() => setGrowing(false)} />}
+      {levelNews && !paused && (
+        <div class="levelup" role="status" key={levelNews.id}>
+          <p class="levelup__title">Level {levelNews.level}</p>
+          {levelNews.powers.length > 0 && <p class="levelup__line">A new power: {levelNews.powers.join(', ')}</p>}
+          <p class="levelup__line">Spend your points in Growth, from the pause menu.</p>
+        </div>
+      )}
       {black && <div class="fade" aria-hidden="true" />}
       {flash && <div key={flash} class="flash" aria-hidden="true" />}
       {map && game && (

@@ -74,7 +74,13 @@ export class Director {
       const command = parseCommand(text);
       if (!command) {
         const tags = parseTags(story.currentTags);
-        const line = { speaker: tags.speaker ?? 'narrator', text, id: tags.line ?? null, codex: tags.codex };
+        const line = {
+          speaker: tags.speaker ?? 'narrator',
+          text,
+          id: tags.line ?? null,
+          codex: tags.codex,
+          ...(tags.xp ? { xp: Number(tags.xp) } : {}),
+        };
         const seconds = this.host.bark(line) ?? 0;
         if (seconds > 0) {
           this.timer = seconds;
