@@ -96,7 +96,13 @@ export interface SoundStatus {
 const BASE = `${import.meta.env.BASE_URL}assets/`;
 /** Babylon's world is left-handed and Web Audio's right-handed: mirroring z keeps left on the left. */
 const z = (v: number) => -v;
-const BUSES = { music: 0.42, sfx: 0.85, voice: 1, ambience: 0.38 };
+/**
+ * The mix: voices on top, music and the place's sound beneath, and both lower still while someone
+ * speaks (the owner found the dialogue hard to hear over the music, 25 October 2026).
+ */
+const BUSES = { music: 0.28, sfx: 0.8, voice: 1, ambience: 0.3 };
+/** How far the music and the place's sound dip while someone speaks. */
+const UNDER_SPEECH = { music: 0.35, ambience: 0.6 };
 
 export function createAudio(): GameAudio {
   let context: AudioContext | null = null;
@@ -117,6 +123,13 @@ export function createAudio(): GameAudio {
   let musicWanted: string | null = null;
   let ambienceNow: { id: string; gain: GainNode; source: AudioBufferSourceNode } | null = null;
   let ambienceWanted: string | null = null;
+  /**
+   * The music and the place's sound being loaded to start. The game asks for them every frame: a
+   * piece still loading was started again each time, dozens of copies at once, very loud and
+   * clipping (the owner's phone, 25 October 2026).
+   */
+  let musicStarting: string | null = null;
+  let ambienceStarting: string | null = null;
   let speaking = 0;
 
   // The manifests load at once; the sounds themselves when first needed.
@@ -193,9 +206,10 @@ export function createAudio(): GameAudio {
 
   /** The music bus dips while someone speaks. */
   const duck = () => {
-    if (!context || !bus.music) return;
-    const target = speaking > 0 ? BUSES.music * 0.45 : BUSES.music;
-    bus.music.gain.setTargetAtTime(target, context.currentTime, 0.25);
+    if (!context || !bus.music || !bus.ambience) return;
+    const under = speaking > 0;
+    bus.music.gain.setTargetAtTime(BUSES.music * (under ? UNDER_SPEECH.music : 1), context.currentTime, 0.25);
+    bus.ambience.gain.setTargetAtTime(BUSES.ambience * (under ? UNDER_SPEECH.ambience : 1), context.currentTime, 0.25);
   };
 
   const api: GameAudio = {
@@ -219,7 +233,14 @@ export function createAudio(): GameAudio {
       const phone = matchMedia('(pointer: coarse)').matches;
       context = new Ctor(phone ? { latencyHint: 'playback' } : undefined);
       master = context.createGain();
-      master.connect(context.destination);
+      // A limiter last: however many sounds play at once, the output does not clip.
+      const limiter = context.createDynamicsCompressor();
+      limiter.threshold.value = -6;
+      limiter.knee.value = 3;
+      limiter.ratio.value = 20;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.25;
+      master.connect(limiter).connect(context.destination);
       for (const [name, level] of Object.entries(BUSES) as [keyof typeof BUSES, number][]) {
         const g = context.createGain();
         g.gain.value = level;
@@ -253,6 +274,8 @@ export function createAudio(): GameAudio {
       for (const name of Object.keys(bus) as (keyof typeof BUSES)[]) delete bus[name];
       musicNow = null;
       ambienceNow = null;
+      musicStarting = null;
+      ambienceStarting = null;
       speaking = 0;
       void old?.close().catch(() => {});
       api.unlock();
@@ -376,34 +399,41 @@ export function createAudio(): GameAudio {
     music(id) {
       musicWanted = id;
       if (!context || !manifest) return;
-      if (musicNow?.id === id) return;
+      if (musicNow?.id === id || (id !== null && musicStarting === id)) return;
       fadeOut(musicNow, 2.5);
       musicNow = null;
       const entry = id ? manifest.music[id] : null;
+      musicStarting = id && entry ? id : null;
       if (!id || !entry) return;
       void loop(entry, 'music', 3).then((node) => {
+        if (musicStarting === id) musicStarting = null;
         if (!node) return;
         if (musicWanted !== id) {
           fadeOut(node, 0.5);
           return;
         }
+        // Never two pieces at once.
+        fadeOut(musicNow, 0.5);
         musicNow = { id, ...node };
       });
     },
     ambience(id) {
       ambienceWanted = id;
       if (!context || !manifest) return;
-      if (ambienceNow?.id === id) return;
+      if (ambienceNow?.id === id || (id !== null && ambienceStarting === id)) return;
       fadeOut(ambienceNow, 2);
       ambienceNow = null;
       const entry = id ? manifest.sfx[id] : null;
+      ambienceStarting = id && entry ? id : null;
       if (!id || !entry) return;
       void loop(entry, 'ambience', 2).then((node) => {
+        if (ambienceStarting === id) ambienceStarting = null;
         if (!node) return;
         if (ambienceWanted !== id) {
           fadeOut(node, 0.5);
           return;
         }
+        fadeOut(ambienceNow, 0.5);
         ambienceNow = { id, ...node };
       });
     },
