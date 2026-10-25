@@ -68,6 +68,15 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-54 | The new powers at levels 3 and 6 | Decided 2026-10-25 | **As recommended**: the table in [ACT1.md](design/ACT1.md), increment 3 |
 | D-55 | Talents | Decided 2026-10-25 | **As recommended**: the backstory's talents work in play, and a class training with three ranks |
 | D-56 | How the four weapons differ | Decided 2026-10-25 | **As recommended**: no ammunition; rate, reach, spread and weight; two carried; five mods |
+| D-57 | Pyre Remnant as designed | **Open** | Recommended: as in [PYRE.md](design/PYRE.md) |
+| D-58 | Where the unlisted come from | **Open** | Recommended: Fomalhaut B Orchard |
+| D-59 | When Mira joins, and who goes with the hero | **Open** | Recommended: before the audit; Ren or Jo comes, the other keeps *Lantern* ready |
+| D-60 | Who is in the dome | **Open** | Recommended: Mira's brother Joost, broadcasting Fomalhaut B's curve |
+| D-61 | The next star | **Open** | Recommended: YZ Ceti, beside Tau Ceti |
+| D-62 | Money, and what it buys | **Open** | Recommended: credits from the story; mods and *Lantern*'s parts |
+| D-63 | Voices for the new people | **Open** | Recommended: add library voices where the stock set falls short |
+| D-64 | Whether Varro is heard at Pyre | **Open** | Recommended: one recorded line, twenty years old |
+| D-65 | How Pyre's people look in this increment | **Open** | Recommended: tinted uniforms, older faces, Mira's own look |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -747,6 +756,127 @@ a cost, as D-05 asks.
 | C. Heat that vents | Each weapon heats as it fires and must cool; a bar to watch |
 
 **Recommendation: A.** A phone player never fumbles a reload mid-fight; weight keeps the choice a real one.
+
+## Round 9: Pyre Remnant — open
+
+The proposal is [design/PYRE.md](design/PYRE.md): ACT1.md §6's outline (D-51) made into a mission
+of about an hour and a half to two hours. A station of people with reasons; three ways into the
+archive, each won by trusting someone; the unlisted refugees and the hearing; the Banked's first
+fights; the archive or the dome; the name in the oldest audit; Mira joining; the first money and the
+first trader. Nothing in it is built until these are answered.
+
+### D-57 · Pyre Remnant as designed — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. As designed** (recommended) | The people, beats, ways in, choices, fights, experience and canon in PYRE.md: ten speaking people, three ways in, the side story with its hearing, the cost, and Teodor Linde as the archivist (the brief's "possible tie-in") |
+| B. Shorter | One way in (Linde's) and no hearing: about an hour, quicker to build, less of the conversation side the station is for |
+| C. As designed, with changes | The owner names them: people, names, beats, outcomes |
+
+**Recommendation: A.** It is the first place that shows the game's conversation side at full size,
+and each part of it has a reason and a consequence (D-04, D-41).
+
+### D-58 · Where the unlisted come from — **Open**
+
+ACT1.md has refugees "from a colony whose star has dimmed". Which colony is new canon.
+
+| Option | What it means |
+| --- | --- |
+| **A. Fomalhaut B Orchard** (recommended) | Reborn's farm station at Fomalhaut B (TW Piscis Austrini, a real K4 dwarf 25 light-years from the Sun, two jumps from Pyre). Its star has been stepping down for eight months, and the trees no longer know the season. They are Cooperative citizens the Cooperative will not list, because listing them would admit that a Cooperative star is going out: the evidence the audit erases is standing in the overflow. A fourth star going dark, after Antares, Ross 128 and the Duskfolk border's |
+| B. The Wake's dens at GJ 2005 | Reborn's dens, one lane from GJ 915: raiders' families, whom the committee's refusal is easier to understand and harder to forgive; a Den-raised hero is at home among them |
+| C. The unhomed | Control's people without a star, on their arks. Aliens, so a new body to make, and Wren's people met before Wren is |
+
+**Recommendation: A.** The sharpest story, no new body, and Reborn's own place.
+
+### D-59 · When Mira joins, and who goes with the hero — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Before the audit** (recommended) | She joins in her clinic and fights the mission. The player chooses Ren or Jo to come; the other keeps *Lantern* ready and calls in on the comms. Each companion's personal quest moves a step by what they see inside (Ren: her own buried report on the audit's list; Jo: the motes' control rings) |
+| B. At the end, as the outline has it | Ren and Jo fight the mission; Mira joins after the cost; the first choice of who comes waits for the next lead |
+| C. All three, this once | No choice to make, but against D-14 (two at a time) and harder to read on a phone |
+
+**Recommendation: A.** The new Warden is played in her own mission, and the choice of two out of
+three (D-14) arrives where the story gives it a reason.
+
+### D-60 · Who is in the dome — **Open**
+
+The cost (ACT1.md §6, beat 5): save the archive or the dome's crew; the other is lost.
+
+| Option | What it means |
+| --- | --- |
+| **A. Mira's brother, Joost, broadcasting** (recommended) | The dome's night watch is Joost Achterberg's. He has watched Fomalhaut B step down for eight months and is putting its curve out on every band when the Banked come for the dome. The archive is the proof of a century and the Cooperative's trust; the dome is people's lives and the truth told now. Mira loses something either way |
+| B. Observers the hero met | As A, with no tie to Mira |
+| C. Lives only | As B, without the broadcast: the dome's crew under fire and nothing more |
+
+**Recommendation: A.** Neither answer is the wrong one, so the choice is a real one; most players
+would otherwise save the crew without thinking twice.
+
+### D-61 · The next star — **Open**
+
+If the archive is saved, and the hearing did not take the time it needed, Mira finds a star "not
+yet on anyone's list" that has begun to step (ACT1.md §6, beat 6). Otherwise Joost (if he lives)
+finds it in Act 2, later.
+
+| Option | What it means |
+| --- | --- |
+| **A. YZ Ceti** (recommended) | A real red dwarf 12 light-years from the Sun with three known planets, 1.6 light-years from Tau Ceti, the Cooperative's capital. The Cooperative can no longer stay out of it (Act 2). Nothing in Reborn or Control is set there |
+| B. Wolf 359 | One of the Sun's nearest stars, 7.9 light-years away: the engines coming for Earth's own neighbourhood, which raises the stakes to Sol early |
+| C. Named later | Mira says there is one more; the name waits for Act 2 |
+
+**Recommendation: A.**
+
+### D-62 · Money, and what it buys — **Open**
+
+D-50 promised mods "bought at stations"; Pyre Remnant brings the first trader.
+
+| Option | What it means |
+| --- | --- |
+| **A. Credits from the story, spent on mods and *Lantern*'s parts** (recommended) | Paid for what is done, never for kills, and the same whichever way a choice goes; spare finds sold at half price. The trader sells a copy of any mod for each weapon (so both guns can carry a stabiliser), and *Lantern*'s first part, plating, whose effect comes with the ship's encounters (D-18). *Make do* takes a fifth off |
+| B. As A, mods only | *Lantern*'s parts wait for the encounters |
+| C. No money | Traders swap finds for finds |
+
+**Recommendation: A.** Money needs something large to save for, and a ship that is prepared is part
+of the finale (D-38).
+
+### D-63 · Voices for the new people — **Open**
+
+The account offers 21 stock voices, and nine of them are cast (Pell's is an older stock voice no
+longer listed). Of the twelve left, three are women's, and none is British. Pyre needs about fourteen new voices (Mira, Linde, Ruth, Quaye, Matti, Nell,
+Tilly, Joost, Esben, Lenz, two Banked, the Banked ship, and people overheard), and Varro's if D-64
+says so. A library voice must be added to the account before it can speak, which takes a voice
+slot; the plan allows 30,000 and 321 are used. In Control the owner chose stock voices to save slots.
+
+| Option | What it means |
+| --- | --- |
+| **A. Library voices where the stock falls short** (recommended) | About eight from ElevenLabs' library (Varro, Mira, Linde, and women's and British voices for the rest), each auditioned as before; stock voices for the others. Jo could then have the northern English voice [VOICES.md](assets/VOICES.md) §10 wanted, if the owner likes |
+| B. Stock voices only | Mira, Ruth and Nell take the last three women's voices; Tilly and the women overheard become men, and Varro waits |
+| C. Designed voices | Made to a description with ElevenLabs' voice design; also a slot each, and less tried than the library's |
+
+**Recommendation: A.**
+
+### D-64 · Whether Varro is heard at Pyre — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. One recorded line** (recommended) | Her note closing the audit twenty years ago, calm and ordinary: *"Audit of the Pyre Remnant archive, closed. Nothing of note. Lightkeeper A. Varro."* Her voice is chosen now, for the whole game |
+| B. Only her signature | Her voice waits until she speaks to the hero (Act 2) |
+
+**Recommendation: A.** A villain with a face (D-07) is better met early, and the ordinariness is the
+point.
+
+### D-65 · How Pyre's people look in this increment — **Open**
+
+Everyone today wears the shared uniform, and nobody looks older than about thirty-five. Pyre has
+about twenty people, some of them old. The Banked's own look stays the owner's for increment 6.
+
+| Option | What it means |
+| --- | --- |
+| **A. Tinted uniforms, older faces, Mira's own look** (recommended) | The uniform tinted by who wears it (the station's blue, the Orchard's earth colours, the Banked's gold, the clinic's white for Mira); MPFB's CC0 age shapes for the old (Linde, and Sorrel and Hale with him), baked as the sliders are; clothes of their own in increment 6 |
+| B. Clothes now | MakeHuman's community clothes (only the CC0 ones, D-28) fitted to the two bodies: slower to make, and more to load on a phone |
+| C. As A, without age | Everyone looks about thirty-five until increment 6 |
+
+**Recommendation: A.** Readable at a glance on a phone, little to load, and the old look old.
 
 ## Made without waiting
 
