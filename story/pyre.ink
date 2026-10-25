@@ -45,6 +45,25 @@ VAR credits = 0
 >>> open dome_door
 ->->
 
+// From the stacks on, the archive's doors stay open behind the hero, and the way they came in
+// with them: a player who wandered into the core or back down the freight way is never shut in.
+= archive_open
+>>> unlock archive_front
+>>> open archive_front
+>>> unlock reading_door
+>>> open reading_door
+>>> unlock stacks_door
+>>> open stacks_door
+>>> unlock core_door
+>>> open core_door
+{ way_in == "cargo":
+    >>> unlock freight_door
+    >>> open freight_door
+    >>> unlock landing_door
+    >>> open landing_door
+}
+->->
+
 // The station's people in their usual places.
 = people
 >>> place quaye quaye_lectern
@@ -348,6 +367,7 @@ He's good. That's the worst kind. #speaker: Ren #line: ren_commons_01
 = way_front
 >>> forget way_stacks
 >>> forget way_cargo
+>>> lock dome_door
 The committee's order. The archive is to be opened for inspection. We'll, ah. We'll just tell the others. #speaker: Auditor #line: auditor_front_01
 >>> walk aud1 front_hall_hero
 >>> walk aud2 front_hall_hero
@@ -371,6 +391,7 @@ The committee's order. The archive is to be opened for inspection. We'll, ah. We
 = way_stacks
 >>> forget way_front
 >>> forget way_cargo
+>>> lock dome_door
 >>> unlock reading_door
 >>> open reading_door
 >>> walk linde reading_linde
@@ -396,6 +417,7 @@ Two of them, by the far racks. They haven't seen us. #speaker: Mira #line: mira_
 = way_cargo
 >>> forget way_front
 >>> forget way_stacks
+>>> lock dome_door
 >>> unlock freight_door
 >>> open freight_door
 >>> unlock landing_door
@@ -447,6 +469,8 @@ Who opened the freight way? Contact, contact! #speaker: Banked #line: banked_car
     >>> unlock landing_door
     >>> open landing_door
 }
+// The Banked are in the archive: Joost has sealed the dome until he opens it himself.
+>>> lock dome_door
 { way_in == "stacks":
     >>> place linde reading_linde
 }
@@ -489,11 +513,10 @@ Dome team. Go. #speaker: Esben #line: esben_band_01
 >>> start hero core_hero
 -> squad("core_hero") ->
 -> doors ->
+-> archive_open ->
 -> people ->
 >>> hide aud1
 >>> hide aud2
->>> unlock core_door
->>> open core_door
 >>> place linde core_linde
 >>> place esben core_esben
 >>> objective Hold the core while the cores are pulled
@@ -526,11 +549,10 @@ That's the last. It's out. It's all out. #speaker: Linde #line: linde_core_03
 >>> start hero walk_start
 -> squad("walk_start") ->
 -> doors ->
+-> archive_open ->
 -> people ->
 >>> hide aud1
 >>> hide aud2
->>> unlock core_door
->>> open core_door
 >>> place esben core_esben
 >>> lock dome_door
 >>> objective Get to the dome
@@ -564,13 +586,10 @@ It's gone. The archive. All of it. I'm sorry, Mira. I'm so sorry. #speaker: Lind
 >>> start hero after_hero
 -> squad("after_hero") ->
 -> doors ->
+-> archive_open ->
 -> people ->
 >>> hide aud1
 >>> hide aud2
->>> unlock archive_front
->>> open archive_front
->>> unlock reading_door
->>> open reading_door
 >>> place linde after_linde
 >>> place mira after_mira
 >>> scene mira mira_reads

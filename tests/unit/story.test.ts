@@ -16,6 +16,8 @@ import {
   PEOPLE_OF,
   PLACES,
   PYRE_AREAS,
+  PYRE_LINKS,
+  PYRE_MARKS,
   placeOf,
 } from '../../src/game/places.ts';
 import { LEADS } from '../../src/game/starmap.ts';
@@ -380,6 +382,110 @@ describe('the slice script', () => {
       const paid = run.commands.filter((c) => c.verb === 'pay').reduce((n, c) => n + Number(c.args[0]), 0);
       expect(paid).toBe(1200);
     }
+  });
+
+  /**
+   * Plays Pyre Remnant along a route as a player would, never placed: the hero is put at a chapter's
+   * mark only when the place is first loaded (a `travel`), and otherwise may be anywhere they could
+   * have walked since they were last sent somewhere. Every place the story then sends them to (an
+   * area to enter, a thing to use, someone to talk to) must be reachable from each of those through
+   * open doors (PYRE_LINKS), or a player who wandered there is shut in. Returns what could not be.
+   */
+  function walkPyre(route: Route): string[] {
+    const runner = new StoryRunner(JSON_STORY, facts('beltborn', 'striker'));
+    const open = new Map<string, boolean>();
+    const peopleAt = new Map<string, string>();
+    const talkWith = new Map<string, string>();
+    /**
+     * Where each thing to use stands: `use <id> <mark> <label>`, from the story's own lines (a route
+     * may take a way the story has not offered yet; the thing stands where it would).
+     */
+    const useAt = new Map([...storySource().matchAll(/>>> use (\w+) (\w+)/g)].map((m) => [m[1] ?? '', m[2] ?? '']));
+    let place = '';
+    let placed = false;
+    /** Where the hero may be: everywhere reachable from where they were last sent. */
+    let hero = new Set<string>();
+    const blocked: string[] = [];
+    const areaOf = (mark: string) => {
+      const m = PYRE_MARKS[mark];
+      return m
+        ? (PYRE_AREAS.find((a) => m.x >= a.x[0] && m.x <= a.x[1] && m.z >= a.z[0] && m.z <= a.z[1])?.id ?? '')
+        : '';
+    };
+    const reachable = (from: string, to: string) => {
+      const seen = new Set([from]);
+      const queue = [from];
+      for (let here = queue.shift(); here !== undefined; here = queue.shift()) {
+        if (here === to) return true;
+        for (const [a, b, door] of PYRE_LINKS) {
+          const next = a === here ? b : b === here ? a : null;
+          if (!next || seen.has(next) || (door !== null && !open.get(door))) continue;
+          seen.add(next);
+          queue.push(next);
+        }
+      }
+      return false;
+    };
+    const around = (areas: Iterable<string>) =>
+      new Set(PYRE_AREAS.map((a) => a.id).filter((x) => [...areas].some((from) => reachable(from, x))));
+    const go = (to: string, why: string) => {
+      if (place !== 'pyre' || !to || hero.size === 0) return;
+      const shut = [...hero].filter((from) => !reachable(from, to));
+      if (shut.length) blocked.push(`${checkpoint}: ${why} (shut in: ${shut.join(', ')})`);
+      hero = new Set([to]);
+    };
+    let checkpoint = '';
+    const director = new Director(runner, {
+      command: (c) => {
+        const [a = '', b = ''] = c.args;
+        if (c.verb === 'travel') {
+          place = a;
+          placed = false;
+        } else if (c.verb === 'start' && a === 'hero' && !placed) {
+          hero = new Set([areaOf(b)]);
+          placed = true;
+        } else if (['start', 'place', 'walk'].includes(c.verb) && a !== 'hero') peopleAt.set(a, b);
+        else if (c.verb === 'talk') talkWith.set(b, a);
+        else if (c.verb === 'use') useAt.set(a, b);
+        else if (c.verb === 'open' || c.verb === 'close') open.set(a, c.verb === 'open');
+        else if (c.verb === 'lock') open.set(a, false);
+      },
+      bark: () => {},
+      checkpoint: (name) => {
+        checkpoint = name;
+      },
+    });
+    const talk = (knot: string) => {
+      const conversation = runner.converse(knot);
+      for (let beat: Beat = conversation.next(); beat.kind !== 'end'; beat = conversation.next()) {
+        if (beat.kind !== 'choices') continue;
+        const decision =
+          knot === 'pell_gate'
+            ? beat.choices.find((c) => (route.mast ? /mast/.test(c.text) : /Our people/.test(c.text)))
+            : beat.choices.find((c) => route.prefer.some((p) => p.test(c.text)));
+        conversation.choose((decision ?? beat.choices[0])?.index ?? 0);
+      }
+      director.event(`talked:${knot}`);
+    };
+    director.step();
+    for (let guard = 0; guard < 600 && !director.ended; guard++) {
+      const event = director.waiting?.find((e) => route.events.includes(e)) ?? director.waiting?.[0] ?? '';
+      const [kind = '', what = ''] = event.split(':');
+      // While the story waits, the hero may wander anywhere the doors let them.
+      if (place === 'pyre') hero = around(hero);
+      if (kind === 'enter') go(what, event);
+      else if (kind === 'used') go(areaOf(useAt.get(what) ?? ''), event);
+      else if (kind === 'talked') go(areaOf(peopleAt.get(talkWith.get(what) ?? '') ?? ''), event);
+      if (event === 'time') director.update(30);
+      else if (kind === 'talked') talk(what);
+      else director.event(event);
+    }
+    return blocked;
+  }
+
+  it('never shuts the hero in at Pyre Remnant: every place the story sends them is open to them', () => {
+    const shut = Object.fromEntries(Object.entries(ROUTES).map(([name, route]) => [name, walkPyre(route)]));
+    expect(shut).toEqual(Object.fromEntries(Object.keys(ROUTES).map((name) => [name, []])));
   });
 
   it('gives experience for the story: level 2 by the prologue’s end, 3 before the stacks, 4 after Pyre', () => {

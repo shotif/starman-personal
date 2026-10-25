@@ -235,6 +235,29 @@ export const PYRE_AREAS: AreaData[] = [
   { id: 'dome', x: [60, 86], z: [25, 51] },
 ];
 
+/**
+ * How Pyre's areas join, and the door between them where there is one. A doorway is passable only
+ * while its door is open: the story opens and closes them. The story's tests use this to check that
+ * every place it sends the hero to can be reached from where the hero is, on every route.
+ */
+export const PYRE_LINKS: readonly [string, string, string | null][] = [
+  ['dock', 'commons', 'customs_gate'],
+  ['dock', 'freight_way', 'freight_door'],
+  ['commons', 'committee', 'committee_door'],
+  ['commons', 'pyre_clinic', 'mira_door'],
+  ['pyre_clinic', 'overflow', null],
+  ['commons', 'pyre_spine', null],
+  ['pyre_spine', 'front_hall', 'archive_front'],
+  ['pyre_spine', 'reading_room', 'reading_door'],
+  ['pyre_spine', 'dome_walk', null],
+  ['dome_walk', 'dome', 'dome_door'],
+  ['front_hall', 'stacks', null],
+  ['reading_room', 'stacks', 'stacks_door'],
+  ['stacks', 'core', 'core_door'],
+  ['stacks', 'landing', null],
+  ['landing', 'freight_way', 'landing_door'],
+];
+
 export const PYRE_MARKS: Record<string, MarkData> = {
   // The dock: in through berth four, Matti at the gate, the auditors' crates by the freight way.
   pyre_dock_hero: { x: 12, z: -28.8, yaw: 0 },

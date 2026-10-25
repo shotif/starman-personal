@@ -86,6 +86,21 @@ async function win(page: Page, fight: string) {
     .not.toBe(`cleared:${fight}`);
 }
 
+/** Whether a door stands open: its panel slid clear of the lamp over its doorway. */
+const doorOpen = (page: Page, id: string) =>
+  page.evaluate((id) => {
+    const scene = (
+      window as unknown as {
+        lightkeeper: {
+          scene: { getMeshByName(n: string): { getAbsolutePosition(): { x: number; z: number } } | null };
+        };
+      }
+    ).lightkeeper.scene;
+    const panel = scene.getMeshByName(`door-${id}`)?.getAbsolutePosition();
+    const lamp = scene.getMeshByName(`door-${id}-lamp`)?.getAbsolutePosition();
+    return !!panel && !!lamp && Math.hypot(panel.x - lamp.x, panel.z - lamp.z) > 1;
+  }, id);
+
 const choose = (pattern: RegExp) => (choices: string[]) =>
   Math.max(
     0,
@@ -202,6 +217,8 @@ test('the cost: the archive held, and the name in the oldest audit', async ({ pa
   await talkThrough(page, phone);
   await expect(body).toHaveAttribute('data-checkpoint', 'pyre_after', { timeout: 20_000 });
   await expect(body).toHaveAttribute('data-objective', 'Go down to the dock', { timeout: 20_000 });
+  // From the core, the way out is open.
+  for (const door of ['core_door', 'stacks_door', 'archive_front']) expect(await doorOpen(page, door), door).toBe(true);
   expect(errors).toEqual([]);
 });
 
@@ -216,6 +233,10 @@ test('the cost: the dome held, its broadcast heard', async ({ page }, testInfo) 
   await talkThrough(page, phone);
   await talkThrough(page, phone, choose(/go for the dome/));
   await expect(body).toHaveAttribute('data-checkpoint', 'pyre_dome', { timeout: 20_000 });
+  // The way out of the archive stays open behind the hero (the owner was shut in, 25 October 2026).
+  await expect.poll(() => doorOpen(page, 'reading_door')).toBe(true);
+  await expect.poll(() => doorOpen(page, 'archive_front')).toBe(true);
+  await expect.poll(() => doorOpen(page, 'stacks_door')).toBe(true);
   await teleport(page, 10, 38, Math.PI / 2);
   await win(page, 'pyre_walk');
   await expect.poll(() => waiting(page), { timeout: 20_000 }).toBe('enter:dome');
@@ -223,6 +244,8 @@ test('the cost: the dome held, its broadcast heard', async ({ page }, testInfo) 
   await win(page, 'pyre_dome');
   await talkThrough(page, phone);
   await expect(body).toHaveAttribute('data-objective', "Go back to the archive's reading room", { timeout: 40_000 });
+  expect(await doorOpen(page, 'reading_door')).toBe(true);
+  expect(await doorOpen(page, 'dome_door')).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('dome.png') });
   expect(errors).toEqual([]);
 });
