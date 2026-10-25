@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import type { GameAudio } from '../game/audio.ts';
+import type { GameAudio, SoundStatus } from '../game/audio.ts';
 import { CODEX } from '../game/codex.ts';
 import type { Conversation } from '../game/conversation.ts';
 import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
@@ -59,6 +59,17 @@ const LEADS: Record<string, string> = {
 };
 
 /** The slice: Calder Station on Ross 128 b, run by the story (SLICE.md). */
+/** The sound check's report, in a line. */
+function soundLine(s: SoundStatus): string {
+  const state =
+    s.state === 'running'
+      ? `Sound is on: ${s.loaded} sounds loaded${s.failed ? `, ${s.failed} failed` : ''}`
+      : s.state === 'none'
+        ? 'Sound has not started yet'
+        : `Sound is ${s.state}`;
+  return s.error ? `${state}. Last problem: ${s.error}` : `${state}.`;
+}
+
 export function GameView({
   looks,
   manifest,
@@ -95,6 +106,7 @@ export function GameView({
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [note, setNote] = useState<{ text: string; id: number } | null>(null);
   const [codex, setCodex] = useState<string[]>(readCodex);
+  const [sound, setSound] = useState<SoundStatus>(() => audio.status());
   const [reading, setReading] = useState(false);
   const touch = isTouch();
   const chapterAtStart = saved?.checkpoint ?? new URLSearchParams(location.search).get('chapter') ?? 'night_shift';
@@ -242,9 +254,16 @@ export function GameView({
   };
   const pause = (on: boolean) => {
     if (!on) setReading(false);
+    if (on) setSound(audio.status());
     pausedNow.current = on;
     setPaused(on);
     game?.setPaused(on);
+  };
+  /** Starts the sound from this tap, plays a chime, and shows what the sound reports a moment later. */
+  const checkSound = () => {
+    audio.unlock();
+    audio.play('objective');
+    window.setTimeout(() => setSound(audio.status()), 600);
   };
   const changeDifficulty = () => {
     const next = DIFFICULTIES[(DIFFICULTIES.indexOf(difficulty) + 1) % DIFFICULTIES.length] ?? 'standard';
@@ -474,6 +493,12 @@ export function GameView({
           <button type="button" onClick={changeDifficulty}>
             Difficulty: {DIFFICULTY[difficulty].name}
           </button>
+          <button type="button" onClick={checkSound}>
+            Sound check
+          </button>
+          <p class="pause__note" data-testid="sound-status">
+            {soundLine(sound)}
+          </p>
           <button type="button" onClick={changeQuality}>
             Quality: {tier}
           </button>

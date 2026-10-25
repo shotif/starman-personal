@@ -1,4 +1,4 @@
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Prompt } from '../game/game.ts';
 import type { Input } from '../game/input.ts';
 import { stickVector } from '../game/motion.ts';
@@ -45,6 +45,26 @@ export function TouchControls({
   const [aiming, setAiming] = useState(false);
   const aimTouchedAt = useRef(Number.NEGATIVE_INFINITY);
   const [firing, setFiring] = useState(false);
+
+  // The controls hide for a conversation, and the stick for the command view, often with a finger
+  // still down: its lift goes elsewhere, and a finger remembered as down keeps every new touch out.
+  // After the chief's scene, which starts by itself as the hero walks in, the camera would not turn
+  // (the owner's phone, 25 October 2026). So hiding forgets the fingers.
+  useEffect(() => {
+    if (!talking) return;
+    lookFinger.current = null;
+    stickFinger.current = null;
+    input.stick = { x: 0, y: 0 };
+    input.fireTouch = false;
+    setStick(null);
+    setFiring(false);
+  }, [talking, input]);
+  useEffect(() => {
+    if (!commanding) return;
+    stickFinger.current = null;
+    input.stick = { x: 0, y: 0 };
+    setStick(null);
+  }, [commanding, input]);
 
   /** When the left thumb last touched down: two touches close together are a dodge. */
   const lastStickDown = useRef(Number.NEGATIVE_INFINITY);
@@ -140,6 +160,7 @@ export function TouchControls({
           onPointerMove={stickMove}
           onPointerUp={stickUp}
           onPointerCancel={stickUp}
+          onLostPointerCapture={stickUp}
         />
       )}
       <div
@@ -149,6 +170,7 @@ export function TouchControls({
         onPointerMove={lookMove}
         onPointerUp={lookUp}
         onPointerCancel={lookUp}
+        onLostPointerCapture={lookUp}
       />
       {!commanding && (
         <>

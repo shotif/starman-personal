@@ -329,3 +329,60 @@ test('after a power, the casting arm comes back down', async ({ page }, testInfo
   expect(cast.weight).toBeLessThan(0.05);
   expect(cast.animatables).toBeGreaterThan(0);
 });
+
+test('a scene that starts under a finger leaves the camera free after it', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'the look area is a phone control');
+  await page.goto('./?play&debug&quality=low&chapter=to_control');
+  const body = page.locator('body');
+  await expect(body).toHaveAttribute('data-ready', 'true');
+  const look = await page.getByTestId('touch-look').boundingBox();
+  if (!look) throw new Error('no look area');
+  const cdp = await page.context().newCDPSession(page);
+  const finger = { x: look.x + look.width * 0.5, y: look.y + look.height * 0.4, id: 7 };
+  // Through the spine (Ren's lines), then a finger on the look area as the hero walks into control,
+  // where the chief's scene starts.
+  await call(page, (lk) => lk.teleport(17, 7, Math.PI / 2, 1.4));
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          (window as unknown as { lightkeeper: { state(): { waiting: string[] | null } } }).lightkeeper
+            .state()
+            .waiting?.join('|'),
+        ),
+      { timeout: 30_000 },
+    )
+    .toBe('enter:control');
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [finger] });
+  await call(page, (lk) => lk.teleport(25, 7, Math.PI / 2, 1.4));
+  await expect(body).toHaveAttribute('data-talking', 'true', { timeout: 20_000 });
+  // The finger lifts while the conversation is up: the controls are hidden and never see it.
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  for (let step = 0; step < 40; step += 1) {
+    if ((await body.getAttribute('data-talking')) === 'false') break;
+    const line = (await body.getAttribute('data-line')) ?? '';
+    await page.waitForTimeout(400);
+    if (line === 'choices') await page.locator('.dialogue__choice').first().tap();
+    else await page.locator('.dialogue--line').tap();
+    await expect(body).not.toHaveAttribute('data-line', line);
+  }
+  await expect(body).toHaveAttribute('data-talking', 'false');
+  // Now a drag on the look area turns the camera.
+  const alpha = () =>
+    page.evaluate(
+      () =>
+        (window as unknown as { lightkeeper: { scene: { activeCamera: { alpha: number } } } }).lightkeeper.scene
+          .activeCamera.alpha,
+    );
+  // The camera swings back from the conversation's shot by itself first.
+  await page.waitForTimeout(2500);
+  const before = await alpha();
+  const drag = { ...finger, id: 8 };
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [drag] });
+  for (let i = 1; i <= 6; i++) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ ...drag, x: drag.x - i * 20 }] });
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await page.waitForTimeout(300);
+  expect(Math.abs((await alpha()) - before)).toBeGreaterThan(0.1);
+});

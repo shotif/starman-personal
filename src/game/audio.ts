@@ -71,6 +71,18 @@ export interface GameAudio {
   listen(at: Vec3, forward: Vec3): void;
   setVolume(master: number): void;
   readonly ready: boolean;
+  /** What the sound is doing, for the pause menu's sound check. */
+  status(): SoundStatus;
+}
+
+export interface SoundStatus {
+  /** 'none' until the first touch or key; then the browser's own word: running, suspended… */
+  state: string;
+  /** Sounds fetched and decoded, and those that failed. */
+  loaded: number;
+  failed: number;
+  /** The last thing that went wrong, if anything. */
+  error: string | null;
 }
 
 const BASE = `${import.meta.env.BASE_URL}assets/`;
@@ -85,6 +97,13 @@ export function createAudio(): GameAudio {
   let manifest: AudioManifest | null = null;
   let voices: VoiceManifest | null = null;
   const buffers = new Map<string, Promise<AudioBuffer | null>>();
+  let loaded = 0;
+  let failed = 0;
+  let lastError: string | null = null;
+  const fail = (what: string, e: unknown) => {
+    failed += 1;
+    lastError = `${what}: ${e instanceof Error ? e.message : String(e)}`;
+  };
   let musicNow: { id: string; gain: GainNode; source: AudioBufferSourceNode } | null = null;
   let musicWanted: string | null = null;
   let ambienceNow: { id: string; gain: GainNode; source: AudioBufferSourceNode } | null = null;
@@ -112,13 +131,19 @@ export function createAudio(): GameAudio {
   const buffer = (url: string): Promise<AudioBuffer | null> => {
     let b = buffers.get(url);
     if (!b) {
+      const name = url.split('/').pop() ?? url;
       b = (async () => {
         if (!context) return null;
         try {
           const response = await fetch(url);
-          if (!response.ok) return null;
-          return await context.decodeAudioData(await response.arrayBuffer());
-        } catch {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const decoded = await context.decodeAudioData(await response.arrayBuffer());
+          loaded += 1;
+          return decoded;
+        } catch (e) {
+          fail(name, e);
+          // Not kept: a sound that failed (a dropped connection) is tried again next time.
+          buffers.delete(url);
           return null;
         }
       })();
@@ -171,12 +196,15 @@ export function createAudio(): GameAudio {
     unlock() {
       if (context) {
         // Suspended (started outside a gesture) or interrupted (a call, on iOS): try again.
-        if (context.state !== 'running') void context.resume().catch(() => {});
+        if (context.state !== 'running') void context.resume().catch((e: unknown) => fail('resume', e));
         return;
       }
       const Ctor =
         window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      if (!Ctor) return;
+      if (!Ctor) {
+        lastError = 'this browser has no Web Audio';
+        return;
+      }
       context = new Ctor();
       master = context.createGain();
       master.connect(context.destination);
@@ -186,9 +214,17 @@ export function createAudio(): GameAudio {
         g.connect(master);
         bus[name] = g;
       }
-      if (context.state !== 'running') void context.resume().catch(() => {});
+      if (context.state !== 'running') void context.resume().catch((e: unknown) => fail('resume', e));
+      // A moment of silence played inside the gesture: some phones open their output only so.
+      const blip = context.createBufferSource();
+      blip.buffer = context.createBuffer(1, 1, context.sampleRate);
+      blip.connect(context.destination);
+      blip.start();
       if (musicWanted) api.music(musicWanted);
       if (ambienceWanted) api.ambience(ambienceWanted);
+    },
+    status() {
+      return { state: context?.state ?? 'none', loaded, failed, error: lastError };
     },
     play(id, options = {}) {
       const entry = manifest?.sfx[id];
