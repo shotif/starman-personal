@@ -49,6 +49,7 @@ import { type Fight, fightStep, startFight, type Wave } from './encounters.ts';
 import { createEngine, gpuName, type Renderer, rendererName } from './engine.ts';
 import { type Condition, conditionStep, FALLING, fall, needsHelp } from './falling.ts';
 import {
+  COMPANION_POWERS,
   type CompanionGrowth,
   companionAuto,
   type Growth,
@@ -80,7 +81,7 @@ import { createNavigation, type Navigation } from './navigation.ts';
 import { dress, looksOf, type Person, spawnPerson } from './people.ts';
 import { type PlaceId, placeOf } from './places.ts';
 import { poseWeights } from './pose.ts';
-import { atRank, POWERS, type PowerId, type PowerSpec } from './powers.ts';
+import { atRank, type Cooldowns, cool, ready as isReady, POWERS, type PowerId, type PowerSpec } from './powers.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 import { buildStation, type Mark } from './station.ts';
@@ -462,7 +463,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     console.warn('Navigation could not start; companions only follow.', error);
   }
   const navMilliseconds = Math.round(performance.now() - navStarted);
-  const world = { range, cast: (a: Vector3, b: Vector3) => cast(a, b), groundUnder };
+  const world = {
+    range,
+    cast: (a: Vector3, b: Vector3) => cast(a, b),
+    groundUnder,
+    power: (name: string, target: number, eye: Vector3) => companionPower(name, target, eye),
+  };
   const sayAs = (name: string) => (line: string) => options.onSay(name, line, null);
   const ren = spawnCompanion(
     scene,
@@ -697,6 +703,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       orbit.alpha = alpha;
       orbit.beta = beta;
     },
+    rally: (share) => {
+      heroDefences = {
+        ...heroDefences,
+        health: Math.min(heroDefences.healthMax, heroDefences.health + heroDefences.healthMax * share),
+        shield: heroDefences.shieldMax,
+      };
+    },
+    sees: (a, b) => {
+      const hit = cast(a, b, true);
+      return !hit || Vector3.Distance(hit.point, b) < 0.8;
+    },
     heal: (amount) => {
       heroDefences = {
         ...heroDefences,
@@ -708,6 +725,40 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       audio.play(id, { at });
     },
   });
+  /** The companions' powers' cooldowns, and how long each is veiled (Ren's Veil). */
+  const crewCooldowns: Record<string, Cooldowns> = {};
+  const crewVeil: Record<string, number> = {};
+  /**
+   * A companion's power on the machine she is shooting (D-49: Ren's Mark and Veil, Jo's Overload and
+   * Seeker Drone), at her ranks, half again slower than the hero's: Mark on one not marked, Veil when
+   * her shield is low, Overload on a shield, a Seeker Drone otherwise. True if she used one.
+   */
+  function companionPower(name: string, target: number, eye: Vector3): boolean {
+    const who = name.toLowerCase();
+    const c = companionsById[who];
+    if (!c || target < swarmFirst) return false;
+    const machine = target - swarmFirst;
+    const status = swarm.status(machine);
+    if (!status?.alive) return false;
+    const cds = crewCooldowns[who] ?? {};
+    const own = COMPANION_POWERS[who] ?? [];
+    for (const id of own) {
+      if (!isReady(cds, id)) continue;
+      const ranked = atRank(POWERS[id], crew[who]?.ranks[id] ?? 1);
+      const spec: PowerSpec = { ...ranked, cooldown: ranked.cooldown * 1.5 * mods.companionCooldown };
+      if (id === 'veil') {
+        if (c.defences.shield > c.defences.shieldMax * 0.3) continue;
+        crewVeil[who] = spec.lasts ?? 6;
+        audio.play('veil', { at: c.character.root.position, volume: 0.6 });
+      } else if (id === 'mark' && status.marked) continue;
+      else if (id === 'overload' && !status.shielded && own.includes('seeker') && isReady(cds, 'seeker')) continue;
+      else if (!abilities.companionUse(spec, machine, eye)) continue;
+      crewCooldowns[who] = { ...cds, [id]: spec.cooldown };
+      return true;
+    }
+    return false;
+  }
+
   /** Uses the hero's power in a slot, facing where the camera looks, the casting arm up. */
   const usePower = (slot: number) => {
     const id = growth.hand[slot];
@@ -1150,8 +1201,23 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     // Out of the Veil, the first shot does double; shooting gives the hero away.
     const bonus = abilities.effects.veil > 0 ? 2 : 1;
     abilities.effects.veil = 0;
-    const drive = mods.weaponDamage * (momentum > 0 ? 1 + mods.momentum : 1);
-    const hitTarget = range.hit(struck?.body, 'hero', { amount: DAMAGE.pistol * bonus * drive, kind: 'kinetic' });
+    // Long Shot: this shot does three times, and goes on through the machines behind.
+    const longShot = abilities.effects.longshot > 0;
+    if (longShot) abilities.spendLongShot();
+    const drive = mods.weaponDamage * (momentum > 0 ? 1 + mods.momentum : 1) * (longShot ? 3 : 1);
+    const damage = { amount: DAMAGE.pistol * bonus * drive, kind: 'kinetic' as const };
+    const hitTarget = range.hit(struck?.body, 'hero', damage);
+    if (longShot) {
+      for (let m = 0; m < swarm.size; m++) {
+        const s = swarm.status(m);
+        if (!s?.alive || (struck && Vector3.Distance(s.at, struck.point) < 1)) continue;
+        const to = s.at.subtract(from);
+        const along = Vector3.Dot(to, dir);
+        if (along > 0 && along < SHOT_RANGE && to.subtract(dir.scale(along)).length() < 0.7) {
+          swarm.strikeMachine(m, damage, 'hero');
+        }
+      }
+    }
     hero.fire();
     range.shot(hero.muzzle(), point, hitTarget);
     shotPose = SHOT_POSE;
@@ -1456,6 +1522,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       shoot();
     }
     abilities.update(dt);
+    for (const who of Object.keys(crewCooldowns)) crewCooldowns[who] = cool(crewCooldowns[who] ?? {}, dt);
+    for (const who of Object.keys(crewVeil)) crewVeil[who] = Math.max(0, (crewVeil[who] ?? 0) - dt);
     castPose -= dt;
     /** Under a stim, the world slows for the hero: the swarm and its shots, the drones. */
     const worldDt = abilities.effects.stim > 0 ? dt * 0.35 : dt;
@@ -1485,13 +1553,31 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           // Veiled, the machines cannot see the hero to shoot.
           down: fallen || liftoff !== null || abilities.effects.veil > 0,
         },
-        ...team.map((c) => ({ id: c.name, feet: c.character.root.position, height: CAPSULE_HEIGHT, down: c.down })),
+        // A veiled companion is as unseen as a veiled hero.
+        ...team.map((c) => ({
+          id: c.name,
+          feet: c.character.root.position,
+          height: CAPSULE_HEIGHT,
+          down: c.down || (crewVeil[nameKey(c)] ?? 0) > 0,
+        })),
       ],
       cast: (from, to) => cast(from, to, true),
       difficulty,
       decoy: abilities.effects.decoy,
       onHit: (id, from, damage) => {
         const amount = damage * DIFFICULTY[difficulty].taken;
+        // Shelter: a bolt from outside the dome stops at it.
+        const dome = abilities.effects.shelter;
+        const feet = id === 'hero' ? hero.root.position : team.find((c) => c.name === id)?.character.root.position;
+        if (
+          dome &&
+          feet &&
+          Vector3.Distance(feet, dome.at) < dome.radius + 0.3 &&
+          Vector3.Distance(from, dome.at) > dome.radius
+        ) {
+          audio.play('shield_hit', { at: feet, volume: 0.5 });
+          return;
+        }
         if (id === 'hero') {
           if (condition.kind === 'down' || grace > 0) return;
           // Braced, the hero takes half; a barrier takes what it can first.
@@ -1795,6 +1881,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           abilities.effects.brace > 0 ? 'Braced' : '',
           abilities.effects.veil > 0 ? 'Veiled' : '',
           abilities.effects.barrier > 0 ? 'Barrier' : '',
+          abilities.effects.shelter ? 'Shelter' : '',
+          abilities.effects.longshot > 0 ? 'Long Shot ready' : '',
         ].filter(Boolean),
       });
     }
@@ -1821,6 +1909,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     Object.assign(window, {
       lightkeeper: {
         scene,
+        /** Uses a power whether or not it is in hand, as the hero has it; true if it acted. */
+        power: (id: PowerId) => abilities.use(id),
+        effects: () => ({ ...abilities.effects, defences: heroDefences }),
         /** Experience, as the story gives it. */
         xp: (amount: number) => grant(amount, 'Testing', `test:${performance.now()}`),
         growth: () => ({ hero: growth, crew, mods, defences: heroDefences }),

@@ -34,13 +34,30 @@ export interface Swarm extends TargetGroup {
   readonly down: number;
   readonly fired: number;
   /** Each flying machine's state, for the `?debug` hook. */
-  inspect(): { kind: MachineKind; at: number[]; phase: string; target: string }[];
+  inspect(): {
+    kind: MachineKind;
+    at: number[];
+    phase: string;
+    target: string;
+    health: number;
+    pulled: boolean;
+    primed: boolean;
+    marked: boolean;
+    blinded: boolean;
+  }[];
   /** A power or a burst strikes a machine directly; true if it brought it down. Marked machines take half again. */
   strikeMachine(id: number, damage: Damage, by: string): boolean;
   /** What a power needs to know of a machine. */
-  status(id: number): { alive: boolean; at: Vector3; primed: boolean; shielded: boolean } | null;
+  status(
+    id: number,
+  ): { alive: boolean; at: Vector3; primed: boolean; shielded: boolean; marked: boolean; kind: MachineKind } | null;
   /** A power's lasting effect on a machine (COMBAT.md, src/game/powers.ts). */
-  affect(id: number, effect: 'lift' | 'pull' | 'prime' | 'mark' | 'spoof', seconds: number, towards?: Vector3): void;
+  affect(
+    id: number,
+    effect: 'lift' | 'pull' | 'prime' | 'mark' | 'spoof' | 'blind',
+    seconds: number,
+    towards?: Vector3,
+  ): void;
   /** A burst at a point: every machine within the radius takes the damage. */
   burst(at: Vector3, radius: number, damage: Damage, by: string): number;
   /** Takes the primed state off a machine (it was set off). */
@@ -113,6 +130,8 @@ interface Machine {
   primed: number;
   marked: number;
   spoofed: number;
+  /** Seconds its sensors are swamped (Blind): it has lost the hero. */
+  blinded: number;
 }
 
 interface Bolt {
@@ -243,6 +262,7 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
       primed: 0,
       marked: 0,
       spoofed: 0,
+      blinded: 0,
     };
   };
   const machines: Machine[] = (['mote', 'lattice', 'tender'] as MachineKind[]).flatMap((kind) =>
@@ -399,6 +419,7 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
       m.primed = 0;
       m.marked = 0;
       m.spoofed = 0;
+      m.blinded = 0;
       m.shell.renderOutline = false;
       m.target = 'hero';
       m.phase = { kind: 'rest', left: 0.8 + Math.random() * 1.2 };
@@ -513,6 +534,7 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
         m.primed = Math.max(0, m.primed - dt);
         m.marked = Math.max(0, m.marked - dt);
         m.spoofed = Math.max(0, m.spoofed - dt);
+        m.blinded = Math.max(0, m.blinded - dt);
         if (m.marked <= 0 && m.shell.renderOutline) m.shell.renderOutline = false;
         if (m.lifted > 0 || m.pulled > 0) {
           if (m.lifted > 0) {
@@ -561,12 +583,14 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
         if (world.decoy) m.target = 'decoy';
         else if (m.target === 'decoy') m.target = 'hero';
         // Its target, or the nearest one standing if its target is down.
+        // Blinded, it has lost the hero: it turns on whoever else it can find, or waits.
+        const seen = m.blinded > 0 ? standing.filter((t) => t.id !== 'hero') : standing;
         let target =
           m.target === 'decoy' && world.decoy
             ? { id: 'decoy', feet: world.decoy, height: 0.6, down: false }
-            : world.targets.find((t) => t.id === m.target);
+            : seen.find((t) => t.id === m.target);
         if (!target || target.down) {
-          target = [...standing].sort(
+          target = [...seen].sort(
             (a, b) => Vector3.Distance(a.feet, m.root.position) - Vector3.Distance(b.feet, m.root.position),
           )[0];
           if (target) m.target = target.id;
@@ -768,7 +792,14 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
     status(id) {
       const m = machines[id];
       if (!m) return null;
-      return { alive: flying(m), at: m.root.position.clone(), primed: m.primed > 0, shielded: m.defences.shield > 0 };
+      return {
+        alive: flying(m),
+        at: m.root.position.clone(),
+        primed: m.primed > 0,
+        shielded: m.defences.shield > 0,
+        marked: m.marked > 0,
+        kind: m.kind,
+      };
     },
     affect(id, effect, seconds, towards) {
       const m = machines[id];
@@ -783,6 +814,10 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
         m.shell.renderOutline = true;
         m.shell.outlineColor = new Color3(1, 0.7, 0.2);
         m.shell.outlineWidth = 0.04;
+      } else if (effect === 'blind') {
+        m.blinded = seconds;
+        if (m.target === 'hero') m.target = 'none';
+        return;
       } else m.spoofed = seconds;
       m.spot = null;
       m.aim = null;
@@ -815,6 +850,11 @@ export function buildSwarm(scene: Scene, maxLights: number, detailed = true): Sw
         at: round(m.root.position),
         phase: m.phase.kind,
         target: m.target,
+        health: Math.round(m.defences.shield + m.defences.plate + m.defences.health),
+        pulled: m.pulled > 0,
+        primed: m.primed > 0,
+        marked: m.marked > 0,
+        blinded: m.blinded > 0,
       }));
     },
   };

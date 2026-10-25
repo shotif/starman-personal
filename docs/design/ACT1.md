@@ -126,7 +126,9 @@ increments, each playable and deployed (D-01):
    leads, the way along the lanes), `src/game/mapScene.ts` (the map, a second scene on the game's
    engine), `src/ui/StarMap.tsx` (its screen), `src/data/stars.json` (from Control); the course is
    set on the bridge, Jo lays it in, and Lantern leaves Ross 128 for the lanes (the `lane` chapter).*
-3. The hero's growth and the weapons. *Designed below; D-53 to D-56 decided as recommended, 25 October 2026; being built.*
+3. The hero's growth and the weapons. *Designed below; D-53 to D-56 decided as recommended, 25 October
+   2026. Growth and the new powers built 25 October 2026 (`src/game/growth.ts`, `src/ui/Growth.tsx`,
+   the nine powers in `src/game/abilities.ts`, Ren's and Jo's own powers); the weapons next.*
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.
@@ -251,7 +253,7 @@ D-53 to D-56). The numbers are first guesses, tuned in play and tested as rules.
 | Breacher | **Shrapnel Round**: an underslung round that bursts in a 3 m blast (strong against plate; sets off a primed body) | **Second Wind**: a quarter of health and the whole shield back at once; a long cooldown |
 | Rigger | **Gun Post**: a small automated gun set on a spot, shooting the nearest machine or enemy for 12 s | **Cascade**: an overload that leaps on to two more machines within 6 m |
 | Fieldwright | **Sink**: a knot of bent space ahead that drags light bodies in and holds them 5 s (primes) | **Shear**: a line of torn field 10 m ahead, hurting everything along it (sets off primed bodies) |
-| Shade | **Blind**: a burst of light and noise in every machine's sensors within 5 m; they lose the hero for 4 s | **Long Shot**: the next marksman shot within 6 s does three times the damage and passes through |
+| Shade | **Blind**: a burst of light and noise in every machine's sensors within 5 m; they lose the hero for 4 s | **Long Shot**: the next shot within 6 s (made for the marksman rifle) does three times the damage and passes through |
 | Striker | **Brace** (the Breacher's) | **Shear** (the Fieldwright's) |
 | Warden | **Lift** (the Fieldwright's) | **Shelter**: a field dome 4 m across for 8 s that stops bolts from outside |
 

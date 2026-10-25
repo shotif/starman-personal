@@ -585,7 +585,11 @@ export function GameView({
       {levelNews && !paused && (
         <div class="levelup" role="status" key={levelNews.id}>
           <p class="levelup__title">Level {levelNews.level}</p>
-          {levelNews.powers.length > 0 && <p class="levelup__line">A new power: {levelNews.powers.join(', ')}</p>}
+          {levelNews.powers.length > 0 && (
+            <p class="levelup__line">
+              {levelNews.powers.length > 1 ? 'New powers' : 'A new power'}: {levelNews.powers.join(', ')}
+            </p>
+          )}
           <p class="levelup__line">Spend your points in Growth, from the pause menu.</p>
         </div>
       )}

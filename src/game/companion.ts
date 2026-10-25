@@ -50,6 +50,8 @@ export interface World {
   cast(from: Vector3, to: Vector3): { point: Vector3; body: PhysicsBody | null | undefined } | null;
   /** The height of the floor under a point near it, or null (see `groundUnder` in game.ts). */
   groundUnder(at: Vector3): number | null;
+  /** Her powers (src/game/game.ts decides which, if any, on the target she is shooting): true if used. */
+  power?(name: string, target: number, eye: Vector3): boolean;
 }
 
 const EYE = 1.5;
@@ -57,6 +59,8 @@ const DECIDE_EVERY = 0.25;
 const FIRE_INTERVAL = 0.55;
 /** Between orders she fires more carefully: the hero carries the fight, she helps. */
 const OWN_FIRE_INTERVAL = 1.1;
+/** The least time between two of her powers, whatever their cooldowns. */
+const POWER_GAP = 3;
 /** She hits about three shots in four. */
 const ACCURACY = 0.75;
 /** How near she kneels to the one she helps. */
@@ -144,6 +148,8 @@ export function spawnCompanion(
   let shootAt: number | null = null;
   let cooldown = 0;
   let shotPose = 0;
+  /** Seconds before she may use a power again. */
+  let powerWait = 2;
 
   /** Whether a point can be stood on: the navigation mesh comes within reach of it. */
   const reachable = (p: Point, reach: number) => {
@@ -333,10 +339,14 @@ export function spawnCompanion(
       const speed = Math.hypot(velocity.x, velocity.z);
       cooldown -= dt;
       shotPose -= dt;
+      powerWait -= dt;
       if (shootAt !== null && world.range.alive(shootAt)) {
-        // Face the target and shoot, with the upper body aiming.
+        // Face the target and shoot, with the upper body aiming; now and then, a power on it.
         const centre = world.range.centre(shootAt);
         yaw = turnTowards(yaw, yawOf({ x: centre.x - here.x, z: centre.z - here.z }), 8 * dt);
+        if (powerWait <= 0) {
+          powerWait = world.power?.(name, shootAt, here.add(new Vector3(0, EYE, 0))) ? POWER_GAP : 0.5;
+        }
         if (cooldown <= 0) {
           cooldown = objective.kind === 'attack' ? FIRE_INTERVAL : OWN_FIRE_INTERVAL;
           fire(shootAt, here.add(new Vector3(0, EYE, 0)));
