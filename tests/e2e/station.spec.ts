@@ -13,6 +13,8 @@ type Lightkeeper = {
   event(name: string): void;
   state(): {
     feet: number[];
+    camera: number[];
+    people: Record<string, number[] | null>;
     cover: { inCover: boolean };
     condition: { kind: string };
     area: string | null;
@@ -469,4 +471,115 @@ test('every prop faces into the room, with space before it', async ({ page }, te
     return [...new Set(out)];
   });
   expect(blocked).toEqual([]);
+});
+
+test('the hero cannot walk through the crew', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the keyboard journey runs on the desktop');
+  await page.goto('./?play&debug&quality=low&chapter=bridge');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await page.locator('canvas').click();
+  const ren = (await call(page, (lk) => lk.state().people.ren)) as number[];
+  // From east of Ren, walking west into her: the hero stops against her (they once passed through).
+  await call(page, (lk) => lk.teleport(-2.5 + 3, -1997, -Math.PI / 2, 1.3));
+  await page.keyboard.down('KeyW');
+  await page.waitForTimeout(2500);
+  await page.keyboard.up('KeyW');
+  const feet = (await call(page, (lk) => lk.state().feet)) as number[];
+  expect(Math.hypot((feet[0] ?? 0) - (ren[0] ?? 0), (feet[2] ?? 0) - (ren[1] ?? 0))).toBeGreaterThan(0.5);
+});
+
+test('in a conversation in a small room, the camera stays inside it', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the camera is the same on both');
+  await page.goto('./?play&debug&quality=low&chapter=concourse');
+  const body = page.locator('body');
+  await expect(body).toHaveAttribute('data-ready', 'true');
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          (window as unknown as { lightkeeper: { state(): { waiting: string[] | null } } }).lightkeeper
+            .state()
+            .waiting?.join('|'),
+        ),
+      { timeout: 20_000 },
+    )
+    .toBe('cleared:concourse_1');
+  await call(page, (lk) => lk.event('cleared:concourse_1'));
+  // Pell's booth: the hero inside its door, Pell by its far wall.
+  await expect
+    .poll(
+      async () => {
+        await call(page, (lk) => lk.teleport(42.6, 44.4, -Math.PI / 2, 1.3));
+        return body.getAttribute('data-prompt');
+      },
+      { timeout: 30_000 },
+    )
+    .toBe('Talk to Pell');
+  await page.keyboard.press('KeyE');
+  await expect(body).toHaveAttribute('data-talking', 'true');
+  const outside: string[] = [];
+  for (let step = 0; step < 12; step++) {
+    if ((await body.getAttribute('data-talking')) !== 'true') break;
+    await page.waitForTimeout(700);
+    const [x = 0, , z = 0] = (await call(page, (lk) => lk.state().camera)) as number[];
+    // The booth's inside: between its west wall (x 38.2) and the hall's east wall (44), its south
+    // wall (z 43) and the hall's north wall (48). Outside it, the camera showed a wall's back.
+    if (x < 38.3 || x > 43.9 || z < 43.1 || z > 47.9) outside.push(`${x.toFixed(2)}, ${z.toFixed(2)}`);
+    if ((await body.getAttribute('data-line')) === 'choices') await page.keyboard.press('Digit1');
+    else await page.keyboard.press('Space');
+  }
+  expect(outside).toEqual([]);
+});
+
+test('the camera of a conversation sees both faces anywhere in the station', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the camera is the same on both');
+  test.setTimeout(120_000);
+  await page.goto('./?play&debug&quality=low');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await call(page, (lk) => lk.teleport(-200, -200, 0, 1.3));
+  // Partners anywhere a person can stand, the hero two metres off at four bearings, either speaking:
+  // no wall between the camera and either face (a wall close behind the listener once left the
+  // camera outside the room, showing the wall's back).
+  const result = await page.evaluate(() => {
+    type Lk = {
+      route(a: number[], b: number[]): number[] | null;
+      ray(a: number[], b: number[], pastHero?: boolean): { distance: number } | null;
+      talkCamera(hero: number[], partner: number[], heroSpeaks: boolean): number[];
+    };
+    const lk = (window as unknown as { lightkeeper: Lk }).lightkeeper;
+    const head = (p: number[]) => [p[0] ?? 0, (p[1] ?? 0) + 1.62, p[2] ?? 0];
+    const onFloor = (p: number[]) => {
+      const end = lk.route(p, p);
+      return !!end && Math.hypot((end[0] ?? 0) - (p[0] ?? 0), (end[2] ?? 0) - (p[2] ?? 0)) < 0.2;
+    };
+    let tried = 0;
+    const bad: string[] = [];
+    for (let x = -12; x <= 50; x += 1.5) {
+      for (let z = 0.5; z <= 92; z += 1.5) {
+        const partner = [x, 0, z];
+        if (!onFloor(partner)) continue;
+        for (let k = 0; k < 4; k++) {
+          const a = (k * Math.PI) / 2 + 0.4;
+          const hero = [x + Math.sin(a) * 2, 0, z + Math.cos(a) * 2];
+          if (!onFloor(hero) || lk.ray(head(hero), head(partner), true)) continue;
+          for (const heroSpeaks of [false, true]) {
+            tried += 1;
+            const cam = lk.talkCamera(hero, partner, heroSpeaks);
+            for (const h of [head(hero), head(partner)]) {
+              const hit = lk.ray(h, cam, true);
+              const length = Math.hypot(
+                (cam[0] ?? 0) - (h[0] ?? 0),
+                (cam[1] ?? 0) - (h[1] ?? 0),
+                (cam[2] ?? 0) - (h[2] ?? 0),
+              );
+              if (hit && hit.distance < length - 0.05) bad.push(`partner at ${x}, ${z}`);
+            }
+          }
+        }
+      }
+    }
+    return { tried, bad };
+  });
+  expect(result.tried).toBeGreaterThan(1000);
+  expect(result.bad).toEqual([]);
 });

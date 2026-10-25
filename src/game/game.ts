@@ -5,6 +5,7 @@ import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { CreateCapsule } from '@babylonjs/core/Meshes/Builders/capsuleBuilder';
 import { CreatePolyhedron } from '@babylonjs/core/Meshes/Builders/polyhedronBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
@@ -14,7 +15,9 @@ import {
   type CharacterSurfaceInfo,
   PhysicsCharacterController,
 } from '@babylonjs/core/Physics/v2/characterController';
+import { PhysicsMotionType, PhysicsShapeType } from '@babylonjs/core/Physics/v2/IPhysicsEnginePlugin';
 import { HavokPlugin } from '@babylonjs/core/Physics/v2/Plugins/havokPlugin';
+import { PhysicsAggregate } from '@babylonjs/core/Physics/v2/physicsAggregate';
 import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
@@ -202,7 +205,10 @@ const CAPSULE_RADIUS = 0.35;
 const COVER_AHEAD = COVER.reach + CAPSULE_RADIUS + 0.15;
 /** The hero's capsule's collision group, and every group but it (Havok's 32-bit masks). */
 const HERO_GROUP = 2;
-const ALL_BUT_HERO = 0xffffffff - HERO_GROUP;
+/** People's bodies: the hero bumps into them; shots, sight lines and the camera pass them. */
+const PEOPLE_GROUP = 4;
+const ALL_BUT_PEOPLE = 0xffffffff - PEOPLE_GROUP;
+const ALL_BUT_HERO = 0xffffffff - HERO_GROUP - PEOPLE_GROUP;
 const GRAVITY = new Vector3(0, -18, 0);
 const vector = (p: Point) => new Vector3(p.x, p.y, p.z);
 /** The middle of the head above the feet, for a character of standard height. */
@@ -284,10 +290,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const ray = new PhysicsRaycastResult();
   /**
    * Distance to the first thing a ray meets, its point and normal; null if it meets nothing.
-   * `pastHero` looks through the hero's own capsule.
+   * `pastHero` looks through the hero's own capsule; every ray looks through people's bodies.
    */
   const cast = (from: Vector3, to: Vector3, pastHero = false) => {
-    physics.raycast(from, to, ray, pastHero ? { collideWith: ALL_BUT_HERO } : undefined);
+    physics.raycast(from, to, ray, { collideWith: pastHero ? ALL_BUT_HERO : ALL_BUT_PEOPLE });
     return ray.hasHit
       ? {
           distance: Vector3.Distance(from, ray.hitPointWorld),
@@ -412,6 +418,34 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (!c) continue;
     people[id] = spawnPerson(scene, id, looksOf(options.manifest, id).name, c, nav, groundUnder);
   }
+  /**
+   * A body for each person, moved with them, that only the hero's capsule meets: the hero walked
+   * through the crew (the owner's phone, 25 October 2026). Lying down or out of the story, it is
+   * put away under the floor.
+   */
+  const bodies = Object.entries({ ...companionsById, ...people }).map(([id, who]) => {
+    const mesh = CreateCapsule(`${id}-body`, { radius: 0.3, height: 1.7 }, scene);
+    mesh.isVisible = false;
+    mesh.isPickable = false;
+    mesh.position.set(0, -50, 0);
+    const aggregate = new PhysicsAggregate(mesh, PhysicsShapeType.CAPSULE, { mass: 1 }, scene);
+    aggregate.body.setMotionType(PhysicsMotionType.ANIMATED);
+    aggregate.body.disablePreStep = false;
+    aggregate.shape.filterMembershipMask = PEOPLE_GROUP;
+    aggregate.shape.filterCollideMask = HERO_GROUP;
+    const standing = () =>
+      who.character.root.isEnabled() && !('lost' in who && who.lost) && !('down' in who && who.down);
+    return { mesh, who, standing };
+  });
+  const moveBodies = () => {
+    for (const b of bodies) {
+      const root = b.who.character.root;
+      if (b.standing()) b.mesh.position.set(root.position.x, root.position.y + 0.85, root.position.z);
+      else b.mesh.position.set(root.position.x, -50, root.position.z);
+    }
+  };
+  // The walkers step round the hero, too: a place in their crowd that follows the hero.
+  const heroInCrowd = nav ? nav.addAgent(place.heroStart.at, new TransformNode('hero-in-crowd', scene), 0) : null;
   const nameOf = (id: string) => companionsById[id]?.name ?? people[id]?.name ?? id;
   const characterOf = (id: string) => (id === 'hero' ? hero : (companionsById[id]?.character ?? people[id]?.character));
 
@@ -939,32 +973,59 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   /**
    * The shot for the conversation's present moment: over the hero's shoulder onto the partner while
    * the partner speaks or the hero chooses, and over the partner's onto the hero while the hero
-   * speaks. When a wall stands where the camera would, it tries the other side of the line, and
-   * failing that comes in short of the wall.
+   * speaks. The first shot that sees both faces is taken: over either shoulder, then a two-shot
+   * from beside the pair, near or far, then over a shoulder in short of the wall, then from above.
+   * (A wall close behind the listener once left the camera outside the room, showing the wall's
+   * back: the owner's phone, 25 October 2026.)
    */
-  const conversationShot = (now: NonNullable<typeof talking>, partner: Character): Shot => {
-    const heroHead = headOf(hero);
-    const partnerHead = headOf(partner);
+  /** Where a camera at `at` would stand seen from `anchor`: there, or in short of the first wall. */
+  const clearOf = (anchor: Vector3, at: Vector3, margin = 0.25): Vector3 => {
+    const wall = cast(anchor, at, true);
+    if (!wall) return at;
+    const towards = at.subtract(anchor).normalize();
+    return anchor.add(towards.scale(Math.max(0.05, wall.distance - margin)));
+  };
+  const conversationShot = (now: NonNullable<typeof talking>, partner: Character): Shot =>
+    shotBetween(headOf(hero), headOf(partner), now);
+  /** The conversation's shot between two heads (pure of the characters, so it can be checked anywhere). */
+  const shotBetween = (
+    heroHead: Vector3,
+    partnerHead: Vector3,
+    now: { speaker: 'hero' | 'partner' | null; side: 1 | -1 },
+  ): Shot => {
     const line = { x: partnerHead.x - heroHead.x, z: partnerHead.z - heroHead.z };
     const [listener, speaker] = now.speaker === 'hero' ? [partnerHead, heroHead] : [heroHead, partnerHead];
     const aspect = engine.getAspectRatio(camera);
-    const shotFrom = (side: 1 | -1) => {
-      const shot = overShoulder(listener, speaker, line, side, aspect);
-      const at = vector(shot.position);
-      const wall = cast(listener, at, true);
-      return { shot, at, wall: wall ? wall.distance / Vector3.Distance(listener, at) : 1 };
-    };
-    let chosen = shotFrom(now.side);
-    if (chosen.wall < 1) {
-      const other = shotFrom(now.side === 1 ? -1 : 1);
-      if (other.wall >= 1) {
-        now.side = now.side === 1 ? -1 : 1;
-        chosen = other;
+    const other: 1 | -1 = now.side === 1 ? -1 : 1;
+    const over = (side: 1 | -1) => overShoulder(listener, speaker, line, side, aspect);
+    const target = over(now.side).target;
+    // A camera sees the pair when no wall stands between it and either face.
+    const sees = (at: Vector3) => !cast(heroHead, at, true) && !cast(partnerHead, at, true);
+    const shot = (at: Vector3): Shot => ({ position: { x: at.x, y: at.y, z: at.z }, target });
+    for (const side of [now.side, other]) {
+      const at = vector(over(side).position);
+      if (!sees(at)) continue;
+      // Stay on the side that works, so the shots do not swap back and forth.
+      now.side = side;
+      return shot(at);
+    }
+    const middle = Vector3.Lerp(heroHead, partnerHead, 0.5);
+    const apart = Math.hypot(line.x, line.z) || 1;
+    for (const reach of [2.1, 1.4]) {
+      for (const side of [now.side, other]) {
+        const across = new Vector3((side * line.z) / apart, 0, (-side * line.x) / apart).scale(reach);
+        const at = middle.add(across).add(new Vector3(0, 0.3, 0));
+        if (sees(at)) return shot(at);
       }
     }
-    if (chosen.wall >= 1) return chosen.shot;
-    const pulled = Vector3.Lerp(listener, chosen.at, Math.max(0.15, chosen.wall - 0.12));
-    return { position: { x: pulled.x, y: pulled.y, z: pulled.z }, target: chosen.shot.target };
+    for (const side of [now.side, other]) {
+      const at = clearOf(listener, vector(over(side).position), 0.3);
+      if (sees(at)) return shot(at);
+    }
+    // Above the pair, looking down on the one speaking.
+    const high = clearOf(middle, middle.add(new Vector3(0, 0.9, 0)), 0.2);
+    if (sees(high)) return shot(high);
+    return shot(clearOf(listener, vector(over(now.side).position), 0.3));
   };
 
   // The marker over the objective: drawn over everything, the same size on screen at any distance.
@@ -1347,6 +1408,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       p.converse(talking?.id === p.id ? hero.root.position.clone() : null, talking?.speaker === 'partner');
       p.update(dt, hero.root.position, heroForward, i);
     });
+    moveBodies();
+    heroInCrowd?.teleport(hero.root.position);
 
     // The drill on the range: three drones down since it began.
     if (drillFrom !== null && range.destroyed - drillFrom >= 3) {
@@ -1463,6 +1526,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         window.setTimeout(() => options.onFade(false), 300);
       }
     }
+    // Whatever the shot, and wherever a blend between two shots passes, never beyond a wall: the
+    // camera is always where the hero's head could see it from.
+    if (!liftoff) from = clearOf(head, from, 0.2);
     if (debugView) {
       from = debugView.from;
       lookAt = debugView.to;
@@ -1568,6 +1634,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           })),
           swarm: { live: swarm.live, down: swarm.down, fired: swarm.fired, machines: swarm.inspect() },
           drones: { destroyed: range.destroyed },
+          camera: camera.position.asArray(),
           /** Who is shown, and where (x, z), by name. */
           people: Object.fromEntries(
             ['hero', 'ren', 'jo', 'hale', 'pell', 'dena', 'sorrel', 'ilya'].map((id) => {
@@ -1629,10 +1696,21 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           }
           director.event(name);
         },
+        /**
+         * Where the conversation's camera would stand for a hero and a partner whose feet are at these
+         * points, with the camera's last guard against walls, as the game places it.
+         */
+        talkCamera: (heroFeet: number[], partnerFeet: number[], heroSpeaks: boolean) => {
+          const lift = new Vector3(0, HEAD_HEIGHT, 0);
+          const heroHead = Vector3.FromArray(heroFeet).add(lift);
+          const partnerHead = Vector3.FromArray(partnerFeet).add(lift);
+          const shot = shotBetween(heroHead, partnerHead, { speaker: heroSpeaks ? 'hero' : 'partner', side: 1 });
+          return clearOf(heroHead, vector(shot.position), 0.2).asArray();
+        },
         /** Every prop placed (model, base, turn, box), for checking which way each faces. */
         props: () => place.props,
-        ray: (a: number[], b: number[]) => {
-          const h = cast(Vector3.FromArray(a), Vector3.FromArray(b));
+        ray: (a: number[], b: number[], pastHero = false) => {
+          const h = cast(Vector3.FromArray(a), Vector3.FromArray(b), pastHero);
           return h ? { distance: h.distance, point: h.point.asArray() } : null;
         },
         wake: (count = 3, kind: 'mote' | 'lattice' | 'tender' = 'mote') =>
