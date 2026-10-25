@@ -7,6 +7,10 @@ export interface Wave {
   motes?: number;
   lattices?: number;
   tenders?: number;
+  /** The Banked (ACT1.md increment 4), who come in on foot at the vents' points. */
+  troopers?: number;
+  engineers?: number;
+  wardens?: number;
   /** Which vents they come from (the place's `vents`). */
   vents: string;
 }
@@ -31,6 +35,11 @@ export const ENCOUNTERS: Record<string, Wave[]> = {
     { motes: 3, lattices: 1, vents: 'hangar_2' },
   ],
   hangar_2: [{ tenders: 1, motes: 2, lattices: 1, vents: 'hangar_2' }],
+  // A squad of the Banked on Calder's range, to try them before Pyre Remnant (`?banked`).
+  banked_drill: [
+    { troopers: 2, engineers: 1, vents: 'banked_range' },
+    { troopers: 1, wardens: 1, vents: 'banked_range' },
+  ],
 };
 
 /** Seconds between one wave going down and the next coming in. */

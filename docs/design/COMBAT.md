@@ -98,6 +98,22 @@ The design is in [ACT1.md](ACT1.md), increment 3 (D-53 to D-56); the rules, each
 | Weight | Above 3 carried, each point makes powers return a tenth more slowly | `weightScale` |
 | Mods | Scope, stabiliser, heavy rounds (a quarter more to plate), long barrel, cooled coil; two a weapon | `fitted`, `takeHit`'s plate bonus |
 
+## The Banked (Act 1, increment 4)
+
+The design is in [ACT1.md](ACT1.md), increment 4 (D-51). The rules, in `src/game/banked-rules.ts`,
+each tested:
+
+| Rule | What it says |
+| --- | --- |
+| Cover points | Low furniture (0.8 to 1.35 m high) gives points 0.55 m out from each side, about a metre apart; a point hides from a target when the furniture lies between them (the target is within 60° of straight across it) |
+| Choosing cover | Of the points that hide from the target and are not taken: the nearer to the kind's distance from the target the better (trooper 8–18 m, engineer 12–24 m), the shorter the run the better, at least 3 m from an ally; a squad's flanker prefers points at least 60° round from the rest |
+| A turn in cover | Hide (crouched, 1.2–2 s), come up and fire (a trooper two bursts of three, an engineer four shots), hide again; if the target is no longer hidden from by the cover, or cannot be seen from it for 6 s, find another |
+| Falling back | Once, below 35% health: the point farthest back that still hides |
+| Going round | When the hero has stayed hidden for 6 s, the trooper best placed goes for a point round the side |
+| Shots | Each shot hits by chance: 70% at 5 m to 30% at 30 m, less if the target moves, scaled by difficulty; a shot whose line meets cover or a wall stops there |
+| Engineer | A shield of 60 on the ally with the least, within 18 m, every 12 s; two motes every 20 s, at most three of its own alive |
+| Warden | Barrier 300 over a 120° arc in front; hits from outside the arc go past it; it returns 8 s after breaking, at 60 a second; walks to 7 m from its target, facing it |
+
 ## The first increment, as built
 
 | Part | Rule | Where |

@@ -8,7 +8,7 @@ import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
-import type { Swarm } from './motes.ts';
+import type { Damage } from './combat.ts';
 import {
   COMBO,
   type Cooldowns,
@@ -25,9 +25,32 @@ import {
  * The powers in the game (COMBAT.md, src/game/powers.ts): what each does to the swarm and to the
  * hero, and how it looks. Every effect is light and short: a sphere, a flash, a glow.
  */
+/**
+ * Everything the powers act on: the swarm's machines and the Banked (src/game/banked.ts), one list,
+ * the swarm's first.
+ */
+export interface Foes {
+  readonly size: number;
+  status(
+    id: number,
+  ): { alive: boolean; at: Vector3; primed: boolean; shielded: boolean; marked: boolean; kind: string } | null;
+  strikeMachine(id: number, damage: Damage, by: string): boolean;
+  affect(
+    id: number,
+    effect: 'lift' | 'pull' | 'prime' | 'mark' | 'spoof' | 'blind',
+    seconds: number,
+    towards?: Vector3,
+  ): void;
+  burst(at: Vector3, radius: number, damage: Damage, by: string): number;
+  unprime(id: number): void;
+}
+
+/** The engines' machines, which Spoof can turn; people it cannot. */
+const MACHINES = ['mote', 'lattice', 'tender'];
+
 export interface AbilityContext {
   scene: Scene;
-  swarm: Swarm;
+  swarm: Foes;
   /** A power as the hero has it: at its rank, with the training's and the weight's changes (growth.ts). */
   spec(id: PowerId): PowerSpec;
   /** The swarm machine under the crosshair (with a generous assist), within a range, or null. */
@@ -224,6 +247,11 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
       ctx.sound('power_arc', ctx.heroChest());
       cooldowns = { ...cooldowns, [id]: spec.cooldown };
       return true;
+    }
+    // Spoof turns a machine on its own kind; a person it cannot, and it costs nothing to try.
+    if (id === 'spoof' && target !== null && !MACHINES.includes(swarm.status(target)?.kind ?? '')) {
+      ctx.say('Spoof works on machines, not people.');
+      return false;
     }
     const at =
       target !== null ? (swarm.status(target)?.at ?? ctx.groundAhead(spec.range)) : ctx.groundAhead(spec.range);

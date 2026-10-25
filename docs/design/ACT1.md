@@ -131,7 +131,9 @@ increments, each playable and deployed (D-01):
    powers (`src/game/abilities.ts`) and Ren's and Jo's own, and the weapons (`src/game/weapons.ts`,
    the armoury in `src/ui/Armoury.tsx`, three Meshy models), and rifle clips made in Blender on
    the Mac, the guns pointing along the aim.*
-4. The Banked, their fights and their rules.
+4. The Banked, their fights and their rules. *Built 25 October 2026: the rules in
+   `src/game/banked-rules.ts`, the people in `src/game/banked.ts`; tried on Calder's range with
+   `?play&chapter=range&banked`; they first meet the hero at Pyre Remnant.*
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
 6. Voices, music, models, and play-testing on a phone and a desktop.
 
@@ -326,6 +328,50 @@ a weapon switched and fired, the armoury.
 Money and traders (increment 5), armour pieces (later), unique third ranks for each power, the
 mid-story specialisation (D-10, Act 2), and companions' own new powers (each gains one when their
 personal quest's first step is done, later in Act 1).
+
+## Increment 4 in detail: the Banked, their fights and their rules
+
+D-51 decided who they are: Varro's followers, people with reasons, in three kinds. This increment
+makes them fight; they first meet the hero at Pyre Remnant (increment 5). Until then a squad can be
+called onto Calder's range to try them (`?play&chapter=range&banked`).
+
+**What they need that the motes did not.** Motes fly to a spot and shoot. People take cover,
+come up to fire, move when they are flanked, fall back when hurt, and work together: one holds the
+hero down while another goes round; the engineer keeps the others shielded; the warden walks in
+behind a barrier. Every rule is a pure function with tests ([COMBAT.md](COMBAT.md), *The Banked*).
+
+**The three kinds.**
+
+| Kind | Defences | Weapon | How it fights |
+| --- | --- | --- | --- |
+| **Trooper** | shield 60, plate 40, health 80 | rifle: bursts of three, 9 a shot | takes the low cover 8 to 18 m from its target that hides it best, comes up to fire two bursts, ducks; moves when its cover no longer hides it; falls back once when badly hurt; one of a squad goes round when the hero stays in cover |
+| **Engineer** | shield 80, health 70 | pistol, 8 a shot | stays back (12 to 24 m) in cover; every 12 s puts a shield on the ally who needs it most; every 20 s sends out two of the engines' motes, never more than three of its own at once: the first sign of how close the Banked are to Varro's machines |
+| **Warden** | barrier 300 in front, plate 150, health 150 | field cannon: charges a second, then a heavy bolt of 28 | walks in to 7 m behind a field barrier that stops shots and field powers from the front (arc does double to it); it comes back 8 s after it breaks; go round it, or break it |
+
+**Cover.** Every low piece of furniture (a crate, a cart, a bench) of 0.8 to 1.35 m gives cover
+points on each of its sides; a point hides someone from a target beyond the furniture. The squad
+never shares a point, keeps 3 m apart, and prefers a point that sees the target over the top.
+
+**Fair fights.** A Banked weapon flashes before it fires (a short glint at the muzzle), the
+hero's cover stops their shots as it stops the motes', and difficulty scales their damage and
+toughness as it does the swarm's (D-46). They talk as they fight in a later increment, with every
+line voiced (D-23).
+
+**Powers on people.** Every power works on the Banked as on the machines, by the same rules
+(D-42): a shield stops field powers (no lifting a shielded trooper), arc strips shields, blast
+breaks plate, Mark, priming and the combination all work, Blind blinds them. Spoof works only on
+machines, so on a person it says so and costs nothing.
+
+**How they look, for now.** The shared uniform tinted the dull gold of banked light, the EVA
+helmet over the face, rifles for the troopers, pistols for the engineers, the shotgun for the
+warden, who is a head taller and carries an amber barrier. The art pass (increment 6) gives them
+armour of their own.
+
+**Phones.** A squad is at most five, plus the motes an engineer sends; they share the people's
+models and the navigation crowd, and their shots are rays, not bodies.
+
+**Out of scope.** Their speech (increment 6), grenades, melee, and Banked machines of their own
+beyond the motes.
 
 ## The decisions it needs
 

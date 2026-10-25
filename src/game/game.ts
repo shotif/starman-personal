@@ -23,11 +23,13 @@ import { Scene } from '@babylonjs/core/scene';
 import HavokPhysics from '@babylonjs/havok';
 import havokWasmUrl from '@babylonjs/havok/lib/esm/HavokPhysics.wasm?url';
 import slice from '../../story/slice.ink';
-import { buildAbilities } from './abilities.ts';
+import { buildAbilities, type Foes } from './abilities.ts';
 import { ASSIST_CONE, pickAssistTarget } from './aim.ts';
 import { CHARACTERS } from './appearance.ts';
 import { buildAtmosphere } from './atmosphere.ts';
 import type { GameAudio, Playing, Voice } from './audio.ts';
+import { BANKED_GROUP, type BankedGroup, buildBanked } from './banked.ts';
+import { coverPoints } from './banked-rules.ts';
 import { type Character, loadCharacterTemplate } from './characters.ts';
 import { buildRange } from './combat.ts';
 import { type Companion, spawnCompanion } from './companion.ts';
@@ -300,6 +302,8 @@ const HERO_GROUP = 2;
 const PEOPLE_GROUP = 4;
 const ALL_BUT_PEOPLE = 0xffffffff - PEOPLE_GROUP;
 const ALL_BUT_HERO = 0xffffffff - HERO_GROUP - PEOPLE_GROUP;
+/** Walls and cover only: what stops a Banked shot or sight line (people and the Banked pass). */
+const WALLS_ONLY = ALL_BUT_HERO - BANKED_GROUP;
 const GRAVITY = new Vector3(0, -18, 0);
 const vector = (p: Point) => new Vector3(p.x, p.y, p.z);
 /** The middle of the head above the feet, for a character of standard height. */
@@ -395,8 +399,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
    * Distance to the first thing a ray meets, its point and normal; null if it meets nothing.
    * `pastHero` looks through the hero's own capsule; every ray looks through people's bodies.
    */
-  const cast = (from: Vector3, to: Vector3, pastHero = false) => {
-    physics.raycast(from, to, ray, { collideWith: pastHero ? ALL_BUT_HERO : ALL_BUT_PEOPLE });
+  const cast = (from: Vector3, to: Vector3, pastHero = false, mask?: number) => {
+    physics.raycast(from, to, ray, { collideWith: mask ?? (pastHero ? ALL_BUT_HERO : ALL_BUT_PEOPLE) });
     return ray.hasHit
       ? {
           distance: Vector3.Distance(from, ray.hitPointWorld),
@@ -532,6 +536,33 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     console.warn('Navigation could not start; companions only follow.', error);
   }
   const navMilliseconds = Math.round(performance.now() - navStarted);
+  // The Banked (ACT1.md increment 4), where a place has them, or called onto the range with
+  // `?banked`: a squad of people who fight from cover. They join the range after the swarm, so the
+  // powers' one list of foes is the swarm's machines and then the Banked.
+  const banked: BankedGroup | null = new URLSearchParams(location.search).has('banked')
+    ? await buildBanked(scene, {
+        templates,
+        manifest: options.manifest,
+        nav,
+        groundUnder,
+        covers: coverPoints(place.props),
+        areaOf: (at) => place.areaAt(at),
+        detailed: q.detailMaps,
+      })
+    : null;
+  if (banked) range.join(banked);
+  const foes: Foes = {
+    get size() {
+      return swarm.size + (banked?.size ?? 0);
+    },
+    status: (i) => (i < swarm.size ? swarm.status(i) : (banked?.status(i - swarm.size) ?? null)),
+    strikeMachine: (i, d, by) =>
+      i < swarm.size ? swarm.strikeMachine(i, d, by) : (banked?.strikeMachine(i - swarm.size, d, by) ?? false),
+    affect: (i, e, seconds, towards) =>
+      i < swarm.size ? swarm.affect(i, e, seconds, towards) : banked?.affect(i - swarm.size, e, seconds, towards),
+    burst: (at, r, d, by) => swarm.burst(at, r, d, by) + (banked?.burst(at, r, d, by) ?? 0),
+    unprime: (i) => (i < swarm.size ? swarm.unprime(i) : banked?.unprime(i - swarm.size)),
+  };
   const world = {
     range,
     cast: (a: Vector3, b: Vector3) => cast(a, b),
@@ -751,7 +782,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
   const abilities = buildAbilities({
     scene,
-    swarm,
+    swarm: foes,
     spec: powerSpec,
     machineAhead: (reach) => {
       const id = powerTarget(reach, (c) => c >= swarmFirst);
@@ -814,7 +845,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const c = companionsById[who];
     if (!c || target < swarmFirst) return false;
     const machine = target - swarmFirst;
-    const status = swarm.status(machine);
+    const status = foes.status(machine);
     if (!status?.alive) return false;
     const cds = crewCooldowns[who] ?? {};
     const own = COMPANION_POWERS[who] ?? [];
@@ -889,6 +920,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     swarm.wake(take(wave.motes), 'mote');
     swarm.wake(take(wave.lattices), 'lattice');
     swarm.wake(take(wave.tenders), 'tender');
+    // The Banked come in on foot, at the vents' points on the floor.
+    if (banked) {
+      const kinds = [
+        ...Array(wave.troopers ?? 0).fill('trooper'),
+        ...Array(wave.engineers ?? 0).fill('engineer'),
+        ...Array(wave.wardens ?? 0).fill('warden'),
+      ];
+      banked.wake(kinds, take(kinds.length));
+    }
   };
 
   const startEncounter = (id: string) => {
@@ -909,6 +949,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const restartFight = () => {
     options.onFade(true);
     swarm.clear();
+    banked?.clear();
     if (snapshot) {
       moveHero(snapshot.hero, snapshot.yaw);
       for (const s of snapshot.companions) {
@@ -1665,7 +1706,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // The fight, and the swarm.
     if (fight) {
-      const step = fightStep(fight, swarm.live, dt);
+      const step = fightStep(fight, swarm.live + (banked?.live ?? 0), dt);
       fight = step.fight;
       if (step.wake) wakeWave(step.wake);
       if (step.cleared) {
@@ -1676,61 +1717,91 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       }
     }
     const team = [...joined].filter((c) => c.visible);
+    const targets = [
+      {
+        id: 'hero',
+        feet: hero.root.position,
+        // Crouched behind cover the hero is a smaller mark: the cover takes the shots.
+        height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT,
+        // Veiled, the machines cannot see the hero to shoot.
+        down: fallen || liftoff !== null || abilities.effects.veil > 0,
+        moving: groundSpeed > 1,
+      },
+      // A veiled companion is as unseen as a veiled hero.
+      ...team.map((c) => ({
+        id: c.name,
+        feet: c.character.root.position,
+        height: CAPSULE_HEIGHT,
+        down: c.down || (crewVeil[nameKey(c)] ?? 0) > 0,
+        moving: false,
+      })),
+    ];
+    /** A shot that reached the hero or a companion, from the swarm or the Banked. */
+    const onHit = (id: string, from: Vector3, damage: number) => {
+      const amount = damage * DIFFICULTY[difficulty].taken;
+      // Shelter: a bolt from outside the dome stops at it.
+      const dome = abilities.effects.shelter;
+      const feet = id === 'hero' ? hero.root.position : team.find((c) => c.name === id)?.character.root.position;
+      if (
+        dome &&
+        feet &&
+        Vector3.Distance(feet, dome.at) < dome.radius + 0.3 &&
+        Vector3.Distance(from, dome.at) > dome.radius
+      ) {
+        audio.play('shield_hit', { at: feet, volume: 0.5 });
+        return;
+      }
+      if (id === 'hero') {
+        if (condition.kind === 'down' || grace > 0) return;
+        // Braced, the hero takes half; a barrier takes what it can first.
+        const left = abilities.absorb(amount * (abilities.effects.brace > 0 ? 0.5 : 1));
+        const shielded = heroDefences.shield > 0;
+        const r = takeHit(heroDefences, left, 'kinetic');
+        audio.play(shielded ? 'shield_hit' : 'health_hit', { volume: 0.8 });
+        if (shielded && r.defences.shield <= 0) audio.play('shield_down');
+        if (r.down) audio.play('down');
+        heroDefences = r.defences;
+        options.onHit(hitSide(forward, hero.root.position, from));
+        if (r.down) {
+          condition = fall(helpUsed);
+          input.release();
+        }
+      } else {
+        team.find((c) => c.name === id)?.hurt(amount);
+      }
+    };
     swarm.update(worldDt, {
-      targets: [
-        {
-          id: 'hero',
-          feet: hero.root.position,
-          // Crouched behind cover the hero is a smaller mark: the cover takes the shots.
-          height: cover.inCover && !aiming ? 1.1 : CAPSULE_HEIGHT,
-          // Veiled, the machines cannot see the hero to shoot.
-          down: fallen || liftoff !== null || abilities.effects.veil > 0,
-        },
-        // A veiled companion is as unseen as a veiled hero.
-        ...team.map((c) => ({
-          id: c.name,
-          feet: c.character.root.position,
-          height: CAPSULE_HEIGHT,
-          down: c.down || (crewVeil[nameKey(c)] ?? 0) > 0,
-        })),
-      ],
+      targets,
       cast: (from, to) => cast(from, to, true),
       difficulty,
       decoy: abilities.effects.decoy,
-      onHit: (id, from, damage) => {
-        const amount = damage * DIFFICULTY[difficulty].taken;
-        // Shelter: a bolt from outside the dome stops at it.
-        const dome = abilities.effects.shelter;
-        const feet = id === 'hero' ? hero.root.position : team.find((c) => c.name === id)?.character.root.position;
-        if (
-          dome &&
-          feet &&
-          Vector3.Distance(feet, dome.at) < dome.radius + 0.3 &&
-          Vector3.Distance(from, dome.at) > dome.radius
-        ) {
-          audio.play('shield_hit', { at: feet, volume: 0.5 });
-          return;
-        }
-        if (id === 'hero') {
-          if (condition.kind === 'down' || grace > 0) return;
-          // Braced, the hero takes half; a barrier takes what it can first.
-          const left = abilities.absorb(amount * (abilities.effects.brace > 0 ? 0.5 : 1));
-          const shielded = heroDefences.shield > 0;
-          const r = takeHit(heroDefences, left, 'kinetic');
-          audio.play(shielded ? 'shield_hit' : 'health_hit', { volume: 0.8 });
-          if (shielded && r.defences.shield <= 0) audio.play('shield_down');
-          if (r.down) audio.play('down');
-          heroDefences = r.defences;
-          options.onHit(hitSide(forward, hero.root.position, from));
-          if (r.down) {
-            condition = fall(helpUsed);
-            input.release();
-          }
-        } else {
-          team.find((c) => c.name === id)?.hurt(amount);
-        }
-      },
+      onHit,
     });
+    if (banked) {
+      banked.update(worldDt, {
+        targets,
+        obstacle: (from, to) => cast(from, to, true, WALLS_ONLY)?.point ?? null,
+        onHit,
+        difficulty,
+        positionOf: (by) =>
+          by === 'hero'
+            ? hero.root.position
+            : ((companionsById[by.toLowerCase()] ?? (by === 'partner' ? ren : null))?.character.root.position ?? null),
+        motesLive: () => swarm.live,
+        sendMotes: (from) => swarm.wake(from, 'mote'),
+      });
+      // What the Banked did, heard where it happened.
+      for (const e of banked.drainEvents()) {
+        if (e.kind === 'fire') {
+          if (e.who === 'warden') audio.play('beam_fire', { at: e.at, volume: 0.9 });
+          else audio.play('pistol_ally', { at: e.at, volume: 0.7, rate: e.who === 'trooper' ? 0.8 : 1.1 });
+        } else if (e.kind === 'glint' && e.who === 'warden') audio.play('beam_charge', { at: e.at, volume: 0.7 });
+        else if (e.kind === 'down') audio.play('health_hit', { at: e.at, volume: 0.7, rate: 0.8 });
+        else if (e.kind === 'shield') audio.play('barrier', { at: e.at, volume: 0.6 });
+        else if (e.kind === 'motes') audio.play('tender_spawn', { at: e.at, volume: 0.7 });
+        else if (e.kind === 'barrier') audio.play('shield_hit', { at: e.at, volume: 0.5, rate: 0.7 });
+      }
+    }
 
     // What the swarm did, heard where it happened.
     for (const e of swarm.drainEvents()) {
@@ -2071,6 +2142,27 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           wieldNow();
         },
         kit: () => kit,
+        /** The Banked in the fight, and calling a squad in (kinds, at the range's entry). */
+        banked: () => banked?.inspect() ?? [],
+        /** Takes a companion out of the scene (a test that wants the Banked to themselves). */
+        standDown: (id: string) => companionsById[id]?.show(false),
+        /** Brings down every foe in the fight, machines and Banked. */
+        downAll: () => {
+          // More than one blow each: a warden's barrier takes the first from in front.
+          for (let i = 0; i < foes.size; i++) {
+            for (let blow = 0; blow < 3 && foes.status(i)?.alive; blow++) {
+              foes.strikeMachine(i, { amount: 5000, kind: 'blast' }, 'hero');
+            }
+          }
+        },
+        /** A blow on one of the Banked, as if the hero (standing where they stand) struck it. */
+        strikeBanked: (id: number, amount: number, kind: 'kinetic' | 'arc' | 'blast' | 'field' = 'kinetic') =>
+          banked?.strikeMachine(id, { amount, kind }, 'hero') ?? false,
+        /** A power's effect on one of the Banked, as the powers give it. */
+        affectBanked: (id: number, effect: 'lift' | 'pull' | 'blind' | 'mark', seconds: number) =>
+          banked?.affect(id, effect, seconds, hero.root.position.add(new Vector3(0, 1, 2))),
+        callBanked: (kinds: ('trooper' | 'engineer' | 'warden')[]) =>
+          banked?.wake(kinds, place.vents.banked_range ?? [hero.root.position.add(new Vector3(0, 0, 8))]),
         fov: () => camera.fov,
         /** Uses a power whether or not it is in hand, as the hero has it; true if it acted. */
         power: (id: PowerId) => abilities.use(id),
@@ -2152,6 +2244,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         event: (name: string) => {
           if (name.startsWith('cleared:') && fight) {
             swarm.clear();
+            banked?.clear();
             fight = null;
             fightOver();
           }
@@ -2202,6 +2295,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     if (!ready) {
       ready = true;
       options.onReady();
+      // `?banked`: a squad on the range, to try them (ACT1.md increment 4).
+      if (banked && new URLSearchParams(location.search).has('banked')) startEncounter('banked_drill');
       options.onGrowth(pointsToSpend());
       director.step();
       // The chapter's scene is set; from here `start` commands are for a resumed game only. (Cleared

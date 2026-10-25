@@ -28,6 +28,8 @@ export const CLIPS = [
   'dodge_left',
   'dodge_right',
   'death',
+  // Lifted or pulled off one's feet by a field power (a Banked person, ACT1.md increment 4).
+  'jump_loop',
 ] as const;
 export type Clip = (typeof CLIPS)[number];
 

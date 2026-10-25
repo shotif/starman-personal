@@ -87,6 +87,14 @@ export const MARKS: Record<string, MarkData> = {
 
 /** Where each fight's machines come in. */
 export const VENTS: Record<string, [number, number, number][]> = {
+  // Where a Banked squad comes in on the range, to try them (ACT1.md increment 4): the far end, on the floor.
+  banked_range: [
+    [-3, 0, 32.6],
+    [0, 0, 33],
+    [3, 0, 32.6],
+    [-1.5, 0, 31.6],
+    [1.5, 0, 31.6],
+  ],
   concourse_1: [
     [43, 5.5, 26],
     [43, 5.5, 44],
