@@ -2,7 +2,7 @@
 
 *Written 24 October 2026 for the owner's decisions D-36 to D-41. It fills in D-07 (the stars are
 going out, with a villain who has a face) on the Starman canon (research/STARMAN_UNIVERSE.md).
-Everything here is fiction, labelled so in the game; the stars and planets named are real.*
+Everything here is fiction; the stars and planets named are real.*
 
 **Decided:** all six as recommended, 24 October 2026. The prologue is built first, as the playable
 slice: [SLICE.md](SLICE.md).

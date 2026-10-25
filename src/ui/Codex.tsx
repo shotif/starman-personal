@@ -42,14 +42,8 @@ export function Codex({ open, onClose }: { open: string[]; onClose: () => void }
         {entry && (
           <article class="codex__entry">
             <h2 class="codex__title">{entry.title}</h2>
-            {entry.observed && (
-              <>
-                <p class="codex__label">Observed</p>
-                <p class="codex__text">{entry.observed}</p>
-              </>
-            )}
-            <p class="codex__label codex__label--fiction">Fiction</p>
-            <p class="codex__text">{entry.fiction}</p>
+            {entry.facts && <p class="codex__text">{entry.facts}</p>}
+            <p class="codex__text">{entry.story}</p>
           </article>
         )}
       </div>

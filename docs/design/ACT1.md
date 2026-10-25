@@ -6,8 +6,6 @@ a place, a power and a companion, each ending in the same name, Varro. That is t
 prologue, so this proposes its first part: the things every lead needs, and one lead built whole.
 The decisions it needs are round 7 in [DECISIONS.md](../DECISIONS.md) (D-47 to D-51).
 
-All of it is fiction but the stars and their planets, as everywhere in the game.
-
 ## Goals
 
 1. **The ship becomes home** (D-18). After the prologue the player lives on *Lantern*: walks her
@@ -48,7 +46,7 @@ first step of their personal quest (Ren: who buried her report; Jo: the crew who
 
 A map of the Sun's real neighbourhood (positions from the Gaia catalogue: the Sun, Alpha Centauri,
 Barnard's Star, Wolf 359, Lalande 21185, Sirius, Ross 128, Wolf 1061 and the rest within about 25
-light-years), with the game's places on it marked as fiction. The three leads are there from the
+light-years), with the game's places on it. The three leads are there from the
 start; this part opens one (D-48), and the other two say so honestly ("Act 1 continues in a later
 update") rather than pretending. Choosing a place plays a short scene of the ship leaving and
 arriving; the loading happens behind it.

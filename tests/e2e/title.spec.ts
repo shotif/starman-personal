@@ -18,7 +18,6 @@ test('@ci the title shows its art and opens the creator, which shows a hero', as
       timeout: 20_000,
     })
     .toBeGreaterThan(0);
-  await expect(page.getByText(/Fiction\. Ross 128 and its planet are real/)).toBeVisible();
   await press(page.getByRole('button', { name: 'New game' }));
   await expect(page.getByRole('heading', { name: 'Create your hero' })).toBeVisible();
   await expect(page.locator('body')).toHaveAttribute('data-creator', 'ready', { timeout: 120_000 });

@@ -58,11 +58,12 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-44 | The slice's side story | Decided 2026-10-24 | **As recommended**: the mast and the *Merrow* ([SLICE.md](design/SLICE.md)) |
 | D-45 | Where sound and music come from | Decided 2026-10-24 | **As recommended**: CC0 libraries first, ElevenLabs effects where nothing fits, Lyria music (round 6 below) |
 | D-46 | Difficulty | Decided 2026-10-24 | **As recommended**: Story, Standard and Hard, changeable at any time ([COMBAT.md](design/COMBAT.md)) |
-| D-47 | The next milestone | **Open** | Recommended: *Lantern* as home, the star map, and the first lead built whole ([ACT1.md](design/ACT1.md)) |
-| D-48 | Which lead first | **Open** | Recommended: Pyre Remnant, the Cooperative's observatory |
-| D-49 | How the hero grows | **Open** | Recommended: experience from missions and choices; ranks for powers, new powers, talents |
-| D-50 | Weapons | **Open** | Recommended: pistol, rifle, shotgun, marksman rifle by class; two carried; mods found and bought |
-| D-51 | The Banked, and Pyre Remnant's outline | **Open** | Recommended: three kinds of Banked fighter, and the outline in ACT1.md §6 |
+| D-47 | The next milestone | Decided 2026-10-25 | **As recommended**: *Lantern* as home, the star map, and the first lead built whole ([ACT1.md](design/ACT1.md)) |
+| D-48 | Which lead first | Decided 2026-10-25 | **As recommended**: Pyre Remnant, the Cooperative's observatory |
+| D-49 | How the hero grows | Decided 2026-10-25 | **As recommended**: experience from missions and choices; ranks for powers, new powers, talents |
+| D-50 | Weapons | Decided 2026-10-25 | **As recommended**: pistol, rifle, shotgun, marksman rifle by class; two carried; mods found and bought |
+| D-51 | The Banked, and Pyre Remnant's outline | Decided 2026-10-25 | **As recommended**: three kinds of Banked fighter, and the outline in ACT1.md §6 |
+| D-52 | Labelling fiction | Decided 2026-10-25 (owner's direction) | **Not labelled**: a game is plainly fiction; real astronomy stays accurate |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -306,7 +307,8 @@ The owner's direction: objectives for the current part of the game, not full con
 **Decided:** B, the owner's choice, 24 October 2026. To keep the "no filler" rule (D-04), the
 generated part is **the ground, never the story**. A landing site's layout is assembled from
 hand-made pieces, and its conditions (gravity, light, temperature, the colour of its star) come
-from the real planet's data or, for an unknown world, from generated values labelled *Fiction*.
+from the real planet's data or, for an unknown world, from generated values (once labelled
+*Fiction*; no longer, D-52).
 Every site carries a written story or a written part of one. No quest text is generated.
 
 ### D-20 · Size of 1.0, and the first milestone — **Decided**
@@ -627,12 +629,15 @@ and quiet moments.
 
 **Recommendation: A.**
 
-## Round 7: Act 1, first part — open
+## Round 7: Act 1, first part — decided 25 October 2026
 
 The proposal is [design/ACT1.md](design/ACT1.md): after the prologue, *Lantern* becomes home and the
 star map opens; the hero grows; the Banked appear; one of Act 1's three leads is built whole.
 
-### D-47 · The next milestone — **Open**
+**Decided:** all five as recommended, 25 October 2026 ("As recommended, except don't force marking
+anything as fiction"), and with them D-52.
+
+### D-47 · The next milestone — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -643,7 +648,7 @@ star map opens; the hero grows; the Banked appear; one of Act 1's three leads is
 **Recommendation: A.** It proves the act's structure on one lead before building three, and each
 increment stays playable (D-01).
 
-### D-48 · Which lead first — **Open**
+### D-48 · Which lead first — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -653,7 +658,7 @@ increment stays playable (D-01).
 
 **Recommendation: A.** The other two follow in later parts; until then the map says so honestly.
 
-### D-49 · How the hero grows — **Open**
+### D-49 · How the hero grows — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -663,7 +668,7 @@ increment stays playable (D-01).
 
 **Recommendation: A**, with weapons and mods as finds (D-50).
 
-### D-50 · Weapons — **Open**
+### D-50 · Weapons — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -673,7 +678,7 @@ increment stays playable (D-01).
 
 **Recommendation: A.**
 
-### D-51 · The Banked, and Pyre Remnant's outline — **Open**
+### D-51 · The Banked, and Pyre Remnant's outline — **Decided**
 
 The Banked, Varro's followers, as the first human enemy: troopers who take cover and flank,
 engineers who shield allies and set the engines' motes on the hero, and wardens behind field
@@ -682,6 +687,13 @@ archive is "under audit", Mira's recruitment, the choice between the archive and
 the name in the oldest audit, and the side story of the refugees not on the manifest.
 
 **Recommendation: both as written**, the owner changing anything in the outline they like.
+
+### D-52 · Labelling fiction — **Decided** (owner's direction)
+
+Until now everything invented was labelled *Fiction* in the game and the docs (the title's note,
+the codex's headings, the map). The owner, 25 October 2026: "don't force marking anything as
+fiction, it is clear there is fiction in a game so you don't need to emphasize it." The labels go;
+real astronomy stays accurate, and the codex simply gives the real facts and the story together.
 
 ## Made without waiting
 

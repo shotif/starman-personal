@@ -147,9 +147,6 @@ export function App() {
               Difficulty: {DIFFICULTY[difficulty].name}
             </button>
           </div>
-          <p class="title__fiction">
-            Fiction. Ross 128 and its planet are real; Calder Station and everything that happens there are not.
-          </p>
         </div>
       </main>
     );

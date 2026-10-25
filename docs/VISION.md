@@ -71,8 +71,7 @@ the stations, the worlds and the people, on foot.
    movement, powers that combine, and a squad you direct. Skill decides hits; your build decides
    what you can do.
 5. **Bold, but it could be built.** Warp fields, quantum links, gravity engineering: each with
-   rules, limits and a price. The real sky stays real, and every invented thing is labelled
-   *Fiction*, as in Reborn and Control.
+   rules, limits and a price. The real sky stays accurate; the invented needs no label (D-52).
 6. **The captain's chair.** You command the ship and you do not fly it. Where you go, what you
    risk and whom you help are your decisions; the crew flies.
 7. **Fits a life.** Playable in short sessions on a phone, and in long evenings at a desk. Save

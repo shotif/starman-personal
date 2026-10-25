@@ -44,8 +44,9 @@ The project owner decides; Claude designs, documents, builds and tests.
 ## Writing style (shared with Starman Reborn and Starman Control)
 
 - British English (*armour*, *colonise*, *neighbourhood*), plain words, short sentences.
-- Real astronomy is real; everything invented is **labelled as fiction** in the game and the docs.
-  Never present an invented planet, species or event as an observed fact.
+- Real astronomy is accurate. Nothing invented is **labelled as fiction** (D-52, the owner's
+  direction): a game is plainly fiction, so the game does not say so.
+
 - No names, text, art, music or data from *Mass Effect* or any other game. Inspiration is about
   structure and mechanics only; every character, species, faction, technology and story is
   original. [docs/research/MASS_EFFECT.md](docs/research/MASS_EFFECT.md) §6 lists the terms to
