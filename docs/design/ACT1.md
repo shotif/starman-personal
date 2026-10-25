@@ -136,8 +136,8 @@ increments, each playable and deployed (D-01):
    `?play&chapter=range&banked`; they first meet the hero at Pyre Remnant.*
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira. *Designed 25 October
    2026 in [PYRE.md](PYRE.md); round 9 (D-57 to D-65) decided as recommended the same day. The
-   place, the story, money and the trader, the fights and Mira built the same day (PYRE.md §15);
-   the voices and models follow.*
+   place, the story, money and the trader, the fights and Mira built the same day, then every line
+   voiced, seven models, older faces and the station's music (PYRE.md §15).*
 6. Voices, music, models, and play-testing on a phone and a desktop.
 
 ## Increment 1 in detail: places that load on their own, and *Lantern*'s decks

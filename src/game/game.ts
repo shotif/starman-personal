@@ -392,6 +392,8 @@ const AMBIENCE: Record<string, string> = {
   freight_way: 'ambience_hangar',
   landing: 'ambience_hangar',
 };
+/** Extras who are not dressed on the low tier: the commons and the overflow are busy enough without them. */
+const LOW_TIER_AWAY = ['crowd2', 'crowd3', 'ref3', 'dome2'];
 /** People farther than this from the camera are neither drawn nor moved (a phone's crowd). */
 const PEOPLE_REACH = 34;
 /** After a companion's help, this long before shots count again. */
@@ -465,7 +467,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   ]);
   // The companions (Mira once she can have joined, PYRE.md) and the people of this place only.
   const crewIds = placeId === 'calder' ? ['ren', 'jo'] : ['ren', 'jo', 'mira'];
-  const peopleIds = PEOPLE_OF[placeId];
+  // On the low tier a crowd is thinner: four of those who never speak stay away (PYRE.md §11).
+  const peopleIds = PEOPLE_OF[placeId].filter((id) => options.tier !== 'low' || !LOW_TIER_AWAY.includes(id));
   const others = [...crewIds, ...peopleIds];
   const [hero, ...dressed] = await Promise.all([
     dress(scene, templates, options.manifest, 'hero', options.looks),

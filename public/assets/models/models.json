@@ -377,6 +377,97 @@
       "texture": 1024,
       "front": "+z",
       "bytes": 599252
+    },
+    "mirror": {
+      "file": "mirror.glb",
+      "size": 9,
+      "dimensions": [
+        4.76,
+        9,
+        6.457
+      ],
+      "triangles": 5999,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 799660
+    },
+    "rack": {
+      "file": "rack.glb",
+      "size": 5,
+      "dimensions": [
+        5,
+        1.416,
+        0.9
+      ],
+      "triangles": 2185,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 557564
+    },
+    "lectern": {
+      "file": "lectern.glb",
+      "size": 1.15,
+      "dimensions": [
+        0.465,
+        1.15,
+        0.435
+      ],
+      "triangles": 1322,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 194284
+    },
+    "cot": {
+      "file": "cot.glb",
+      "size": 2,
+      "dimensions": [
+        2,
+        0.866,
+        0.942
+      ],
+      "triangles": 1438,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 205732
+    },
+    "stall": {
+      "file": "stall.glb",
+      "size": 3,
+      "dimensions": [
+        3,
+        1.271,
+        1.032
+      ],
+      "triangles": 2431,
+      "texture": 1024,
+      "front": "+z",
+      "bytes": 595960
+    },
+    "sapling": {
+      "file": "sapling.glb",
+      "size": 1.6,
+      "dimensions": [
+        0.829,
+        1.6,
+        0.842
+      ],
+      "triangles": 1836,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 230132
+    },
+    "desk": {
+      "file": "desk.glb",
+      "size": 1.8,
+      "dimensions": [
+        1.8,
+        1.562,
+        0.904
+      ],
+      "triangles": 1344,
+      "texture": 512,
+      "front": "+z",
+      "bytes": 192456
     }
   }
 }

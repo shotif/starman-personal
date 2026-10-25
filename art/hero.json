@@ -318,6 +318,15 @@
       }
     },
     {
+      "name": "age_old",
+      "group": "age",
+      "label": "Older",
+      "macro": {
+        "age": 0.875
+      },
+      "note": "MPFB's age at about seventy; for the game's older people (D-65), never offered in the creator"
+    },
+    {
       "name": "viseme_sil",
       "group": "speech",
       "label": "Silence",
@@ -556,6 +565,45 @@
           0.33
         ],
         "note": "recoloured from dyed purple to dark brown"
+      },
+      {
+        "id": "short-grey",
+        "label": "Short, grey",
+        "file": "system_assets/hair/short02/short02.mhclo",
+        "desaturate": true,
+        "tint": [
+          2.7,
+          2.7,
+          2.7
+        ],
+        "hidden": true,
+        "note": "short hair, greyed, for the game's older people (D-65)"
+      },
+      {
+        "id": "cropped-grey",
+        "label": "Cropped, grey",
+        "file": "system_assets/hair/short04/short04.mhclo",
+        "desaturate": true,
+        "tint": [
+          2.7,
+          2.7,
+          2.7
+        ],
+        "hidden": true,
+        "note": "cropped hair, greyed, for the game's older people (D-65)"
+      },
+      {
+        "id": "bun-grey",
+        "label": "Bun, grey",
+        "file": "hair01/hair/elvs_reverse_french_braid_bun/elvs_reverse_french_braid_bun.mhclo",
+        "desaturate": true,
+        "tint": [
+          2.7,
+          2.7,
+          2.7
+        ],
+        "hidden": true,
+        "note": "bun hair, greyed, for the game's older people (D-65)"
       }
     ],
     "eyes": [
@@ -640,6 +688,24 @@
           "id": "tone6",
           "label": "Deep",
           "mhmat": "system_assets/skins/young_african_male/young_african_male.mhmat"
+        },
+        {
+          "id": "old1",
+          "label": "Older, very light",
+          "mhmat": "system_assets/skins/old_caucasian_male/old_caucasian_male.mhmat",
+          "hidden": true
+        },
+        {
+          "id": "old2",
+          "label": "Older, light",
+          "mhmat": "system_assets/skins/old_asian_male/old_asian_male.mhmat",
+          "hidden": true
+        },
+        {
+          "id": "old3",
+          "label": "Older, dark",
+          "mhmat": "system_assets/skins/old_african_male/old_african_male.mhmat",
+          "hidden": true
         }
       ],
       "woman": [
@@ -690,6 +756,24 @@
           "id": "tone6",
           "label": "Deep",
           "mhmat": "system_assets/skins/young_african_female/young_african_female.mhmat"
+        },
+        {
+          "id": "old1",
+          "label": "Older, very light",
+          "mhmat": "system_assets/skins/old_caucasian_female/old_caucasian_female.mhmat",
+          "hidden": true
+        },
+        {
+          "id": "old2",
+          "label": "Older, light",
+          "mhmat": "system_assets/skins/old_asian_female/old_asian_female.mhmat",
+          "hidden": true
+        },
+        {
+          "id": "old3",
+          "label": "Older, dark",
+          "mhmat": "system_assets/skins/old_african_female/old_african_female.mhmat",
+          "hidden": true
         }
       ]
     }

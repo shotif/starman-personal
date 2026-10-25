@@ -503,5 +503,12 @@ and a desktop:
 | The loading painting | `loading-pyre` ([IMAGES.md](../assets/IMAGES.md)) |
 | Tests | `tests/unit/story.test.ts` (three routes through Pyre, every conversation walked for every origin and class), `tests/unit/money.test.ts`, `tests/e2e/pyre.spec.ts` |
 
-To come (steps 5 and 6): every line voiced, the new models (the great mirror, the racks, the core,
-the lectern, the cots, the stall, the sapling), the older faces, and the station's music.
+Steps 5 and 6, the same day:
+
+| Part | Where |
+| --- | --- |
+| Every line voiced: 428 new lines, 473 takes, the hero in two voices; Pyre's cast in stock voices of any accent, and four from ElevenLabs' library (D-63) | [VOICES.md](../assets/VOICES.md) |
+| Seven models from Meshy (the great mirror, the archive's racks, the lectern, the cots, Tilly's stall, the sapling, the desks), 210 credits | [MODELS.md](../assets/MODELS.md) |
+| Older faces: MPFB's age (CC0) as a body shape, MakeHuman's old skins and grey hair, for Linde, Sorrel, Hale, Ruth and Tilly; never offered in the creator | `art/hero.json`, `CAST_LOOKS` |
+| The station's music, `pyre`, with Lyria | [AUDIO.md](../assets/AUDIO.md) |
+| The dome shuttered, its slit open to the stars | `dome()` in `src/game/pyre.ts` |

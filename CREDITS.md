@@ -39,7 +39,8 @@ its source, its licence with a link, and what we changed, as the licence asks.
   Palmius, Jonas Hauquier and contributors): MPFB's base mesh, body and face targets, skeleton
   and weights, and the
   [system assets](https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html)
-  used for the heroes' skins, eyes, eyebrows, eyelashes, teeth, tongue, hair and boots (CC0).
+  used for the heroes' skins, eyes, eyebrows, eyelashes, teeth, tongue, hair and boots, the older
+  people's skins (old Caucasian, Asian and African), and the age of MPFB's macro (CC0).
 - **Mika Suominen**: the Meta-style visemes (mouth shapes) of the MakeHuman
   [Visemes 02](https://static.makehumancommunity.org/assets/assetpacks/visemes02.html) pack (CC0).
 - **Skins** from the MakeHuman [Skins 01](https://static.makehumancommunity.org/assets/assetpacks/skins01.html)
@@ -78,14 +79,16 @@ These are generated from the game's own writing and designs on the owner's paid 
 commercial use; the records say how each file was made.
 
 - **Voices:** generated with ElevenLabs text to speech (model eleven_v4) from the game's own
-  script, in ElevenLabs' premade voices, on a paid plan. Records in
+  script, in ElevenLabs' premade voices and, for Pyre Remnant's Linde, Varro, Tilly and Arno,
+  voices from ElevenLabs' voice library added to the owner's account (D-63), on a paid plan. Records in
   [art/voices.json](art/voices.json); how in [docs/assets/VOICES.md](docs/assets/VOICES.md).
 - **3D models** (the swarm's machines, the surveyor, the station's furniture and props, the
-  sidearm, helmet, locker and terminal): generated with Meshy (image-to-3D, multi-image-to-3D and
+  sidearm, helmet, locker and terminal, Pyre Remnant's great mirror, archive racks, lectern, cots,
+  trader's stall, apple sapling and desks): generated with Meshy (image-to-3D, multi-image-to-3D and
   remesh) from the game's own concept pictures, made with Google Gemini (gemini-nano-banana-2.1),
   on paid plans. Records in [art/models.json](art/models.json); how in
   [docs/assets/MODELS.md](docs/assets/MODELS.md).
-- **Sound effects:** the other 37, generated with ElevenLabs' sound effects; **music:** all five
+- **Sound effects:** the other 37, generated with ElevenLabs' sound effects; **music:** all six
   pieces, generated with Google's Lyria through the Gemini API (each carries Google's inaudible
   SynthID watermark). Records in [art/audio.json](art/audio.json); how in
   [docs/assets/AUDIO.md](docs/assets/AUDIO.md).

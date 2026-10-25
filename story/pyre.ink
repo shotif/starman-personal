@@ -117,7 +117,7 @@ VAR credits = 0
 = pyre_dock
 >>> travel pyre
 >>> checkpoint pyre_dock
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero pyre_dock_hero
@@ -147,7 +147,7 @@ Before you ask, Captain: six hundred credits in the ship's account. The old capt
 
 = pyre_commons
 >>> checkpoint pyre_commons
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero commons_entry
@@ -247,7 +247,7 @@ He's good. That's the worst kind. #speaker: Ren #line: ren_commons_01
 
 = pyre_clinic
 >>> checkpoint pyre_clinic
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero clinic_hero
@@ -285,7 +285,7 @@ He's good. That's the worst kind. #speaker: Ren #line: ren_commons_01
 
 = pyre_way
 >>> checkpoint pyre_way
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero clinic_hero
@@ -558,7 +558,7 @@ It's gone. The archive. All of it. I'm sorry, Mira. I'm so sorry. #speaker: Lind
 
 = pyre_after
 >>> checkpoint pyre_after
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero after_hero
@@ -583,7 +583,7 @@ It's gone. The archive. All of it. I'm sorry, Mira. I'm so sorry. #speaker: Lind
 
 = pyre_dock_end
 >>> checkpoint pyre_dock_end
->>> music night
+>>> music pyre
 >>> sky pyre space
 >>> lights on
 >>> start hero dock_end_hero
@@ -1197,7 +1197,7 @@ Rifles. In the archive. On this station. #speaker: Quaye #line: quaye_goodbye_01
 - -> DONE
 
 === linde_sorrel ===
-Teo. #speaker: Sorrel #line: sorrel_linde_01
+Teo. It's me. #speaker: Sorrel #line: sorrel_linde_01
 Sorrel. You look old. #speaker: Linde #line: linde_sorrel_02
 I took the money, Teo. #speaker: Sorrel #line: sorrel_linde_03
 We knew you would. You were the only one of us with children. #speaker: Linde #line: linde_sorrel_04

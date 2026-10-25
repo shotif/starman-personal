@@ -295,7 +295,7 @@ function commons(kit: Kit, addDoor: (d: Door) => void) {
       box([3, 1, 1.1], [0, 0.5, 0], s.crateOrange);
       box([3.1, 0.06, 1.2], [0, 1.03, 0], s.wood);
     },
-    { fit: 'box' },
+    { fit: 'longest' },
   );
   crate(kit, 18.8, -5.6, 1.1, 1.3, s.crate, 0.3);
   crate(kit, 18.6, -0.4, 1, 0.9, s.crateBlue, -0.2);
@@ -345,11 +345,11 @@ function committee(kit: Kit) {
     'desk',
     [-9.8, 0, 28.6],
     Math.PI,
-    [1.8, 0.78, 0.8],
+    [1.8, 0.8, 0.9],
     (box) => {
       box([1.8, 0.75, 0.8], [0, 0.375, 0], s.wood);
     },
-    { fit: 'box' },
+    { fit: 'longest' },
   );
   kit.light([-14, 3.85, 21], WARM_LIGHT, 6, 10);
   kit.light([-14, 3.85, 27], WARM_LIGHT, 6, 10);
@@ -489,8 +489,8 @@ function archive(kit: Kit, addDoor: (d: Door) => void) {
     [-14, 43.6],
     [-17.4, 40],
   ] as const) {
-    kit.prop('desk', [x, 0, z], 0, [1.8, 0.9, 0.8], (box) => box([1.8, 0.9, 0.8], [0, 0.45, 0], s.wood), {
-      fit: 'box',
+    kit.prop('desk', [x, 0, z], 0, [1.8, 0.8, 0.9], (box) => box([1.8, 0.9, 0.8], [0, 0.45, 0], s.wood), {
+      fit: 'longest',
     });
   }
   // The audit's list of records withdrawn, left on the counter.
@@ -516,8 +516,8 @@ function archive(kit: Kit, addDoor: (d: Door) => void) {
   addDoor(kit.door('stacks_door', [-20, 0, 52], 2, false));
   table(kit, -11, 54.6, Math.PI / 2);
   consoleAt(kit, -15.6, 48, 0);
-  kit.prop('desk', [-6, 0, 56.8], Math.PI, [1.8, 0.78, 0.8], (box) => box([1.8, 0.75, 0.8], [0, 0.375, 0], s.wood), {
-    fit: 'box',
+  kit.prop('desk', [-6, 0, 56.8], Math.PI, [1.8, 0.8, 0.9], (box) => box([1.8, 0.75, 0.8], [0, 0.375, 0], s.wood), {
+    fit: 'longest',
   });
   kit.light([-8, 3.45, 50], WARM_LIGHT, 5, 9);
   kit.light([-15, 3.45, 54], WARM_LIGHT, 5, 9);
@@ -540,10 +540,18 @@ function archive(kit: Kit, addDoor: (d: Door) => void) {
   for (const z of [38.4, 42.6, 46.8, 51, 55.2]) {
     for (const x0 of [-43.6, -36.4, -29.2]) {
       const offset = z === 42.6 || z === 51 ? 1.8 : 0;
-      kit.prop('rack', [x0 + offset + 2.5, 0, z], 0, [5, 1.1, 0.8], (box) => {
-        box([5, 1.05, 0.8], [0, 0.525, 0], s.hullDark);
-        box([4.8, 0.06, 0.5], [0, 1.08, 0], s.screen);
-      });
+      // Squashed to waist height, so they stay low cover (COMBAT.md, *The Banked*).
+      kit.prop(
+        'rack',
+        [x0 + offset + 2.5, 0, z],
+        0,
+        [5, 1.1, 0.8],
+        (box) => {
+          box([5, 1.05, 0.8], [0, 0.525, 0], s.hullDark);
+          box([4.8, 0.06, 0.5], [0, 1.08, 0], s.screen);
+        },
+        { fit: 'box' },
+      );
     }
   }
   for (const [x, z] of [
@@ -630,11 +638,13 @@ function dome(kit: Kit, addDoor: (d: Door) => void) {
   // The dome itself, shuttered but for a slit: drawn, not felt.
   const shell = CreateSphere(
     'dome-shell',
-    { diameter: 37, segments: 24, slice: 0.5, sideOrientation: Mesh.DOUBLESIDE },
+    // `arc` leaves a wedge open from the crown to the rim: the shutter's slit, the stars through it.
+    { diameter: 37, segments: 24, slice: 0.5, arc: 0.95, sideOrientation: Mesh.DOUBLESIDE },
     kit.scene,
   );
   shell.position.set(73, 7, 38);
-  shell.material = s.hull.material;
+  shell.rotation.y = Math.PI / 2;
+  shell.material = s.hullDark.material;
   shell.isPickable = false;
   // The great mirror on its mount: a pier, a fork, and the tube pointed out of the slit.
   kit.prop(

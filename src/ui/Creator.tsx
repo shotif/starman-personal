@@ -12,6 +12,7 @@ import {
   type Looks,
   type Manifest,
   pairValue,
+  playerOptions,
   randomLooks,
   setPair,
 } from '../game/looks.ts';
@@ -127,7 +128,7 @@ export function Creator({ manifest, initial, tier, renderer, onStart }: CreatorP
     setLooks({ ...applyLineage(manifest, defaultLooks(manifest, body), looks.lineage), name: looks.name });
   };
   const slider = (name: string, value: number) => setLooks({ ...looks, sliders: { ...looks.sliders, [name]: value } });
-  const options = manifest.looks[looks.body];
+  const options = playerOptions(manifest, looks.body);
   const [minHeight, maxHeight] = manifest.heightScale.range;
 
   return (

@@ -1,6 +1,7 @@
 /**
- * Voices every spoken line of the slice (story/slice.ink) with ElevenLabs text to speech (D-23): each
- * person in a premade voice of the owner's plan, the hero twice, in a man's and a woman's voice
+ * Voices every spoken line of the story (story/slice.ink and what it includes, story/pyre.ink) with
+ * ElevenLabs text to speech (D-23): each person in a stock voice of the owner's plan or one from
+ * ElevenLabs' library added to it (D-63), the hero twice, in a man's and a woman's voice
  * (D-09). Each take is heard back by speech to text and made again if words are lost or it is
  * clearly wrong, then published to public/assets/voices/ with a manifest the game reads
  * (src/game/audio.ts): length, a loudness envelope at 20 a second for lip sync (D-31), and which
@@ -18,10 +19,10 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { compileStory } from '../ink.ts';
 import { optionalKey, requireKey } from './env.ts';
 
 const ROOT = resolve(import.meta.dirname, '../..');
-const SCRIPT = join(ROOT, 'story', 'slice.ink');
 const OUT = join(ROOT, 'public', 'assets', 'voices');
 const MANIFEST = join(OUT, 'voices.json');
 const RECORDS = join(ROOT, 'art', 'voices.json');
@@ -47,7 +48,12 @@ interface Voice {
   name: string;
 }
 
-/** ElevenLabs premade voices (none added to the account, D-103 in Control); why each is in VOICES.md. */
+/**
+ * Who speaks in which voice; why each is in VOICES.md. The prologue's are stock voices (none added,
+ * as in Control's D-103). Pyre Remnant's are stock voices of any accent where one suits, and voices
+ * from ElevenLabs' library where none does (D-63: Linde, Varro, Tilly, Arno), each auditioned
+ * (scripts/art/audition.ts).
+ */
 const CAST: Record<string, Voice> = {
   Ren: { id: 'pFZP5JQG7iQjIQuC4Bku', name: 'Lily' },
   Jo: { id: 'FGY2WhTYpPnrIDTdsKH5', name: 'Laura' },
@@ -57,6 +63,23 @@ const CAST: Record<string, Voice> = {
   Sorrel: { id: 'pqHfZKP75CvOlQylNhV4', name: 'Bill' },
   Ilya: { id: 'TX3LPaxmHKxFdv7VOQHJ', name: 'Liam' },
   Merrow: { id: 'iP95p4xoKVk53GoZ742B', name: 'Chris' },
+  // Pyre Remnant (PYRE.md).
+  Mira: { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah' },
+  Ruth: { id: 'hpp4J3VqNfWAUOO0d1Us', name: 'Bella' },
+  Nell: { id: 'cgSgspJ2msm6clMCkdW9', name: 'Jessica' },
+  Quaye: { id: 'nPczCjzI2devNBz1zQrb', name: 'Brian' },
+  Esben: { id: 'cjVigY5qzO86Huf0OWal', name: 'Eric' },
+  Joost: { id: 'bIHbv24MWmeRgasZH58o', name: 'Will' },
+  Matti: { id: 'IKne3meq5aSn9XLyUdCD', name: 'Charlie' },
+  Lenz: { id: 'CwhRBWXzGAHq8TQ4Fs17', name: 'Roger' },
+  Auditor: { id: 'N2lVS1w4EtoT3dr4eOWO', name: 'Callum' },
+  Banked: { id: 'SOYHLrjzK2X1ezoPC6cr', name: 'Harry' },
+  Warden: { id: 'pNInz6obpgDQGcFmaJgB', name: 'Adam' },
+  Ship: { id: 'SAz9YHcvj6GT2YYXdXww', name: 'River' },
+  Linde: { id: 'yvKg3CwzCYDTwyHnWQLg', name: 'Steve (library)' },
+  Varro: { id: 'NtS6nEHDYMQC9QczMQuq', name: 'Katherine (library)' },
+  Tilly: { id: 'C92s6vssSLlabgIln1iY', name: 'Michelle (library)' },
+  Researcher: { id: 'csXxiUN2BUFflsCaDxPM', name: 'Chris Scottish (library)' },
 };
 const HERO: Record<'man' | 'woman', Voice> = {
   man: { id: 'onwK4e9ZLuTAKqWW03F9', name: 'Daniel' },
@@ -72,6 +95,27 @@ const RADIO = new Set([
   'pell_relay_03',
   'pell_escort_01',
   'merrow_01',
+  // Pyre Remnant: the dock's answer to the hail, the dome on the band, the ship at berth two, the
+  // companion at Lantern, Linde from the archive while the hero is in the dome, Varro's old recording.
+  'matti_hail_01a',
+  'matti_hail_01b',
+  'joost_band_01',
+  'joost_band_02',
+  'esben_band_01',
+  'joost_cost_01',
+  'joost_cost_02',
+  'joost_cost_07a',
+  'joost_core_01',
+  'joost_dome_door_01',
+  'joost_broadcast_01',
+  'joost_broadcast_02',
+  'joost_broadcast_03',
+  'linde_dome_01',
+  'ship_dock_01',
+  'ship_dock_02',
+  'jo_nell_choice_06a',
+  'ren_nell_choice_06a',
+  'varro_audit_01',
 ]);
 
 /**
@@ -106,6 +150,41 @@ const SCENE: Record<string, string> = {
   pell_aboard: '[low, worried]',
   ilya_aboard: '[eager, quick]',
   jo_course: '[steady, dry]',
+  jo_lane: '[steady, dry]',
+  // Pyre Remnant.
+  matti_dock: '[nervous, too casual]',
+  matti_again: '[defensive, nervous]',
+  ruth_office: '[tired, practical]',
+  ruth_proof: '[tired, relieved]',
+  linde_door: '[quiet, careful]',
+  linde_way: '[quiet, steadier]',
+  quaye_talk: '[calm, warm, persuasive]',
+  tilly_stall: '[wry, dry]',
+  nell_overflow: '[tired, plain]',
+  joost_dome: '[eager, wry]',
+  lenz_door: '[gruff, decent]',
+  auditor_door: '[smooth, polite]',
+  mira_clinic: '[dry, warm]',
+  pick_second: '[practical, quick]',
+  nell_choice: '[out of breath, frightened]',
+  ruth_hearing: '[formal, grave]',
+  esben_stacks: '[cold, certain]',
+  cost_choice: '[urgent]',
+  esben_core: '[frightened, quiet]',
+  joost_saved: '[relieved, breathless]',
+  mira_reads: '[quiet, intent]',
+  quaye_goodbye: '[shaken, quiet]',
+  ruth_end: '[tired, honest]',
+  linde_sorrel: '[quiet, old friends]',
+  mira_joins: '[tired, steady]',
+  mira_aboard: '[quiet, thoughtful]',
+  ren_after: '[quiet, bitter]',
+  jo_after: '[quiet, uneasy]',
+  dena_after: '[warm, tired]',
+  pell_after: '[low, haunted]',
+  sorrel_after: '[soft, slow]',
+  ilya_after: '[eager, awed]',
+  nell_aboard: '[warm, tired]',
 };
 const LINE: Record<string, string> = {
   ren_drill_01: '[calm, instructing]',
@@ -188,6 +267,62 @@ const LINE: Record<string, string> = {
   ren_leaving_01: '[calm, carrying, announcing to the ship]',
   jo_lane_01: '[relieved, quiet]',
   pell_lane_01: '[quiet, wistful]',
+  // Pyre Remnant, in the world and where a conversation's feeling changes.
+  pell_hail_01: '[formal, clear, into a microphone]',
+  pell_hail_02: '[formal, uneasy]',
+  matti_hail_01a: '[nervous, over a radio]',
+  matti_hail_01b: '[flat, over a radio]',
+  ren_hail_02a: '[quiet, cold]',
+  jo_dock_01: '[dry, wry]',
+  quaye_address_01: '[calm, carrying, addressing a crowd]',
+  quaye_address_02: '[calm, carrying, addressing a crowd]',
+  quaye_address_03: '[calm, carrying, addressing a crowd]',
+  quaye_address_04: '[kind, calm]',
+  researcher_heckle_01: '[sceptical, calling out]',
+  ren_commons_01: '[low, wry]',
+  auditor_front_01: '[nervous, smooth]',
+  banked_front_01a: '[shouting, urgent]',
+  banked_front_01b: '[shouting, urgent]',
+  linde_way_in_01: '[whispering]',
+  mira_stacks_quiet_01: '[whispering]',
+  mira_freight_01: '[quiet, wry]',
+  banked_cargo_01: '[shouting, alarmed]',
+  banked_stacks_01: '[shouting]',
+  banked_stacks_02: '[shouting, commanding]',
+  jo_stacks_rings: '[shocked, quick]',
+  ren_stacks_leash: '[grim, quick]',
+  warden_stacks_01: '[calm, commanding]',
+  ren_stacks_report: '[quiet, stunned, bitter]',
+  joost_band_01: '[defiant, clear, broadcasting]',
+  joost_band_02: '[defiant, clear, broadcasting]',
+  esben_band_01: '[cold, quiet, into a radio]',
+  joost_cost_01: '[urgent, frightened]',
+  joost_cost_02: '[urgent, determined]',
+  linde_cost_03: '[urgent, frightened]',
+  mira_cost_04: '[shaken]',
+  mira_cost_05: '[shaken, quiet]',
+  joost_cost_07a: '[steady, sad]',
+  linde_cost_07b: '[urgent]',
+  linde_core_01: '[breathless, grim]',
+  linde_core_02: '[shouting, breathless]',
+  joost_core_01: '[urgent, cut off]',
+  mira_core_01: '[frightened, calling out]',
+  linde_core_03: '[breathless, relieved, shaken]',
+  mira_walk_01: '[shouting, urgent]',
+  joost_dome_door_01: '[urgent, shouting]',
+  joost_broadcast_01: '[clear, defiant, broadcasting]',
+  joost_broadcast_02: '[clear, steady, broadcasting]',
+  joost_broadcast_03: '[clear, pleading]',
+  linde_dome_01: '[grieving, quiet]',
+  ship_dock_01: '[calm, official]',
+  ship_dock_02: '[calm, cold]',
+  nell_dock_01: '[quiet, grateful]',
+  varro_audit_01: '[calm, ordinary, unhurried]',
+  linde_reads_12: '[quiet, bitter]',
+  mira_reads_08: '[quiet, frightened]',
+  mira_joins_01a: '[bitter, controlled]',
+  mira_joins_01b: '[tired, wry]',
+  hero_landing_01: '[quiet, grim]',
 };
 const MANNER: Record<string, string> = {
   ask: '[curious]',
@@ -301,7 +436,8 @@ function parseScript(source: string): Line[] {
   return lines;
 }
 
-const scope = (l: Line) => `${l.knot}.${l.knot === 'slice' ? l.stitch : ''}.${l.beat}`;
+/** The main flows' chapters are stitches: lines in two chapters are never heard together. */
+const scope = (l: Line) => `${l.knot}.${['slice', 'pyre'].includes(l.knot) ? l.stitch : ''}.${l.beat}`;
 const group = (token: string) => token.slice(0, token.indexOf(':'));
 
 /** Two lines can be heard one after the other: they part, if at all, in different groups of branches. */
@@ -361,6 +497,16 @@ const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 
 function numberWords(n: number): string[] {
   if (n < 20) return [ONES[n] ?? String(n)];
   if (n < 100) return [TENS[Math.floor(n / 10)] ?? '', ...(n % 10 ? [ONES[n % 10] ?? ''] : [])];
+  // Whole hundreds ("200" for "two hundred"); other three figures are a catalogue's, said one by one
+  // ("GJ 915": "nine one five"); "1,412" as it is said.
+  if (n < 1000)
+    return n % 100 === 0
+      ? [ONES[n / 100] ?? '', 'hundred']
+      : String(n)
+          .split('')
+          .map((d) => ONES[Number(d)] ?? d);
+  if (n < 10000)
+    return [ONES[Math.floor(n / 1000)] ?? '', 'thousand', ...(n % 1000 ? numberWords(n % 1000) : [])].filter(Boolean);
   return [String(n)];
 }
 
@@ -371,6 +517,7 @@ function wordsOf(text: string): string[] {
     .replace(/[’‘]/g, "'")
     .replace(/\[[^\]]*\]/g, ' ')
     .replace(/\b(\d+):00\b/g, '$1')
+    .replace(/(\d),(\d{3})\b/g, '$1$2')
     .replace(/(\d+)\s*%/g, '$1 per cent')
     .replace(/\bpercent\b/g, 'per cent')
     .replace(/[^a-z0-9' ]+/g, ' ')
@@ -398,6 +545,48 @@ function distance(a: string, b: string): number {
 /** The game's invented names as speech to text spells them, which it cannot know. */
 const SOUNDS_LIKE: Record<string, string> = {
   wren: 'ren',
+  joe: 'jo',
+  pel: 'pell',
+  // Pyre Remnant's names.
+  theodore: 'teodor',
+  theodor: 'teodor',
+  teddy: 'teodor',
+  tio: 'teo',
+  tayo: 'teo',
+  tao: 'teo',
+  celine: 'selene',
+  "celine's": "selene's",
+  "theodore's": "teodor's",
+  selena: 'selene',
+  quay: 'quaye',
+  kway: 'quaye',
+  quai: 'quaye',
+  key: 'quaye',
+  lynda: 'linde',
+  linda: 'linde',
+  lind: 'linde',
+  yost: 'joost',
+  joust: 'joost',
+  just: 'joost',
+  yoast: 'joost',
+  esban: 'esben',
+  esbin: 'esben',
+  ezben: 'esben',
+  achterburg: 'achterberg',
+  akterberg: 'achterberg',
+  fomalhaut: 'fomalhaut',
+  fomalhot: 'fomalhaut',
+  formalhaut: 'fomalhaut',
+  fomalhaught: 'fomalhaut',
+  pyr: 'pyre',
+  pire: 'pyre',
+  pier: 'pyre',
+  pyer: 'pyre',
+  sallo: 'sallow',
+  barrow: 'varro',
+  varo: 'varro',
+  vero: 'varro',
+  sorell: 'sorrel',
   mero: 'merrow',
   marrow: 'merrow',
   morrow: 'merrow',
@@ -719,7 +908,7 @@ function writeManifest(lines: Line[], records: Records): string {
       if (r) rows.push(`    ${JSON.stringify(line.id)}: ${JSON.stringify(entry(r, `${line.id}.mp3`, line.speaker))}`);
     }
   }
-  const about = `Voices for story/slice.ink, made by scripts/art/voices.ts (${MODEL}, ${FORMAT}). envelope: loudness 0-1 at ${ENVELOPE_RATE} a second, for lip sync; gain: playback gain to level the speech; radio: heard over comms.`;
+  const about = `Voices for the story (story/*.ink), made by scripts/art/voices.ts (${MODEL}, ${FORMAT}). envelope: loudness 0-1 at ${ENVELOPE_RATE} a second, for lip sync; gain: playback gain to level the speech; radio: heard over comms.`;
   const head = `  "about": ${JSON.stringify(about)}`;
   return `{\n${head},\n  "envelopeRate": ${ENVELOPE_RATE},\n  "lines": {\n${rows.join(',\n')}\n  },\n  "hero": {\n${heroRows.join(',\n')}\n  }\n}\n`;
 }
@@ -822,10 +1011,11 @@ async function make(job: Job, after?: number): Promise<FileRecord> {
 const args = process.argv.slice(2);
 const again = args.includes('--again');
 const wanted = args.filter((a) => !a.startsWith('--'));
-const lines = parseScript(await readFile(SCRIPT, 'utf8'));
+// Every file of the story, each parsed on its own (a knot never runs across two files).
+const lines = (await Promise.all(compileStory().files.map(async (f) => parseScript(await readFile(f, 'utf8'))))).flat();
 const named = (j: { line: Line; file: string }) => wanted.includes(j.line.id) || wanted.includes(j.file);
 const unknown = wanted.filter((w) => !lines.some((l) => l.id === w || w.startsWith(`${l.id}.`)));
-if (unknown.length) throw new Error(`Not lines in slice.ink: ${unknown.join(', ')}`);
+if (unknown.length) throw new Error(`Not lines of the story: ${unknown.join(', ')}`);
 const braces = lines.filter((l) => /[{}]/.test(l.text));
 for (const l of braces) console.warn(`${l.id}: holds ink logic ({...}), so it is not voiced: "${l.text}"`);
 const voiced = lines.filter((l) => !braces.includes(l));

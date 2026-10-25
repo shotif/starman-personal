@@ -54,6 +54,13 @@ for the 22 new models, 2.2 MB for the four from the style test. Every model:
 | `rifle` | An automatic coil rifle (D-56), muzzle to the front; added 25 October 2026 | 0.95 | 0.10 × 0.37 × 0.95 | 3,407 | 1024 | 522 | [rifle](models/rifle.jpg) |
 | `shotgun` | A pump-action coil shotgun with a drum of slugs; added 25 October 2026 | 0.9 | 0.17 × 0.33 × 0.9 | 3,439 | 1024 | 512 | [shotgun](models/shotgun.jpg) |
 | `marksman` | A long marksman coil rifle with a scope and a bipod; added 25 October 2026 | 1.15 | 0.14 × 0.36 × 1.15 | 3,500 | 1024 | 614 | [marksman](models/marksman.jpg) |
+| `mirror` | Pyre Remnant's great telescope: an open-truss tube on a fork mount and a round pier (PYRE.md); added 25 October 2026 | 9 | 4.76 × 9 × 6.46 | 5,999 | 1024 | 780 | [mirror](models/mirror.jpg) |
+| `rack` | A long, waist-high archive rack, data cores glowing along its top (shown squashed to 1.1 m, low cover) | 5 | 5 × 1.42 × 0.9 | 2,185 | 1024 | 544 | [rack](models/rack.jpg) |
+| `lectern` | Quaye's lectern: a slanted wood-edged top and a microphone on a stalk | 1.15 | 0.47 × 1.15 × 0.44 | 1,322 | 512 | 189 | [lectern](models/lectern.jpg) |
+| `cot` | A folding camp cot in the overflow, a rolled blanket and a bag on it | 2 | 2 × 0.87 × 0.94 | 1,438 | 512 | 200 | [cot](models/cot.jpg) |
+| `stall` | Tilly's stall: two orange cargo cases under a plank counter of wares | 3 | 3 × 1.27 × 1.03 | 2,431 | 1024 | 581 | [stall](models/stall.jpg) |
+| `sapling` | The Orchard's apple sapling in a cut-down blue drum | 1.6 | 0.83 × 1.6 × 0.84 | 1,836 | 512 | 224 | [sapling](models/sapling.jpg) |
+| `desk` | A plain archive desk with a lamp and files (Ruth's, the front hall's, Linde's) | 1.8 | 1.8 × 1.56 × 0.9 | 1,344 | 512 | 187 | [desk](models/desk.jpg) |
 
 Each preview shows the model in the game's own Babylon.js 9.32 from six sides (front, three-quarter,
 left, back, right, top), on a grid, with its measured size and base. The full-size pictures are in
@@ -177,6 +184,8 @@ node scripts/art/models.ts preview [id ...]             # six views → art/out/
 | **Left** after the first pass | **2,210** |
 | Rifle, shotgun and marksman rifle (D-56), image-to-3D with textures (30 each), 25 October 2026 | 90 |
 | **Left** | **2,120** |
+| Pyre Remnant's seven (PYRE.md §10), image-to-3D with textures (30 each), 25 October 2026 | 210 |
+| **Left** | **1,910** |
 
 Gemini drew 33 pictures (22 concepts, two redrawn Tender concepts and nine extra views), about
 $3.30 from D-24's budget. trellis.cpp was not needed.

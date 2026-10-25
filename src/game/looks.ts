@@ -18,6 +18,8 @@ export interface LookOption {
   label: string;
   default: boolean;
   file: string | null;
+  /** For the game's own people only (older skins, grey hair: D-65); never offered to the player. */
+  hidden?: boolean;
 }
 
 export interface Lineage {
@@ -53,6 +55,13 @@ export interface Looks {
   skin: string;
   hair: string;
   eyes: string;
+}
+
+/** The skins, hair and eyes a player may choose: the manifest's, less those kept for the game's own people. */
+export function playerOptions(manifest: Manifest, body: Body): Manifest['looks'][Body] {
+  const o = manifest.looks[body];
+  const open = (list: LookOption[]) => list.filter((x) => !x.hidden);
+  return { skins: open(o.skins), hair: open(o.hair), eyes: open(o.eyes) };
 }
 
 /** The sliders a player moves: the body and face groups, not speech or the eyes. */
@@ -157,7 +166,7 @@ export function randomLooks(manifest: Manifest, random: () => number): Looks {
   for (const m of sliderMorphs(manifest, body)) {
     sliders[m.name] = clamp((sliders[m.name] ?? 0) + (random() - 0.5) * 0.6, 0, 1);
   }
-  const options = manifest.looks[body];
+  const options = playerOptions(manifest, body);
   return {
     ...looks,
     heroClass: pick(CLASSES).id,
@@ -176,7 +185,7 @@ export function checkLooks(manifest: Manifest, raw: unknown): Looks | null {
   const r = raw as Partial<Looks>;
   if (r.body !== 'man' && r.body !== 'woman') return null;
   const base = defaultLooks(manifest, r.body);
-  const options = manifest.looks[r.body];
+  const options = playerOptions(manifest, r.body);
   const known = (list: LookOption[], id: unknown, fallback: string) =>
     typeof id === 'string' && list.some((o) => o.id === id) ? id : fallback;
   const sliders: Record<string, number> = {};

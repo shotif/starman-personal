@@ -2407,6 +2407,504 @@
           "made": "2026-10-25T09:09:05.949Z"
         }
       }
+    },
+    {
+      "id": "mirror",
+      "style": "station",
+      "size": 9,
+      "triangles": 6000,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "The great telescope of a deep-space observatory, about nine metres tall: a massive off-white open-truss telescope tube about two metres across, tilted up at forty-five degrees, held in a heavy dark grey steel fork mount that turns on a squat round concrete-grey pier; cable runs, a small access ladder and service hatches on the pier, the mirror cell at the bottom of the tube. Clean, precise and well kept, a scientific instrument rather than a weapon.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "The great telescope of a deep-space observatory, about nine metres tall: a massive off-white open-truss telescope tube about two metres across, tilted up at forty-five degrees, held in a heavy dark grey steel fork mount that turns on a squat round concrete-grey pier; cable runs, a small access ladder and service hatches on the pier, the mirror cell at the bottom of the tube. Clean, precise and well kept, a scientific instrument rather than a weapon. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/mirror.jpg",
+          "sha256": "a2d654ba215d8218774d414ce6551e93bdf942ac814386f40ff9ffcca32e013d",
+          "bytes": 1763235,
+          "made": "2026-10-25T12:08:06.846Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f6-f533-76ec-8b70-b49e831fb007",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 6000
+          },
+          "credits": 30,
+          "seconds": 108,
+          "made": "2026-10-25T12:10:57.553Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/mirror.jpg",
+              "sha256": "a2d654ba215d8218774d414ce6551e93bdf942ac814386f40ff9ffcca32e013d"
+            }
+          ],
+          "output": {
+            "bytes": 12259352,
+            "sha256": "615f28edbd9c507ba8907de2bd89c4be963a09770a8beb749f87054dcc87cae6"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/mirror.glb",
+          "bytes": 799660,
+          "sha256": "729442937e3bfb367eaa6a20fdceb77bd1931b03035f70881f5d8397e19e3ad5",
+          "triangles": {
+            "made": 6063,
+            "shipped": 5999
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            4.76,
+            9,
+            6.457
+          ],
+          "made": "2026-10-25T12:12:44.863Z"
+        }
+      }
+    },
+    {
+      "id": "rack",
+      "style": "station",
+      "size": 5,
+      "triangles": 2500,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A very long, low data archive rack from a station's records stacks, more than four times as long as it is high: about five metres long, only one point one metres high and eighty centimetres deep, a waist-high run of steel cabinet in slate grey panels, a long row of slim slots along the whole length of its top, each holding a small glowing pale blue data core, ventilation grilles and small status lights along the sides, a kick plate at the bottom. Seen from the front-left so its full length shows.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A very long, low data archive rack from a station's records stacks, more than four times as long as it is high: about five metres long, only one point one metres high and eighty centimetres deep, a waist-high run of steel cabinet in slate grey panels, a long row of slim slots along the whole length of its top, each holding a small glowing pale blue data core, ventilation grilles and small status lights along the sides, a kick plate at the bottom. Seen from the front-left so its full length shows. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/rack.jpg",
+          "sha256": "5b90e99ece4c600116782d8b4dea2001f23312306351e9a032e290beeffa9cbe",
+          "bytes": 2365889,
+          "made": "2026-10-25T12:09:03.339Z",
+          "approxCostUsd": 0.1
+        },
+        "discarded": [
+          {
+            "concept": {
+              "service": "Google Gemini",
+              "model": "gemini-nano-banana-2.1",
+              "prompt": "A long, low data archive rack from a station's records stacks, about five metres long, one point one metres high and eighty centimetres deep: a waist-high steel cabinet of slate grey panels, a long row of slim slots along its top, each holding a small glowing pale blue data core, ventilation grilles and small status lights along the sides, a kick plate at the bottom. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+              "file": "art/out/models/concepts/rack.jpg",
+              "sha256": "8478e9b2b4822442bbc2a6d89465b3b514ce8a716146925a135ce3513506d023",
+              "bytes": 2352205,
+              "made": "2026-10-25T12:08:06.095Z",
+              "approxCostUsd": 0.1
+            },
+            "replaced": "2026-10-25T12:08:46.619Z"
+          }
+        ],
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f6-f3e0-728f-974a-a35f06db160b",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2500
+          },
+          "credits": 30,
+          "seconds": 87,
+          "made": "2026-10-25T12:10:36.113Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/rack.jpg",
+              "sha256": "5b90e99ece4c600116782d8b4dea2001f23312306351e9a032e290beeffa9cbe"
+            }
+          ],
+          "output": {
+            "bytes": 10837512,
+            "sha256": "061286402f93e3c32be302e9b77057cc0f40724075903cd226518d025827fb57"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/rack.glb",
+          "bytes": 557564,
+          "sha256": "1cec400596d631bf39f4060aa7b8bf27efb639ed8c6279069ba9f348c1bc17f3",
+          "triangles": {
+            "made": 2185,
+            "shipped": 2185
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            5,
+            1.416,
+            0.9
+          ],
+          "made": "2026-10-25T12:12:45.045Z"
+        }
+      }
+    },
+    {
+      "id": "lectern",
+      "style": "station",
+      "size": 1.15,
+      "triangles": 1500,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A simple speaker's lectern from a station's common hall, about 1.15 metres tall: a slim pedestal of grey composite on a broad weighted base, a slanted reading top edged in warm wood, a small flexible microphone on a stalk.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A simple speaker's lectern from a station's common hall, about 1.15 metres tall: a slim pedestal of grey composite on a broad weighted base, a slanted reading top edged in warm wood, a small flexible microphone on a stalk. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/lectern.jpg",
+          "sha256": "e259b4058cce65fccc9b713a769e580c76a4f4a5613ff39a42229b13efdc1057",
+          "bytes": 1684585,
+          "made": "2026-10-25T12:08:14.540Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f6-f543-71ce-af4f-2be15feb1cde",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 77,
+          "made": "2026-10-25T12:10:25.855Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/lectern.jpg",
+              "sha256": "e259b4058cce65fccc9b713a769e580c76a4f4a5613ff39a42229b13efdc1057"
+            }
+          ],
+          "output": {
+            "bytes": 10535024,
+            "sha256": "fc8b75e8d9cb5fb438b922715d7e1563bdbd9c220f5333266036a02b82d3fc51"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/lectern.glb",
+          "bytes": 194284,
+          "sha256": "5a0c9ef0a60c7088956e759e960c35a549ae530982c69cf6195b242241b3f615",
+          "triangles": {
+            "made": 1322,
+            "shipped": 1322
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.465,
+            1.15,
+            0.435
+          ],
+          "made": "2026-10-25T12:12:35.246Z"
+        }
+      }
+    },
+    {
+      "id": "cot",
+      "style": "station",
+      "size": 2,
+      "triangles": 1500,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A folding camp cot used to house refugees in an emptied cargo hold, about two metres long: worn green-grey canvas stretched on a light aluminium frame with crossed legs, a rolled blanket and a small travel bag at one end.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A folding camp cot used to house refugees in an emptied cargo hold, about two metres long: worn green-grey canvas stretched on a light aluminium frame with crossed legs, a rolled blanket and a small travel bag at one end. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/cot.jpg",
+          "sha256": "3f57c5967ee8b7b76cfc141a9bd15e34e47cf9c54232d7f7a4cf9d26f0b0aa3c",
+          "bytes": 1811810,
+          "made": "2026-10-25T12:08:08.074Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f6-f538-7070-8058-989e66b95f78",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 88,
+          "made": "2026-10-25T12:10:37.198Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/cot.jpg",
+              "sha256": "3f57c5967ee8b7b76cfc141a9bd15e34e47cf9c54232d7f7a4cf9d26f0b0aa3c"
+            }
+          ],
+          "output": {
+            "bytes": 10006796,
+            "sha256": "edd67caab292282c2ddf199980fa4dbac7f967174f457adac924d4c581fa5b01"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/cot.glb",
+          "bytes": 205732,
+          "sha256": "f12a43ef122ed1a84736c0b7193b9bc05cebab79036db8d65511200d38fba273",
+          "triangles": {
+            "made": 1438,
+            "shipped": 1438
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            2,
+            0.866,
+            0.942
+          ],
+          "made": "2026-10-25T12:12:35.370Z"
+        }
+      }
+    },
+    {
+      "id": "stall",
+      "style": "station",
+      "size": 3,
+      "triangles": 2500,
+      "texture": 1024,
+      "turn": 0,
+      "prompt": "A free trader's improvised market stall in a station hall, about three metres wide and 1.1 metres high: two battered orange cargo cases side by side with a long plank counter laid across them, on the counter small boxed weapon parts, a scope in a padded case, coffee tins and a hand-written price board with no readable writing.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A free trader's improvised market stall in a station hall, about three metres wide and 1.1 metres high: two battered orange cargo cases side by side with a long plank counter laid across them, on the counter small boxed weapon parts, a scope in a padded case, coffee tins and a hand-written price board with no readable writing. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/stall.jpg",
+          "sha256": "7dc01bab68d8300cd4b7b0f9d426f26f1cce62f299cbf796fb166d8a26311e37",
+          "bytes": 2368174,
+          "made": "2026-10-25T12:08:09.726Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f6-f539-740d-b336-f3ecc7b1b580",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2500
+          },
+          "credits": 30,
+          "seconds": 98,
+          "made": "2026-10-25T12:10:47.000Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/stall.jpg",
+              "sha256": "7dc01bab68d8300cd4b7b0f9d426f26f1cce62f299cbf796fb166d8a26311e37"
+            }
+          ],
+          "output": {
+            "bytes": 11665584,
+            "sha256": "690caeb350305fd5ca2abec27c70a79356226061e619ada5101c5f03d6a02cbb"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/stall.glb",
+          "bytes": 595960,
+          "sha256": "91a7bcd36e28450dc2cb7bcbad27f9356281263232abda2f8fc7890b3502c9e8",
+          "triangles": {
+            "made": 2431,
+            "shipped": 2431
+          },
+          "textures": "1024 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            3,
+            1.271,
+            1.032
+          ],
+          "made": "2026-10-25T12:12:35.548Z"
+        }
+      }
+    },
+    {
+      "id": "sapling",
+      "style": "station",
+      "size": 1.6,
+      "triangles": 2000,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A young apple tree carried from a dying farm station, about 1.6 metres tall: a slim trunk and a few thin branches with green leaves and two small red apples, growing in a large pot made from a cut-down blue plastic drum, a little straw over the soil.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A young apple tree carried from a dying farm station, about 1.6 metres tall: a slim trunk and a few thin branches with green leaves and two small red apples, growing in a large pot made from a cut-down blue plastic drum, a little straw over the soil. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/sapling.jpg",
+          "sha256": "e945e1a74c14da28eda9dcfca5eef5e8392b04a20e3f730433d70bf6f70e228c",
+          "bytes": 2126438,
+          "made": "2026-10-25T12:08:10.421Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f8-1f48-7277-85b4-582e27d44aff",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 2000
+          },
+          "credits": 30,
+          "seconds": 97,
+          "made": "2026-10-25T12:12:02.841Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/sapling.jpg",
+              "sha256": "e945e1a74c14da28eda9dcfca5eef5e8392b04a20e3f730433d70bf6f70e228c"
+            }
+          ],
+          "output": {
+            "bytes": 10955888,
+            "sha256": "375ee3ab35c4097ad73befafaa38036e85c1e42626a3b2efc7836ab839abca90"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/sapling.glb",
+          "bytes": 230132,
+          "sha256": "5d6efa84ba151a921671627d5da86710899e16c530b93f7207a3ab16b3cf6927",
+          "triangles": {
+            "made": 1836,
+            "shipped": 1836
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            0.829,
+            1.6,
+            0.842
+          ],
+          "made": "2026-10-25T12:12:35.672Z"
+        }
+      }
+    },
+    {
+      "id": "desk",
+      "style": "station",
+      "size": 1.8,
+      "triangles": 1500,
+      "texture": 512,
+      "turn": 0,
+      "prompt": "A plain office desk from a station archive's reading room, about 1.8 metres wide: a wood-veneer top worn at the front edge, a slate-grey steel frame and a small drawer unit on one side, a desk lamp and a neat stack of paper files on top.",
+      "record": {
+        "concept": {
+          "service": "Google Gemini",
+          "model": "gemini-nano-banana-2.1",
+          "prompt": "A plain office desk from a station archive's reading room, about 1.8 metres wide: a wood-veneer top worn at the front edge, a slate-grey steel frame and a small drawer unit on one side, a desk lamp and a neat stack of paper files on top. Semi-realistic hard-surface product render for a grounded near-future industrial science-fiction game set in the 2180s. Worn, functional and lived-in, as if built by people and used for years on a frontier space station: scuffs, chipped paint, grime in the seams. Muted greys and slate blues with small orange hazard accents. A single object, whole and centred, three-quarter view from the front-left and slightly above, on a plain pure white background, soft even studio light, no shadow on the ground. No text, no letters, no numbers, no logos, no people, no hands.",
+          "file": "art/out/models/concepts/desk.jpg",
+          "sha256": "22ea53dfca2e5b36312e7b56a7366954af49c6fec398636b3a49cb3918bb8906",
+          "bytes": 1491158,
+          "made": "2026-10-25T12:08:26.432Z",
+          "approxCostUsd": 0.1
+        },
+        "meshy": {
+          "service": "Meshy image-to-3d",
+          "task": "01a172f8-4757-7619-bd5e-efa3aa1d74d5",
+          "settings": {
+            "ai_model": "latest",
+            "should_remesh": true,
+            "topology": "triangle",
+            "should_texture": true,
+            "enable_pbr": true,
+            "texture_resolution": "2k",
+            "target_formats": [
+              "glb"
+            ],
+            "target_polycount": 1500
+          },
+          "credits": 30,
+          "seconds": 86,
+          "made": "2026-10-25T12:12:02.155Z",
+          "input": [
+            {
+              "file": "art/out/models/concepts/desk.jpg",
+              "sha256": "22ea53dfca2e5b36312e7b56a7366954af49c6fec398636b3a49cb3918bb8906"
+            }
+          ],
+          "output": {
+            "bytes": 9767788,
+            "sha256": "e431419e817903f526871a315d85378a8f3825cc313704055e3e1c87905dffcb"
+          },
+          "licence": "Meshy paid plan: private, the owner's to use commercially"
+        },
+        "output": {
+          "file": "public/assets/models/desk.glb",
+          "bytes": 192456,
+          "sha256": "2406d9c6cfa2115c5ad48ffdeed3527a59b9d43ff30bd3fa6800e4d42fabfbce",
+          "triangles": {
+            "made": 1344,
+            "shipped": 1344
+          },
+          "textures": "512 px WebP",
+          "turn": 0,
+          "front": "+z",
+          "dimensions": [
+            1.8,
+            1.562,
+            0.904
+          ],
+          "made": "2026-10-25T12:12:35.793Z"
+        }
+      }
     }
   ]
 }

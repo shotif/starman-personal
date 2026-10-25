@@ -9,10 +9,10 @@ a woman's voice (D-09). The voices are made by ElevenLabs text to speech from
 
 | | |
 | --- | --- |
-| Lines voiced | **225** (every line with `#speaker:` and `#line:`), 70 of them the hero's; 162 in the first run, the rest added as the slice grew (the drill's rounds, things to look at, the night shift in the dark, the hold) |
-| Files | **295** MP3s in `public/assets/voices/`: 155 for the cast, 70 × 2 for the hero |
-| Length | About 17 minutes in all (one hero voice) |
-| Size | **9.6 MB** of MP3 with the manifest. A player hears one hero voice, so less is ever fetched |
+| Lines voiced | **653** (every line with `#speaker:` and `#line:`), 193 of them the hero's: the prologue's 225 (162 in the first run, the rest as the slice grew), and 428 for Act 1 so far, nearly all Pyre Remnant's (PYRE.md), made on 25 October 2026 |
+| Files | **846** MP3s in `public/assets/voices/`: 460 for the cast, 193 × 2 for the hero |
+| Length | About 52 minutes in all (one hero voice) |
+| Size | **29 MB** of MP3 with the manifest. A player hears one hero voice, so less is ever fetched |
 | Format | MP3, mono, 44.1 kHz, 64 kbps (`mp3_44100_64`), about 8 KB a second |
 | Heard back | Every take heard back by speech to text; three are flagged only for homophones ("crews" heard as "cruise", "Pell" as "pal") and kept |
 | Not voiced | none: no spoken line holds ink logic (`{...}`) |
@@ -40,8 +40,32 @@ after.
 | Sorrel | old technician, about 70 | **Bill** | `pqHfZKP75CvOlQylNhV4` | old, wise, comforting, the lowest in the cast (about 128 Hz), directed *soft, slow* |
 | Ilya | young surveyor, about 23 | **Liam** | `TX3LPaxmHKxFdv7VOQHJ` | young, energetic, bright: eager and nervous |
 | Merrow | a hauler's pilot, on the radio | **Chris** | `iP95p4xoKVk53GoZ742B` | down-to-earth; a voice heard nowhere else |
+| Mira | Dr Mira Achterberg, about 42 | **Sarah** | `EXAVITQu4vr4xnSDxMaL` | mature, reassuring, confident: a doctor; the lowest of the three stock women's voices left (192 Hz at audition) |
+| Ruth | Ruth Amadi, committee, about 50 | **Bella** | `hpp4J3VqNfWAUOO0d1Us` | professional, warm, directed *tired, practical* |
+| Nell | Nell Lund, a grower, about 34 | **Jessica** | `cgSgspJ2msm6clMCkdW9` | young and warm, directed *tired, plain* |
+| Quaye | Tobias Quaye, the Banked's speaker | **Brian** | `nPczCjzI2devNBz1zQrb` | deep, resonant, comforting: a persuader who believes |
+| Esben | Esben Rask, the deputy archivist | **Eric** | `cjVigY5qzO86Huf0OWal` | smooth and trustworthy, directed *cold, certain* |
+| Joost | Joost Achterberg, the dome's watch | **Will** | `bIHbv24MWmeRgasZH58o` | a young optimist |
+| Matti | Matti Lund, dock hand | **Charlie** | `IKne3meq5aSn9XLyUdCD` | Australian, young, directed *nervous* |
+| Lenz | station security | **Roger** | `CwhRBWXzGAHq8TQ4Fs17` | laid-back, resonant |
+| Auditor | a Banked clerk at the archive's door | **Callum** | `N2lVS1w4EtoT3dr4eOWO` | husky and smooth: polite with something under it |
+| Banked | troopers in a fight | **Harry** | `SOYHLrjzK2X1ezoPC6cr` | fierce, rough |
+| Warden | a Banked warden | **Adam** | `pNInz6obpgDQGcFmaJgB` | dominant, firm |
+| Ship | the Banked ship *Keeping*, on the radio | **River** | `SAz9YHcvj6GT2YYXdXww` | neutral and calm: unplaceable, as the Banked come from every power |
+| Linde | Teodor Linde, the archivist, about 68 | **Steve** (library) | `yvKg3CwzCYDTwyHnWQLg` | a Northern English older man, unlike Sorrel's voice in their scene together; auditioned against two others |
+| Varro | Lightkeeper Ansa Varro, recorded twenty years ago | **Katherine** (library) | `NtS6nEHDYMQC9QczMQuq` | calm and ordinary; heard back word for word at audition, against two others |
+| Tilly | Tilly Brennan, a free trader | **Michelle** (library) | `C92s6vssSLlabgIln1iY` | a Northern Irish straight talker; auditioned against two others |
+| Researcher | Arno, who heckles Quaye | **Chris** (library, Scottish) | `csXxiUN2BUFflsCaDxPM` | sceptical; one line |
 
-Ten different voices; no two people who talk to each other share one. Each part was auditioned
+**Pyre Remnant's cast** (D-63, 25 October 2026): the stock voices wherever one suits, of any accent
+("not all the voices have to be British", the owner); four from ElevenLabs' library where the stock
+set had nothing fitting (an older man for Linde, Varro, Tilly, and a voice for Arno). Each library
+voice was auditioned with `scripts/art/audition.ts` against others and the ones not chosen were
+taken off the account again; four voice slots are used of 30,000 (325 in all). Takes and measures
+are in `art/out/voices/audition/` (not in git).
+
+The prologue has ten different voices; no two people who talk to each other share one, at Pyre
+either. Each part was auditioned
 with three or four premade candidates reading one of its lines. The candidates are in
 `art/out/voices/audition/` (ignored by git), with their measures (seconds, pace, median pitch,
 words heard) in `measures.json` there. **The owner may overrule any voice**: change it in `CAST`
@@ -187,6 +211,10 @@ node scripts/art/voices.ts --again hero_jo_name_03a.woman.mp3   # a new take of 
 About 20,000 characters from the plan's 109.65 million a month: the model trial and the
 audition about 4,500, the full run 14,003, and the retakes about 1,200. Speech to text heard each
 take once, about 15 minutes of audio. No voice slots.
+
+Pyre Remnant (25 October 2026): about 45,000 characters for its 473 new takes and their retakes,
+and some 2,000 for the auditions; speech to text heard each take once, about 35 minutes of audio.
+Four voice slots, for the library voices kept.
 
 ## 10. Known limits and next steps
 

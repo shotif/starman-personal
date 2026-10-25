@@ -1,6 +1,6 @@
 {
   "about": "The record of every sound effect and piece of music in public/assets/audio/ (D-28, D-45): where each came from and under what licence. 'sources', 'elevenlabs', 'lyria', 'sfx' and 'music' are written by hand and read by scripts/art/audio.ts and scripts/art/music.ts; 'outputs' is filled in by those scripts. Downloads live in the git-ignored art/cache/kenney-audio/, generated candidates in the git-ignored art/out/audio/ and art/out/music/. How to re-run: docs/assets/AUDIO.md.",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "sources": [
     {
       "id": "sci-fi-sounds",
@@ -792,6 +792,16 @@
       "subject": "Music for the escape and the ending: a small ship lifts away from the dark station and its dim red star. About two minutes long. Slow, about 64 BPM, in D minor turning to F major. It begins with felt piano and pads alone; a simple, slow melody on solo cello enters; the low strings and warm pads rise to a broad, hopeful, resolved statement; then it settles on a long, quiet major chord and fades gently to silence. Melancholic, hopeful and resolved, never triumphant.",
       "pick": 1,
       "pickNote": "Chosen by Claude from Gemini 3.1 Pro's timeline description of every candidate (24 October 2026): the one closest to the brief with no brass and no choir. The owner may overrule by changing 'pick'."
+    },
+    {
+      "id": "pyre",
+      "what": "Pyre Remnant, the station inside a dead star (loop)",
+      "subject": "Quiet, wondering and uneasy ambient music for a research station inside the faint glowing remains of a dead star, where people talk in low voices and something is being hidden. About two minutes long. Very slow, about 58 BPM, in E minor. A deep, warm synthesiser drone, slow sustained strings in a high register like starlight, a sparse celesta or glass harmonica melody of a few notes that never resolves, and far beneath it a soft low pulse. No drums, no brass, no choir, no climax: even and hushed from start to finish. Beautiful, lonely and watchful. Without a fade-out, so it can loop.",
+      "loop": {
+        "minS": 95,
+        "maxS": 130
+      },
+      "candidates": 4
     }
   ],
   "outputs": {
@@ -904,6 +914,44 @@
       "bytes": 2040893,
       "sha256": "82ee3546e9f8c2b448221ecc0ee031283d86422a0846191c1f66af6dd1871ef9",
       "built": "2026-10-24"
+    },
+    "music/pyre.mp3": {
+      "id": "pyre",
+      "what": "Pyre Remnant, the station inside a dead star (loop)",
+      "licence": "Generated for this project with Google's Lyria; Google claims no ownership of generated output (Gemini API terms). Every piece carries Google's inaudible SynthID watermark. AI-generated. No prompt names an artist, a composer or a work.",
+      "sources": [
+        {
+          "kind": "Google Lyria",
+          "model": "lyria-3.5",
+          "prompt": "An original instrumental score cue for a grounded, melancholy science-fiction game set on a remote research station on a planet of a dim red dwarf star. One consistent palette across the whole score: warm analogue synthesiser pads, low strings (cellos and double basses), sparse felt piano, and cold, glassy, bell-like textures. Mixed to sit quietly under dialogue and sound effects: restrained and spacious, no sudden loud hits, no drops. Instrumental only: no vocals, no singing, no humming, no spoken words, no choir.\n\nQuiet, wondering and uneasy ambient music for a research station inside the faint glowing remains of a dead star, where people talk in low voices and something is being hidden. About two minutes long. Very slow, about 58 BPM, in E minor. A deep, warm synthesiser drone, slow sustained strings in a high register like starlight, a sparse celesta or glass harmonica melody of a few notes that never resolves, and far beneath it a soft low pulse. No drums, no brass, no choir, no climax: even and hushed from start to finish. Beautiful, lonely and watchful. Without a fade-out, so it can loop.",
+          "made": "2026-10-25T12:18:45.919Z",
+          "note": "[[A0]]\n[[B1]]\n[[C2]]\n[[D3]]",
+          "candidate": 4,
+          "of": 4,
+          "chosenBy": "Gemini (gemini-3.1-pro-preview) listening",
+          "candidateSha256": "10428d67dd64b9890ec8eec2811505532b0aca99e1c344b8359c50ff1259edad",
+          "aiGenerated": true,
+          "watermark": "SynthID"
+        }
+      ],
+      "processing": {
+        "loop": {
+          "how": "the whole piece: no close match inside it, so its end is crossfaded into its opening",
+          "loopStart": 3,
+          "loopEnd": 119.6991,
+          "bestMatchInsideDb": 9.253,
+          "crossfadeSeconds": 3,
+          "candidateSeconds": 119.7
+        },
+        "gainDb": -6,
+        "loudness": "-18 LUFS integrated",
+        "peakDb": -6.2,
+        "encoding": "MP3 stereo 44.1 kHz 128k"
+      },
+      "seconds": 119.799,
+      "bytes": 1918013,
+      "sha256": "6ff3dab43ab1ca17c5fe83f13f5b60a0fad2b347c2daa0a86d647f61beea2c18",
+      "built": "2026-10-25"
     },
     "music/tension.mp3": {
       "id": "tension",

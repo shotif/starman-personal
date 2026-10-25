@@ -39,7 +39,17 @@ export interface Person {
 /** How each named person looks (bodies from the creator's options; CREATOR.md). */
 export const CAST_LOOKS: Record<
   string,
-  { name: string; body: Body; lineage: string; skin: string; hair: string; eyes: string; height?: number }
+  {
+    name: string;
+    body: Body;
+    lineage: string;
+    skin: string;
+    hair: string;
+    eyes: string;
+    height?: number;
+    /** Sliders beyond the lineage's: `age_old` for the older (D-65). */
+    sliders?: Record<string, number>;
+  }
 > = {
   ren: { name: 'Ren', body: 'woman', lineage: 'earthborn', skin: 'tone5', hair: 'braid', eyes: 'brown' },
   jo: { name: 'Jo', body: 'woman', lineage: 'spacer', skin: 'tone2', hair: 'short', eyes: 'grey', height: 0.97 },
@@ -51,6 +61,7 @@ export const CAST_LOOKS: Record<
     hair: 'shaved',
     eyes: 'grey',
     height: 1.02,
+    sliders: { age_old: 0.45 },
   },
   pell: { name: 'Pell', body: 'man', lineage: 'spacer', skin: 'tone4', hair: 'cropped', eyes: 'brown' },
   dena: {
@@ -66,17 +77,35 @@ export const CAST_LOOKS: Record<
     name: 'Sorrel',
     body: 'man',
     lineage: 'earthborn',
-    skin: 'tone1',
-    hair: 'short',
+    skin: 'old1',
+    hair: 'short-grey',
     eyes: 'blue',
     height: 0.98,
+    sliders: { age_old: 1 },
   },
   ilya: { name: 'Ilya', body: 'man', lineage: 'spacer', skin: 'tone2', hair: 'long', eyes: 'green' },
   // Pyre Remnant (PYRE.md): the doctor and her brother share their family's skin and eyes.
   mira: { name: 'Mira', body: 'woman', lineage: 'spacer', skin: 'tone3', hair: 'ponytail', eyes: 'grey' },
   joost: { name: 'Joost', body: 'man', lineage: 'spacer', skin: 'tone3', hair: 'long', eyes: 'grey' },
-  linde: { name: 'Linde', body: 'man', lineage: 'earthborn', skin: 'tone1', hair: 'short', eyes: 'blue', height: 0.97 },
-  ruth: { name: 'Ruth', body: 'woman', lineage: 'heavyworlder', skin: 'tone6', hair: 'afro', eyes: 'brown' },
+  linde: {
+    name: 'Linde',
+    body: 'man',
+    lineage: 'earthborn',
+    skin: 'old1',
+    hair: 'cropped-grey',
+    eyes: 'blue',
+    height: 0.97,
+    sliders: { age_old: 1 },
+  },
+  ruth: {
+    name: 'Ruth',
+    body: 'woman',
+    lineage: 'heavyworlder',
+    skin: 'tone6',
+    hair: 'afro',
+    eyes: 'brown',
+    sliders: { age_old: 0.3 },
+  },
   quaye: {
     name: 'Quaye',
     body: 'man',
@@ -88,7 +117,15 @@ export const CAST_LOOKS: Record<
   },
   matti: { name: 'Matti', body: 'man', lineage: 'earthborn', skin: 'tone2', hair: 'cropped', eyes: 'hazel' },
   nell: { name: 'Nell', body: 'woman', lineage: 'earthborn', skin: 'tone2', hair: 'braid', eyes: 'hazel' },
-  tilly: { name: 'Tilly', body: 'woman', lineage: 'spacer', skin: 'tone4', hair: 'short', eyes: 'green' },
+  tilly: {
+    name: 'Tilly',
+    body: 'woman',
+    lineage: 'spacer',
+    skin: 'old2',
+    hair: 'bun-grey',
+    eyes: 'green',
+    sliders: { age_old: 0.4 },
+  },
   esben: { name: 'Esben', body: 'man', lineage: 'spacer', skin: 'tone1', hair: 'short', eyes: 'grey' },
   lenz: { name: 'Lenz', body: 'man', lineage: 'heavyworlder', skin: 'tone4', hair: 'shaved', eyes: 'brown' },
   // People who do not speak (but the researcher who heckles Quaye).
@@ -113,6 +150,7 @@ export function looksOf(manifest: Manifest, id: string): Looks {
   return {
     ...looks,
     name: spec.name,
+    sliders: { ...looks.sliders, ...spec.sliders },
     skin: spec.skin,
     hair: spec.hair,
     eyes: spec.eyes,

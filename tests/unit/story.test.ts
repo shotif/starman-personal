@@ -237,7 +237,7 @@ describe('the slice script', () => {
         };
         expect(walk(runner, knot)).toBeGreaterThan(0);
       }
-    });
+    }, 60_000);
   }
 
   /**

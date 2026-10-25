@@ -72,7 +72,7 @@ the others, and their suggested volume allows for that.
 
 ### Music
 
-All five share one palette, written once in `art/audio.json` (`lyria.style`): warm synthesiser
+All six share one palette, written once in `art/audio.json` (`lyria.style`): warm synthesiser
 pads, low strings, sparse felt piano and glassy textures, instrumental only. No prompt names an
 artist, a composer or a work.
 
@@ -83,6 +83,7 @@ artist, a composer or a work.
 | `tension` | After the lights go, walking to Control | 2 of 2 | 92.6 s | The whole piece: 3.0 → 92.50 s | 1.41 MB |
 | `combat` | Fights with the swarm | 5 of 7 | 115.1 s | Inside the piece: from the top once, then 19.0 → 115.00 s (200 beats at 125 BPM, 50 bars) | 1.76 MB |
 | `ending` | The bridge, the escape and the ending | 1 of 2 | 109.0 s | Plays once and fades | 1.66 MB |
+| `pyre` | Pyre Remnant's quieter chapters: the dock, the commons, the clinic, afterwards (PYRE.md) | 4 of 4 (Gemini, listening, scored it 9.5 against 6 to 6.5) | 119.8 s | The whole piece: 3.0 → 119.70 s | 1.83 MB |
 
 ## 2. How the game plays them
 

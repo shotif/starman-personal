@@ -743,6 +743,8 @@ def export_hair_parts(human, cfg, deltas):
     default = human.body["hair"]
     for style in cfg["looks"]["hair"]:
         row = {"id": style["id"], "label": style["label"], "default": style["id"] == default}
+        if style.get("hidden"):
+            row["hidden"] = True
         if not style.get("file"):
             row.update({"file": None, "bytes": 0, "triangles": 0, "morphs": [],
                         "replaces": f"hides the primitive with material {human.name}_hair"})
@@ -802,6 +804,7 @@ def export_skin_looks(human, cfg):
         w, h, px = skin_pixels(skin, cfg["textureSize"])
         out = save_pixels(w, h, px, LOOKS / human.name / f"skin-{skin['id']}.webp", "WEBP")
         rows.append({"id": skin["id"], "label": skin["label"],
+                     **({"hidden": True} if skin.get("hidden") else {}),
                      "default": skin["id"] == human.body["skin"],
                      "file": str(out.relative_to(C.OUT_CHARACTERS)), "bytes": out.stat().st_size,
                      "normalFile": None,

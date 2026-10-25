@@ -325,6 +325,13 @@
       "file": "music/ending.mp3",
       "seconds": 108.961,
       "loop": false
+    },
+    "pyre": {
+      "file": "music/pyre.mp3",
+      "seconds": 119.799,
+      "loop": true,
+      "loopStart": 3,
+      "loopEnd": 119.6991
     }
   }
 }
