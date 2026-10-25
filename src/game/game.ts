@@ -1629,6 +1629,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           }
           director.event(name);
         },
+        /** Every prop placed (model, base, turn, box), for checking which way each faces. */
+        props: () => place.props,
         ray: (a: number[], b: number[]) => {
           const h = cast(Vector3.FromArray(a), Vector3.FromArray(b));
           return h ? { distance: h.distance, point: h.point.asArray() } : null;

@@ -7,7 +7,7 @@ import type { SaveData } from '../game/game.ts';
 import { checkLooks, defaultLooks, type Looks, type Manifest } from '../game/looks.ts';
 import { Creator } from './Creator.tsx';
 import { GameView } from './GameView.tsx';
-import { DIFFICULTY_KEY, HERO_KEY, load, PICTURES, SAVE_KEY, SOUND_ROUTE_KEY, save, startingTier } from './settings.ts';
+import { DIFFICULTY_KEY, HERO_KEY, load, PICTURES, SAVE_KEY, save, startingTier } from './settings.ts';
 
 /** One sound system for the whole visit: the title's music runs on into the game's. */
 const audio = createAudio();
@@ -70,7 +70,6 @@ export function App() {
   // it was started on `pointerdown` (the owner's phone, 25 October 2026). So every one of these
   // tries, until the sound runs.
   useEffect(() => {
-    if (load(SOUND_ROUTE_KEY) === 'media') audio.setRoute('media');
     const unlock = () => audio.unlock();
     const events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
     for (const e of events) window.addEventListener(e, unlock, { capture: true });

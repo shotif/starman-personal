@@ -626,6 +626,9 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     finish,
     prop,
     furnish,
+    /** Every prop placed: its model, where its base stands, its turn and its box (for checks). */
+    placed: () =>
+      props.map((p) => ({ model: p.model, at: p.at.asArray(), yaw: p.yaw, size: p.size, moves: !!p.parent })),
     navigationMeshes,
     doors,
   };

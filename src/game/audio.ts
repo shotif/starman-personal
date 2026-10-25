@@ -74,19 +74,18 @@ export interface GameAudio {
   /** What the sound is doing, for the pause menu's sound check. */
   status(): SoundStatus;
   /**
-   * Where the sound goes out: straight to the speakers (`direct`), or through a page audio element
-   * (`media`), the way a plain web page's audio plays, for a phone whose web sound stays silent.
-   * Call from a touch or click.
+   * Makes the sound system again, from a touch or click: one made while the site's sound was
+   * blocked, or whose output a phone dropped, can stay silent while it says it runs.
    */
-  setRoute(route: SoundRoute): void;
+  restart(): void;
 }
-
-export type SoundRoute = 'direct' | 'media';
 
 export interface SoundStatus {
   /** 'none' until the first touch or key; then the browser's own word: running, suspended… */
   state: string;
-  route: SoundRoute;
+  /** The output's rate (Hz) and its latency (seconds), as the browser reports them. */
+  rate: number;
+  latency: number;
   /** Sounds fetched and decoded, and those that failed. */
   loaded: number;
   failed: number;
@@ -108,27 +107,7 @@ export function createAudio(): GameAudio {
   const buffers = new Map<string, Promise<AudioBuffer | null>>();
   let loaded = 0;
   let failed = 0;
-  let route: SoundRoute = 'direct';
-  /** The page audio element the `media` route plays through. */
-  let element: HTMLAudioElement | null = null;
-  let stream: MediaStreamAudioDestinationNode | null = null;
-  /** Sends the master out the chosen way. */
-  const connectOut = () => {
-    if (!context || !master) return;
-    master.disconnect();
-    if (route === 'direct') {
-      element?.pause();
-      master.connect(context.destination);
-      return;
-    }
-    stream ??= context.createMediaStreamDestination();
-    master.connect(stream);
-    if (!element) {
-      element = new Audio();
-      element.srcObject = stream.stream;
-    }
-    void element.play().catch((e: unknown) => fail('media route', e));
-  };
+
   let lastError: string | null = null;
   const fail = (what: string, e: unknown) => {
     failed += 1;
@@ -235,9 +214,12 @@ export function createAudio(): GameAudio {
         lastError = 'this browser has no Web Audio';
         return;
       }
-      context = new Ctor();
+      // On a phone, the steadier output rather than the quickest: some Android phones play nothing
+      // on Chrome's low-latency path, and a few tens of milliseconds do not matter here.
+      const phone = matchMedia('(pointer: coarse)').matches;
+      context = new Ctor(phone ? { latencyHint: 'playback' } : undefined);
       master = context.createGain();
-      connectOut();
+      master.connect(context.destination);
       for (const [name, level] of Object.entries(BUSES) as [keyof typeof BUSES, number][]) {
         const g = context.createGain();
         g.gain.value = level;
@@ -254,11 +236,26 @@ export function createAudio(): GameAudio {
       if (ambienceWanted) api.ambience(ambienceWanted);
     },
     status() {
-      return { state: context?.state ?? 'none', route, loaded, failed, error: lastError };
+      return {
+        state: context?.state ?? 'none',
+        rate: context?.sampleRate ?? 0,
+        latency: (context?.baseLatency ?? 0) + ((context as { outputLatency?: number } | null)?.outputLatency ?? 0),
+        loaded,
+        failed,
+        error: lastError,
+      };
     },
-    setRoute(next) {
-      route = next;
-      connectOut();
+    restart() {
+      // The sounds already loaded are kept: a sound decoded once plays in any sound system.
+      const old = context;
+      context = null;
+      master = null;
+      for (const name of Object.keys(bus) as (keyof typeof BUSES)[]) delete bus[name];
+      musicNow = null;
+      ambienceNow = null;
+      speaking = 0;
+      void old?.close().catch(() => {});
+      api.unlock();
     },
     play(id, options = {}) {
       const entry = manifest?.sfx[id];
@@ -297,7 +294,11 @@ export function createAudio(): GameAudio {
           stopped = true;
           const now = ctx.currentTime;
           gain.gain.setTargetAtTime(0, now, fade / 3);
-          source?.stop(now + fade + 0.05);
+          try {
+            source?.stop(now + fade + 0.05);
+          } catch {
+            // Its sound system was closed (a restart): it is silent already.
+          }
         },
         setPosition(at) {
           if (!panner) return;
@@ -363,7 +364,11 @@ export function createAudio(): GameAudio {
         },
         ended: () => done || ctx.currentTime - started > seconds + 0.3,
         stop() {
-          source?.stop();
+          try {
+            source?.stop();
+          } catch {
+            // Its sound system was closed (a restart): it is silent already.
+          }
           finish();
         },
       };

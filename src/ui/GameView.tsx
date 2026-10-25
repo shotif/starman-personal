@@ -9,16 +9,7 @@ import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
-import {
-  DIFFICULTY_KEY,
-  isTouch,
-  LOADING_PICTURE,
-  PICTURES,
-  QUALITY_KEY,
-  SAVE_KEY,
-  SOUND_ROUTE_KEY,
-  save,
-} from './settings.ts';
+import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
@@ -72,7 +63,7 @@ const LEADS: Record<string, string> = {
 function soundLine(s: SoundStatus): string {
   const state =
     s.state === 'running'
-      ? `Sound is on: ${s.loaded} sounds loaded${s.failed ? `, ${s.failed} failed` : ''}`
+      ? `Sound is on (${Math.round(s.rate / 100) / 10} kHz, ${Math.round(s.latency * 1000)} ms): ${s.loaded} sounds loaded${s.failed ? `, ${s.failed} failed` : ''}`
       : s.state === 'none'
         ? 'Sound has not started yet'
         : `Sound is ${s.state}`;
@@ -275,7 +266,8 @@ export function GameView({
    * Which of the two is heard says where a silent phone loses the sound.
    */
   const checkSound = () => {
-    audio.unlock();
+    // A new sound system, from this tap.
+    audio.restart();
     const plain = new Audio(`${import.meta.env.BASE_URL}assets/voices/ren_night_01.mp3`);
     setPlain('playing');
     plain.play().then(
@@ -285,14 +277,7 @@ export function GameView({
     window.setTimeout(() => audio.play('objective'), 3600);
     window.setTimeout(() => setSound(audio.status()), 4000);
   };
-  const switchRoute = () => {
-    const next = sound.route === 'direct' ? 'media' : 'direct';
-    audio.unlock();
-    audio.setRoute(next);
-    save(SOUND_ROUTE_KEY, next);
-    setSound(audio.status());
-    audio.play('objective');
-  };
+
   const changeDifficulty = () => {
     const next = DIFFICULTIES[(DIFFICULTIES.indexOf(difficulty) + 1) % DIFFICULTIES.length] ?? 'standard';
     setDifficulty(next);
@@ -528,9 +513,7 @@ export function GameView({
             {plain && `You should hear Ren, then a chime. Ren's line: ${plain}. `}
             {soundLine(sound)}
           </p>
-          <button type="button" onClick={switchRoute}>
-            Sound out: {sound.route === 'direct' ? 'standard' : 'through the page'}
-          </button>
+
           <button type="button" onClick={changeQuality}>
             Quality: {tier}
           </button>

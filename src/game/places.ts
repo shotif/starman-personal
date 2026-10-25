@@ -54,7 +54,7 @@ export const MARKS: Record<string, MarkData> = {
   pell: { x: 33.4, z: 3.7, yaw: 180 * DEG },
   control: { x: 25, z: 7, yaw: 90 * DEG },
   concourse: { x: 29, z: 24, yaw: 0 },
-  booth: { x: 40.5, z: 44.2, yaw: -90 * DEG },
+  booth: { x: 40.5, z: 44.2, yaw: 120 * DEG },
   clinic: { x: 12, z: 39, yaw: 90 * DEG },
   clinic_dena: { x: 10.4, z: 41.6, yaw: 90 * DEG },
   clinic_sorrel: { x: 11, z: 36.2, yaw: 0 },

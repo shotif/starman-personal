@@ -56,6 +56,8 @@ export interface Place {
   castShadow(mesh: AbstractMesh): void;
   /** The area a point is in, or null. */
   areaAt(p: Vector3): string | null;
+  /** Every prop placed, for checking that each faces a sensible way. */
+  props: ReturnType<Kit['placed']>;
   update(dt: number): void;
 }
 
@@ -126,6 +128,7 @@ export function buildStation(scene: Scene, q: QualitySettings): Place {
       shadows?.addShadowCaster(mesh, true);
     },
     areaAt,
+    props: kit.placed(),
     update(dt) {
       for (const d of Object.values(doors)) d.update(dt);
       sky.update(dt);
@@ -487,12 +490,13 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
       { fit: 'box' },
     );
   }
-  for (const [x, z] of [
-    [20.5, 34],
-    [40, 36.5],
-    [20.5, 26],
+  // Benches along the side walls, their seats to the hall.
+  for (const [x, z, yaw] of [
+    [20.5, 34, Math.PI / 2],
+    [40, 36.5, -Math.PI / 2],
+    [20.5, 26, Math.PI / 2],
   ] as const) {
-    kit.prop('bench', [x, 0, z], Math.PI / 2, [2.4, 0.55, 0.6], (box) => box([2.4, 0.5, 0.6], [0, 0.25, 0], s.wood));
+    kit.prop('bench', [x, 0, z], yaw, [2.4, 0.55, 0.6], (box) => box([2.4, 0.5, 0.6], [0, 0.25, 0], s.wood));
   }
   // Vending machines against the side walls.
   for (const [x, z, yaw] of [
@@ -516,10 +520,10 @@ function concourse(kit: Kit, addDoor: (d: Door) => void) {
     },
     { fit: 'box' },
   );
-  // The booth's walls, with its doorway at the west end of the south wall (it had none: the owner
-  // found Pell walled in, 25 October 2026).
+  // The booth's walls, with its doorway at the east end of the south wall, clear of the hall's
+  // pillar (it had none: the owner found Pell walled in, 25 October 2026).
   kit.solid([0.2, 2.6, 4.6], [38.2, 1.3, 45.3], s.hull);
-  kit.solid([3.6, 2.6, 0.2], [42, 1.3, 43], s.hull, { nav: true });
+  kit.solid([3.6, 2.6, 0.2], [40, 1.3, 43], s.hull, { nav: true });
   kit.prop('console', [41.8, 0, 46.9], Math.PI, [2, 1.4, 0.7], (box) => {
     box([2, 1, 0.7], [0, 0.5, 0], s.hullDark);
     box([2, 0.7, 0.05], [0, 1.4, -0.4], s.screen);
@@ -857,11 +861,13 @@ function bridge(kit: Kit) {
     box([0.9, 0.6, 0.9], [0, 0.3, 0], s.hullDark);
     box([0.9, 1, 0.15], [0, 1.1, -0.4], s.fabric);
   });
+  // A console's front is its operator's side. The two by the window face into the room, so their
+  // operators look past the screens and out; the two by the side walls turn their backs to the walls.
   for (const [x, z, look, yaw] of [
-    [-3.6, z0 + 3, s.screen, -Math.PI / 2],
-    [-3.6, z0 - 2.5, s.screenWarm, -Math.PI / 2],
-    [2.5, z0 + 4, s.screen, 0],
-    [2.5, z0 - 4, s.screen, Math.PI],
+    [-3.6, z0 + 3, s.screen, Math.PI / 2],
+    [-3.6, z0 - 2.5, s.screenWarm, Math.PI / 2],
+    [2.5, z0 + 4, s.screen, Math.PI],
+    [2.5, z0 - 4, s.screen, 0],
   ] as const) {
     kit.prop('bridgeconsole', [x, 0, z], yaw, [1.6, 1.3, 0.9], (box) => {
       box([1.6, 0.95, 0.9], [0, 0.475, 0], s.hull);

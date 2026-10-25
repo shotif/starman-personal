@@ -437,3 +437,36 @@ test('the hero walks up the ramp onto the mast platform', async ({ page }, testI
     .toBe(true);
   await page.keyboard.up('KeyW');
 });
+
+test('every prop faces into the room, with space before it', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the station is the same on both');
+  await page.goto('./?play&debug&quality=low');
+  await expect(page.locator('body')).toHaveAttribute('data-ready', 'true');
+  await call(page, (lk) => lk.teleport(-200, -200, 0, 1.3));
+  // A prop's front is where it is used from (a console's operator, a bench's sitter); nothing should
+  // stand just before it (the bridge's consoles once faced their walls: the owner's phone).
+  const blocked = await page.evaluate(() => {
+    type Prop = { model: string; at: number[]; yaw: number; size: number[]; moves: boolean };
+    type Hit = { distance: number } | null;
+    const lk = (window as unknown as { lightkeeper: { props(): Prop[]; ray(a: number[], b: number[]): Hit } })
+      .lightkeeper;
+    const out: string[] = [];
+    // Things with no side they are used from may stand against anything.
+    const faceless = ['crate', 'container', 'cylinders', 'helmet'];
+    for (const p of lk.props()) {
+      if (p.moves || faceless.includes(p.model)) continue;
+      const [x = 0, y = 0, z = 0] = p.at;
+      const fx = Math.sin(p.yaw);
+      const fz = Math.cos(p.yaw);
+      const half = (p.size[2] ?? 0) / 2 + 0.05;
+      for (const h of [0.5, 1.2]) {
+        if (h > (p.size[1] ?? 0) + 0.3) continue;
+        const a = [x + fx * half, y + h, z + fz * half];
+        const hit = lk.ray(a, [(a[0] ?? 0) + fx * 0.6, a[1] ?? 0, (a[2] ?? 0) + fz * 0.6]);
+        if (hit) out.push(`${p.model} at ${x.toFixed(1)}, ${z.toFixed(1)}`);
+      }
+    }
+    return [...new Set(out)];
+  });
+  expect(blocked).toEqual([]);
+});
