@@ -8,7 +8,7 @@ import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { Material } from '@babylonjs/core/Materials/material';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
 import { CreateCapsule } from '@babylonjs/core/Meshes/Builders/capsuleBuilder';
@@ -54,7 +54,15 @@ export interface Character {
     offset: [number, number, number],
     along?: number,
     reversed?: boolean,
+    lift?: number,
   ): TransformNode | null;
+  /**
+   * Points the gun in hand along a direction (world space): where the crosshair looks while aiming,
+   * low and ready in a fight; or null to let it follow the hand. The hand's animation turns the hand
+   * its own way (the pistol's pose by some 45°), so a gun that only followed it pointed off to the
+   * side of the aim (the owner, 25 October 2026).
+   */
+  aimHeld(direction: Vector3 | null): void;
   /** Which held model the shots come from (the weapon in hand, D-56), and its length. */
   wield(node: TransformNode, length: number): void;
   /** Fades the whole figure: 1 drawn as usual, 0 hidden. */
@@ -132,9 +140,19 @@ export async function loadCharacterTemplate(scene: Scene, url: string): Promise<
   }
 }
 
+/** Where the right palm is from the wrist in the rifle clips, along the aim and down (metres). */
+const PALM = { forward: 0.075, down: 0.035 };
+
 /** The bones the aim and shoot clips own while aiming: the spine, arms, hands, neck and head. */
 const UPPER_BODY = /^(spine_0[123]|clavicle_|upperarm_|lowerarm_|hand_|thumb_|index_|middle_|ring_|pinky_|neck_|head)/i;
-const UPPER_CLIPS: readonly Clip[] = ['pistol_aim', 'pistol_shoot', 'power_cast'];
+const UPPER_CLIPS: readonly Clip[] = [
+  'pistol_aim',
+  'pistol_shoot',
+  'rifle_aim',
+  'rifle_shoot',
+  'rifle_ready',
+  'power_cast',
+];
 
 /**
  * Places a character from a template with its feet on the ground: at the model's own size (the MPFB
@@ -192,6 +210,52 @@ export function spawnCharacter(
   const hand = nodes.find((n) => sourceName(n.name).toLowerCase() === 'hand_r') ?? null;
   let held: TransformNode | null = null;
   let heldLength = 0;
+  /**
+   * Each gun held: its grip (on the hand), and a node of its own in the world that points it along the
+   * aim, with how the model sits under each.
+   */
+  const guns = new Map<
+    TransformNode,
+    {
+      holder: TransformNode;
+      free: TransformNode;
+      inHand: { position: Vector3; turn: number };
+      aimed: { position: Vector3; turn: number };
+      along: number;
+      /** A long gun, held two-handed: its grip is seated in the right palm. */
+      long: boolean;
+    }
+  >();
+  let aimDirection: Vector3 | null = null;
+  if (hand) {
+    scene.onAfterAnimationsObservable.add(() => {
+      for (const [grip, gun] of guns) {
+        const aimed = grip === held && aimDirection !== null && grip.isEnabled();
+        if (aimed && aimDirection && hand) {
+          grip.computeWorldMatrix(true);
+          if (gun.long) {
+            // The rifle clips put the right palm a little forward of and below the wrist, along
+            // the aim (PALM, matching RIFLE["palm"] in scripts/art/common.py): the grip goes there.
+            const up = Vector3.Up().subtract(aimDirection.scale(aimDirection.y)).normalize();
+            gun.free.position.copyFrom(
+              hand.getAbsolutePosition().add(aimDirection.scale(PALM.forward)).subtract(up.scale(PALM.down)),
+            );
+          } else gun.free.position.copyFrom(grip.getAbsolutePosition());
+          // Babylon's look rotation turns -Z towards the direction given: asked for the opposite,
+          // the node's +Z, the barrel, points along the aim.
+          gun.free.rotationQuaternion = Quaternion.FromLookDirectionLH(aimDirection.negate(), Vector3.Up());
+        }
+        const pose = aimed ? gun.aimed : gun.inHand;
+        const parent = aimed ? gun.free : grip;
+        if (gun.holder.parent !== parent) {
+          gun.holder.parent = parent;
+          gun.holder.position.copyFrom(pose.position);
+          gun.holder.rotation.y = pose.turn;
+        }
+        gun.free.setEnabled(aimed);
+      }
+    });
+  }
 
   // Every walking clip plays twice: once on the legs and hips, once on the upper body, each held
   // by a mask that never changes. Aiming fades the upper copies out and the aim clip in, so the
@@ -281,10 +345,16 @@ export function spawnCharacter(
       for (const [clip, group] of upper) fade(group, torsoWeights[clip] ?? 0, t);
     },
     fire() {
-      const shoot = upper.get('pistol_shoot');
-      if (shoot) shoot.goToFrame(shoot.from);
+      for (const clip of ['pistol_shoot', 'rifle_shoot'] as const) {
+        const shoot = upper.get(clip);
+        if (shoot) shoot.goToFrame(shoot.from);
+      }
     },
     muzzle() {
+      const gun = held ? guns.get(held) : undefined;
+      if (gun && gun.holder.parent === gun.free) {
+        return gun.free.getAbsolutePosition().add(gun.free.forward.scale(heldLength * 0.5 + gun.along));
+      }
       if (held) return held.getAbsolutePosition().add(held.forward.scale(heldLength * 0.5));
       if (hand) return hand.getAbsolutePosition().clone();
       return root.position.add(new Vector3(0, 1.4, 0));
@@ -293,7 +363,10 @@ export function spawnCharacter(
       held = node;
       heldLength = length;
     },
-    hold(model, length, rotation, offset, along = 0, reversed = false) {
+    aimHeld(direction) {
+      aimDirection = direction && direction.lengthSquared() > 1e-8 ? direction.normalizeToNew() : null;
+    },
+    hold(model, length, rotation, offset, along = 0, reversed = false, lift = 0) {
       if (!hand) return null;
       const entries = model.instantiateModelsToScene((n) => `${name}-held-${n}`, false, { doNotInstantiate: false });
       const holder = new TransformNode(`${name}-held`, scene);
@@ -315,10 +388,18 @@ export function spawnCharacter(
       holder.scaling.setAll(k);
       // A long gun slides forward along its barrel (its +Z), so its grip, not its middle, is in the hand.
       // A model that faces the other way from the sidearm's file is turned half round first.
-      if (reversed) {
-        holder.rotation.y = Math.PI;
-        holder.position.set(centre.x * k, -centre.y * k, centre.z * k - along);
-      } else holder.position.set(-centre.x * k, -centre.y * k, -centre.z * k + along);
+      const inHand = reversed
+        ? { position: new Vector3(centre.x * k, -centre.y * k, centre.z * k - along), turn: Math.PI }
+        : { position: new Vector3(-centre.x * k, -centre.y * k, -centre.z * k + along), turn: 0 };
+      // Pointed along the aim, the node's +Z is the barrel: the long guns' files face +Z, the sidearm's
+      // the other way. `lift` raises the gun so its grip, below its middle, is at the hand.
+      const aimed = reversed
+        ? { position: new Vector3(-centre.x * k, -centre.y * k + lift, -centre.z * k + along), turn: 0 }
+        : { position: new Vector3(centre.x * k, -centre.y * k + lift, centre.z * k + along), turn: Math.PI };
+      holder.position.copyFrom(inHand.position);
+      holder.rotation.y = inHand.turn;
+      const free = new TransformNode(`${name}-aimed`, scene);
+      free.setEnabled(false);
       // The hand bone carries the character's scale (the model's units) and the import's mirror of one
       // axis; undo both so the size holds and a rotation can seat the gun.
       grip.parent = hand;
@@ -329,6 +410,7 @@ export function spawnCharacter(
       grip.position.set(offset[0] / handScale.x, offset[1] / handScale.y, offset[2] / handScale.z);
       held = grip;
       heldLength = length;
+      guns.set(grip, { holder, free, inHand, aimed, along, long: reversed });
       return grip;
     },
   };
@@ -362,6 +444,7 @@ function standIn(scene: Scene, root: TransformNode, height: number, tint?: Color
     setFade: fader(root),
     speak() {},
     setPose() {},
+    aimHeld() {},
     wield() {},
     fire() {},
     muzzle: () => root.position.add(new Vector3(0, height * 0.75, 0)),

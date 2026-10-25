@@ -269,6 +269,40 @@
       "loop": false
     },
     {
+      "name": "rifle_aim",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "loop": true,
+      "note": "UAL has no rifle clips: a two-handed hold made on each character to photographs of a rifle held to the shoulder (common.rifle_clip, measures in common.RIFLE)"
+    },
+    {
+      "name": "rifle_shoot",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "recoil": [
+        0,
+        0.05,
+        0.04,
+        0.026,
+        0.015,
+        0.008,
+        0.004,
+        0.002,
+        0.0,
+        0.0
+      ],
+      "loop": false,
+      "note": "rifle_aim with a shot's kick back along the aim"
+    },
+    {
+      "name": "rifle_ready",
+      "derived": "rifle",
+      "from": "pistol_aim",
+      "lower_deg": 40,
+      "loop": true,
+      "note": "rifle_aim tipped 40 degrees down about the right shoulder: a low ready, for a fight while not aiming"
+    },
+    {
       "name": "power_ready",
       "library": "ual1",
       "source": "Spell_Simple_Idle_Loop",

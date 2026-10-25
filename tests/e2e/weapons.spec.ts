@@ -107,3 +107,52 @@ test('each kind fires as its numbers say', async ({ page }, testInfo) => {
     .toBeLessThan(before * 0.5);
   expect(errors).toEqual([]);
 });
+
+test('every weapon points where the crosshair looks, and a long gun is held to the shoulder', async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name === 'phone', 'the hold is the same on both');
+  const errors = await start(page, 'chapter=range&class=breacher');
+  await lk(page, "lk.arm({ weapons: ['pistol', 'rifle', 'shotgun', 'marksman'], carried: ['pistol', null] })");
+  await lk(page, 'lk.teleport(0, 23.5, Math.PI / 2, 1.5)');
+  await lk(page, 'lk.trigger(true, false)');
+  for (const kind of ['pistol', 'rifle', 'shotgun', 'marksman']) {
+    await lk(page, `lk.arm({ carried: ['${kind}', null] })`);
+    await page.waitForTimeout(700);
+    // The gun's barrel against the camera's look (the hand's animation turned it 45° to the right
+    // before: the owner, 25 October 2026).
+    const angle = await page.evaluate(() => {
+      const scene = (
+        window as unknown as {
+          lightkeeper: {
+            scene: {
+              activeCamera: { getTarget(): V; globalPosition: V };
+              transformNodes: { name: string; isEnabled(): boolean; forward: V }[];
+            };
+          };
+        }
+      ).lightkeeper.scene;
+      type V = { x: number; y: number; z: number; subtract(o: V): V; normalize(): V };
+      const gun = scene.transformNodes.find((n) => n.name === 'hero-aimed' && n.isEnabled());
+      if (!gun) return null;
+      const look = scene.activeCamera.getTarget().subtract(scene.activeCamera.globalPosition).normalize();
+      const f = gun.forward;
+      return (Math.acos(Math.min(1, f.x * look.x + f.y * look.y + f.z * look.z)) * 180) / Math.PI;
+    });
+    expect(angle, kind).not.toBeNull();
+    expect(angle ?? 180, kind).toBeLessThan(8);
+    // The long guns are held two-handed to the shoulder; the pistol out in both hands.
+    const clip = kind === 'pistol' ? 'hero-pistol_aim' : 'hero-rifle_aim';
+    const weight = await page.evaluate(
+      (name) =>
+        (
+          window as unknown as {
+            lightkeeper: { scene: { animationGroups: { name: string; weight: number }[] } };
+          }
+        ).lightkeeper.scene.animationGroups.find((g) => g.name === name)?.weight ?? 0,
+      clip,
+    );
+    expect(weight, kind).toBeGreaterThan(0.9);
+  }
+  expect(errors).toEqual([]);
+});

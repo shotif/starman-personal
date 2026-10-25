@@ -624,6 +624,127 @@ def derive_clip(arm, base, name, *, reverse=False, stretch=1.0, toward=None, amo
     return store_pose_track(arm, name, list(range(len(rows))), rows, loop)
 
 
+def _aim_bone(arm, pb, direction):
+    """Turns a pose bone (armature space) so its length points along `direction`, by the
+    smallest turn from where it points now, so its twist is kept."""
+    m = pb.matrix.copy()
+    now = (m.to_3x3() @ Vector((0, 1, 0))).normalized()
+    turn = now.rotation_difference(direction.normalized())
+    rot = turn.to_matrix() @ m.to_3x3()
+    pb.matrix = Matrix.Translation(m.translation) @ rot.to_4x4()
+    bpy.context.view_layer.update()
+
+
+def _two_bone(arm, upper, lower, wrist, pole):
+    """Analytic two-bone IK: the shoulder stays, the elbow bends towards `pole`, the wrist
+    (the lower bone's tail) reaches `wrist` (armature space), or as near as the arm allows."""
+    shoulder = upper.head.copy()
+    l1 = (upper.tail - upper.head).length
+    l2 = (lower.tail - lower.head).length
+    to = wrist - shoulder
+    d = min(max(to.length, 1e-4), (l1 + l2) * 0.999)
+    u = to.normalized()
+    cos_a = max(-1.0, min(1.0, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d)))
+    v = pole - u * pole.dot(u)
+    v = v.normalized() if v.length > 1e-6 else Vector((0, 0, -1))
+    elbow = shoulder + u * (l1 * cos_a) + v * (l1 * math.sqrt(max(0.0, 1 - cos_a * cos_a)))
+    _aim_bone(arm, upper, elbow - shoulder)
+    _aim_bone(arm, lower, shoulder + u * d - lower.head)
+
+
+def _turn_about(arm, pb, axis, angle):
+    """Turns a pose bone about a world axis through its own head (armature space)."""
+    m = pb.matrix.copy()
+    q = Quaternion(axis, angle)
+    pb.matrix = Matrix.Translation(m.translation) @ (q.to_matrix() @ m.to_3x3()).to_4x4()
+    bpy.context.view_layer.update()
+
+
+def rifle_clip(arm, base, name, *, lower_deg=0.0, recoil=None, twist_deg=25.0, loop=True):
+    """A two-handed long-gun clip made on the same skeleton from the pistol's aim (base); UAL
+    has no rifle clips (ACT1.md, increment 3). Built to photographs of a rifle held to the
+    shoulder, round the body's own forward (the character faces -Y here), level: the chest
+    turned `twist_deg` (left shoulder forward) and leaning a little; the butt in the pocket
+    at the front of the right shoulder; the right palm on the pistol grip a stock's length
+    (RIFLE["pull"]) in front of it and below the bore, wrist straight, elbow down and out; the
+    left palm up under the handguard, the arm reaching forward, elbow under; the head down and
+    tilted onto the stock. The game seats the gun's grip in the right palm and points it along
+    the aim (src/game/characters.ts, PALM there matching RIFLE["palm"] here). `lower_deg` tips
+    the hold down about the right shoulder (a low ready); `recoil` is metres of kick back along
+    the aim at each frame (a shot)."""
+    scene = bpy.context.scene
+    rows_in = sample_basis(arm, base)
+    frames = len(recoil) if recoil else len(rows_in)
+    bones = {n: _find(arm, n) for n in ("upperarm_r", "lowerarm_r", "hand_r", "upperarm_l",
+                                        "lowerarm_l", "hand_l", "spine_01", "spine_02",
+                                        "spine_03", "neck_01", "head")}
+    pb = {n: arm.pose.bones[b] for n, b in bones.items()}
+    k = RIFLE
+    rows = []
+    for i in range(frames):
+        for bname, m in rows_in[i % len(rows_in)].items():
+            arm.pose.bones[bname].matrix_basis = m.copy()
+        bpy.context.view_layer.update()
+        up = Vector((0, 0, 1))
+        right = pb["upperarm_r"].head - pb["upperarm_l"].head
+        right.z = 0
+        right.normalize()
+        aim = up.cross(right).normalized()
+        if aim.y > 0:
+            aim.negate()
+        # The chest turns (left shoulder forward) and leans in; the neck and head turn back to the
+        # aim, then bow and tilt onto the stock.
+        sign = -1.0 if up.cross(right).dot(aim) > 0 else 1.0
+        turn = math.radians(twist_deg) * sign
+        for bname in ("spine_02", "spine_03"):
+            _turn_about(arm, pb[bname], up, turn / 2)
+        # (A positive turn about `right` lifts the front: leaning in and bowing are negative.)
+        _turn_about(arm, pb["spine_01"], right, -math.radians(k["lean_deg"]))
+        for bname in ("neck_01", "head"):
+            _turn_about(arm, pb[bname], up, -turn / 2)
+        _turn_about(arm, pb["neck_01"], right, -math.radians(k["bow_deg"]))
+        _turn_about(arm, pb["head"], aim, math.radians(k["tilt_deg"]))
+        tip = Quaternion(right, -math.radians(lower_deg)) if lower_deg else Quaternion()
+        aim, up = tip @ aim, tip @ up
+        kick = recoil[i] if recoil else 0.0
+        shoulder = pb["upperarm_r"].head.copy()
+        pocket = shoulder + aim * k["pocket"][0] + up * k["pocket"][1] - right * k["pocket"][2]
+        # The right palm on the grip, the left under the handguard; each wrist a palm behind.
+        palm_r = pocket + aim * (k["pull"] - kick) - up * (k["drop"] - kick * 0.3)
+        palm_l = palm_r + aim * k["forend"][0] + up * k["forend"][1] - right * k["forend"][2]
+        wrist_r = palm_r - aim * k["palm"][0] + up * k["palm"][1]
+        fingers_l = (aim * 0.45 + right * 0.85 + up * 0.25).normalized()
+        wrist_l = palm_l - fingers_l * k["palm"][0]
+        # Hands: the right's fingers (its +Y) forward and down the grip, its palm (+Z) inward;
+        # the left's palm up, its fingers wrapping across the handguard.
+        fingers_r = (aim * math.cos(math.radians(30)) - up * math.sin(math.radians(30))
+                     - right * 0.1).normalized()
+        palm_in = -right - fingers_r * (-right).dot(fingers_r)
+        palm_in.normalize()
+        rot_r = Matrix((fingers_r.cross(palm_in), fingers_r, palm_in)).transposed()
+        palm_up = up - fingers_l * up.dot(fingers_l)
+        palm_up.normalize()
+        rot_l = Matrix((fingers_l.cross(palm_up), fingers_l, palm_up)).transposed()
+        _two_bone(arm, pb["upperarm_r"], pb["lowerarm_r"], wrist_r, -up + right * 0.5)
+        _two_bone(arm, pb["upperarm_l"], pb["lowerarm_l"], wrist_l, -up - right * 0.2)
+        for side, rot in (("hand_r", rot_r), ("hand_l", rot_l)):
+            head = pb[side].head.copy()
+            pb[side].matrix = Matrix.Translation(head) @ rot.to_4x4()
+            bpy.context.view_layer.update()
+        rows.append({p.name: p.matrix_basis.copy() for p in arm.pose.bones})
+    scene.frame_set(0)
+    assign_action(arm, None)
+    return store_pose_track(arm, name, list(range(len(rows))), rows, loop)
+
+
+# The rifle hold's measures, in metres and degrees (rifle_clip): the shoulder pocket from the
+# shoulder joint (forward, up, inward); the length of pull (pocket to the grip); how far the grip
+# hangs below the bore; the left palm from the right (forward, up, inward); a palm's reach from
+# its wrist (along the fingers, and down); the chest's lean, the neck's bow and the head's tilt.
+RIFLE = {"pocket": (0.06, 0.03, 0.02), "pull": 0.30, "drop": 0.10, "forend": (0.26, 0.04, 0.06),
+         "palm": (0.075, 0.035), "lean_deg": 6, "bow_deg": 12, "tilt_deg": 10}
+
+
 # How each part of the skeleton is matched between rest poses (see Retargeter): the trunk
 # and collarbones by rotation change alone (their bone directions are rig conventions), the
 # feet the same (so a flat foot stays flat), the legs by their sideways spread only, and the
@@ -711,6 +832,11 @@ def build_clips(dst, clips, sources, dst_to_src_for, hips, root, retarget):
         if "derived" not in clip:
             continue
         log("derive", clip["name"], "from", clip["from"])
+        if clip["derived"] == "rifle":
+            made[clip["name"]] = rifle_clip(
+                dst, made[clip["from"]], clip["name"], lower_deg=clip.get("lower_deg", 0.0),
+                recoil=clip.get("recoil"), loop=clip["loop"])
+            continue
         made[clip["name"]] = derive_clip(
             dst, made[clip["from"]], clip["name"], reverse=clip.get("reverse", False),
             stretch=clip.get("stretch", 1.0), toward=made.get(clip.get("toward")),

@@ -334,11 +334,11 @@ const SIDEARM = {
   offset: [-0.01, -0.125, -0.008] as [number, number, number],
 };
 /** Each weapon's model in the hand: its length, and how far it slides forward to put its grip in the hand. */
-const HELD: Record<WeaponKind, { length: number; along: number }> = {
-  pistol: { length: SIDEARM.length, along: 0 },
-  rifle: { length: 0.95, along: 0.17 },
-  shotgun: { length: 0.9, along: 0.12 },
-  marksman: { length: 1.15, along: 0.22 },
+const HELD: Record<WeaponKind, { length: number; along: number; lift: number }> = {
+  pistol: { length: SIDEARM.length, along: 0, lift: 0.03 },
+  rifle: { length: 0.95, along: 0.17, lift: 0.07 },
+  shotgun: { length: 0.9, along: 0.12, lift: 0.06 },
+  marksman: { length: 1.15, along: 0.22, lift: 0.06 },
 };
 /** Who speaks a line, by the name its tag gives, in the cast. */
 const SPEAKERS: Record<string, string> = {
@@ -453,7 +453,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   void LoadAssetContainerAsync(`${import.meta.env.BASE_URL}assets/props/sidearm-meshy.glb`, scene)
     .then((gun) => {
       for (const c of [hero, characters.ren, characters.jo]) {
-        const node = c?.hold(gun, SIDEARM.length, SIDEARM.rotation, SIDEARM.offset);
+        const node = c?.hold(gun, SIDEARM.length, SIDEARM.rotation, SIDEARM.offset, 0, false, HELD.pistol.lift);
         if (node) grips.push({ hero: c === hero, node, kind: 'pistol' });
         node?.setEnabled(false);
       }
@@ -467,7 +467,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       .then((gun) => {
         const held = HELD[kind];
         // The long guns' files face +Z; the sidearm's (the style test's) faces the other way.
-        const node = hero.hold(gun, held.length, SIDEARM.rotation, SIDEARM.offset, held.along, true);
+        const node = hero.hold(gun, held.length, SIDEARM.rotation, SIDEARM.offset, held.along, true, held.lift);
         if (node) grips.push({ hero: true, node, kind });
         node?.setEnabled(false);
         wieldNow();
@@ -1458,6 +1458,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   let clock = 0;
   let vitalsTime = 0;
   let paused = false;
+  /** Where the hero's gun points while aiming. */
+  const gunAim = new Vector3(0, 0, 1);
   /** For testing: the camera held at a view instead of following the hero. */
   let debugView: { from: Vector3; to: Vector3 } | null = null;
   scene.onBeforeRenderObservable.add(() => {
@@ -1595,6 +1597,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           speed: groundSpeed,
           direction: push > 0 ? { x: move.x / push, y: move.y / push } : { x: 0, y: 0 },
           firing: shotPose > 0,
+          // The long guns are held to the shoulder (rifle clips made in Blender, ACT1.md increment 3).
+          rifle: kit.carried[0] !== 'pistol',
         }),
         dt,
       );
@@ -1618,7 +1622,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       } else {
         desired.set(castPose > 0 ? unit.x * SPEED.walk * push : 0, 0, castPose > 0 ? unit.z * SPEED.walk * push : 0);
       }
-      const pose = poseWeights({ mode: 'move', speed: groundSpeed });
+      // In a fight a long gun is held low and ready; a pistol hangs at the side.
+      const pose = poseWeights({ mode: 'move', speed: groundSpeed, ready: !!fight && kit.carried[0] !== 'pistol' });
       hero.setPose(castPose > 0 ? { ...pose, upper: { power_cast: 1 } } : pose, dt);
     }
     heroForward.set(Math.sin(heroYaw), 0, Math.cos(heroYaw));
@@ -1885,6 +1890,22 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     for (const g of grips) {
       g.node.setEnabled((fight !== null || (g.hero && aiming)) && (!g.hero || g.kind === kit.carried[0]));
     }
+    // The gun points where the crosshair looks while aiming (not where the hand's animation turns
+    // it); a long gun in a fight is held low and ready; otherwise it follows the hand.
+    if (aiming) {
+      // (A camera held for a test keeps the aim it had, so the gun can be looked at from the side.)
+      if (!debugView) {
+        const from = camera.globalPosition.clone();
+        const look = camera.getTarget().subtract(from).normalize();
+        const hit = cast(from.add(look.scale(0.3)), from.add(look.scale(60)), true);
+        const point = hit ? hit.point : from.add(look.scale(60));
+        gunAim.copyFrom(point.subtract(hero.root.position.add(new Vector3(0, 1.4, 0))));
+      }
+      hero.aimHeld(gunAim);
+    } else if (fight && kit.carried[0] !== 'pistol') {
+      const down = Math.PI * (40 / 180);
+      hero.aimHeld(new Vector3(heroForward.x * Math.cos(down), -Math.sin(down), heroForward.z * Math.cos(down)));
+    } else hero.aimHeld(null);
     coverBlend = lerp(coverBlend, cover.inCover && !aiming && !commanding ? 1 : 0, Math.min(1, real * 6));
     const framing = cameraFraming(engine.getAspectRatio(camera));
     const distance = lerp(framing.distance, framing.distance * 0.55, aimBlend);

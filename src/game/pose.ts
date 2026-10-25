@@ -18,6 +18,9 @@ export const CLIPS = [
   'crouch_right',
   'pistol_aim',
   'pistol_shoot',
+  'rifle_aim',
+  'rifle_shoot',
+  'rifle_ready',
   'power_cast',
   'punch_jab',
   'punch_cross',
@@ -41,10 +44,13 @@ export const ONE_SHOT: readonly Clip[] = [
 export type Weights = Partial<Record<Clip, number>>;
 
 export type PoseState =
-  /** Moving freely: idle, walk, jog and sprint by ground speed. */
-  | { mode: 'move'; speed: number }
-  /** Aiming: walking in any direction (x right, y forward, relative to the hero) with the arms up. */
-  | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean }
+  /** Moving freely: idle, walk, jog and sprint by ground speed; `ready` holds a long gun low (a fight). */
+  | { mode: 'move'; speed: number; ready?: boolean }
+  /**
+   * Aiming: walking in any direction (x right, y forward, relative to the hero) with the arms up;
+   * `rifle` holds a long gun to the shoulder rather than a pistol out.
+   */
+  | { mode: 'aim'; speed: number; direction: Vec2; firing: boolean; rifle?: boolean }
   /** In low cover, facing it; `slide` is -1 (left) to 1 (right) along it. */
   | { mode: 'cover'; slide: number }
   /** In a conversation: standing, gesturing while speaking (DIALOGUE.md). */
@@ -91,7 +97,10 @@ export function directionalWeights(direction: Vec2): Weights {
 export function poseWeights(state: PoseState): Pose {
   if (state.mode === 'move') {
     const w = locomotionWeights(state.speed);
-    return { lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint }, upper: null };
+    return {
+      lower: { idle: w.idle, walk: w.walk, jog: w.run, sprint: w.sprint },
+      upper: state.ready ? { rifle_ready: 1 } : null,
+    };
   }
   if (state.mode === 'down') return { lower: { death: 1 }, upper: null, blend: 5 };
   if (state.mode === 'kneel') return { lower: { crouch_idle: 1 }, upper: null, blend: 6 };
@@ -110,5 +119,6 @@ export function poseWeights(state: PoseState): Pose {
   for (const [clip, w] of Object.entries(directionalWeights(state.direction)) as [Clip, number][]) {
     lower[clip] = w * moving;
   }
+  if (state.rifle) return { lower, upper: state.firing ? { rifle_shoot: 1 } : { rifle_aim: 1 } };
   return { lower, upper: state.firing ? { pistol_shoot: 1 } : { pistol_aim: 1 } };
 }

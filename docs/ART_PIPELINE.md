@@ -114,7 +114,8 @@ The game loads:
 - **Skeleton.** The heroes use MPFB's *game_engine* skeleton: 53 bones with Unreal-style names
   (`Root`, `pelvis`, `spine_01`, `thigh_l` …). The mannequin uses UAL's own skeleton with the
   same names (lower-case `root`, `Head`), also 53 bones.
-- **Clips.** 55 clips from Quaternius's Universal Animation Library 1 Pro and 2 (CC0), renamed.
+- **Clips.** 55 clips from Quaternius's Universal Animation Library 1 Pro and 2 (CC0), renamed,
+  and three made here for the long guns (below), 58 in all.
   The list, the source of each and any correction are in `art/animations.json`. All are in
   place: the game moves and turns the character, the clips do not (`turn_left` and
   `turn_right` end facing 90° away, so the game turns the character to match).
@@ -124,7 +125,7 @@ The game loads:
 | Standing | `idle`, `idle_talk`, `turn_left`, `turn_right` |
 | Moving | `walk`, `walk_back`, `strafe_left`, `strafe_right`, `jog`, `jog_back`, `jog_left`, `jog_right`, `jog_fwd_left`, `jog_fwd_right`, `jog_back_left`, `jog_back_right`, `sprint` |
 | Cover and evasion | `crouch_idle`, `crouch_enter`, `crouch_exit`, `crouch_walk`, `crouch_back`, `crouch_left`, `crouch_right`, `dodge_left`, `dodge_right`, `roll`, `jump_start`, `jump_loop`, `jump_land`, `climb_ledge` |
-| Guns and powers | `pistol_idle`, `pistol_aim`, `pistol_aim_up`, `pistol_aim_down`, `pistol_shoot`, `pistol_reload`, `power_ready`, `power_cast`, `power_both_ready`, `power_both_cast` |
+| Guns and powers | `pistol_idle`, `pistol_aim`, `pistol_aim_up`, `pistol_aim_down`, `pistol_shoot`, `pistol_reload`, `rifle_aim`, `rifle_shoot`, `rifle_ready`, `power_ready`, `power_cast`, `power_both_ready`, `power_both_cast` |
 | Melee | `punch_jab`, `punch_cross`, `kick`, `melee_hook`, `melee_combo` |
 | Hits and death | `hit_chest`, `hit_head`, `hit_stomach`, `hit_shoulder_left`, `hit_shoulder_right`, `hit_knockback`, `death`, `death_alt` |
 | Other | `interact` |
@@ -136,6 +137,17 @@ The game loads:
   forward, so half of the spine's average bend is taken out of them (`common.straighten`).
   UAL has no backward or sideways walk: `walk_back` is the walk played backwards, and
   `strafe_left` and `strafe_right` are the real side jogs, slowed and softened towards the idle.
+  No open pack has two-handed rifle clips for this skeleton (searched 25 October 2026: the UAL
+  packs have pistol clips only; Kevin Iglesias's free soldier pack may not be redistributed), so
+  `rifle_aim`, `rifle_shoot` and `rifle_ready` are made here, on each character
+  (`common.rifle_clip`, our own work, measures in `common.RIFLE`), to photographs of a rifle held
+  to the shoulder: the chest turned 25° (left shoulder forward) and leaning in; the butt in the
+  pocket at the front of the right shoulder; the right palm on the pistol grip a stock's length
+  in front of it, wrist straight, elbow down and out; the left palm up under the handguard; the
+  head bowed and tilted onto the stock. The arms are solved with two-bone IK round the body's own
+  forward (UAL's pistol arms point some 45° to the right). `rifle_shoot` adds a shot's kick and
+  `rifle_ready` tips the hold 40° down. The game seats the gun's grip in the right palm and points
+  the gun along the aim (`aimHeld` in `src/game/characters.ts`).
 - **Retargeting.** `common.Retargeter` gives each bone the source bone's change of world
   rotation. How the two rest poses are matched depends on the bone. Arms, hands and fingers are
   first turned to point as the source's do, so MPFB's A-pose arms follow UAL's T-pose. Thighs

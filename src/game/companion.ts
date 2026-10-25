@@ -344,6 +344,8 @@ export function spawnCompanion(
         // Face the target and shoot, with the upper body aiming; now and then, a power on it.
         const centre = world.range.centre(shootAt);
         yaw = turnTowards(yaw, yawOf({ x: centre.x - here.x, z: centre.z - here.z }), 8 * dt);
+        // Her pistol points at what she shoots, whatever the hand's animation does.
+        character.aimHeld(centre.subtract(here.add(new Vector3(0, EYE - 0.1, 0))));
         if (powerWait <= 0) {
           powerWait = world.power?.(name, shootAt, here.add(new Vector3(0, EYE, 0))) ? POWER_GAP : 0.5;
         }
@@ -353,6 +355,7 @@ export function spawnCompanion(
         }
         character.setPose(poseWeights({ mode: 'aim', speed, direction: { x: 0, y: 0 }, firing: shotPose > 0 }), dt);
       } else {
+        character.aimHeld(null);
         if (speed > 0.2) yaw = turnTowards(yaw, yawOf(velocity), 8 * dt);
         character.setPose(poseWeights({ mode: 'move', speed }), dt);
       }

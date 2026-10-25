@@ -151,6 +151,18 @@
       "loop": false
     },
     {
+      "name": "rifle_aim",
+      "loop": true
+    },
+    {
+      "name": "rifle_shoot",
+      "loop": false
+    },
+    {
+      "name": "rifle_ready",
+      "loop": true
+    },
+    {
       "name": "power_ready",
       "loop": true
     },
@@ -280,11 +292,11 @@
   "bodies": {
     "man": {
       "file": "hero-man.glb",
-      "bytes": 5086624,
+      "bytes": 5125680,
       "heightMetres": 1.817,
       "triangles": 40057,
       "bones": 53,
-      "megabytes": 5.09,
+      "megabytes": 5.13,
       "materials": [
         "man_skin",
         "man_eyes",
@@ -1652,11 +1664,11 @@
     },
     "woman": {
       "file": "hero-woman.glb",
-      "bytes": 5320764,
+      "bytes": 5359744,
       "heightMetres": 1.67,
       "triangles": 44267,
       "bones": 53,
-      "megabytes": 5.32,
+      "megabytes": 5.36,
       "materials": [
         "woman_skin",
         "woman_eyes",

@@ -28,6 +28,15 @@ describe('poses', () => {
     expect(pose.lower.idle).toBe(1);
     expect(pose.upper).toEqual({ pistol_shoot: 1 });
   });
+  it('holds a long gun to the shoulder to aim and shoot, and low and ready in a fight', () => {
+    const aim = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: false, rifle: true });
+    expect(aim.upper).toEqual({ rifle_aim: 1 });
+    const shot = poseWeights({ mode: 'aim', speed: 0, direction: { x: 0, y: 0 }, firing: true, rifle: true });
+    expect(shot.upper).toEqual({ rifle_shoot: 1 });
+    const ready = poseWeights({ mode: 'move', speed: SPEED.walk, ready: true });
+    expect(ready.upper).toEqual({ rifle_ready: 1 });
+    expect(ready.lower.walk).toBeGreaterThan(0);
+  });
   it('crouches in cover and slides along it', () => {
     expect(poseWeights({ mode: 'cover', slide: 0 }).lower.crouch_idle).toBe(1);
     const left = poseWeights({ mode: 'cover', slide: -0.5 }).lower;
