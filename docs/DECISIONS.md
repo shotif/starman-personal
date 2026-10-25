@@ -58,6 +58,11 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-44 | The slice's side story | Decided 2026-10-24 | **As recommended**: the mast and the *Merrow* ([SLICE.md](design/SLICE.md)) |
 | D-45 | Where sound and music come from | Decided 2026-10-24 | **As recommended**: CC0 libraries first, ElevenLabs effects where nothing fits, Lyria music (round 6 below) |
 | D-46 | Difficulty | Decided 2026-10-24 | **As recommended**: Story, Standard and Hard, changeable at any time ([COMBAT.md](design/COMBAT.md)) |
+| D-47 | The next milestone | **Open** | Recommended: *Lantern* as home, the star map, and the first lead built whole ([ACT1.md](design/ACT1.md)) |
+| D-48 | Which lead first | **Open** | Recommended: Pyre Remnant, the Cooperative's observatory |
+| D-49 | How the hero grows | **Open** | Recommended: experience from missions and choices; ranks for powers, new powers, talents |
+| D-50 | Weapons | **Open** | Recommended: pistol, rifle, shotgun, marksman rifle by class; two carried; mods found and bought |
+| D-51 | The Banked, and Pyre Remnant's outline | **Open** | Recommended: three kinds of Banked fighter, and the outline in ACT1.md §6 |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -621,6 +626,62 @@ and quiet moments.
 | C. Fine sliders | Damage taken, aim assist, enemy numbers, each on its own |
 
 **Recommendation: A.**
+
+## Round 7: Act 1, first part — open
+
+The proposal is [design/ACT1.md](design/ACT1.md): after the prologue, *Lantern* becomes home and the
+star map opens; the hero grows; the Banked appear; one of Act 1's three leads is built whole.
+
+### D-47 · The next milestone — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. *Lantern*, the star map and the first lead, whole** (recommended) | The systems every lead needs (the ship's decks, the map, growth, weapons, the Banked) and one lead with its companion and side story: about two hours of new play, and the structure the other two leads then reuse |
+| B. All three leads, short | Each lead an hour, so Act 1's shape is there sooner; each thinner, and the systems built in a hurry |
+| C. The prologue, deeper first | More side content and polish at Ross 128 before moving on |
+
+**Recommendation: A.** It proves the act's structure on one lead before building three, and each
+increment stays playable (D-01).
+
+### D-48 · Which lead first — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Pyre Remnant** (recommended) | The Cooperative's observatory: follows straight from the prologue (Ilya's readings), a station full of people, Dr Mira Achterberg (a Warden, a healer) joins |
+| B. Maw Roost (Wolf 1061) | The Wake's black market in engine parts: rougher and more combat; Corin Ash (a Breacher) joins; Jo's personal quest begins |
+| C. The Duskfolk border | The first meeting with an alien people whose star is dimming; Low Ember (a Fieldwright) joins; the most to design (a people, a language, a place) |
+
+**Recommendation: A.** The other two follow in later parts; until then the map says so honestly.
+
+### D-49 · How the hero grows — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Experience and ranks** (recommended) | Missions, side stories and choices give experience (not kills); levels give ranks in powers (three each), a new power at levels 3 and 6, and talents from the hero's past. Companions level alongside |
+| B. Finds and ship upgrades only | No levels: the hero grows through gear and *Lantern*'s workshop; simpler, less of an RPG |
+| C. Levels and loot | As A, with weapons and armour of many tiers dropped by enemies; more to manage, more filler |
+
+**Recommendation: A**, with weapons and mods as finds (D-50).
+
+### D-50 · Weapons — **Open**
+
+| Option | What it means |
+| --- | --- |
+| **A. Four kinds, two carried** (recommended) | Pistol, rifle, shotgun and marksman rifle, each class trained in two or three (D-10); the hero carries two and switches; mods (scope, stabiliser, heavier rounds) found on missions and bought at stations |
+| B. The sidearm and one rifle | Fewer models and animations; less to choose |
+| C. As A, with heavy weapons | A launcher or a beam for rare moments; more to build now |
+
+**Recommendation: A.**
+
+### D-51 · The Banked, and Pyre Remnant's outline — **Open**
+
+The Banked, Varro's followers, as the first human enemy: troopers who take cover and flank,
+engineers who shield allies and set the engines' motes on the hero, and wardens behind field
+barriers. And the outline of the first lead in [ACT1.md](design/ACT1.md) §6: the station whose
+archive is "under audit", Mira's recruitment, the choice between the archive and the dome's crew,
+the name in the oldest audit, and the side story of the refugees not on the manifest.
+
+**Recommendation: both as written**, the owner changing anything in the outline they like.
 
 ## Made without waiting
 
