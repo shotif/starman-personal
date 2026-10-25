@@ -31,6 +31,8 @@ const WAITS_FOR: Record<string, (c: Command) => string> = {
   encounter: (c) => `cleared:${c.args[0] ?? ''}`,
   drill: () => 'cleared:drill',
   liftoff: () => 'done:liftoff',
+  // *Lantern* leaves orbit and the lane takes her.
+  depart: () => 'done:depart',
   // On the way to another place: this game ends here; the next starts past the command.
   travel: () => 'done:travel',
   // A chapter's card: the player goes on when ready.

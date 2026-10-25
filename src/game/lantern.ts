@@ -5,6 +5,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import { CreateTorus } from '@babylonjs/core/Meshes/Builders/torusBuilder';
+import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Scene } from '@babylonjs/core/scene';
 import { buildKit, type Kit } from './kit.ts';
@@ -20,6 +21,9 @@ import type { Mark, Place } from './station.ts';
  * north, engineering at the stern round the reactor. Built from the kit (src/game/kit.ts) and the
  * models already made; the places' names are in src/game/places.ts.
  */
+/** Seconds from breaking orbit to the lane's flash (the game waits a little longer, DEPART_SECONDS). */
+const LANE_AT = 5.2;
+
 export function buildLantern(scene: Scene, q: QualitySettings): Place {
   const kit = buildKit(scene, q);
   const sky = buildSky(scene);
@@ -38,7 +42,18 @@ export function buildLantern(scene: Scene, q: QualitySettings): Place {
   fill.intensity = 0.35;
   fill.diffuse = new Color3(0.8, 0.85, 0.95);
   fill.groundColor = new Color3(0.12, 0.11, 0.12);
-  ross128b(kit);
+  const planet = ross128b(kit);
+  const planetAt = planet.position.clone();
+  /** Seconds since leaving began, or null; the flash and the lane come at LANE_AT. */
+  let leaving: { t: number; flash: () => void; flashed: boolean } | null = null;
+  const lane = (on: boolean) => {
+    sky.lane(on);
+    planet.setEnabled(!on);
+    if (!on) {
+      planet.position.copyFrom(planetAt);
+      planet.scaling.setAll(1);
+    }
+  };
 
   const marks: Record<string, Mark> = {};
   for (const [id, m] of Object.entries(LANTERN_MARKS)) {
@@ -61,11 +76,31 @@ export function buildLantern(scene: Scene, q: QualitySettings): Place {
     // Nothing here lifts off.
     ship: new TransformNode('no-ship', scene),
     freeShip() {},
+    depart(flash) {
+      leaving = { t: 0, flash, flashed: false };
+      // Just outside the bridge's window (the glass would grey the view), looking out and down, so
+      // the planet is seen to fall away.
+      return { from: new Vector3(-6.4, 2, 0.2), to: new Vector3(-40, -4, 11) };
+    },
+    lane,
     castShadow() {},
     areaAt: (p) => areaAt(p, LANTERN_AREAS),
     props: kit.placed(),
     update(dt) {
       sky.update(dt);
+      if (!leaving) return;
+      // Breaking orbit: Ross 128 b falls away below and behind, faster and faster, then the lane.
+      leaving.t += dt;
+      const k = Math.min(1, leaving.t / LANE_AT) ** 2;
+      // Within the camera's reach (5 km): nearer and smaller rather than farther than it can see.
+      planet.position.copyFrom(planetAt.scale(1 + k * 1.1));
+      planet.scaling.setAll(1 - k * 0.55);
+      if (leaving.t >= LANE_AT && !leaving.flashed) {
+        leaving.flashed = true;
+        leaving.flash();
+        lane(true);
+        leaving = null;
+      }
     },
   };
 }
@@ -325,7 +360,7 @@ function crate(kit: Kit, x: number, z: number, w: number) {
 }
 
 /** Ross 128 b below, its night side turning under the ship: the painted ground, unfogged. */
-function ross128b(kit: Kit) {
+function ross128b(kit: Kit): Mesh {
   const planet = CreateSphere('ross-128-b', { diameter: 3000, segments: 48 }, kit.scene);
   planet.position.set(-1700, -1560, 0);
   const surface = new StandardMaterial('ross-128-b', kit.scene);
@@ -339,4 +374,5 @@ function ross128b(kit: Kit) {
   planet.material = surface;
   planet.applyFog = false;
   planet.isPickable = false;
+  return planet;
 }

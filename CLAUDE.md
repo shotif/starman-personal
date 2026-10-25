@@ -74,4 +74,5 @@ npm run check          # typecheck, lint (Biome), unit tests, production build
 npm run test:e2e       # browser journeys on a phone and a desktop (Playwright, port 4391)
 npm run format         # apply Biome's formatting (Markdown is left alone)
 npm run key:meshy      # store the owner's Meshy API key in the git-ignored .env
+npm run data:sky       # copy the star map's real neighbourhood from a Starman Control checkout
 ```

@@ -150,12 +150,18 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   await talkTo(page, 'Jo', 33.2, 2.6);
   await expect(body).toHaveAttribute('data-objective', 'Hear Pell out on the bridge', { timeout: 15_000 });
   await talkTo(page, 'Pell', 2.5, 1.8);
-  await expect(body).toHaveAttribute('data-objective', 'Set a course from the bridge', { timeout: 15_000 });
+  await expect(body).toHaveAttribute('data-objective', 'Set a course on the star map', { timeout: 15_000 });
   await teleport(page, 2.5, -2.6, Math.PI);
-  await expect(body).toHaveAttribute('data-prompt', 'Set a course');
+  await expect(body).toHaveAttribute('data-prompt', 'Open the star map');
   await page.keyboard.press('KeyE');
-  await expect(body).toHaveAttribute('data-ended', 'true');
+  // The star map: Pyre Remnant's course, and the leaving.
+  await expect(body).toHaveAttribute('data-map', 'open');
+  await page.screenshot({ path: testInfo.outputPath('7-map.png') });
+  await page.getByRole('button', { name: 'Set course' }).click();
+  await talkThrough(page);
+  await expect(body).toHaveAttribute('data-checkpoint', 'lane', { timeout: 20_000 });
+  await expect(body).toHaveAttribute('data-ended', 'true', { timeout: 20_000 });
   await expect(page.getByText('To be continued')).toBeVisible();
-  await page.screenshot({ path: testInfo.outputPath('7-aboard.png') });
+  await page.screenshot({ path: testInfo.outputPath('8-lane.png') });
   expect(errors).toEqual([]);
 });

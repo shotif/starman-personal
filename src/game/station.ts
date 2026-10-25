@@ -53,6 +53,13 @@ export interface Place {
   ship: TransformNode;
   /** Takes the ship's bodies away so it can rise. */
   freeShip(): void;
+  /**
+   * *Lantern* leaves orbit: the world outside falls behind, and the lane takes her with a flash.
+   * Returns the shot that watches it, if the place has a window for it.
+   */
+  depart(flash: () => void): { from: Vector3; to: Vector3 } | null;
+  /** In a lane, or not (a resumed game). */
+  lane(on: boolean): void;
   castShadow(mesh: AbstractMesh): void;
   /** The area a point is in, or null. */
   areaAt(p: Vector3): string | null;
@@ -120,6 +127,9 @@ export function buildStation(scene: Scene, q: QualitySettings): Place {
       fill.intensity = out ? 0.18 : 0.32;
     },
     ship,
+    // Nothing here flies but the ship at the lift-off.
+    depart: () => null,
+    lane() {},
     freeShip() {
       for (const m of shipBodies) m.physicsBody?.dispose();
     },

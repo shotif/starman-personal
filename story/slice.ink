@@ -465,10 +465,45 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 >>> objective Hear Pell out on the bridge
 >>> marker bridge_pell
 >>> wait talked:pell_aboard
->>> objective Set a course from the bridge
+>>> objective Set a course on the star map
 >>> marker starmap
->>> use starmap starmap Set a course
->>> wait used:starmap
+>>> map starmap starmap Open the star map
+>>> wait course:pyre
+// The map is still over the screen: the crew take their places unseen.
+>>> forget starmap
+>>> marker none
+>>> objective none
+>>> place jo bridge_jo
+>>> place ren bridge_ren
+>>> scene jo jo_course
+All hands, this is the bridge. We're breaking orbit. Hold on to something. #speaker: Ren #line: ren_leaving_01
+>>> depart
+-> lane
+
+// In the lanes for Pyre Remnant: eleven jumps by the old lanes, GJ 915 last (src/game/starmap.ts).
+= lane
+>>> travel lantern
+>>> checkpoint lane
+>>> music night
+>>> sky space lane
+>>> lights on
+>>> hide hale
+>>> start hero bridge_hero
+>>> start ren bridge_ren
+>>> start jo bridge_jo
+>>> start dena mess_dena
+>>> start sorrel engineering_sorrel
+>>> start pell bridge_pell
+{ ilya_lost:
+    >>> hide ilya
+- else:
+    >>> start ilya mess_ilya
+}
+>>> stay ren
+>>> stay jo
+>>> caption In the lanes · eleven jumps to Pyre Remnant
+In the lane. First of eleven. She's holding together. #speaker: Jo #line: jo_lane_01
+Ross 128's behind us. First time in my life I can't see it from where I sleep. #speaker: Pell #line: pell_lane_01
 >>> end
 -> END
 
@@ -988,6 +1023,23 @@ And this, an hour ago. Pyre Remnant's observatory, on their open band. They stop
     Then Pyre Remnant comes first. #speaker: hero #line: hero_pell_aboard_04b
     I'll tell Jo. #speaker: Pell #line: pell_aboard_05b
 - -> DONE
+
+=== jo_course ===
+{ first_lead == "pyre":
+    Pyre Remnant it is. Eleven jumps by the old lanes, GJ 915 last, then Pyre's own lane. #speaker: Jo #line: jo_course_01a
+- else:
+    Pyre Remnant, then, not where we said. Eleven jumps by the old lanes, GJ 915 last, then Pyre's own lane. #speaker: Jo #line: jo_course_01b
+}
+Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right. #speaker: Jo #line: jo_course_02
+* [They brought us out of Ross 128. #manner: plain]
+    They brought us out of Ross 128. They'll do. #speaker: hero #line: hero_jo_course_03a
+    They did. With a regulator held on by Sorrel's patience. #speaker: Jo #line: jo_course_04a
+* [Take her out, Jo. #manner: resolve]
+    Take her out, Jo. #speaker: hero #line: hero_jo_course_03b
+    ~ jo_approval += 1
+    Aye, Captain. Taking her out. #speaker: Jo #line: jo_course_04b
+- Ren, tell the hold. We're leaving. #speaker: Jo #line: jo_course_05
+-> DONE
 
 === ilya_aboard ===
 { have_curve:

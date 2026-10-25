@@ -8,6 +8,7 @@ import { type Command, Director, parseCommand } from '../../src/game/director.ts
 import { ENCOUNTERS } from '../../src/game/encounters.ts';
 import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
 import { ALL_MARKS, AREAS, CAST, DOORS, LANTERN_AREAS, PLACES } from '../../src/game/places.ts';
+import { LEADS } from '../../src/game/starmap.ts';
 
 const SOURCE = readFileSync(join('story', 'slice.ink'), 'utf8');
 
@@ -90,6 +91,8 @@ const VERBS = new Set([
   'liftoff',
   'travel',
   'card',
+  'map',
+  'depart',
   'end',
 ]);
 
@@ -131,7 +134,7 @@ describe('the slice script', () => {
       }
       if (['open', 'close', 'lock', 'unlock'].includes(c.verb)) expect(doors.has(a), `unknown door: ${a}`).toBe(true);
       if (c.verb === 'marker') expect(marks.has(a), `unknown mark: ${a}`).toBe(true);
-      if (c.verb === 'use') expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
+      if (c.verb === 'use' || c.verb === 'map') expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
       if (c.verb === 'look') {
         expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
         expect(knots.has(c.args[2] ?? ''), `unknown remark: ${c.args[2]}`).toBe(true);
@@ -148,6 +151,8 @@ describe('the slice script', () => {
           const [kind, what = ''] = event.split(':');
           if (kind === 'enter') expect(areas.has(what), `unknown area: ${what}`).toBe(true);
           if (kind === 'talked') expect(knots.has(what), `unknown conversation: ${what}`).toBe(true);
+          // A course the story waits for is to a lead the star map lets the player set.
+          if (kind === 'course') expect(LEADS.find((l) => l.id === what)?.open, `no open lead: ${what}`).toBe(true);
         }
       }
     }
@@ -230,7 +235,9 @@ describe('the slice script', () => {
     for (const run of [mast, escort]) {
       expect(run.checkpoints[0]).toBe('night_shift');
       expect(run.checkpoints).toContain('bridge');
-      expect(run.checkpoints.at(-1)).toBe('aboard');
+      expect(run.checkpoints).toContain('aboard');
+      expect(run.checkpoints.at(-1)).toBe('lane');
+      expect(run.commands.some((c) => c.verb === 'depart')).toBe(true);
       expect(run.commands.at(-1)?.verb).toBe('end');
       expect(run.runner.variable('first_lead')).not.toBe('');
     }
@@ -303,7 +310,9 @@ describe('the slice script', () => {
         expect(placed('hero'), `${chapter}: the hero`).toBe(true);
         expect(placed('ren'), `${chapter}: Ren`).toBe(true);
         // Jo is hidden until the hangar; Hale is placed or hidden; the night shift placed or hidden.
-        if (!['hangar', 'bridge', 'aboard'].includes(chapter)) expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
+        if (!['hangar', 'bridge', 'aboard', 'lane'].includes(chapter)) {
+          expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
+        }
         if (chapter !== 'night_shift') {
           expect(placed('hale') || has('hide', 'hale'), `${chapter}: Hale`).toBe(true);
           for (const who of ['dena', 'sorrel', 'pell']) {

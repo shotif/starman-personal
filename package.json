@@ -27,6 +27,7 @@
     "art:models": "node scripts/art/models.ts",
     "art:models-low": "node scripts/art/models-low.ts",
     "art:images": "node scripts/art/images.ts",
+    "data:sky": "node scripts/data/sky.ts",
     "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {

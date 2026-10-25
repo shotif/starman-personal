@@ -122,7 +122,10 @@ increments, each playable and deployed (D-01):
    `src/game/lantern.ts` (the decks), `src/game/places.ts` (each place's areas and marks), the
    `travel` and `card` commands; Act 1 opens aboard after the prologue's card, with the crew's
    conversations and Pyre Remnant's call, and ends honestly at "Set a course" until the map is built.*
-2. The star map and travel.
+2. The star map and travel. *Built 25 October 2026: `src/game/starmap.ts` (the map's rules, the
+   leads, the way along the lanes), `src/game/mapScene.ts` (the map, a second scene on the game's
+   engine), `src/ui/StarMap.tsx` (its screen), `src/data/stars.json` (from Control); the course is
+   set on the bridge, Jo lays it in, and Lantern leaves Ross 128 for the lanes (the `lane` chapter).*
 3. The hero's growth and the weapons.
 4. The Banked, their fights and their rules.
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira.
@@ -160,6 +163,63 @@ Lane Office stop looking; three of Jo's crew sold parts off a wreck to a buyer w
 and did not come back (the first step of her personal quest); Teodor Linde, the navigator of
 Sorrel's Antares run, never took the Authority's money and went to count stars for the
 Cooperative; Pyre Remnant's open band stopped mid-sentence: "The archive is closed for audit."
+
+## Increment 2 in detail: the star map and travel
+
+**Where.** At the star map, the holotable aft of the pilot on *Lantern*'s bridge. Using it opens the
+map; it can be opened as often as the player likes, and time aboard stops while it is open.
+
+**What it shows.** The real neighbourhood out to 33 light-years, as Starman Control's map holds it:
+356 systems (Reborn's census of 207 out to 27 light-years, and Control's shell beyond it), 423
+stars and 136 known planets, every place and value from the archives (Gaia DR3, SIMBAD, the NASA
+Exoplanet Archive, the Extrasolar Planets Encyclopaedia) with its source. A script copies it from
+Control (`npm run data:sky`), records the commit, and keeps only what the map shows. The stars are
+at their real places, coloured by their type and sized by their kind: giants and white stars larger,
+red dwarfs small, white dwarfs smallest. A faint disc through the Sun with rings at 10, 20 and 30
+light-years, and a line from each star down to it, let depth read on a flat screen. The old lanes,
+Reborn's network, are drawn faintly. **Pyre**, the one invented star, is held in the game's rules
+and never written into the sky's data (as in Reborn and Control), at Reborn's place for it
+(RA 357.5°, Dec −45.5°, 33 light-years toward Phoenix): now a black hole in the glow of what is left,
+with Pyre Remnant Station.
+
+**The story's places on it.** Here (*Lantern*, at Ross 128), Sol (the Authority), Tau Ceti (the
+Cooperative), Wolf 1061 (the Wake, and Maw Roost), GJ 433 (the Dusk Concord) and Pyre Remnant. The
+three leads are listed: Pyre Remnant, open; Maw Roost and the Duskfolk border, "later in Act 1".
+Which star on the Duskfolk border dims is not chosen yet; until it is (the owner's to say), the map
+puts that lead at GJ 433.
+
+**Choosing.** A tap or a click on a star or its label selects it, and a panel tells its name, its
+distance from the Sun and from *Lantern*, its stars and their types, its known planets as the
+archives list them (confirmed, contested or candidate), what the story has there, and the source.
+The leads are a list, with "Set course" on the open one. A course is drawn along the old lanes, the
+shortest way, and its jumps and light-years are told. To Pyre: through the lanes to GJ 915, then
+Pyre's own lane (Reborn's).
+
+**Controls.** On a phone: one finger turns the map, two pinch to zoom, a tap selects the nearest
+star within reach of the finger; the panel is a sheet at the bottom and the leads are buttons at the
+top. On a desktop: drag to turn, the wheel to zoom, a click to select, the panel on the right; the
+arrow keys turn it, + and − zoom, Escape closes. Labels are buttons on both, so a star can be chosen
+without hitting a dot.
+
+**Travel.** Setting the course for Pyre Remnant closes the map and the story plays the leaving: Jo
+lays the course in, the crew settle, *Lantern* breaks orbit and the lane takes her, Ross 128 b
+falling behind and the window flaring. Until Pyre Remnant is built (increment 5) the card then says
+honestly that the next part is being built; once it is, the lane ends in `>>> travel pyre` behind
+its loading painting.
+
+**Phones.** The map is a second scene on the same engine and drawing context, not a second context,
+and the place stops drawing while it is open. Its code and data load the first time it opens. The
+stars are sprites, one draw call for all of them.
+
+**Out of scope.** Travel anywhere but the leads (the rest of the map is for reading), the state of
+each lane, fuel, encounters in flight (D-18, later), and a view inside a star system.
+
+**Tests.** Unit: the sky's data (each place matches its distance; Ross 128, Wolf 1061, GJ 915 and
+GJ 433 where the archives put them; no system called Pyre), the route (Ross 128 to Pyre ends GJ 915
+then Pyre, and its lengths add up), choosing by a tap (the nearest within reach, nothing behind the
+camera), and the story's commands. Browser, on a phone and a desktop: open the map on the bridge,
+turn it, choose a star by its label and read it, see the two later leads say so, set the course,
+watch the leaving and reach the card.
 
 ## The decisions it needs
 

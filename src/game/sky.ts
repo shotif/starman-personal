@@ -22,6 +22,8 @@ export interface Sky {
   swarm(visible: boolean): void;
   /** Above the air, in orbit: the dusk goes, the stars and the star stay. */
   space(above: boolean): void;
+  /** In a lane: the star is gone, and the stars round the ship are blue-shifted and few. */
+  lane(on: boolean): void;
   /** Turns the swarm's ring, slowly, so it reads as machines rather than stars. */
   update(dt: number): void;
 }
@@ -94,9 +96,31 @@ export function buildSky(scene: Scene): Sky {
     speck.position = dir.scale(SKY_RADIUS * 0.95);
     specks.push(speck);
   }
+  // And below the horizon, shown only in space.
+  const lowSpecks: Mesh[] = [];
+  for (let i = 0; i < 300; i++) {
+    const y = -(random() * 0.95 + 0.05);
+    const angle = random() * Math.PI * 2;
+    const r = Math.sqrt(1 - y * y);
+    const speck = CreateBox(`star-low-${i}`, { size: 0.9 + random() * 1.8 }, scene);
+    speck.position = new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r).scale(SKY_RADIUS * 0.95);
+    lowSpecks.push(speck);
+  }
   const stars = Mesh.MergeMeshes(specks, true, true);
+  const starColour = new Color3(0.75, 0.78, 0.9);
+  const starMaterial = unlit(scene, 'stars', starColour);
+  // The sky is drawn near the camera, so it writes no depth: a planet farther off still hides it.
+  starMaterial.disableDepthWrite = true;
+  const lowStars = Mesh.MergeMeshes(lowSpecks, true, true);
+  if (lowStars) {
+    lowStars.material = starMaterial;
+    lowStars.infiniteDistance = true;
+    lowStars.isPickable = false;
+    lowStars.applyFog = false;
+    lowStars.setEnabled(false);
+  }
   if (stars) {
-    stars.material = unlit(scene, 'stars', new Color3(0.75, 0.78, 0.9));
+    stars.material = starMaterial;
     stars.infiniteDistance = true;
     stars.isPickable = false;
     stars.applyFog = false;
@@ -150,6 +174,13 @@ export function buildSky(scene: Scene): Sky {
     },
     space(above) {
       dome.setEnabled(!above);
+      lowStars?.setEnabled(above);
+    },
+    lane(on) {
+      for (const m of [disc, halo]) m.setEnabled(!on);
+      if (on) ring?.setEnabled(false);
+      starMaterial.emissiveColor = on ? new Color3(0.55, 0.75, 1.15) : starColour;
+      scene.clearColor = on ? new Color4(0.006, 0.02, 0.05, 1) : new Color4(0.01, 0.01, 0.02, 1);
     },
     update(dt) {
       if (!ring?.isEnabled()) return;

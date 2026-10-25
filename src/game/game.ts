@@ -1,6 +1,7 @@
 import '@babylonjs/core/Physics/joinedPhysicsEngineComponent';
 import '@babylonjs/core/Physics/v2/physicsEngineComponent';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import type { AbstractEngine } from '@babylonjs/core/Engines/abstractEngine';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -153,6 +154,12 @@ export interface Game {
   endConversation(): void;
   /** The player goes on from a chapter's card (the end of the prologue). */
   continueStory(): void;
+  /** The engine, for the star map's own scene on the same drawing context (src/game/mapScene.ts). */
+  engine: AbstractEngine;
+  /** The star map takes the screen (the place stops drawing, and so its time), or gives it back. */
+  showMap(view: { render(): void } | null): void;
+  /** A course set on the star map, to a lead (`pyre`): the story waits for it. */
+  setCourse(id: string): void;
   setDifficulty(difficulty: Difficulty): void;
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
@@ -212,6 +219,12 @@ export interface GameOptions {
   onTravel(save: SaveData): void;
   /** The story opened an entry of the codex (src/game/codex.ts). */
   onCodex(id: string): void;
+  /** The star map was used: the screen opens it, and calls `showMap` and `setCourse`. */
+  onMap(): void;
+  /** A white flash (the lane taking the ship). */
+  onFlash(): void;
+  /** A shot the player watches (the ship leaving): the controls and the powers step aside. */
+  onShot(on: boolean): void;
 }
 
 const CAPSULE_HEIGHT = 1.8;
@@ -238,6 +251,8 @@ const CAMERA = { minDistance: 0.3, eye: 1.55, coverEye: 1.05, minBeta: 0.55, max
 const FIRE_INTERVAL = 0.22;
 const SHOT_POSE = 0.18;
 const SHOT_RANGE = 60;
+/** How long *Lantern*'s leaving is watched: breaking orbit, the lane's flash, and a moment in it. */
+const DEPART_SECONDS = 8.5;
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** How fast time runs in the command view. */
 const COMMAND_TIME = 0.05;
@@ -500,8 +515,11 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   });
   /** Conversations people offer, by person. */
   const talkKnots: Record<string, string | null> = {};
-  /** Things that can be used, by id; a thing to look at has the knot of the hero's remark. */
-  const usable = new Map<string, { at: Vector3; label: string; knot?: string }>();
+  /**
+   * Things that can be used, by id; a thing to look at has the knot of the hero's remark, and the
+   * star map stays to be used again.
+   */
+  const usable = new Map<string, { at: Vector3; label: string; knot?: string; map?: true }>();
   /** Remarks to say, one after another, and the seconds before the next. */
   const remarks: Line[] = [];
   let remarkWait = 0;
@@ -514,6 +532,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   /** True while a saved game (or a new one) sets its scene up: `start` commands apply. */
   let resuming = true;
   let liftoff: { t: number } | null = null;
+  /** *Lantern* leaving orbit, and the shot that watches it (out of the bridge's window). */
+  let departing: { t: number; shot: { from: Vector3; to: Vector3 } | null } | null = null;
   let ended = false;
   /** The last chapter saved, for a save made on the way to another place. */
   let lastCheckpoint = options.save?.checkpoint ?? options.chapter ?? 'night_shift';
@@ -770,6 +790,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       case 'sky':
         place.sky.swarm(c.args.includes('swarm'));
         place.sky.space(c.args.includes('space'));
+        place.lane(c.args.includes('lane'));
         break;
       case 'start':
         // A companion stands a little behind the hero's mark; anyone else on their own.
@@ -804,7 +825,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         options.onHint(a);
         break;
       case 'objective':
-        options.onObjective(c.rest);
+        options.onObjective(c.rest === 'none' ? null : c.rest);
         break;
       case 'marker':
         markerTarget = a === 'none' ? null : a;
@@ -847,6 +868,19 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       case 'use': {
         const m = markOf(b);
         if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' ') });
+        break;
+      }
+      case 'map': {
+        const m = markOf(b);
+        if (m) usable.set(a, { at: m.at, label: c.args.slice(2).join(' '), map: true });
+        break;
+      }
+      case 'depart': {
+        options.onObjective(null);
+        audio.play('liftoff', { volume: 0.55 });
+        const shot = place.depart(() => options.onFlash());
+        departing = { t: 0, shot };
+        options.onShot(true);
         break;
       }
       case 'look': {
@@ -1138,7 +1172,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     clock += real;
     const fallen = condition.kind !== 'up';
     // In the command view, a conversation, a scene, or down, the player's movement and shots wait.
-    const held = commanding || talking !== null || fallen || liftoff !== null || ended;
+    const held = commanding || talking !== null || fallen || liftoff !== null || departing !== null || ended;
     const aiming = !held && (input.aiming || input.firing);
     if (aiming !== wasAiming) {
       wasAiming = aiming;
@@ -1147,7 +1181,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
     // Look: drag or mouse turns the camera round the hero, more finely while aiming.
     const look = input.takeLook();
-    if (!talking && !liftoff) {
+    if (!talking && !liftoff && !departing) {
       const fine = aiming ? 0.6 : 1;
       orbit.alpha -= look.x * 0.0055 * fine;
       orbit.beta = Math.min(CAMERA.maxBeta, Math.max(CAMERA.minBeta, orbit.beta - look.y * 0.0045 * fine));
@@ -1574,9 +1608,21 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         window.setTimeout(() => options.onFade(false), 300);
       }
     }
+    if (departing) {
+      departing.t += real;
+      if (departing.shot) {
+        from = departing.shot.from;
+        lookAt = departing.shot.to;
+      }
+      if (departing.t >= DEPART_SECONDS) {
+        departing = null;
+        options.onShot(false);
+        director.event('done:depart');
+      }
+    }
     // Whatever the shot, and wherever a blend between two shots passes, never beyond a wall: the
     // camera is always where the hero's head could see it from.
-    if (!liftoff) from = clearOf(head, from, 0.2);
+    if (!liftoff && !departing) from = clearOf(head, from, 0.2);
     if (debugView) {
       from = debugView.from;
       lookAt = debugView.to;
@@ -1778,7 +1824,13 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   let ready = false;
   let statsTime = 0;
+  /** The star map, drawn instead of the place while it is open (its own scene, the same engine). */
+  let overlay: { render(): void } | null = null;
   engine.runRenderLoop(() => {
+    if (overlay && ready) {
+      overlay.render();
+      return;
+    }
     scene.render();
     if (!ready) {
       ready = true;
@@ -1810,6 +1862,14 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
 
   return {
     input,
+    engine,
+    showMap(view) {
+      overlay = view;
+      if (view) input.release();
+    },
+    setCourse(id) {
+      director.event(`course:${id}`);
+    },
     setCommandView,
     order,
     usePower,
@@ -1826,7 +1886,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (knot) startConversation(promptTarget.id, knot);
       } else {
         const id = promptTarget.id;
-        const knot = usable.get(id)?.knot;
+        const thing = usable.get(id);
+        if (thing?.map) {
+          audio.play('ui_click');
+          input.release();
+          options.onMap();
+          director.event(`used:${id}`);
+          return;
+        }
+        const knot = thing?.knot;
         usable.delete(id);
         if (knot) remark(knot);
         else audio.play(id === 'relay' ? 'relay' : 'ui_click', { at: hero.root.position });

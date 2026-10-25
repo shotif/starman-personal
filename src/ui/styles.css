@@ -1592,3 +1592,266 @@ body {
     opacity: 0.55;
   }
 }
+
+/* The star map (ACT1.md, increment 2): the map's scene fills the screen under these. */
+.starmap {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.starmap__surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+
+.starmap__surface:active {
+  cursor: grabbing;
+}
+
+.starmap__label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -14px 0 0 6px;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink-dim);
+  background: none;
+  border: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  text-shadow: 0 1px 3px #000;
+}
+
+.starmap__label--here {
+  color: #ffc46b;
+}
+
+.starmap__label--lead {
+  color: #ffe08a;
+}
+
+.starmap__label--on {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.starmap__leads {
+  position: absolute;
+  top: calc(var(--safe-top) + 12px);
+  left: 16px;
+  right: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.starmap__lead {
+  min-height: 40px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 600;
+  color: #ffe08a;
+  background: var(--panel);
+  border: 1px solid rgb(255 224 138 / 0.45);
+  border-radius: 20px;
+  pointer-events: auto;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.starmap__lead--later {
+  color: var(--ink-dim);
+  border-color: var(--panel-edge);
+}
+
+.starmap__lead[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.starmap__later {
+  font-weight: 400;
+}
+
+.starmap__panel {
+  position: absolute;
+  top: calc(var(--safe-top) + 72px);
+  right: calc(var(--safe-right) + 16px);
+  width: min(360px, 40vw);
+  max-height: calc(100% - var(--safe-top) - var(--safe-bottom) - 160px);
+  overflow-y: auto;
+  padding: 16px 18px;
+  line-height: 1.45;
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 12px;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.starmap__panel p {
+  margin: 0 0 10px;
+}
+
+.starmap__name {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.starmap__where {
+  color: var(--ink-dim);
+}
+
+.starmap__lead-panel {
+  margin: 0 0 12px;
+  padding: 10px 0;
+  border-block: 1px solid var(--panel-edge);
+}
+
+.starmap__course {
+  width: 100%;
+  min-height: 48px;
+  font: inherit;
+  font-weight: 700;
+  color: #05070a;
+  background: #ffe08a;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.starmap__wait {
+  color: var(--ink-dim);
+  font-style: italic;
+}
+
+.starmap__stars {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.starmap__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-radius: 50%;
+  vertical-align: 0;
+}
+
+.starmap__type,
+.starmap__source {
+  color: var(--ink-dim);
+}
+
+.starmap__source {
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.starmap__bar {
+  position: absolute;
+  left: calc(var(--safe-left) + 16px);
+  right: calc(var(--safe-right) + 16px);
+  bottom: calc(var(--safe-bottom) + 12px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.starmap__hint {
+  flex: 1;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+
+.starmap__button {
+  min-width: 88px;
+  min-height: 44px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--panel-edge);
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.starmap__loading {
+  position: absolute;
+  inset: 45% 0 auto;
+  text-align: center;
+  color: var(--ink-dim);
+}
+
+/* A phone, or any screen held upright: the panel is a sheet over the foot of the map. */
+@media (max-width: 640px), (orientation: portrait) {
+  .starmap__panel {
+    top: auto;
+    left: calc(var(--safe-left) + 8px);
+    right: calc(var(--safe-right) + 8px);
+    bottom: calc(var(--safe-bottom) + 66px);
+    width: auto;
+    max-width: 720px;
+    margin: 0 auto;
+    max-height: 40%;
+    padding: 12px 14px;
+  }
+
+  .starmap__name {
+    font-size: 19px;
+  }
+
+  .starmap__lead {
+    min-height: 36px;
+    padding: 6px 11px;
+    font-size: 13px;
+  }
+
+  .starmap__hint {
+    font-size: 11px;
+  }
+}
+
+/* A phone on its side: the panel down the right, narrower. */
+@media (max-height: 500px) and (min-width: 641px) {
+  .starmap__panel {
+    top: calc(var(--safe-top) + 60px);
+    width: min(320px, 44vw);
+    max-height: calc(100% - var(--safe-top) - var(--safe-bottom) - 130px);
+  }
+}
+
+/* The lane takes the ship: a white flash that fades. */
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: #eaf4ff;
+  pointer-events: none;
+  animation: flash 1.1s ease-out forwards;
+}
+
+@keyframes flash {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

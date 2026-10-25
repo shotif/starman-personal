@@ -201,7 +201,7 @@ export const PLACES: Record<PlaceId, { areas: AreaData[]; marks: Record<string, 
 export const ALL_MARKS: Record<string, MarkData> = { ...MARKS, ...LANTERN_MARKS };
 
 /** Where a chapter (its checkpoint) is played: the prologue at Calder, from its end aboard *Lantern*. */
-const CHAPTER_PLACE: Record<string, PlaceId> = { bridge: 'lantern', aboard: 'lantern' };
+const CHAPTER_PLACE: Record<string, PlaceId> = { bridge: 'lantern', aboard: 'lantern', lane: 'lantern' };
 export const placeOf = (checkpoint: string | null | undefined): PlaceId =>
   (checkpoint && CHAPTER_PLACE[checkpoint]) || 'calder';
 

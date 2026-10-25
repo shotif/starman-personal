@@ -17,6 +17,15 @@ in [docs/ART_PIPELINE.md](docs/ART_PIPELINE.md).
 When another CC BY asset is added, it is credited here with its title, its author, a link to
 its source, its licence with a link, and what we changed, as the licence asks.
 
+## Data
+
+- **The real neighbourhood** on the star map: Starman Reborn's census and Starman Control's shell,
+  copied from [Starman Control](https://github.com/shotif/starman-control), every value from the
+  archives: the European Space Agency's **Gaia** mission (DR3), **SIMBAD** (CDS, Strasbourg), the
+  **NASA Exoplanet Archive** and the **Extrasolar Planets Encyclopaedia**, and three planets from the
+  **Open Exoplanet Catalogue** (Hanno Rein), whose notice is in
+  [src/data/NOTICE.md](src/data/NOTICE.md).
+
 ## CC0 assets (no credit required, given gladly)
 
 **Characters and animation**

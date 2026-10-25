@@ -4176,6 +4176,174 @@
       "envelope": [0,0,0.1,1,0.21,0,1,0.9,0.62,0.59,0.33,0.15,0.15,0.5,0.78,0.59,0,0,0,0.34,0.7,0.43,0.47,0.29,0.57,0.41,0.28,0.09,0,0,0,0,0,0,0,0,0,0,0.56,0.84,0.22,0.14,0.37,1,0.69,0.77,0.52,0.43,0.17,0.91,0.74,0.78,0.66,0.73,0.53,0.33,0,0.41,0.7,0.46,0.47,0.38,0.36,0.09,0.37,0.34,0.34,0.79,0.63,0.55,0.43,0.25,0,0,0,0,0,0,0,0,0.16,0.67,0.62,0.81,0.74,0.86,0.96,0.92,0.58,0,0.44,0.59,0.26,0.17,0.52,0.61,0.43,0.62,0.49,0.08,0.21,0.46,0.59,0.48,0.53,0.4,0.29,0.2,0.52,0.54,0.41,0.14,0,0,0],
       "words": [["The",0.08,0.16],["Duskfolk",0.24,0.8],["border.",0.96,1.64],["If",1.92,2.08],["their",2.2,2.32],["star",2.48,2.64],["is",2.72,2.8],["dimming",2.88,3.2],["too,",3.28,3.96],["they",4,4.16],["need",4.24,4.48],["to",4.56,4.64],["hear",4.72,4.8],["it",4.88,4.96],["from",5.04,5.2],["us.",5.28,5.76]]
     },
+    "hero_jo_course_03a.man.mp3": {
+      "line": "hero_jo_course_03a",
+      "speaker": "hero",
+      "body": "man",
+      "text": "They brought us out of Ross 128. They'll do.",
+      "direction": "[plain, matter-of-fact]",
+      "hash": "4f4200ed3bde83ddf823a6cc67c87e7efd3b59d783eb49319edb931749ab6a52",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1329725677,
+      "stitching": {
+        "previous": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "They brought us out of Ross 128. They'll do",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.63,
+      "lead": 0.15,
+      "tail": 0.25,
+      "peak": 0.79,
+      "loudness": -20.3,
+      "bytes": 29300,
+      "sha256": "99528a4f83d42057df05453d38a72f64f4d7b4b903de08b318915b2fc107b5a8",
+      "made": "2026-10-25T08:12:52.621Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0,0.64,0.62,0.33,0.51,0.83,0.71,0.6,0.58,0.34,0.65,1,0.77,0.69,0.4,0.34,0.37,0.66,0.83,0.72,0.32,0.38,0.37,0.23,0.38,1,0.51,0.58,0.37,0.79,0.58,0.28,0.42,0.23,0.15,0.29,0.46,0.49,0.3,0.35,0.32,0.38,0.29,0.27,0.15,0.08,0.15,0.1,0,0,0,0,0,0,0,0,0.4,0.6,0.51,0.42,0.3,0.43,0.32,0.23,0.2,0.13,0.06,0,0,0,0],
+      "words": [["They",0.08,0.24],["brought",0.29,0.4],["us",0.48,0.56],["out",0.64,0.72],["of",0.8,0.88],["Ross",1.04,1.2],["128.",1.28,2.84],["They'll",2.88,3.12],["do.",3.24,3.68]]
+    },
+    "hero_jo_course_03a.woman.mp3": {
+      "line": "hero_jo_course_03a",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "They brought us out of Ross 128. They'll do.",
+      "direction": "[plain, matter-of-fact]",
+      "hash": "b1394275ed0f20f89d21507328b6aee00d43f4f4338ef67eef8b230727280081",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2973319797,
+      "stitching": {
+        "previous": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "They brought us out of Ross 128. They'll do",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 3.55,
+      "lead": 0.1,
+      "tail": 0.2,
+      "peak": 0.462,
+      "loudness": -22.1,
+      "bytes": 28673,
+      "sha256": "b69013049c1e48ff55a779478c9b50391c8da18039780874c4921425394d1f97",
+      "made": "2026-10-25T08:12:52.783Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.34,1,0.92,0.25,0.29,0.8,0.68,0.41,0.84,0.48,0.38,0.86,0.81,0.66,0.6,0.88,0.19,0.13,0.57,1,0.66,0.33,0.39,0.25,0.13,0.52,0.79,0.6,0.54,0.59,0.59,0.3,0.53,0.16,0,0.34,0.32,0.49,0.38,0.35,0.37,0.54,0.58,0.39,0.32,0.27,0,0.46,0.25,0.08,0,0,0,0,0.09,0.06,0.56,0.6,0.6,0.4,0.24,0.54,0.52,0.51,0.43,0.18,0,0,0,0],
+      "words": [["They",0.08,0.24],["brought",0.28,0.48],["us",0.56,0.64],["out",0.72,0.8],["of",0.88,0.96],["Ross",1.12,1.28],["128.",1.36,2.84],["They'll",2.88,3.12],["do.",3.24,3.6]]
+    },
+    "hero_jo_course_03b.man.mp3": {
+      "line": "hero_jo_course_03b",
+      "speaker": "hero",
+      "body": "man",
+      "text": "Take her out, Jo.",
+      "direction": "[firm]",
+      "hash": "0a080f7ac22a4a91b6c978fbab20e986b406c7ded7e7f5b70932680f6d89871a",
+      "voice": {
+        "id": "onwK4e9ZLuTAKqWW03F9",
+        "name": "Daniel"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 168300410,
+      "stitching": {
+        "previous": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "Take her out, Joe",
+      "match": 0.75,
+      "checks": [
+        "heard 75%: \"Take her out, Joe\""
+      ],
+      "tries": 4,
+      "seconds": 1.41,
+      "lead": 0.05,
+      "tail": 0.45,
+      "peak": 0.88,
+      "loudness": -17.4,
+      "bytes": 11536,
+      "sha256": "a2a839bdee727d341f0e792185fcd66d5a4c66581fd9d2764929231a5ea0a8a1",
+      "made": "2026-10-25T08:12:53.415Z",
+      "aiGenerated": true,
+      "envelope": [0,0.27,0.93,0.78,0.21,0.59,1,0.74,0.94,0.76,0.45,0.1,0,0.22,0.5,0.48,0.44,0.39,0.34,0.2,0,0,0,0,0,0,0,0,0],
+      "words": [["Take",0.08,0.24],["her",0.32,0.4],["out,",0.48,0.6],["Jo.",0.64,1.36]]
+    },
+    "hero_jo_course_03b.woman.mp3": {
+      "line": "hero_jo_course_03b",
+      "speaker": "hero",
+      "body": "woman",
+      "text": "Take her out, Jo.",
+      "direction": "[firm]",
+      "hash": "750e95600721c3ed2d3585f953084833ba1f932d7c2ff45f1689835d6818d593",
+      "voice": {
+        "id": "Xb7hH8MSUJpSbSDYk0k2",
+        "name": "Alice"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1963890016,
+      "stitching": {
+        "previous": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "Take her out, Joe",
+      "match": 0.75,
+      "checks": [
+        "heard 75%: \"Take her out, Joe\""
+      ],
+      "tries": 4,
+      "seconds": 1.31,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.632,
+      "loudness": -19.5,
+      "bytes": 10700,
+      "sha256": "b59fd80231fcadffee5bb538fa576ac07a478c063d1b96643368985e1c61141b",
+      "made": "2026-10-25T08:12:53.503Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.35,0.35,1,0.36,0.11,0.58,0.79,0.73,0.72,0.45,0.25,0.08,0,0.18,0.4,0.39,0.27,0.36,0.33,0.14,0,0,0,0,0],
+      "words": [["Take",0.08,0.32],["her",0.4,0.48],["out,",0.6,0.83],["Jo.",0.93,1.36]]
+    },
     "hero_jo_meet_03a.man.mp3": {
       "line": "hero_jo_meet_03a",
       "speaker": "hero",
@@ -9993,6 +10161,247 @@
       "envelope": [0,0,0.49,0.42,0.77,1,0.66,0.49,0.42,0.21,0.51,0.79,0.72,0.65,0.48,0.65,0.73,0.94,0.64,0.61,0.5,0.22,0.1,0,0,0,0,0,0,0,0,0,0.27,0.69,0.78,0.69,0.24,0.71,0.7,0.6,0.4,0.5,0.97,1,1,0.54,0.23,0.12,0.57,0.86,0.9,0,0.16,0.71,0.56,0.59,0.48,0.11,0,0,0,0,0,0,0,0,0.16,0.23,0.63,0.63,0.59,0.57,0.2,0.79,0.8,0.62,0.63,0.36,0.23,0.68,0.55,0.49,0.12,0.27,0.38,0.59,0.49,0.43,0.49,0.24,0.13,0.1,0.44,0.37,0.22,0.23,0.38,0.42,0.32,0.27,0.12,0,0],
       "words": [["Course",0.08,0.4],["laid",0.48,0.72],["in.",0.8,1.52],["Lantern's",1.6,2],["yours,",2.08,2.36],["Captain.",2.4,3.2],["Try",3.28,3.44],["to",3.52,3.6],["bring",3.68,3.76],["her",3.84,3.92],["back",4,4.08],["in",4.16,4.24],["one",4.32,4.48],["piece.",4.72,5.2]]
     },
+    "jo_course_01a.mp3": {
+      "line": "jo_course_01a",
+      "speaker": "Jo",
+      "text": "Pyre Remnant it is. Eleven jumps by the old lanes, GJ 915 last, then Pyre's own lane.",
+      "direction": "[steady, dry]",
+      "hash": "72d507940fd4d3a1dae477b0568791b0055bedb1ca49cf8856abe7cd0d7c8e27",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1926563732,
+      "stitching": {
+        "next": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "Pyre remnant it is. Eleven jumps by the old lanes. GJ nine one five last, then Pyre's own lane",
+      "match": 0.941,
+      "checks": [],
+      "tries": 1,
+      "seconds": 7.24,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.552,
+      "loudness": -23.1,
+      "bytes": 58139,
+      "sha256": "d50f3b6fd760b648751e5c889dd18bb674106cc9310717286b999d86c30001f2",
+      "made": "2026-10-25T08:12:51.765Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.19,0.41,0.62,0.93,0.89,0.76,0.72,0.61,0.37,0.61,0.53,0.48,0.71,0.69,0.63,0.46,0.24,0.4,0.26,0.47,0.52,0.31,0.24,0.16,0.37,0.43,0.34,0.18,0.13,0.07,0,0,0,0,0,0,0,0,0.3,1,0.98,1,0.93,0.48,0.92,1,0.45,0.55,0.91,0.64,0.45,0.25,0,0.79,0.67,0.32,0.5,0.38,0.36,0.53,0.55,0.35,0.06,0.43,0.48,0.31,0.21,0.2,0.2,0.21,0.28,0.26,0.07,0,0,0,0,0.12,0.39,0.66,0.72,0.37,0.77,0.72,0.49,0.5,0.69,0.84,0.7,0.56,0.57,0.67,0.42,0.14,0.12,0.92,0.88,0.55,0.12,0.31,0.64,0.9,0.85,0.67,0.31,0.26,0.32,0.22,0.11,0.09,0,0,0.13,0.43,0.76,0.57,0.64,0.46,0.19,0.23,0.65,0.51,0.46,0.54,0.32,0.33,0.2,0.5,0.57,0.53,0.54,0.54,0.3,0.21,0.19,0.15,0.23,0.1,0,0,0,0,0],
+      "words": [["Pyre",0.08,0.4],["Remnant",0.48,0.88],["it",0.96,1.04],["is.",1.12,1.72],["Eleven",2,2.32],["jumps",2.4,2.64],["by",2.72,2.8],["the",2.88,2.96],["old",3.04,3.2],["lanes,",3.32,3.84],["GJ",4,4.32],["915",4.4,5.04],["last,",5.28,5.68],["then",5.8,5.92],["Pyre's",6,6.4],["own",6.48,6.64],["lane.",6.8,7.2]]
+    },
+    "jo_course_01b.mp3": {
+      "line": "jo_course_01b",
+      "speaker": "Jo",
+      "text": "Pyre Remnant, then, not where we said. Eleven jumps by the old lanes, GJ 915 last, then Pyre's own lane.",
+      "direction": "[steady, dry]",
+      "hash": "8f94667e9be3ebaffe451c93b33e5e55b928e0d0b515c1bb195f99ce9d87fc8f",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2408867454,
+      "stitching": {
+        "next": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right."
+      },
+      "heard": "Pyre remnant, then. Not where we said. Eleven jumps by the old lanes. GJ nine one five last, then Pyre's own lane",
+      "match": 0.95,
+      "checks": [],
+      "tries": 1,
+      "seconds": 9.09,
+      "lead": 0.1,
+      "tail": 0.45,
+      "peak": 0.528,
+      "loudness": -24,
+      "bytes": 72976,
+      "sha256": "b0449fd850747c4e968a30e029161659d0d17c5e10bdbaf82e5b3848a9bcf366",
+      "made": "2026-10-25T08:12:53.141Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.14,0.33,0.77,1,0.78,0.69,0.64,0.44,0.53,0.52,0.46,0.46,0.38,0.3,0.23,0.13,0.22,0.14,0.11,0.1,0.07,0,0.13,0.36,0.45,0.33,0.3,0.26,0.16,0.12,0.06,0,0,0,0,0,0,0.14,0.23,0.23,0.23,0.12,0.21,0.24,0.22,0.21,0.25,0.2,0.25,0.28,0.33,0.35,0.33,0.28,0.13,0.13,0.07,0,0,0,0,0,0,0,0,0,0,0.57,1,1,1,0.56,0.75,0.93,0.93,0.38,0.73,0.85,0.57,0.35,0.15,0.46,0.75,0.41,0.48,0.42,0.23,0.62,0.56,0.48,0.11,0.22,0.58,0.42,0.22,0.25,0.22,0.19,0.33,0.41,0.24,0,0,0,0,0,0.17,0.51,0.78,0.71,0.36,0.51,0.64,0.53,0.56,0.88,0.75,0.68,0.66,0.48,0.53,0.72,0.67,0.68,0.19,0.11,0.79,0.94,0.62,0.14,0.13,0.41,0.79,0.67,0.4,0.41,0.26,0.34,0.42,0.21,0.17,0,0,0,0.15,0.54,0.99,0.64,0.73,0.63,0.29,0.17,0.24,0.67,0.69,0.45,0.48,0.46,0.3,0.23,0.35,0.58,0.58,0.53,0.55,0.48,0.35,0.27,0.2,0.19,0.19,0.06,0,0,0,0,0,0,0,0],
+      "words": [["Pyre",0.08,0.4],["Remnant,",0.48,1.04],["then,",1.2,1.76],["not",2,2.16],["where",2.24,2.32],["we",2.4,2.48],["said.",2.56,3.16],["Eleven",3.44,3.84],["jumps",3.88,4.08],["by",4.16,4.24],["the",4.32,4.4],["old",4.48,4.64],["lanes,",4.76,5.28],["GJ",5.44,5.84],["915",5.92,6.56],["last,",6.64,7.28],["then",7.36,7.6],["Pyre's",7.68,8.08],["own",8.16,8.32],["lane.",8.48,9.04]]
+    },
+    "jo_course_02.mp3": {
+      "line": "jo_course_02",
+      "speaker": "Jo",
+      "text": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right.",
+      "direction": "[steady, dry]",
+      "hash": "bf8e2c102cbe448cb5b8742d5bebb18a5d9e31a3cf8a60c316dc606c48fb3776",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3213765648,
+      "stitching": {
+        "previous": "Pyre Remnant, then, not where we said. Eleven jumps by the old lanes, GJ 915 last, then Pyre's own lane."
+      },
+      "heard": "Half those lanes nobody's flown since the Lapse. Lantern's charts are older than that. I hope they're right",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.77,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.404,
+      "loudness": -25.2,
+      "bytes": 54377,
+      "sha256": "b6ae721b4f68fc80591dff6ee1236eebeba35a0462f9bb0f9bac8f74de55f356",
+      "made": "2026-10-25T08:12:52.896Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.12,0.49,0.88,1,0.55,0.24,0.15,0.7,0.88,0.61,0.59,0.33,0.51,1,0.94,0.96,1,0.8,0.39,0.28,0.61,0.71,0.51,0.41,0.35,0.25,0.62,0.66,0.45,0.47,0.37,0.1,0.12,0.46,0.63,0.62,0.64,0.54,0.41,0.26,0.75,0.39,0.12,0.13,0.55,0.34,0.33,0.63,0.49,0.54,0.48,0.29,0.05,0.32,0.55,0.45,0.2,0.1,0,0,0,0,0,0,0,0.42,0.64,0.89,0.37,0.34,0.72,0.79,0.46,0.56,0.07,0.53,0.28,0.41,0.56,0.53,0.13,0.45,0.55,0.54,0.3,0.45,0.39,0.3,0.65,0.59,0.14,0.43,0.7,0.6,0.6,0.56,0.54,0.31,0.15,0.12,0,0,0,0,0,0,0,0,0.07,0.26,0.35,0.26,0.34,0.34,0,0.07,0.44,0.44,0.36,0.38,0.52,0.56,0.51,0.45,0.29,0.29,0.3,0.16,0.13,0,0,0,0,0],
+      "words": [["Half",0.16,0.32],["those",0.4,0.64],["lanes",0.76,1.04],["nobody's",1.2,1.6],["flown",1.68,2],["since",2.12,2.24],["the",2.32,2.4],["Lapse.",2.56,3.28],["Lantern's",3.32,3.84],["charts",4,4.16],["are",4.24,4.32],["older",4.44,4.56],["than",4.64,4.72],["that.",4.8,5.44],["I",5.6,5.68],["hope",5.76,5.84],["they're",5.88,6],["right.",6.08,6.8]]
+    },
+    "jo_course_04a.mp3": {
+      "line": "jo_course_04a",
+      "speaker": "Jo",
+      "text": "They did. With a regulator held on by Sorrel's patience.",
+      "direction": "[steady, dry]",
+      "hash": "c6c46eecdf915ce94925a4f547dd23c18d8c8dcd93e309d058639b862d076c82",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3334762220,
+      "stitching": {
+        "previous": "They brought us out of Ross 128. They'll do.",
+        "next": "Ren, tell the hold. We're leaving."
+      },
+      "heard": "They did, with a regulator held on by Sorrel's patience",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.44,
+      "lead": 0.1,
+      "tail": 0.55,
+      "peak": 0.488,
+      "loudness": -24.1,
+      "bytes": 35778,
+      "sha256": "a1d425b1652a023e618b318d948e96199ee7acadcf3e745208f9c5f139bbcfd7",
+      "made": "2026-10-25T08:12:53.657Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.35,0.82,1,1,0.28,0.79,0.94,0.74,0.63,0.23,0.28,0.21,0.09,0,0,0,0,0,0,0,0,0.15,0.42,0.32,0.57,0.56,0.24,0.91,0.98,0.51,0.27,0.64,0.48,0.52,0.68,0.51,0.76,0.74,0.43,0.34,0.43,0.58,0.66,0.3,0.41,0.53,0.66,0.54,0.53,0.39,0.62,0.37,0.36,0.45,0.36,0.31,0.42,0.47,0.51,0.3,0.38,0.13,0.09,0.16,0.34,0.47,0.36,0.44,0.26,0.32,0.22,0.17,0.22,0.44,0.48,0.3,0.06,0,0,0,0,0,0,0,0,0,0],
+      "words": [["They",0.2,0.32],["did.",0.48,1.12],["With",1.2,1.28],["a",1.32,1.36],["regulator",1.44,2],["held",2.08,2.32],["on",2.4,2.48],["by",2.56,2.72],["Sorrel's",2.8,3.2],["patience.",3.32,4.4]]
+    },
+    "jo_course_04b.mp3": {
+      "line": "jo_course_04b",
+      "speaker": "Jo",
+      "text": "Aye, Captain. Taking her out.",
+      "direction": "[firm, pleased]",
+      "hash": "579e887ef6f0d7e017a7c61ba7570611384ef2a419cd77585f05188aee3966da",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1470007422,
+      "stitching": {
+        "previous": "Take her out, Jo."
+      },
+      "heard": "Aye, captain. Taking her out",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.19,
+      "lead": 0.1,
+      "tail": 0.35,
+      "peak": 0.645,
+      "loudness": -19,
+      "bytes": 17806,
+      "sha256": "48a2ba854293ca482e3db02c564b93bbdf2a1c81fdec7ee7e85d367d8a2222ed",
+      "made": "2026-10-25T08:12:53.852Z",
+      "aiGenerated": true,
+      "envelope": [0,0,1,0.86,0.69,0.36,0.11,0.11,0.36,0.55,0.3,0,0.22,0.39,0.28,0.23,0.08,0,0,0,0,0,0,0.07,0.25,0.67,0.87,0.16,0.64,0.6,0.67,0.76,0.82,0.82,0.7,0.47,0.25,0.09,0,0.09,0.08,0,0,0],
+      "words": [["Aye,",0.08,0.48],["Captain.",0.64,1],["Taking",1.2,1.44],["her",1.52,1.68],["out.",1.76,2.24]]
+    },
+    "jo_course_05.mp3": {
+      "line": "jo_course_05",
+      "speaker": "Jo",
+      "text": "Ren, tell the hold. We're leaving.",
+      "direction": "[steady, dry]",
+      "hash": "5a50a78ac70d0a809066813fb8958c2cd05b0cf026eacc9af0a88e9e98ef0ef4",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 1515235210,
+      "stitching": {
+        "previous": "Aye, Captain. Taking her out."
+      },
+      "heard": "Wren, tell the hold we're leaving",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 2.77,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.516,
+      "loudness": -22.3,
+      "bytes": 22403,
+      "sha256": "230bcd67643dcf824c777ee6df83f012042ac09c16520a32d97e0ed2446efbe4",
+      "made": "2026-10-25T08:12:54.468Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.19,0.66,0.93,0.77,0.66,0.37,0.34,0.15,0.05,0,0,0,0,0,0,0.15,0.32,1,1,0.23,0.67,0.26,0.37,0.52,0.45,0.32,0.18,0.12,0.1,0,0,0,0,0,0,0,0,0.23,0.51,0.49,0.34,0.53,0.55,0.36,0.27,0.35,0.22,0.18,0.15,0.05,0,0,0,0],
+      "words": [["Ren,",0.16,0.8],["tell",0.88,1.04],["the",1.08,1.12],["hold.",1.2,1.92],["We're",1.96,2.08],["leaving.",2.12,2.8]]
+    },
     "jo_hangar_01.mp3": {
       "line": "jo_hangar_01",
       "speaker": "Jo",
@@ -10106,6 +10515,44 @@
       "aiGenerated": true,
       "envelope": [0.08,0.61,0.82,0.4,0.15,0.57,0.92,0.85,0.61,0.78,0.7,0.91,0.96,0.73,0.18,0.65,0.61,0.66,0.32,0.14,0.45,0.11,0,0,0,0.56,0.74,0.66,1,1,0.76,0.45,0.27,0.2,0,0,0,0.6,0.24,0.29,0.91,0.6,0.39,0.72,0.83,0.87,0.31,0.15,0.13,0.26,0.52,0.64,0.29,0.09,0.09,0,0,0,0,0,0,0],
       "words": [["That's",0.08,0.24],["everyone",0.32,0.56],["aboard.",0.64,1.12],["Come",1.28,1.36],["on,",1.44,1.72],["before",1.84,2.08],["the",2.12,2.16],["next",2.24,2.4],["lot.",2.48,3.04]]
+    },
+    "jo_lane_01.mp3": {
+      "line": "jo_lane_01",
+      "speaker": "Jo",
+      "text": "In the lane. First of eleven. She's holding together.",
+      "direction": "[relieved, quiet]",
+      "hash": "2e7fe8182aaf799e7fbaa675491a1d26195ac4b8c8225aa04ee621edb3116312",
+      "voice": {
+        "id": "FGY2WhTYpPnrIDTdsKH5",
+        "name": "Laura"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 780134424,
+      "stitching": {},
+      "heard": "In the lane, first of 11. She's holding together",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.21,
+      "lead": 0.1,
+      "tail": 0.25,
+      "peak": 0.254,
+      "loudness": -29.7,
+      "bytes": 33897,
+      "sha256": "fe23a724fdd886c26dcc1b75f0b0533d3216e305476a4629a1ea11b0d4e1c8a0",
+      "made": "2026-10-25T08:12:51.311Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.11,0.51,0.9,0.78,0.71,0.57,0.39,0.55,0.57,0.51,0.44,0.49,0.33,0.37,0.33,0.21,0.13,0.06,0,0,0,0,0,0,0.07,0.15,0.2,0.35,0.44,1,0.83,0.45,0.46,0.16,0.46,0.28,0.37,0.67,0.53,0.22,0.65,0.56,0.49,0.37,0.11,0,0,0,0,0,0,0,0,0,0,0.45,1,0.49,0.86,0.79,0.46,0.32,0.55,0.34,0.66,0.57,0.48,0.78,0.15,0.58,0.71,0.48,0.28,0.6,0.47,0.42,0.37,0.23,0.08,0,0,0,0],
+      "words": [["In",0.08,0.24],["the",0.28,0.32],["lane.",0.4,1.08],["First",1.36,1.6],["of",1.68,1.76],["eleven.",1.88,2.56],["She's",2.88,3.04],["holding",3.12,3.36],["together.",3.44,4.24]]
     },
     "jo_meet_01.mp3": {
       "line": "jo_meet_01",
@@ -11146,6 +11593,46 @@
       "aiGenerated": true,
       "envelope": [0,0.2,0.44,0.13,0.22,0.57,0.6,0.3,0,0.58,0.35,0.6,0.73,0.8,1,0.9,0.62,0,0.68,0.6,0.5,0.41,0.4,0.26,0.09,0,0,0,0,0,0,0,0,0.21,0.32,0.58,0.62,0.29,0.55,0.5,0.49,0.42,0.43,0.73,0.51,0.08,0.24,0.78,1,0.31,0.72,0.24,0.33,0.25,0.07,0.2,0.54,0.53,0.51,0.31,0.11,0,0,0,0],
       "words": [["I'll",0.07,0.16],["keep",0.24,0.4],["trying",0.48,0.72],["the",0.76,0.8],["band.",0.88,1.44],["Maybe",1.68,2],["something",2.2,2.4],["gets",2.48,2.64],["through.",2.72,3.28]]
+    },
+    "pell_lane_01.mp3": {
+      "line": "pell_lane_01",
+      "speaker": "Pell",
+      "text": "Ross 128's behind us. First time in my life I can't see it from where I sleep.",
+      "direction": "[quiet, wistful]",
+      "hash": "c384f66c1562eb3af26cc24316690a8bcf7604d16f33a8a1975bf59b8e84bfe6",
+      "voice": {
+        "id": "CYw3kZ02Hs0563khs1Fj",
+        "name": "Dave"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 3280270956,
+      "stitching": {
+        "previous": "In the lane. First of eleven. She's holding together."
+      },
+      "heard": "Ross 128's behind us. First time in my life I can't see it from where I sleep",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 6.19,
+      "lead": 0.1,
+      "tail": 0.3,
+      "peak": 0.313,
+      "loudness": -26.4,
+      "bytes": 49780,
+      "sha256": "a6806fb499fd7b9c08182ac394577dec4d8729c926b93fbb7c50e4a81a77c664",
+      "made": "2026-10-25T08:12:51.597Z",
+      "aiGenerated": true,
+      "envelope": [0,0,0.11,0.45,0.61,0.38,0.92,1,0.63,0.1,0.6,0.95,0.84,0.5,0.93,1,0.52,0.75,0.74,0,0.99,0.44,0.51,1,0.92,0.78,0.86,0.97,0.62,0.1,0.72,0.12,0.5,0.7,0.24,0.21,0.68,0.8,0.75,0.64,0.34,0.3,0.21,0.29,0.22,0.14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.09,0.33,0.58,0.56,0.81,0.63,0.65,0.32,0.93,1,0.99,0.91,0.94,0.93,0.94,0.88,0.84,0.69,0.7,0.62,0.89,0.93,0.48,0.25,0.27,0.58,0.23,0.33,0.32,0.79,0.59,0.49,0.74,0.74,0.42,0.75,0.8,0.63,0.17,0.16,0.16,0.49,0.58,0.52,0.6,0.59,0.53,0.56,0.48,0.5,0.49,0.25,0.39,0.45,0.29,0.07,0,0.09,0,0,0],
+      "words": [["Ross",0.08,0.4],["128's",0.48,1.52],["behind",1.6,1.92],["us.",2,2.68],["First",3.12,3.36],["time",3.44,3.6],["in",3.68,3.76],["my",3.88,4],["life",4.16,4.32],["I",4.48,4.51],["can't",4.53,4.8],["see",4.88,4.96],["it",5.04,5.12],["from",5.2,5.28],["where",5.36,5.44],["I",5.6,5.64],["sleep.",5.68,6.24]]
     },
     "pell_relay_01.mp3": {
       "line": "pell_relay_01",
@@ -12852,6 +13339,44 @@
       "aiGenerated": true,
       "envelope": [0,0,0.11,0.19,0.44,0.97,0.53,0.55,0.7,0.24,0.4,0.19,0.18,0.27,0.36,0.79,1,0.43,0.18,0.21,0.44,0.26,0,0,0,0,0,0,0.33,0.58,0.16,0.68,0.1,0.46,0.71,0.88,0.42,0.09,0.09,0.5,0.33,0.25,0.19,0.22,0.22,0.12,0,0,0,0,0],
       "words": [["Don't",0.08,0.32],["look",0.4,0.48],["at",0.56,0.64],["me.",0.72,1.36],["Look",1.44,1.52],["at",1.56,1.6],["the",1.64,1.68],["officer.",1.76,2.56]]
+    },
+    "ren_leaving_01.mp3": {
+      "line": "ren_leaving_01",
+      "speaker": "Ren",
+      "text": "All hands, this is the bridge. We're breaking orbit. Hold on to something.",
+      "direction": "[calm, carrying, announcing to the ship]",
+      "hash": "9a0e66d6631e593f2cbc350a6cec1bc9d626f6ad6cdc6d45d22589ce1cb8c852",
+      "voice": {
+        "id": "pFZP5JQG7iQjIQuC4Bku",
+        "name": "Lily"
+      },
+      "service": "ElevenLabs text to speech",
+      "model": "eleven_v4",
+      "settings": {
+        "stability": 0.5,
+        "similarity_boost": 0.75,
+        "style": 0,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "format": "mp3_44100_64",
+      "seed": 2584635094,
+      "stitching": {},
+      "heard": "All hands, this is the bridge. We're breaking orbit. Hold on to something",
+      "match": 1,
+      "checks": [],
+      "tries": 1,
+      "seconds": 4.99,
+      "lead": 0.05,
+      "tail": 0.3,
+      "peak": 0.72,
+      "loudness": -17.1,
+      "bytes": 40167,
+      "sha256": "c89f90bb0102ae7adaed730059e844f07d375fe76ef8dec22115d11f3fb656b8",
+      "made": "2026-10-25T08:12:51.389Z",
+      "aiGenerated": true,
+      "envelope": [0,0.5,1,0.89,0.79,0.34,0.63,0.69,0.7,0.71,0.55,0.47,0.35,0.14,0.16,0.1,0.06,0,0,0,0.08,0.29,0.43,0.19,0.28,0.3,0.13,0.51,0.3,0.16,0.73,0.65,0.17,0.08,0.06,0.17,0.24,0.13,0,0,0,0,0,0,0.14,0.2,0.25,0.1,0,0.34,0.76,0.88,0.36,0.15,0.74,0.91,0.85,0.89,0.69,0.45,0.09,0.2,0.1,0,0.16,0.11,0,0,0,0,0,0,0.16,0.82,1,0.99,0.64,0.79,0.92,0.7,0.57,0.32,0.23,0.19,0.18,0.28,0.14,0.07,0,0.16,0.16,0.11,0.11,0.1,0,0,0,0,0,0],
+      "words": [["All",0.08,0.24],["hands,",0.48,0.88],["this",1.04,1.12],["is",1.2,1.28],["the",1.36,1.4],["bridge.",1.44,2],["We're",2.16,2.4],["breaking",2.6,2.8],["orbit.",2.88,3.4],["Hold",3.6,3.84],["on",3.92,4],["to",4.08,4.16],["something.",4.4,4.96]]
     },
     "ren_night_01.mp3": {
       "line": "ren_night_01",

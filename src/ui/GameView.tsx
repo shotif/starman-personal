@@ -9,6 +9,7 @@ import type { Looks, Manifest } from '../game/looks.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
 import { Dialogue } from './Dialogue.tsx';
+import { StarMap } from './StarMap.tsx';
 import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
 
@@ -114,6 +115,12 @@ export function GameView({
   const [sound, setSound] = useState<SoundStatus>(() => audio.status());
   const [plain, setPlain] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
+  /** The star map, open over the bridge. */
+  const [map, setMap] = useState(false);
+  const mapNow = useRef(false);
+  const [flash, setFlash] = useState<number | null>(null);
+  /** A shot to watch (the ship leaving): the controls step aside. */
+  const [shot, setShot] = useState(false);
   const touch = isTouch();
   const chapterAtStart = saved?.checkpoint ?? new URLSearchParams(location.search).get('chapter') ?? 'night_shift';
   const debug = new URLSearchParams(location.search).has('debug');
@@ -188,6 +195,12 @@ export function GameView({
             });
           },
           onTravel: (s) => onTravel(s),
+          onMap: () => {
+            mapNow.current = true;
+            setMap(true);
+          },
+          onFlash: () => setFlash(performance.now()),
+          onShot: setShot,
           onCard: (_card, e) => {
             setCard(e);
             document.body.dataset.card = 'prologue';
@@ -241,6 +254,11 @@ export function GameView({
     const timer = setTimeout(() => setNote(null), 1400);
     return () => clearTimeout(timer);
   }, [note]);
+  useEffect(() => {
+    if (!flash) return;
+    const timer = setTimeout(() => setFlash(null), 1200);
+    return () => clearTimeout(timer);
+  }, [flash]);
   useEffect(() => {
     if (!savedAt) return;
     const timer = setTimeout(() => setSavedAt(null), 2000);
@@ -303,6 +321,8 @@ export function GameView({
   useEffect(() => {
     if (!game) return;
     const keys = (e: KeyboardEvent) => {
+      // The star map has keys of its own.
+      if (mapNow.current) return;
       if (talkingNow.current) {
         if (e.code === 'Tab') e.preventDefault();
         return;
@@ -336,7 +356,7 @@ export function GameView({
   return (
     <main class="stage">
       <canvas ref={canvas} class="scene" aria-label="Calder Station" />
-      {status.kind === 'ready' && !ending && !card && (
+      {status.kind === 'ready' && !ending && !card && !map && !shot && (
         <header class="hud">
           {objective && !conversation && (
             <p class="objective" key={objective}>
@@ -376,7 +396,7 @@ export function GameView({
           )}
         </header>
       )}
-      {status.kind === 'ready' && !ending && !card && (
+      {status.kind === 'ready' && !ending && !card && !map && !shot && (
         <button type="button" class="pause-button" aria-label="Pause" onClick={() => pause(true)}>
           ❚❚
         </button>
@@ -397,7 +417,7 @@ export function GameView({
           <p class="notice__detail">{status.message}</p>
         </div>
       )}
-      {caption && (
+      {caption && !map && (
         <p class="caption" key={caption.id}>
           {caption.text}
         </p>
@@ -413,7 +433,7 @@ export function GameView({
           {note.text}
         </p>
       )}
-      {vitals && !touch && !conversation && !ending && !card && status.kind === 'ready' && (
+      {vitals && !touch && !conversation && !ending && !card && !map && !shot && status.kind === 'ready' && (
         <section class="powers" aria-label="Powers">
           {vitals.powers.map((p, i) => (
             <button
@@ -433,7 +453,7 @@ export function GameView({
       {(aiming || commanding) && !conversation && <div class="crosshair" aria-hidden="true" />}
       {hit && <div class={`hit hit--${hit.side}`} key={hit.id} aria-hidden="true" />}
       {vitals && vitals.health < 0.35 && vitals.condition.kind === 'up' && <div class="wounded" aria-hidden="true" />}
-      {prompt && !conversation && !commanding && !touch && (
+      {prompt && !conversation && !commanding && !touch && !map && (
         <p class="talk-prompt">
           <kbd>E</kbd>
           {prompt.label}
@@ -494,7 +514,7 @@ export function GameView({
           </div>
         </div>
       )}
-      {touch && game && !ending && !card && (
+      {touch && game && !ending && !card && !map && !shot && (
         <TouchControls
           input={game.input}
           commanding={commanding}
@@ -537,6 +557,16 @@ export function GameView({
       )}
       {paused && reading && <Codex open={codex} onClose={() => setReading(false)} />}
       {black && <div class="fade" aria-hidden="true" />}
+      {flash && <div key={flash} class="flash" aria-hidden="true" />}
+      {map && game && (
+        <StarMap
+          game={game}
+          onClose={() => {
+            mapNow.current = false;
+            setMap(false);
+          }}
+        />
+      )}
       {card && (
         <div class="ending" role="dialog" aria-label="The end of the prologue">
           <p class="ending__kicker">End of the prologue</p>
@@ -563,7 +593,7 @@ export function GameView({
           <p class="ending__kicker">Act 1 · The dimming</p>
           <h1 class="ending__title">To be continued</h1>
           <p class="ending__next">
-            Lantern's course is set for Pyre Remnant. That part of the story is being built, and comes in the next
+            Lantern is in the lanes, bound for Pyre Remnant. What waits there is being built, and comes in a later
             update.
           </p>
           <button type="button" onClick={onQuit}>
