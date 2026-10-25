@@ -3,8 +3,8 @@
 *Written 25 October 2026 for increment 5 of Act 1 ([ACT1.md](ACT1.md) §6, decided by D-48 and
 D-51). It turns the outline into a mission: the station and its people, the beats, the script's
 shape, the place, the fights, experience and money, and what it adds to the canon. The decisions it
-needs are round 9 in [DECISIONS.md](../DECISIONS.md), D-57 to D-65. Nothing here is built until the
-owner has answered them. Every name is a working name the owner may change.*
+needs are round 9 in [DECISIONS.md](../DECISIONS.md), D-57 to D-65, all decided as recommended on
+25 October 2026. Every name is a working name the owner may change.*
 
 ## Goals
 
@@ -103,7 +103,7 @@ travel pyre`), one place in memory at a time.
 | **Tobias Quaye** (about 45) | The Banked's speaker on the station; once a Cooperative astronomer | To persuade people that the light should be banked | He believes it. He has watched stars die for twenty years and thinks the Banked are keeping something safe. He has been told the audit is honest | His argument; doubt, later; the Banked's offer to the unlisted |
 | **Matti Lund** (about 30) | A dock hand, from Fomalhaut B Orchard, hired here last year | His sister and her people somewhere with a sun that works | The Banked pay him to look away from some crates, and promised his sister's people passage | The freight way; the crates' secret |
 | **Nell Lund** (about 34) | Matti's sister, a grower from Fomalhaut B Orchard; speaks for the unlisted | Her people listed, fed, and somewhere to go | Thirty-four of them came here on a Banked ship "for a few days", five weeks ago. They are on no list | The side story; her people's light logs |
-| **Tilly Marsh** (about 55) | A free trader, Laneborn, stuck here by the audit with a hold of goods | To sell, and to get her ship out | Business. She sells to everyone, the Banked included, and noticed their "paper" was too heavy | Mods, for money; a hint about the crates |
+| **Tilly Brennan** (about 55) | A free trader, Laneborn, stuck here by the audit with a hold of goods | To sell, and to get her ship out | Business. She sells to everyone, the Banked included, and noticed their "paper" was too heavy | Mods, for money; a hint about the crates |
 | **Joost Achterberg** (about 35) | Mira's brother; keeps the night watch in the dome | To tell everyone what he has seen | He has watched Fomalhaut B step down every night for eight months, and the committee switched off his band mid-sentence | The broadcast, if he lives |
 | **Esben Rask** (about 40) | The deputy archivist; the Banked's man inside | To finish the audit and hand the rest to the Banked ship | He has read the curves for twelve years and believes people should not spend their last years afraid | A conversation in the stacks; his fate, at the core |
 | **Lenz** | Station security, at the clinic door | To do his job without being ashamed of it | Ordered to keep Mira in; does not like it | Lets Mira go, or does not stop her |
@@ -326,24 +326,24 @@ The hero comes to Pyre with 470 to 510 (level 2). Every grant once by its key, n
 
 | Grant | Experience |
 | --- | --- |
-| Pyre Remnant reached | 50 |
+| Pyre Remnant reached | 60 |
 | Six things to look at that matter (the remnant, Fomalhaut's companion, the notice, the crates, the drawing, the Lane Office's request) | 25 each, up to 150 |
 | Why the archive is shut (Ruth) | 40 |
 | Mira's side of it | 50 |
 | Each person won (Linde, Matti, Ruth) | 40 each, up to 120 |
 | Quaye heard or argued with | 25 |
 | The unlisted's choice (a hard choice) | 50 |
-| Into the archive | 80 |
+| Into the archive | 120 |
 | Through the stacks | 100 |
 | The archive or the dome (a hard choice) | 50 |
 | The archive held, or the dome held | 100 |
 | The name in the oldest audit | 80 |
 | Dr Achterberg joins *Lantern* | 80 |
 | The unlisted, settled (the side story) | 200 |
-| **In all** | **about 900 at the least, 1,175 at the most** |
+| **In all** | **about 890 at the least, 1,225 at the most** |
 
-Level 3 (750) comes at about the first fight; level 4 (1,300) by the end on every path, with 1,390
-to 1,685 in all. Three leads like this bring Act 1 to about level 6 to 7 (ACT1.md asks about 6;
+Level 3 (750) comes with the first fight, before the stacks on every path; level 4 (1,300) by the
+end on every path, with 1,360 to 1,735 in all. Three leads like this bring Act 1 to about level 6 to 7 (ACT1.md asks about 6;
 the next leads can be tuned).
 
 ### Money (D-62)
@@ -485,3 +485,23 @@ Round 9 in [DECISIONS.md](../DECISIONS.md):
 - **D-63** Voices for the new people.
 - **D-64** Whether Varro is heard here.
 - **D-65** How Pyre's people look in this increment.
+
+## 15. As built
+
+*25 October 2026.* Steps 1 to 4 of §13 are built and played through on the Mac's GPU, on a phone
+and a desktop:
+
+| Part | Where |
+| --- | --- |
+| The place: the dock, the freight way, the commons, the committee room, the clinic and the overflow, the spine, the archive (front hall, reading room, stacks, landing, core), the dome walk and the dome; its doors, marks and fights' entry points | `src/game/pyre.ts`, `PYRE_*` in `src/game/places.ts` |
+| Pyre's sky: no sun, the remnant's red threads drawn on a canvas once, Fomalhaut, its companion 3.9° away, and Canopus | `pyre()` in `src/game/sky.ts` |
+| The script, every chapter and conversation | `story/pyre.ink`, included by `story/slice.ink` and compiled by `scripts/ink.ts` |
+| Money and Tilly's stall | `src/game/money.ts`, `src/ui/Trade.tsx`; mods may be had more than once, one of a kind to a weapon |
+| The fights | `pyre_*` in `src/game/encounters.ts` |
+| Mira as a companion: a Repair Drone for whoever is most hurt, a Barrier for whoever has lost their shield | `miraSupport` in `src/game/game.ts` |
+| The people's looks, tinted by who they are (D-65) | `CAST_LOOKS`, `COSTUMES` in `src/game/people.ts` |
+| The loading painting | `loading-pyre` ([IMAGES.md](../assets/IMAGES.md)) |
+| Tests | `tests/unit/story.test.ts` (three routes through Pyre, every conversation walked for every origin and class), `tests/unit/money.test.ts`, `tests/e2e/pyre.spec.ts` |
+
+To come (steps 5 and 6): every line voiced, the new models (the great mirror, the racks, the core,
+the lectern, the cots, the stall, the sapling), the older faces, and the station's music.

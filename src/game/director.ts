@@ -1,4 +1,4 @@
-import { type Line, parseTags, type StoryRunner } from './conversation.ts';
+import { type Line, lineExtras, parseTags, type StoryRunner } from './conversation.ts';
 
 /**
  * The director (SLICE.md): runs the slice's main flow in ink. A line beginning `>>>` is a command
@@ -78,8 +78,7 @@ export class Director {
           speaker: tags.speaker ?? 'narrator',
           text,
           id: tags.line ?? null,
-          codex: tags.codex,
-          ...(tags.xp ? { xp: Number(tags.xp) } : {}),
+          ...lineExtras(tags),
         };
         const seconds = this.host.bark(line) ?? 0;
         if (seconds > 0) {

@@ -16,6 +16,20 @@ export interface Line {
   codex?: string;
   /** Experience the line gives when it is said: the hero's words on a hard choice (`#xp:`). */
   xp?: number;
+  /** What the experience is for, when it is not a hard choice (`#why:`). */
+  why?: string;
+  /** Credits the line costs when it is said (`#spend:`, PYRE.md §7). */
+  spend?: number;
+}
+
+/** A line's tags that the game acts on, beyond who says it and its voice. */
+export function lineExtras(tags: Record<string, string>): Pick<Line, 'codex' | 'xp' | 'why' | 'spend'> {
+  return {
+    codex: tags.codex,
+    ...(tags.xp ? { xp: Number(tags.xp) } : {}),
+    ...(tags.why ? { why: tags.why } : {}),
+    ...(tags.spend ? { spend: Number(tags.spend) } : {}),
+  };
 }
 
 export type Beat =
@@ -116,8 +130,7 @@ export class Conversation {
         speaker: tags.speaker ?? 'narrator',
         text,
         id: tags.line ?? null,
-        codex: tags.codex,
-        ...(tags.xp ? { xp: Number(tags.xp) } : {}),
+        ...lineExtras(tags),
       };
     }
     const choices = this.story.currentChoices;

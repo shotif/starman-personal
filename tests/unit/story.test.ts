@@ -1,25 +1,35 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { Compiler } from 'inkjs/full';
 import { describe, expect, it } from 'vitest';
+import { compileStory, storySource } from '../../scripts/ink.ts';
 import { CODEX } from '../../src/game/codex.ts';
 import { type Beat, type HeroFacts, parseTags, StoryRunner } from '../../src/game/conversation.ts';
 import { type Command, Director, parseCommand } from '../../src/game/director.ts';
 import { ENCOUNTERS } from '../../src/game/encounters.ts';
 import { levelOf, XP_BEFORE } from '../../src/game/growth.ts';
 import { CLASSES, MOMENTS, ORIGINS } from '../../src/game/hero.ts';
-import { ALL_MARKS, AREAS, CAST, DOORS, LANTERN_AREAS, PLACES } from '../../src/game/places.ts';
+import {
+  ALL_CAST,
+  ALL_DOORS,
+  ALL_MARKS,
+  AREAS,
+  knotOf,
+  LANTERN_AREAS,
+  PEOPLE_OF,
+  PLACES,
+  PYRE_AREAS,
+  placeOf,
+} from '../../src/game/places.ts';
 import { LEADS } from '../../src/game/starmap.ts';
 import { MODS, WEAPONS } from '../../src/game/weapons.ts';
 
-const SOURCE = readFileSync(join('story', 'slice.ink'), 'utf8');
+/** Every file of the story (story/slice.ink and what it includes), as one text. */
+const SOURCE = storySource();
 
 const compile = () => {
-  const compiler = new Compiler(SOURCE);
-  const story = compiler.Compile();
-  expect(compiler.errors).toEqual([]);
-  expect(compiler.warnings).toEqual([]);
-  return story.ToJson() as string;
+  const story = compileStory();
+  expect(story.errors).toEqual([]);
+  expect(story.warnings).toEqual([]);
+  expect(story.files.length).toBeGreaterThan(1);
+  return story.json;
 };
 const JSON_STORY = compile();
 
@@ -97,6 +107,8 @@ const VERBS = new Set([
   'find',
   'depart',
   'xp',
+  'pay',
+  'leave',
   'end',
 ]);
 
@@ -114,22 +126,28 @@ describe('the slice script', () => {
 
   it('names only places, doors, people, fights and conversations that exist', () => {
     const marks = new Set([...Object.keys(ALL_MARKS), 'none']);
-    const areas = new Set([...AREAS, ...LANTERN_AREAS].map((a) => a.id));
-    const doors = new Set(DOORS);
-    const cast = new Set(CAST);
+    const areas = new Set([...AREAS, ...LANTERN_AREAS, ...PYRE_AREAS].map((a) => a.id));
+    const doors = new Set(ALL_DOORS);
+    const cast = new Set(ALL_CAST);
+    // A tunnel's marks, given as its arguments (`-> squad("commons_entry") ->`), are marks too.
+    for (const m of SOURCE.matchAll(/-> \w+\("(\w+)"\) ->/g))
+      expect(marks.has(m[1] ?? ''), `unknown mark: ${m[1]}`).toBe(true);
     const knots = new Set([...SOURCE.matchAll(/^=== (\w+) ===/gm)].map((m) => m[1]));
+    // Ink escapes a bar in text (`\|`): the story says it as a bar.
     const commands = SOURCE.split('\n')
-      .map((line) => parseCommand(line.trim()))
+      .map((line) => parseCommand(line.trim().replaceAll('\\|', '|')))
       .filter((c): c is Command => c !== null);
     expect(commands.length).toBeGreaterThan(100);
     for (const c of commands) {
       const [a = '', b = ''] = c.args;
+      // An argument filled in by the story as it runs (`{at}`) is checked where it is given.
+      if (c.rest.includes('{')) continue;
       expect(VERBS.has(c.verb), `unknown command: ${c.verb}`).toBe(true);
       if (['place', 'walk', 'start'].includes(c.verb)) {
         expect(cast.has(a), `unknown person: ${a}`).toBe(true);
         expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
       }
-      if (['hide', 'show', 'follow', 'stay', 'down', 'join'].includes(c.verb)) {
+      if (['hide', 'show', 'follow', 'stay', 'down', 'join', 'leave'].includes(c.verb)) {
         expect(cast.has(a), `unknown person: ${a}`).toBe(true);
       }
       if (['talk', 'scene'].includes(c.verb)) {
@@ -137,9 +155,10 @@ describe('the slice script', () => {
         if (b) expect(knots.has(b), `unknown conversation: ${b}`).toBe(true);
       }
       if (['open', 'close', 'lock', 'unlock'].includes(c.verb)) expect(doors.has(a), `unknown door: ${a}`).toBe(true);
-      if (c.verb === 'marker') expect(marks.has(a), `unknown mark: ${a}`).toBe(true);
+      // A marker points at a mark, or at a person.
+      if (c.verb === 'marker') expect(marks.has(a) || cast.has(a), `unknown mark: ${a}`).toBe(true);
       if (['use', 'screen', 'find'].includes(c.verb)) expect(marks.has(b), `unknown mark: ${b}`).toBe(true);
-      if (c.verb === 'screen') expect(['starmap', 'armoury'], `unknown screen: ${a}`).toContain(a);
+      if (c.verb === 'screen') expect(['starmap', 'armoury', 'trade'], `unknown screen: ${a}`).toContain(a);
       if (c.verb === 'find') {
         const what = c.args[2] ?? '';
         expect(what in WEAPONS || what in MODS, `unknown find: ${what}`).toBe(true);
@@ -155,9 +174,9 @@ describe('the slice script', () => {
         ).toBe(true);
       if (c.verb === 'encounter') expect(ENCOUNTERS[a], `unknown fight: ${a}`).toBeDefined();
       if (c.verb === 'travel') expect(Object.keys(PLACES), `unknown place: ${a}`).toContain(a);
-      if (c.verb === 'xp') {
-        expect(Number(a), `experience must be a number: ${c.rest}`).toBeGreaterThan(0);
-        expect(c.args.length, `experience needs a reason: ${c.rest}`).toBeGreaterThan(1);
+      if (c.verb === 'xp' || c.verb === 'pay') {
+        expect(Number(a), `an amount must be a number: ${c.rest}`).toBeGreaterThan(0);
+        expect(c.args.length, `an amount needs a reason: ${c.rest}`).toBeGreaterThan(1);
       }
       if (c.verb === 'wait' && !Number.isFinite(Number(a))) {
         for (const event of c.rest.split('|').map((e) => e.trim())) {
@@ -183,6 +202,33 @@ describe('the slice script', () => {
       for (const flags of [
         { met_ilya: true, asked_files: true, ilya_lost: true, merrow_warned: true, ilya_brings_curve: true },
         { met_ilya: false, asked_files: false, ilya_lost: false, merrow_warned: false, ilya_brings_curve: false },
+        // And at Pyre Remnant (PYRE.md), each way things may have gone.
+        {
+          have_curve: true,
+          sorrel_named_linde: true,
+          ren_sent_file: true,
+          second: 'ren',
+          unlisted: 'aboard',
+          pyre_saved: 'archive',
+          linde_won: true,
+          crate_opened: true,
+          joost_lost: true,
+          quaye_argued: true,
+          esben_fate: 'freed',
+          credits: 600,
+        },
+        {
+          have_curve: false,
+          sorrel_named_linde: false,
+          ren_sent_file: false,
+          second: 'jo',
+          unlisted: 'listed',
+          pyre_saved: 'dome',
+          linde_won: false,
+          crate_opened: false,
+          credits: 0,
+        },
+        { second: 'jo', unlisted: 'banked', pyre_saved: 'archive', credits: 100 },
       ]) {
         const runner = () => {
           const r = new StoryRunner(JSON_STORY, facts('ringborn', 'warden'));
@@ -194,8 +240,39 @@ describe('the slice script', () => {
     });
   }
 
-  /** Plays the whole slice through the director, choosing the mast or not at Pell's booth. */
-  function play(mast: boolean) {
+  /**
+   * A way through the whole story: the mast or not at Pell's booth, and then, wherever a conversation
+   * offers one of `prefer`, that choice (otherwise the first), and wherever the story waits for one of
+   * `events`, that event (otherwise the first it waits for).
+   */
+  interface Route {
+    mast: boolean;
+    prefer: RegExp[];
+    events: string[];
+  }
+  const ROUTES: Record<string, Route> = {
+    // Pyre Remnant by the front door: Ren comes, the Orchard aboard Lantern, the archive held.
+    front: {
+      mast: true,
+      prefer: [/^Send it/, /^Ren, you're with me/, /^Come aboard/, /^We hold the archive/, /^Go to your ship/],
+      events: ['used:way_front'],
+    },
+    // By the stacks with Linde: Jo comes, the hearing, the dome.
+    stacks: {
+      mast: false,
+      prefer: [/^Wait\. We don't/, /^Jo, you're with me/, /argue your case/, /^We go for the dome/],
+      events: ['used:way_stacks'],
+    },
+    // By the freight way: the Banked carry the Orchard's people, the archive held, Esben held.
+    cargo: {
+      mast: true,
+      prefer: [/^Jo, you're with me/, /^Go with the Banked/, /^We hold the archive/, /committee can have you/],
+      events: ['used:way_cargo'],
+    },
+  };
+
+  /** Plays the whole story through the director along a route. */
+  function play(route: Route) {
     const runner = new StoryRunner(JSON_STORY, facts('beltborn', 'striker'));
     const commands: Command[] = [];
     const checkpoints: string[] = [];
@@ -223,16 +300,19 @@ describe('the slice script', () => {
       for (let beat: Beat = conversation.next(); beat.kind !== 'end'; beat = conversation.next()) {
         if (beat.kind === 'line') xp += beat.xp ?? 0;
         if (beat.kind !== 'choices') continue;
-        const decision = beat.choices.find((c) => (mast ? /mast/.test(c.text) : /Our people/.test(c.text)));
-        conversation.choose((knot === 'pell_gate' ? decision : beat.choices[0])?.index ?? 0);
+        const decision =
+          knot === 'pell_gate'
+            ? beat.choices.find((c) => (route.mast ? /mast/.test(c.text) : /Our people/.test(c.text)))
+            : beat.choices.find((c) => route.prefer.some((p) => p.test(c.text)));
+        conversation.choose((decision ?? beat.choices[0])?.index ?? 0);
       }
       director.event(`talked:${knot}`);
     };
     director.step();
-    for (let guard = 0; guard < 200 && !director.ended; guard++) {
+    for (let guard = 0; guard < 600 && !director.ended; guard++) {
       const waiting = director.waiting;
       expect(waiting, 'the story stopped without waiting for anything').not.toBeNull();
-      const event = waiting?.[0] ?? '';
+      const event = waiting?.find((e) => route.events.includes(e)) ?? waiting?.[0] ?? '';
       if (event === 'time') director.update(30);
       else if (event.startsWith('talked:')) talk(event.slice('talked:'.length));
       else director.event(event);
@@ -242,14 +322,14 @@ describe('the slice script', () => {
   }
 
   it('plays from the night shift to the bridge by the mast, and by the escort', () => {
-    const mast = play(true);
+    const mast = play(ROUTES.front as Route);
     expect(mast.runner.variable('took_mast')).toBe(true);
     expect(mast.runner.variable('merrow_warned')).toBe(true);
     expect(mast.runner.variable('ilya_lost')).toBe(true);
     expect(mast.checkpoints).toContain('mast');
     expect(mast.commands.some((c) => c.verb === 'encounter' && c.args[0] === 'catwalk')).toBe(true);
 
-    const escort = play(false);
+    const escort = play(ROUTES.stacks as Route);
     expect(escort.runner.variable('took_mast')).toBe(false);
     expect(escort.runner.variable('merrow_warned')).toBe(false);
     expect(escort.checkpoints).toContain('escort');
@@ -258,20 +338,59 @@ describe('the slice script', () => {
       expect(run.checkpoints[0]).toBe('night_shift');
       expect(run.checkpoints).toContain('bridge');
       expect(run.checkpoints).toContain('aboard');
-      expect(run.checkpoints.at(-1)).toBe('lane');
+      expect(run.checkpoints).toContain('lane');
       expect(run.commands.some((c) => c.verb === 'depart')).toBe(true);
-      expect(run.commands.at(-1)?.verb).toBe('end');
       expect(run.runner.variable('first_lead')).not.toBe('');
     }
   });
 
-  it('gives experience for the story, reaching level 2 in the prologue and not yet 3 (ACT1.md, increment 3)', () => {
-    const runs = [play(true), play(false)];
+  it('plays Pyre Remnant every way in, and each way the choices go (PYRE.md)', () => {
+    const front = play(ROUTES.front as Route);
+    const stacks = play(ROUTES.stacks as Route);
+    const cargo = play(ROUTES.cargo as Route);
+    const encounters = (run: ReturnType<typeof play>) =>
+      run.commands.filter((c) => c.verb === 'encounter').map((c) => c.args[0]);
+    // The way in decides the first fight; Ren's file sent warns the Banked.
+    expect(front.runner.variable('way_in')).toBe('front');
+    expect(encounters(front)).toContain('pyre_front_warned');
+    expect(stacks.runner.variable('way_in')).toBe('stacks');
+    expect(encounters(stacks)).toContain('pyre_quiet');
+    expect(cargo.runner.variable('way_in')).toBe('cargo');
+    expect(encounters(cargo)).toContain('pyre_cargo_warned');
+    // Who came, what became of the Orchard's people, what was saved.
+    expect(front.runner.variable('second')).toBe('ren');
+    expect(stacks.runner.variable('second')).toBe('jo');
+    expect(front.runner.variable('unlisted')).toBe('aboard');
+    expect(stacks.runner.variable('unlisted')).toBe('listed');
+    expect(cargo.runner.variable('unlisted')).toBe('banked');
+    expect(stacks.checkpoints).toContain('pyre_dome');
+    expect(stacks.runner.variable('joost_lost')).toBe(false);
+    for (const run of [front, cargo]) {
+      expect(run.checkpoints).toContain('pyre_archive');
+      expect(run.runner.variable('joost_lost')).toBe(true);
+      // The next star is found only when the archive is saved and the hearing took no time.
+      expect(run.runner.variable('next_star_found')).toBe(true);
+    }
+    expect(stacks.runner.variable('next_star_found')).toBe(false);
+    expect(cargo.runner.variable('esben_fate')).toBe('held');
+    for (const run of [front, stacks, cargo]) {
+      expect(run.checkpoints.at(-1)).toBe('pyre_aboard');
+      expect(run.commands.at(-1)?.verb).toBe('end');
+      // The old captain's float, and Pyre's thanks: the same whichever way it went.
+      const paid = run.commands.filter((c) => c.verb === 'pay').reduce((n, c) => n + Number(c.args[0]), 0);
+      expect(paid).toBe(1200);
+    }
+  });
+
+  it('gives experience for the story: level 2 by the prologue’s end, 3 before the stacks, 4 after Pyre', () => {
+    const runs = Object.values(ROUTES).map((r) => play(r));
     for (const run of runs) {
       // The prologue ends at the bridge's card: level 2 by then.
       expect(levelOf(run.xpAt.aboard ?? 0)).toBe(2);
-      // Level 3 waits for Pyre Remnant, whose powers come with increment 3's second part.
-      expect(levelOf(run.xp)).toBe(2);
+      // Level 3, and its new power, by the stacks on every way in (PYRE.md §7).
+      expect(levelOf(run.xpAt.pyre_stacks ?? 0)).toBeGreaterThanOrEqual(3);
+      // Level 4 by the end of Pyre Remnant, and not yet 5.
+      expect(levelOf(run.xp)).toBe(4);
     }
     // A save from before growth is given the least any way to its chapter gave.
     for (const [chapter, xp] of Object.entries(XP_BEFORE)) {
@@ -281,9 +400,15 @@ describe('the slice script', () => {
     }
     const chapters = [...SOURCE.matchAll(/^>>> checkpoint (\w+)/gm)].map((m) => m[1] as string);
     for (const c of chapters) expect(XP_BEFORE[c], `XP_BEFORE has ${c}`).toBeDefined();
-    // Each grant has a reason of its own: its key, so it is given once.
-    const reasons = [...SOURCE.matchAll(/^>>> xp \d+ (.+)$/gm)].map((m) => m[1]);
-    expect(new Set(reasons).size).toBe(reasons.length);
+    // Each grant has a reason of its own, its key, so it is given once; a grant written in two places
+    // (reached two ways) gives the same amount in both.
+    const grants = [...SOURCE.matchAll(/^>>> xp (\d+) (.+)$/gm)].map((m) => [m[2], m[1]] as const);
+    for (const [why, amount] of grants) {
+      expect(
+        grants.filter(([w]) => w === why).every(([, a]) => a === amount),
+        why,
+      ).toBe(true);
+    }
   });
 
   it('opens only codex entries that exist', () => {
@@ -334,10 +459,14 @@ describe('the slice script', () => {
     const chapters = [...SOURCE.matchAll(/^>>> checkpoint (\w+)/gm)].map((m) => m[1] as string);
     expect(chapters.length).toBeGreaterThan(8);
     for (const chapter of chapters) {
-      for (const lost of [false, true]) {
+      for (const flags of [
+        { ilya_lost: false, second: '' },
+        { ilya_lost: true, second: 'ren', unlisted: 'aboard' },
+        { ilya_lost: false, second: 'jo', unlisted: 'banked', joost_lost: true },
+      ]) {
         const runner = new StoryRunner(JSON_STORY, facts('steader', 'rigger'));
-        runner.set('ilya_lost', lost);
-        runner.story.ChoosePathString(`slice.${chapter}`);
+        for (const [k, v] of Object.entries(flags)) runner.set(k, v);
+        runner.story.ChoosePathString(`${knotOf(chapter)}.${chapter}`);
         const commands: string[] = [];
         // Up to the chapter's first wait or line: its scene.
         const director = new Director(runner, {
@@ -348,20 +477,24 @@ describe('the slice script', () => {
         director.step();
         // A chapter in another place begins with its travel.
         if (director.waiting?.[0] === 'done:travel') director.event('done:travel');
-        const has = (verb: string, who: string) => commands.some((c) => c.startsWith(`${verb} ${who}`));
+        const has = (verb: string, who: string) =>
+          commands.some((c) => c === `${verb} ${who}` || c.startsWith(`${verb} ${who} `));
         const placed = (who: string) => has('start', who) || has('place', who);
         expect(placed('hero'), `${chapter}: the hero`).toBe(true);
-        expect(placed('ren'), `${chapter}: Ren`).toBe(true);
-        // Jo is hidden until the hangar; Hale is placed or hidden; the night shift placed or hidden.
-        if (!['hangar', 'bridge', 'aboard', 'lane'].includes(chapter)) {
-          expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
-        }
+        // Ren is with the hero, or back aboard Lantern (D-59).
+        expect(placed('ren') || has('leave', 'ren'), `${chapter}: Ren`).toBe(true);
+        const place = placeOf(chapter);
+        // Jo is hidden until the hangar; at Pyre, with the hero or back aboard.
+        if (place === 'calder' && chapter !== 'hangar') expect(has('hide', 'jo'), `${chapter}: Jo`).toBe(true);
+        if (place === 'pyre') expect(placed('jo') || has('leave', 'jo'), `${chapter}: Jo`).toBe(true);
+        // Everyone the place holds is placed, hidden, or lying where they fell.
         if (chapter !== 'night_shift') {
-          expect(placed('hale') || has('hide', 'hale'), `${chapter}: Hale`).toBe(true);
-          for (const who of ['dena', 'sorrel', 'pell']) {
-            expect(placed(who) || has('hide', who), `${chapter}: ${who}`).toBe(true);
+          for (const who of PEOPLE_OF[place]) {
+            expect(placed(who) || has('hide', who) || has('down', who), `${chapter}: ${who}`).toBe(true);
           }
-          expect(placed('ilya') || has('hide', 'ilya') || has('down', 'ilya'), `${chapter}: Ilya`).toBe(true);
+        }
+        if (place === 'calder' && chapter !== 'night_shift') {
+          expect(placed('hale') || has('hide', 'hale'), `${chapter}: Hale`).toBe(true);
         }
       }
     }

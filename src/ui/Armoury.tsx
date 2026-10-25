@@ -69,7 +69,7 @@ export function Armoury({ game, heroClass, onClose }: { game: Game; heroClass: s
         )}
         <span class="growth__xp">
           {' '}
-          · weight {weight}
+          · {kit.credits} credits · weight {weight}
           {slower > 0 ? `: your powers return ${slower}% slower` : ''}
         </span>
       </p>
@@ -126,10 +126,10 @@ export function Armoury({ game, heroClass, onClose }: { game: Game; heroClass: s
         <p class="growth__says">None found yet. They turn up on missions.</p>
       ) : (
         <ul class="growth__list">
-          {kit.mods.map((m) => {
+          {kit.mods.map((m, i) => {
             const mod = MODS[m.id];
             return (
-              <li key={m.id} class="growth__power" data-mod={m.id}>
+              <li key={`${m.id}-${i}`} class="growth__power" data-mod={m.id}>
                 <div class="growth__row">
                   <strong>{mod.name}</strong>
                   <span class="growth__xp">{m.on ? `on the ${WEAPONS[m.on].name.toLowerCase()}` : 'not fitted'}</span>
@@ -139,7 +139,9 @@ export function Armoury({ game, heroClass, onClose }: { game: Game; heroClass: s
                   {kit.weapons
                     .filter((k) => mod.fits.includes(k) && (TRAINED[heroClass] ?? []).includes(k))
                     .map((k) => {
-                      const full = m.on !== k && modsOn(kit, k).length >= MOD_SLOTS;
+                      const on = modsOn(kit, k);
+                      // Two to a weapon, and one of a kind (D-62: a copy for each weapon).
+                      const full = m.on !== k && (on.length >= MOD_SLOTS || on.includes(m.id));
                       return (
                         <button
                           type="button"
@@ -147,8 +149,8 @@ export function Armoury({ game, heroClass, onClose }: { game: Game; heroClass: s
                           class="growth__slotbutton"
                           aria-pressed={m.on === k}
                           disabled={fighting || full}
-                          title={full ? 'Two mods already' : undefined}
-                          onClick={() => apply(fitMod(kit, m.id, m.on === k ? null : k))}
+                          title={full ? 'Two mods already, or one of these' : undefined}
+                          onClick={() => apply(fitMod(kit, i, m.on === k ? null : k))}
                         >
                           {WEAPONS[k].name}
                         </button>

@@ -184,13 +184,32 @@ export interface Kit {
   weapons: WeaponKind[];
   /** The two carried; the first in hand. */
   carried: [WeaponKind, WeaponKind | null];
-  /** The mods found, and which weapon each is fitted to (or none). */
+  /**
+   * The mods the hero has, and which weapon each is fitted to (or none). A mod may be had more than
+   * once (bought, D-62), one of a kind to a weapon.
+   */
   mods: { id: ModId; on: WeaponKind | null }[];
   /** The finds already taken, by key, so a chapter played again gives nothing twice. */
   found: string[];
+  /** *Lantern*'s credits (D-62), and the payments and spending already made, by key. */
+  credits: number;
+  paid: string[];
+  /** *Lantern*'s parts bought (D-62): their effect comes with the ship's encounters (D-18). */
+  parts: string[];
 }
 
-export const newKit = (): Kit => ({ weapons: ['pistol'], carried: ['pistol', null], mods: [], found: [] });
+/** The most copies of one mod: one for each of the four kinds. */
+export const MOD_COPIES = KINDS.length;
+
+export const newKit = (): Kit => ({
+  weapons: ['pistol'],
+  carried: ['pistol', null],
+  mods: [],
+  found: [],
+  credits: 0,
+  paid: [],
+  parts: [],
+});
 
 /** The mods fitted to a weapon. */
 export const modsOn = (kit: Kit, kind: WeaponKind): ModId[] => kit.mods.filter((m) => m.on === kind).map((m) => m.id);
@@ -213,13 +232,26 @@ export function swap(kit: Kit): Kit {
   return b ? { ...kit, carried: [b, a] } : kit;
 }
 
-/** Fits a found mod to a weapon (or takes it off with null), if it fits and a slot is free. */
-export function fitMod(kit: Kit, mod: ModId, on: WeaponKind | null): Kit {
-  const i = kit.mods.findIndex((m) => m.id === mod);
-  if (i < 0) return kit;
+/**
+ * Fits a mod the hero has to a weapon (or takes it off with null), if it fits, a slot is free and the
+ * weapon has no other of its kind. `which` is the mod's place in the list, or its kind: then the copy
+ * already on `on`, else the first not fitted, else the first.
+ */
+export function fitMod(kit: Kit, which: number | ModId, on: WeaponKind | null): Kit {
+  const i =
+    typeof which === 'number'
+      ? which
+      : [
+          kit.mods.findIndex((m) => m.id === which && m.on === on),
+          kit.mods.findIndex((m) => m.id === which && m.on === null),
+          kit.mods.findIndex((m) => m.id === which),
+        ].find((x) => x >= 0);
+  const mod = i === undefined ? undefined : kit.mods[i];
+  if (i === undefined || !mod) return kit;
   if (on !== null) {
-    if (!MODS[mod].fits.includes(on) || !kit.weapons.includes(on)) return kit;
-    if (kit.mods.filter((m) => m.on === on && m.id !== mod).length >= MOD_SLOTS) return kit;
+    if (!MODS[mod.id].fits.includes(on) || !kit.weapons.includes(on)) return kit;
+    const others = kit.mods.filter((m, j) => m.on === on && j !== i);
+    if (others.length >= MOD_SLOTS || others.some((m) => m.id === mod.id)) return kit;
   }
   const mods = kit.mods.map((m, j) => (j === i ? { ...m, on } : m));
   return { ...kit, mods };
@@ -234,7 +266,7 @@ export function take(kit: Kit, key: string, what: WeaponKind | ModId): Kit {
     return { ...kit, found, weapons: kit.weapons.includes(kind) ? kit.weapons : [...kit.weapons, kind] };
   }
   const mod = what as ModId;
-  if (kit.mods.some((m) => m.id === mod)) return { ...kit, found };
+  if (kit.mods.filter((m) => m.id === mod).length >= MOD_COPIES) return { ...kit, found };
   return { ...kit, found, mods: [...kit.mods, { id: mod, on: null }] };
 }
 
@@ -245,16 +277,23 @@ export function soundKit(k: Partial<Kit> | undefined, heroClass: string): Kit {
   const weapons = [...new Set(['pistol', ...(k.weapons ?? [])].filter((w): w is WeaponKind => w in WEAPONS))];
   const mods: Kit['mods'] = [];
   for (const m of k.mods ?? []) {
-    if (!m || !((m.id as string) in MODS) || mods.some((x) => x.id === m.id)) continue;
+    if (!m || !((m.id as string) in MODS)) continue;
+    if (mods.filter((x) => x.id === m.id).length >= MOD_COPIES) continue;
     const on = m.on && weapons.includes(m.on) && MODS[m.id].fits.includes(m.on) ? m.on : null;
-    const full = on !== null && mods.filter((x) => x.on === on).length >= MOD_SLOTS;
+    const taken = on !== null && mods.filter((x) => x.on === on);
+    const full = !!taken && (taken.length >= MOD_SLOTS || taken.some((x) => x.id === m.id));
     mods.push({ id: m.id, on: full ? null : on });
   }
+  const strings = (list: unknown) =>
+    Array.isArray(list) ? list.filter((f): f is string => typeof f === 'string') : [];
   const kit: Kit = {
     weapons,
     carried: ['pistol', null],
     mods,
-    found: (k.found ?? []).filter((f) => typeof f === 'string'),
+    found: strings(k.found),
+    credits: Number.isFinite(k.credits) ? Math.max(0, Math.floor(k.credits ?? 0)) : 0,
+    paid: strings(k.paid),
+    parts: strings(k.parts),
   };
   const [a, b] = k.carried ?? ['pistol', null];
   return carry(kit, heroClass, a, b ?? null);

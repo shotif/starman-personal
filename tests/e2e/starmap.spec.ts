@@ -147,12 +147,11 @@ test('setting the course to Pyre Remnant takes Lantern into the lanes', async ({
     else await page.locator('.dialogue').click();
     await page.waitForTimeout(400);
   }
-  // The leaving, watched; then the lane, saved; then the honest end of what is built.
+  // The leaving, watched; then the lane, saved, and Jo waiting to take her in to Pyre Remnant.
   await expect.poll(() => lk(page, "return lk.state().waiting?.join('|')")).toBe('done:depart');
   await page.screenshot({ path: testInfo.outputPath('leaving.png') });
   await expect(body).toHaveAttribute('data-checkpoint', 'lane', { timeout: 20_000 });
-  await expect(body).toHaveAttribute('data-ended', 'true', { timeout: 20_000 });
-  await expect(page.getByText('bound for Pyre Remnant')).toBeVisible();
+  await expect(body).toHaveAttribute('data-objective', 'Tell Jo when to take her in', { timeout: 20_000 });
   expect(errors).toEqual([]);
 });
 

@@ -67,6 +67,7 @@ import { Input } from './input.ts';
 import { modelsAt } from './kit.ts';
 import { buildLantern } from './lantern.ts';
 import type { Body, Looks, Manifest } from './looks.ts';
+import { pay, spend } from './money.ts';
 import { buildSwarm } from './motes.ts';
 import {
   cameraDistance,
@@ -81,9 +82,10 @@ import {
 } from './motion.ts';
 import { createNavigation, type Navigation } from './navigation.ts';
 import { dress, looksOf, type Person, spawnPerson } from './people.ts';
-import { type PlaceId, placeOf } from './places.ts';
+import { knotOf, PEOPLE_OF, type PlaceId, placeOf } from './places.ts';
 import { poseWeights } from './pose.ts';
 import { atRank, type Cooldowns, cool, ready as isReady, POWERS, type PowerId, type PowerSpec } from './powers.ts';
+import { buildPyre } from './pyre.ts';
 import { QUALITY, type QualityTier } from './quality.ts';
 import { overShoulder, type Point, type Shot, sideOf } from './shots.ts';
 import { buildStation, type Mark } from './station.ts';
@@ -140,6 +142,8 @@ export interface Prompt {
 
 /** What the player chose, for the end of the slice. */
 export interface Ending {
+  /** The chapter the story had reached (its checkpoint). */
+  chapter: string;
   tookMast: boolean;
   merrowWarned: boolean;
   ilyaLost: boolean;
@@ -148,6 +152,9 @@ export interface Ending {
   haveCurve: boolean;
   renApproval: number;
   joApproval: number;
+  /** Pyre Remnant (PYRE.md): what became of the Orchard's people, and what was saved. */
+  unlisted: string;
+  pyreSaved: string;
 }
 
 /** A saved game: the hero, the story's state at its last checkpoint, and the difficulty. */
@@ -211,8 +218,8 @@ export interface Game {
   growth(): SavedGrowth & { fighting: boolean; crewKnown: string[] };
   /** Applies the growth screen's changes (made by growth.ts's rules); false during a fight. */
   setGrowth(next: SavedGrowth): boolean;
-  /** The weapons and mods, for the armoury; `fighting` while changes wait. */
-  kit(): { kit: Kit; fighting: boolean };
+  /** The weapons, mods and credits, for the armoury and the trader; `fighting` while changes wait. */
+  kit(): { kit: Kit; fighting: boolean; makeDo: boolean };
   /** Applies the armoury's changes (made by weapons.ts's rules); false during a fight. */
   setKit(next: Kit): boolean;
   /** The other carried weapon to hand. */
@@ -221,7 +228,14 @@ export interface Game {
   /** Stops the game's time (the pause menu), or starts it again. */
   setPaused(paused: boolean): void;
   /** A conversation's line is on screen: its voice plays, the speaker's mouth moves. Seconds long, or null. */
-  speak(line: { speaker: string; id: string | null; codex?: string; xp?: number }): number | null;
+  speak(line: {
+    speaker: string;
+    id: string | null;
+    codex?: string;
+    xp?: number;
+    why?: string;
+    spend?: number;
+  }): number | null;
   /** Stops the voice now speaking (a line skipped). */
   hush(): void;
   /** The companions with the hero now. */
@@ -354,6 +368,19 @@ const SPEAKERS: Record<string, string> = {
   Sorrel: 'sorrel',
   Ilya: 'ilya',
   hero: 'hero',
+  // Pyre Remnant (PYRE.md).
+  Mira: 'mira',
+  Linde: 'linde',
+  Ruth: 'ruth',
+  Quaye: 'quaye',
+  Matti: 'matti',
+  Nell: 'nell',
+  Tilly: 'tilly',
+  Joost: 'joost',
+  Esben: 'esben',
+  Lenz: 'lenz',
+  Researcher: 'crowd4',
+  Auditor: 'aud1',
 };
 /** The ambience of each place. */
 const AMBIENCE: Record<string, string> = {
@@ -361,7 +388,12 @@ const AMBIENCE: Record<string, string> = {
   mast: 'wind',
   hangar: 'ambience_hangar',
   engineering: 'ambience_hangar',
+  dock: 'ambience_hangar',
+  freight_way: 'ambience_hangar',
+  landing: 'ambience_hangar',
 };
+/** People farther than this from the camera are neither drawn nor moved (a phone's crowd). */
+const PEOPLE_REACH = 34;
 /** After a companion's help, this long before shots count again. */
 const GRACE_SECONDS = 2.5;
 /** The strike: two blows, how far they reach from the chest, and what each does (COMBAT.md). */
@@ -382,7 +414,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   scene.enablePhysics(GRAVITY, physics);
 
   const placeId: PlaceId = options.place ?? options.save?.place ?? placeOf(options.save?.checkpoint ?? options.chapter);
-  const place = placeId === 'lantern' ? buildLantern(scene, q) : buildStation(scene, q);
+  const place =
+    placeId === 'lantern' ? buildLantern(scene, q) : placeId === 'pyre' ? buildPyre(scene, q) : buildStation(scene, q);
   let difficulty = options.difficulty;
   const audio = options.audio;
   /** The voice speaking now, and whose mouth it moves. */
@@ -430,7 +463,10 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     loadCharacterTemplate(scene, `${CHARACTERS}${options.manifest.bodies.man.file}`),
     loadCharacterTemplate(scene, `${CHARACTERS}${options.manifest.bodies.woman.file}`),
   ]);
-  const others = ['ren', 'jo', 'hale', 'pell', 'dena', 'sorrel', 'ilya'];
+  // The companions (Mira once she can have joined, PYRE.md) and the people of this place only.
+  const crewIds = placeId === 'calder' ? ['ren', 'jo'] : ['ren', 'jo', 'mira'];
+  const peopleIds = PEOPLE_OF[placeId];
+  const others = [...crewIds, ...peopleIds];
   const [hero, ...dressed] = await Promise.all([
     dress(scene, templates, options.manifest, 'hero', options.looks),
     ...others.map((id) => dress(scene, templates, options.manifest, id, looksOf(options.manifest, id))),
@@ -539,17 +575,18 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   // The Banked (ACT1.md increment 4), where a place has them, or called onto the range with
   // `?banked`: a squad of people who fight from cover. They join the range after the swarm, so the
   // powers' one list of foes is the swarm's machines and then the Banked.
-  const banked: BankedGroup | null = new URLSearchParams(location.search).has('banked')
-    ? await buildBanked(scene, {
-        templates,
-        manifest: options.manifest,
-        nav,
-        groundUnder,
-        covers: coverPoints(place.props),
-        areaOf: (at) => place.areaAt(at),
-        detailed: q.detailMaps,
-      })
-    : null;
+  const banked: BankedGroup | null =
+    placeId === 'pyre' || new URLSearchParams(location.search).has('banked')
+      ? await buildBanked(scene, {
+          templates,
+          manifest: options.manifest,
+          nav,
+          groundUnder,
+          covers: coverPoints(place.props),
+          areaOf: (at) => place.areaAt(at),
+          detailed: q.detailMaps,
+        })
+      : null;
   if (banked) range.join(banked);
   const foes: Foes = {
     get size() {
@@ -581,11 +618,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   );
   const jo = spawnCompanion(scene, 'Jo', nav, characters.jo ?? hero, new Vector3(-11.3, 0, 6), world, sayAs('Jo'));
   jo.show(false);
-  const companionsById: Record<string, Companion> = { ren, jo };
+  const mira = characters.mira
+    ? spawnCompanion(scene, 'Mira', nav, characters.mira, new Vector3(-11.3, 0, 6), world, sayAs('Mira'))
+    : null;
+  mira?.show(false);
+  const companionsById: Record<string, Companion> = mira ? { ren, jo, mira } : { ren, jo };
   /** Companions with the hero: Ren from the start, Jo once she joins. */
   const joined = new Set<Companion>([ren]);
   const people: Record<string, Person> = {};
-  for (const id of ['hale', 'pell', 'dena', 'sorrel', 'ilya']) {
+  for (const id of peopleIds) {
     const c = characters[id];
     if (!c) continue;
     people[id] = spawnPerson(scene, id, looksOf(options.manifest, id).name, c, nav, groundUnder);
@@ -642,6 +683,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   const crew: Record<string, CompanionGrowth> = {
     ren: savedGrowth?.crew?.ren ?? newCompanionGrowth(),
     jo: savedGrowth?.crew?.jo ?? newCompanionGrowth(),
+    mira: savedGrowth?.crew?.mira ?? newCompanionGrowth(),
   };
   for (const who of Object.keys(crew))
     crew[who] = companionAuto(crew[who] ?? newCompanionGrowth(), who, levelOf(growth.xp));
@@ -843,6 +885,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   function companionPower(name: string, target: number, eye: Vector3): boolean {
     const who = name.toLowerCase();
     const c = companionsById[who];
+    if (who === 'mira' && c) return miraSupport(c);
     if (!c || target < swarmFirst) return false;
     const machine = target - swarmFirst;
     const status = foes.status(machine);
@@ -862,6 +905,50 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       else if (!abilities.companionUse(spec, machine, eye)) continue;
       crewCooldowns[who] = { ...cds, [id]: spec.cooldown };
       return true;
+    }
+    return false;
+  }
+
+  /**
+   * Mira's powers (PYRE.md §8), on whoever needs them: a Barrier on the one who has lost their shield,
+   * a Repair Drone on the one most hurt (the hero first), half again slower to return than the hero's.
+   */
+  function miraSupport(mira: Companion): boolean {
+    const cds = crewCooldowns.mira ?? {};
+    const team = [...joined].filter((t) => t.visible && !t.down);
+    const use = (id: PowerId) => {
+      const ranked = atRank(POWERS[id], crew.mira?.ranks[id] ?? 1);
+      crewCooldowns.mira = { ...cds, [id]: ranked.cooldown * 1.5 * mods.companionCooldown };
+      audio.play(id === 'barrier' ? 'barrier' : 'drone', { at: mira.character.root.position, volume: 0.6 });
+      return ranked;
+    };
+    if (isReady(cds, 'barrier')) {
+      if (heroDefences.shield <= 0 && abilities.effects.barrier <= 0 && condition.kind === 'up') {
+        abilities.support(use('barrier'));
+        options.onSay('Mira', 'Barrier on you!', null);
+        return true;
+      }
+      const bare = team.find((t) => t.defences.shield <= 0);
+      if (bare) {
+        use('barrier');
+        bare.screen();
+        return true;
+      }
+    }
+    if (isReady(cds, 'repair')) {
+      if (heroDefences.health < heroDefences.healthMax * 0.6 && condition.kind === 'up') {
+        abilities.support(use('repair'));
+        options.onSay('Mira', 'Drone coming to you. Hold still.', null);
+        return true;
+      }
+      const hurt = team
+        .filter((t) => t.defences.health < t.defences.healthMax * 0.6)
+        .sort((x, y) => x.defences.health / x.defences.healthMax - y.defences.health / y.defences.healthMax)[0];
+      if (hurt) {
+        hurt.mend((40 * (atRank(POWERS.repair, crew.mira?.ranks.repair ?? 1).lasts ?? 4)) / 4);
+        use('repair');
+        return true;
+      }
     }
     return false;
   }
@@ -895,6 +982,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     const partner = characterOf(id);
     if (!partner || talking) return;
     input.release();
+    // What the ship can afford, for choices that cost credits (PYRE.md §7).
+    runner.set('credits', kit.credits);
     const conversation = runner.converse(knot);
     talking = {
       id,
@@ -974,6 +1063,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
 
   const ending = (): Ending => ({
+    chapter: lastCheckpoint,
     tookMast: runner.variable('took_mast') === true,
     merrowWarned: runner.variable('merrow_warned') === true,
     ilyaLost: runner.variable('ilya_lost') === true,
@@ -981,6 +1071,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     haveCurve: runner.variable('have_curve') === true,
     renApproval: Number(runner.variable('ren_approval') ?? 0),
     joApproval: Number(runner.variable('jo_approval') ?? 0),
+    unlisted: String(runner.variable('unlisted') ?? ''),
+    pyreSaved: String(runner.variable('pyre_saved') ?? ''),
   });
 
   /** The points the hero and the companions have to spend, for the pause menu's mark. */
@@ -1020,9 +1112,24 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
   };
 
   /** Plays a line's voice, the speaker's mouth moving with it; its length in seconds, or null. */
-  const speakLine = (line: { speaker: string; id: string | null; codex?: string; xp?: number }): number | null => {
+  const speakLine = (line: {
+    speaker: string;
+    id: string | null;
+    codex?: string;
+    xp?: number;
+    why?: string;
+    spend?: number;
+  }): number | null => {
     if (line.codex) options.onCodex(line.codex);
-    if (line.xp) grant(line.xp, 'A hard choice', `line:${line.id ?? line.speaker}`);
+    if (line.xp) grant(line.xp, line.why ?? 'A hard choice', `line:${line.id ?? line.speaker}`);
+    if (line.spend) {
+      const before = kit.credits;
+      kit = spend(kit, `spend:${line.id ?? line.speaker}`, line.spend);
+      if (kit.credits !== before) {
+        options.onNote(`−${line.spend} credits`);
+        keepGrowth();
+      }
+    }
     voiceNow?.voice.stop();
     voiceNow?.who?.speak(0);
     voiceNow = null;
@@ -1072,6 +1179,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       case 'sky':
         place.sky.swarm(c.args.includes('swarm'));
         place.sky.space(c.args.includes('space'));
+        place.sky.pyre(c.args.includes('pyre'));
+        place.atPyre?.(c.args.includes('pyre'));
         place.lane(c.args.includes('lane'));
         break;
       case 'start':
@@ -1123,7 +1232,8 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         break;
       case 'walk': {
         const m = markOf(b);
-        if (m) people[a]?.walkTo(m.at, b === 'boarding');
+        // Those who walk aboard a ship are taken from view as they reach it.
+        if (m) people[a]?.walkTo(m.at, b === 'boarding' || b === 'berth' || b === 'banked_berth');
         break;
       }
       case 'follow':
@@ -1141,6 +1251,15 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         if (comp) {
           joined.add(comp);
           comp.order({ kind: 'follow' }, true);
+        }
+        break;
+      }
+      case 'leave': {
+        // Back to the ship (D-59): out of the squad and out of sight.
+        const comp = companionsById[a];
+        if (comp) {
+          joined.delete(comp);
+          comp.show(false);
         }
         break;
       }
@@ -1188,6 +1307,17 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       case 'xp':
         grant(Number(a), c.args.slice(1).join(' '), `xp:${c.args.slice(1).join(' ')}`);
         break;
+      case 'pay': {
+        // Credits the story gives (D-62), once for each reason.
+        const why = c.args.slice(1).join(' ');
+        const before = kit.credits;
+        kit = pay(kit, `pay:${why}`, Number(a));
+        if (kit.credits !== before) {
+          options.onNote(`+${kit.credits - before} credits · ${why}`);
+          keepGrowth();
+        }
+        break;
+      }
       case 'down':
         people[a]?.fall();
         break;
@@ -1264,9 +1394,9 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       if (options.save.script !== SCRIPT) throw new Error('saved from another version of the story');
       runner.load(options.save.story);
     } catch {
-      runner.story.ChoosePathString(`slice.${options.save.checkpoint}`);
+      runner.story.ChoosePathString(`${knotOf(options.save.checkpoint)}.${options.save.checkpoint}`);
     }
-  } else if (options.chapter) runner.story.ChoosePathString(`slice.${options.chapter}`);
+  } else if (options.chapter) runner.story.ChoosePathString(`${knotOf(options.chapter)}.${options.chapter}`);
 
   /** The orders of the command view, to one companion or all (ORDERS.md). */
   const view = () => {
@@ -1887,6 +2017,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       c.update(dt, hero.root.position, heroForward);
     }
     Object.values(people).forEach((p, i) => {
+      // Far from the camera, a person is neither drawn nor moved (unless walking somewhere of their own).
+      if (p.visible) {
+        const near = Vector3.DistanceSquared(p.character.root.position, camera.position) < PEOPLE_REACH ** 2;
+        if (p.character.root.isEnabled() !== near) p.character.root.setEnabled(near);
+        if (!near) return;
+      }
       p.converse(talking?.id === p.id ? hero.root.position.clone() : null, talking?.speaker === 'partner');
       p.update(dt, hero.root.position, heroForward, i);
     });
@@ -2169,6 +2305,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
         effects: () => ({ ...abilities.effects, defences: heroDefences }),
         /** Experience, as the story gives it. */
         xp: (amount: number) => grant(amount, 'Testing', `test:${performance.now()}`),
+        /** Credits, as the story pays them (D-62). */
+        credits: (amount: number) => {
+          kit = pay(kit, `test:${performance.now()}`, amount);
+          keepGrowth();
+          return kit.credits;
+        },
         growth: () => ({ hero: growth, crew, mods, defences: heroDefences }),
         state: () => ({
           feet: hero.root.position.asArray(),
@@ -2190,7 +2332,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
           camera: camera.position.asArray(),
           /** Who is shown, and where (x, z), by name. */
           people: Object.fromEntries(
-            ['hero', 'ren', 'jo', 'hale', 'pell', 'dena', 'sorrel', 'ilya'].map((id) => {
+            ['hero', ...others].map((id) => {
               const c = characterOf(id);
               return [id, c?.root.isEnabled() ? [c.root.position.x, c.root.position.z] : null];
             }),
@@ -2333,7 +2475,7 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
     setCourse(id) {
       director.event(`course:${id}`);
     },
-    kit: () => ({ kit, fighting: !!fight }),
+    kit: () => ({ kit, fighting: !!fight, makeDo: mods.modCost < 1 }),
     setKit(next) {
       if (fight) return false;
       kit = soundKit(next, heroClass);
@@ -2346,8 +2488,12 @@ export async function startGame(canvas: HTMLCanvasElement, options: GameOptions)
       hero: growth,
       crew: { ...crew },
       fighting: !!fight,
-      // Jo is met in the hangar.
-      crewKnown: ['ren', ...(BEFORE_JO.includes(lastCheckpoint) ? [] : ['jo'])],
+      // Jo is met in the hangar; Mira joins in her clinic at Pyre Remnant (PYRE.md).
+      crewKnown: [
+        'ren',
+        ...(BEFORE_JO.includes(lastCheckpoint) ? [] : ['jo']),
+        ...(runner.variable('second') ? ['mira'] : []),
+      ],
     }),
     setGrowth(next) {
       if (fight) return false;

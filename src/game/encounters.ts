@@ -40,6 +40,43 @@ export const ENCOUNTERS: Record<string, Wave[]> = {
     { troopers: 2, engineers: 1, vents: 'banked_range' },
     { troopers: 1, wardens: 1, vents: 'banked_range' },
   ],
+  // Pyre Remnant (PYRE.md §6). The way in, by whichever door the hero won; `_warned` when Ren's file
+  // told the Lane Office Lantern was coming, and the Banked are one more and ready.
+  pyre_front: [
+    { troopers: 2, engineers: 1, vents: 'pyre_front' },
+    { troopers: 1, wardens: 1, vents: 'pyre_front' },
+  ],
+  pyre_front_warned: [
+    { troopers: 3, engineers: 1, vents: 'pyre_front' },
+    { troopers: 1, wardens: 1, vents: 'pyre_front' },
+  ],
+  pyre_quiet: [
+    { troopers: 2, vents: 'pyre_quiet' },
+    { troopers: 1, engineers: 1, vents: 'pyre_quiet' },
+  ],
+  pyre_quiet_warned: [
+    { troopers: 3, vents: 'pyre_quiet' },
+    { troopers: 1, engineers: 1, vents: 'pyre_quiet' },
+  ],
+  pyre_cargo: [{ troopers: 3, engineers: 1, vents: 'pyre_cargo' }],
+  pyre_cargo_warned: [
+    { troopers: 3, engineers: 1, vents: 'pyre_cargo' },
+    { troopers: 1, vents: 'pyre_cargo' },
+  ],
+  // The stacks, to the core: the motes at the Banked's call, then the warden with Esben behind him.
+  pyre_stacks_1: [{ troopers: 3, engineers: 1, vents: 'pyre_stacks' }],
+  pyre_stacks_2: [{ troopers: 1, wardens: 1, vents: 'pyre_stacks' }],
+  // The cost: the core held while the cores are pulled, or the dome walk and the dome.
+  pyre_core_1: [{ troopers: 3, engineers: 1, vents: 'pyre_core' }],
+  pyre_core_2: [{ troopers: 2, wardens: 1, vents: 'pyre_core' }],
+  pyre_walk: [
+    { motes: 3, vents: 'pyre_walk' },
+    { motes: 2, vents: 'pyre_walk' },
+  ],
+  pyre_dome: [
+    { troopers: 3, engineers: 1, vents: 'pyre_dome' },
+    { troopers: 1, wardens: 1, motes: 2, vents: 'pyre_dome' },
+  ],
 };
 
 /** Seconds between one wave going down and the next coming in. */

@@ -124,10 +124,51 @@ describe('the kit', () => {
     );
     expect(kit.weapons).toEqual(['pistol', 'rifle']);
     expect(kit.carried).toEqual(['rifle', null]);
+    // A mod may be had more than once (D-62); what will not fit is taken off.
     expect(kit.mods).toEqual([
       { id: 'scope', on: 'rifle' },
+      { id: 'scope', on: null },
       { id: 'stabiliser', on: null },
     ]);
+    expect(kit.credits).toBe(0);
     expect(soundKit(undefined, 'warden')).toEqual(newKit());
+    // Never two of a kind on one weapon, never more copies than kinds of weapon, never negative credits.
+    const odd = soundKit(
+      {
+        weapons: ['rifle'],
+        mods: [
+          { id: 'heavy', on: 'rifle' },
+          { id: 'heavy', on: 'rifle' },
+          { id: 'heavy', on: null },
+          { id: 'heavy', on: null },
+          { id: 'heavy', on: null },
+        ],
+        credits: -40,
+      },
+      'shade',
+    );
+    expect(odd.mods).toEqual([
+      { id: 'heavy', on: 'rifle' },
+      { id: 'heavy', on: null },
+      { id: 'heavy', on: null },
+      { id: 'heavy', on: null },
+    ]);
+    expect(odd.credits).toBe(0);
+  });
+
+  it('fits copies of a mod one to a weapon, by place or by kind', () => {
+    let kit = soundKit({ weapons: ['rifle'], mods: [] }, 'shade');
+    kit = take(kit, 'find:a', 'stabiliser');
+    kit = take(kit, 'find:b', 'stabiliser');
+    expect(kit.mods).toHaveLength(2);
+    kit = fitMod(kit, 0, 'pistol');
+    // The same kind twice on one weapon is refused; the other copy goes on the rifle.
+    expect(fitMod(kit, 1, 'pistol')).toBe(kit);
+    kit = fitMod(kit, 'stabiliser', 'rifle');
+    expect(modsOn(kit, 'pistol')).toEqual(['stabiliser']);
+    expect(modsOn(kit, 'rifle')).toEqual(['stabiliser']);
+    kit = fitMod(kit, 'stabiliser', null);
+    expect(modsOn(kit, 'pistol')).toEqual([]);
+    expect(modsOn(kit, 'rifle')).toEqual(['stabiliser']);
   });
 });

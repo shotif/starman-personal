@@ -1,16 +1,19 @@
-import { Compiler } from 'inkjs/full';
 import { defineConfig, type Plugin } from 'vite';
+import { compileStory } from './scripts/ink.ts';
 
-/** Compiles ink files when they are imported, so only the ink is kept in the repository (DIALOGUE.md). */
+/**
+ * Compiles ink files when they are imported, so only the ink is kept in the repository (DIALOGUE.md);
+ * the files a story INCLUDEs are read from beside it, and watched.
+ */
 function ink(): Plugin {
   return {
     name: 'ink',
     transform(source, id) {
       if (!id.endsWith('.ink')) return null;
-      const compiler = new Compiler(source);
-      const story = compiler.Compile();
-      if (compiler.errors.length > 0) this.error(`${id}:\n${compiler.errors.join('\n')}`);
-      return { code: `export default ${JSON.stringify(story.ToJson())};`, map: null };
+      const story = compileStory(id, source);
+      for (const file of story.files.slice(1)) this.addWatchFile(file);
+      if (story.errors.length > 0) this.error(`${id}:\n${story.errors.join('\n')}`);
+      return { code: `export default ${JSON.stringify(story.json)};`, map: null };
     },
   };
 }

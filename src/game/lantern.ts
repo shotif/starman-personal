@@ -46,9 +46,13 @@ export function buildLantern(scene: Scene, q: QualitySettings): Place {
   const planetAt = planet.position.clone();
   /** Seconds since leaving began, or null; the flash and the lane come at LANE_AT. */
   let leaving: { t: number; flash: () => void; flashed: boolean } | null = null;
+  /** Docked at Pyre Remnant (PYRE.md): no planet below, the remnant outside. */
+  let docked = false;
+  let inLane = false;
   const lane = (on: boolean) => {
+    inLane = on;
     sky.lane(on);
-    planet.setEnabled(!on);
+    planet.setEnabled(!on && !docked);
     if (!on) {
       planet.position.copyFrom(planetAt);
       planet.scaling.setAll(1);
@@ -83,6 +87,10 @@ export function buildLantern(scene: Scene, q: QualitySettings): Place {
       return { from: new Vector3(-6.4, 2, 0.2), to: new Vector3(-40, -4, 11) };
     },
     lane,
+    atPyre(on) {
+      docked = on;
+      planet.setEnabled(!inLane && !docked);
+    },
     castShadow() {},
     areaAt: (p) => areaAt(p, LANTERN_AREAS),
     props: kit.placed(),

@@ -124,5 +124,11 @@
     "width": 1280,
     "height": 720,
     "kind": "loading"
+  },
+  "loading-pyre": {
+    "file": "loading-pyre.webp",
+    "width": 1280,
+    "height": 720,
+    "kind": "loading"
   }
 }

@@ -135,7 +135,9 @@ increments, each playable and deployed (D-01):
    `src/game/banked-rules.ts`, the people in `src/game/banked.ts`; tried on Calder's range with
    `?play&chapter=range&banked`; they first meet the hero at Pyre Remnant.*
 5. Pyre Remnant: the station, its people, the mission, the side story, Mira. *Designed 25 October
-   2026 in [PYRE.md](PYRE.md); its decisions are round 9 (D-57 to D-65), open.*
+   2026 in [PYRE.md](PYRE.md); round 9 (D-57 to D-65) decided as recommended the same day. The
+   place, the story, money and the trader, the fights and Mira built the same day (PYRE.md §15);
+   the voices and models follow.*
 6. Voices, music, models, and play-testing on a phone and a desktop.
 
 ## Increment 1 in detail: places that load on their own, and *Lantern*'s decks
@@ -378,5 +380,5 @@ beyond the motes.
 
 Round 7 in [DECISIONS.md](../DECISIONS.md): D-47 the next milestone, D-48 which lead first, D-49 how
 the hero grows, D-50 weapons, D-51 the Banked as the first human enemy and Pyre Remnant's outline.
-Round 8 (D-53 to D-56) decided growth and weapons; round 9 (D-57 to D-65, open) decides Pyre
-Remnant's details ([PYRE.md](PYRE.md)).
+Round 8 (D-53 to D-56) decided growth and weapons; round 9 (D-57 to D-65, decided as recommended)
+decided Pyre Remnant's details ([PYRE.md](PYRE.md)).

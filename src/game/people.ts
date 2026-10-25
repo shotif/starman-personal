@@ -72,6 +72,37 @@ export const CAST_LOOKS: Record<
     height: 0.98,
   },
   ilya: { name: 'Ilya', body: 'man', lineage: 'spacer', skin: 'tone2', hair: 'long', eyes: 'green' },
+  // Pyre Remnant (PYRE.md): the doctor and her brother share their family's skin and eyes.
+  mira: { name: 'Mira', body: 'woman', lineage: 'spacer', skin: 'tone3', hair: 'ponytail', eyes: 'grey' },
+  joost: { name: 'Joost', body: 'man', lineage: 'spacer', skin: 'tone3', hair: 'long', eyes: 'grey' },
+  linde: { name: 'Linde', body: 'man', lineage: 'earthborn', skin: 'tone1', hair: 'short', eyes: 'blue', height: 0.97 },
+  ruth: { name: 'Ruth', body: 'woman', lineage: 'heavyworlder', skin: 'tone6', hair: 'afro', eyes: 'brown' },
+  quaye: {
+    name: 'Quaye',
+    body: 'man',
+    lineage: 'earthborn',
+    skin: 'tone5',
+    hair: 'cropped',
+    eyes: 'brown',
+    height: 1.02,
+  },
+  matti: { name: 'Matti', body: 'man', lineage: 'earthborn', skin: 'tone2', hair: 'cropped', eyes: 'hazel' },
+  nell: { name: 'Nell', body: 'woman', lineage: 'earthborn', skin: 'tone2', hair: 'braid', eyes: 'hazel' },
+  tilly: { name: 'Tilly', body: 'woman', lineage: 'spacer', skin: 'tone4', hair: 'short', eyes: 'green' },
+  esben: { name: 'Esben', body: 'man', lineage: 'spacer', skin: 'tone1', hair: 'short', eyes: 'grey' },
+  lenz: { name: 'Lenz', body: 'man', lineage: 'heavyworlder', skin: 'tone4', hair: 'shaved', eyes: 'brown' },
+  // People who do not speak (but the researcher who heckles Quaye).
+  crowd1: { name: 'Researcher', body: 'woman', lineage: 'earthborn', skin: 'tone5', hair: 'bun', eyes: 'brown' },
+  crowd2: { name: 'Technician', body: 'man', lineage: 'earthborn', skin: 'tone3', hair: 'short', eyes: 'green' },
+  crowd3: { name: 'Observer', body: 'woman', lineage: 'spacer', skin: 'tone1', hair: 'long', eyes: 'blue' },
+  crowd4: { name: 'Researcher', body: 'man', lineage: 'spacer', skin: 'tone6', hair: 'afro', eyes: 'brown' },
+  ref1: { name: 'Grower', body: 'man', lineage: 'heavyworlder', skin: 'tone2', hair: 'cropped', eyes: 'hazel' },
+  ref2: { name: 'Grower', body: 'woman', lineage: 'earthborn', skin: 'tone4', hair: 'ponytail', eyes: 'brown' },
+  ref3: { name: 'Grower', body: 'man', lineage: 'earthborn', skin: 'tone3', hair: 'short', eyes: 'grey' },
+  aud1: { name: 'Auditor', body: 'man', lineage: 'earthborn', skin: 'tone2', hair: 'cropped', eyes: 'grey' },
+  aud2: { name: 'Auditor', body: 'woman', lineage: 'spacer', skin: 'tone5', hair: 'bun', eyes: 'brown' },
+  dome1: { name: 'Observer', body: 'woman', lineage: 'spacer', skin: 'tone2', hair: 'short', eyes: 'blue' },
+  dome2: { name: 'Observer', body: 'man', lineage: 'earthborn', skin: 'tone4', hair: 'cropped', eyes: 'brown' },
 };
 
 /** The looks of a named person, from the manifest's options. */
@@ -101,6 +132,29 @@ export const COSTUMES: Record<string, [number, number, number]> = {
   dena: [1.7, 1.55, 1.28],
   sorrel: [1.25, 0.98, 0.76],
   ilya: [0.7, 1.22, 1.28],
+  // Pyre Remnant (D-65): the station's blue, the clinic's white, the archive's brown, the Orchard's
+  // earth colours, a trader's red, the dock's orange, and the gold of the Banked.
+  mira: [1.9, 1.95, 2],
+  joost: [0.72, 0.95, 1.6],
+  linde: [1.2, 1.05, 0.85],
+  ruth: [0.7, 0.85, 1.5],
+  quaye: [1.65, 1.4, 0.88],
+  matti: [1.75, 0.95, 0.5],
+  nell: [0.95, 1.1, 0.7],
+  tilly: [1.4, 0.7, 0.65],
+  esben: [1.5, 1.3, 0.85],
+  lenz: [0.9, 0.95, 1],
+  crowd1: [0.8, 0.95, 1.5],
+  crowd2: [1.1, 1.1, 1.25],
+  crowd3: [0.85, 1.2, 1.3],
+  crowd4: [0.75, 0.9, 1.4],
+  ref1: [1, 0.9, 0.65],
+  ref2: [0.85, 1.05, 0.7],
+  ref3: [1.05, 0.85, 0.7],
+  aud1: [2.2, 1.7, 0.8],
+  aud2: [2.2, 1.7, 0.8],
+  dome1: [0.75, 0.95, 1.55],
+  dome2: [0.8, 0.98, 1.5],
 };
 
 /** Where people out of the story wait, out of the way: the bunk room's far corner. */

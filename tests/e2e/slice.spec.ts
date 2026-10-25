@@ -160,8 +160,8 @@ test('the slice plays from the night shift to the bridge', async ({ page }, test
   await page.getByRole('button', { name: 'Set course' }).click();
   await talkThrough(page);
   await expect(body).toHaveAttribute('data-checkpoint', 'lane', { timeout: 20_000 });
-  await expect(body).toHaveAttribute('data-ended', 'true', { timeout: 20_000 });
-  await expect(page.getByText('To be continued')).toBeVisible();
+  // In the lanes, Pyre Remnant ahead (PYRE.md): its own journeys play it.
+  await expect(body).toHaveAttribute('data-objective', 'Tell Jo when to take her in', { timeout: 20_000 });
   await page.screenshot({ path: testInfo.outputPath('8-lane.png') });
   expect(errors).toEqual([]);
 });

@@ -31,6 +31,18 @@ const CHAPTERS: Record<string, string> = {
   gate: 'The gate',
   hangar: 'The hangar',
   bridge: 'Lantern',
+  aboard: 'Aboard Lantern',
+  lane: 'In the lanes',
+  pyre_dock: 'Pyre Remnant',
+  pyre_commons: 'The commons',
+  pyre_clinic: 'The clinic',
+  pyre_way: 'The way in',
+  pyre_stacks: 'The stacks',
+  pyre_archive: 'The archive',
+  pyre_dome: 'The dome',
+  pyre_after: 'The oldest audit',
+  pyre_dock_end: 'The Keeping',
+  pyre_aboard: 'Aboard Lantern',
 };
 
 function readSave(manifest: Manifest): SaveData | null {

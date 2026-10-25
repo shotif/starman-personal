@@ -41,7 +41,8 @@ export async function createNavigation(scene: Scene, meshes: Mesh[]) {
     detailSampleDist: 6,
     detailSampleMaxError: 1,
   });
-  const crowd = navigation.createCrowd(24, 0.5, scene);
+  // Room for everyone in the busiest place: Pyre Remnant's people, the squad, the hero and the Banked.
+  const crowd = navigation.createCrowd(40, 0.5, scene);
   return {
     closest: (p: Vector3) => navigation.getClosestPoint(p),
     /** The way a walker would go from one point to another; it ends short of a place it cannot reach. */

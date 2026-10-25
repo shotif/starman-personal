@@ -34,6 +34,10 @@ export interface Companion {
   help(target: Vector3 | null): void;
   /** A hit; true if it put her down. */
   hurt(amount: number): boolean;
+  /** A Repair Drone's mending (Mira's, PYRE.md §8): health back, never past full. */
+  mend(amount: number): void;
+  /** A Barrier on her (Mira's): her shield back to full at once. */
+  screen(): void;
   /** Back on her feet, whole. */
   raise(): void;
   /** Puts her somewhere at once, facing `yaw`, and has her hold there. */
@@ -108,6 +112,8 @@ export function spawnCompanion(
       converse() {},
       help() {},
       hurt: () => false,
+      mend() {},
+      screen() {},
       raise() {},
       place(at, y) {
         character.root.position.copyFrom(at);
@@ -236,6 +242,14 @@ export function spawnCompanion(
         say('I’m down!');
       }
       return result.down;
+    },
+    mend(amount) {
+      if (isDown) return;
+      defences = { ...defences, health: Math.min(defences.healthMax, defences.health + amount) };
+    },
+    screen() {
+      if (isDown) return;
+      defences = { ...defences, shield: defences.shieldMax };
     },
     raise() {
       isDown = false;

@@ -35,6 +35,9 @@ VAR ren_sent_file = false
 VAR jo_told_crew = false
 VAR sorrel_named_linde = false
 
+// Act 1's leads, each a story of its own in the one story.
+INCLUDE pyre.ink
+
 -> slice.night_shift
 
 === slice ===
@@ -394,6 +397,10 @@ That's everyone aboard. Come on, before the next lot. #speaker: Jo #line: jo_han
 // Aboard Lantern: another place, loaded on its own (ACT1.md).
 >>> travel lantern
 >>> checkpoint bridge
+>>> hide nell
+>>> hide ref1
+>>> hide ref2
+>>> hide ref3
 >>> music ending
 >>> sky swarm space
 >>> hide hale
@@ -442,6 +449,10 @@ Captain. They're all in the hold. See them first; the rest can wait a minute. #s
 = aboard
 >>> travel lantern
 >>> checkpoint aboard
+>>> hide nell
+>>> hide ref1
+>>> hide ref2
+>>> hide ref3
 >>> music night
 >>> sky swarm space
 >>> lights on
@@ -498,6 +509,10 @@ All hands, this is the bridge. We're breaking orbit. Hold on to something. #spea
 = lane
 >>> travel lantern
 >>> checkpoint lane
+>>> hide nell
+>>> hide ref1
+>>> hide ref2
+>>> hide ref3
 >>> music night
 >>> sky space lane
 >>> lights on
@@ -519,8 +534,23 @@ All hands, this is the bridge. We're breaking orbit. Hold on to something. #spea
 >>> caption In the lanes · eleven jumps to Pyre Remnant
 In the lane. First of eleven. She's holding together. #speaker: Jo #line: jo_lane_01
 Ross 128's behind us. First time in my life I can't see it from where I sleep. #speaker: Pell #line: pell_lane_01
->>> end
--> END
+>>> objective Tell Jo when to take her in
+>>> marker bridge_jo
+>>> talk jo jo_lane
+>>> wait talked:jo_lane
+>>> objective none
+>>> marker none
+Pyre Remnant, this is Lantern, asking for a berth. #speaker: Pell #line: pell_hail_01
+>>> wait 3
+Pyre Remnant, this is Lantern. Do you hear us? #speaker: Pell #line: pell_hail_02
+>>> wait 2
+{ ren_sent_file:
+    Lantern. Yes. You're expected. Berth four. Stay with your ship until customs clears you. #speaker: Matti #line: matti_hail_01a
+    Expected. #speaker: Ren #line: ren_hail_02a
+- else:
+    Lantern. Berth four. Stay with your ship until customs clears you. #speaker: Matti #line: matti_hail_01b
+}
+-> pyre.pyre_dock
 
 // ─── Conversations ──────────────────────────────────────────────────────────
 
@@ -1055,6 +1085,17 @@ Half those lanes nobody's flown since the Lapse. Lantern's charts are older than
     Aye, Captain. Taking her out. #speaker: Jo #line: jo_course_04b
 - Ren, tell the hold. We're leaving. #speaker: Jo #line: jo_course_05
 -> DONE
+
+=== jo_lane ===
+GJ 915's behind us. That's Pyre's own lane ahead, and Pyre at the end of it. What's left of it. #speaker: Jo #line: jo_lane_02
+Nobody's flown this one in a long while. The beacons are old, but they're lit. #speaker: Jo #line: jo_lane_03
+* [Take her in, Jo. #manner: resolve]
+    Take her in, Jo. #speaker: hero #line: hero_jo_lane_04a
+    Aye, Captain. Pell, tell them we're coming. #speaker: Jo #line: jo_lane_05a
+* [What's at the end of it? #manner: ask]
+    What's at the end of it? #speaker: hero #line: hero_jo_lane_04b
+    A station inside a dead star, watching a hole you can't see. The Cooperative's idea of a quiet posting. Taking her in. #speaker: Jo #line: jo_lane_05b
+- -> DONE
 
 === ilya_aboard ===
 { have_curve:

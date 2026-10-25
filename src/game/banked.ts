@@ -370,7 +370,9 @@ export async function buildBanked(
     },
     wake(kinds, at) {
       kinds.forEach((kind, i) => {
-        const m = members.find((x) => x.kind === kind && !x.active);
+        // One out of the fight, or else one lying where they fell (the next wave may come before they
+        // would have been cleared away).
+        const m = members.find((x) => x.kind === kind && !x.active) ?? members.find((x) => x.kind === kind && !x.alive);
         const where = at[i % Math.max(1, at.length)];
         if (!m || !where) return;
         m.active = true;

@@ -23,6 +23,16 @@ export const LOADING_PICTURE: Record<string, string> = {
   bridge: 'loading-lantern',
   aboard: 'loading-lantern',
   lane: 'loading-lantern',
+  pyre_dock: 'loading-pyre',
+  pyre_commons: 'loading-pyre',
+  pyre_clinic: 'loading-pyre',
+  pyre_way: 'loading-pyre',
+  pyre_stacks: 'loading-pyre',
+  pyre_archive: 'loading-pyre',
+  pyre_dome: 'loading-pyre',
+  pyre_after: 'loading-pyre',
+  pyre_dock_end: 'loading-pyre',
+  pyre_aboard: 'loading-lantern',
 };
 
 /** A touch screen is the main input. */

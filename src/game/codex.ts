@@ -103,6 +103,68 @@ export const CODEX: CodexEntry[] = [
       "The Authority's highest rank: the officers who answer for keeping the lanes lit. A sealed file " +
       'from Antares carries one of their names: A. Varro.',
   },
+  // Pyre Remnant (PYRE.md).
+  {
+    id: 'remnant',
+    title: "Pyre's remnant",
+    facts:
+      "When a massive star's core collapses, its outer layers are thrown off at thousands of kilometres a " +
+      'second and glow for centuries where they run into the gas round it, as Cassiopeia A, about 350 years ' +
+      'old, still does. A core left with more than two or three times the Sun’s mass becomes a black hole: ' +
+      'a few tens of kilometres across, and seen only by what it does to the light and matter near it.',
+    story:
+      'Pyre, a red supergiant just beyond the old neighbourhood, died in Starman Reborn’s time. Its outer ' +
+      'layers are a faint red shell two light-years out, and the black hole at its heart bends the light ' +
+      'behind it into a small ring that only the dome’s mirror can see.',
+  },
+  {
+    id: 'fomalhaut',
+    title: 'Fomalhaut',
+    facts:
+      'A white A4 star in Piscis Austrinus, 25 light-years from the Sun, about twice its mass and some 440 ' +
+      'million years old. A wide ring of dust circles it about 140 times farther out than Earth is from the ' +
+      'Sun; Fomalhaut b, once thought a planet inside the ring, now looks like a spreading cloud of dust. ' +
+      'Two distant companions share its path through space, Fomalhaut B and C.',
+    story: 'From Pyre Remnant, twelve light-years off, it is the second-brightest star in the sky.',
+  },
+  {
+    id: 'fomalhaut_b',
+    title: 'Fomalhaut B',
+    facts:
+      'TW Piscis Austrini: an orange K4 dwarf, smaller and cooler than the Sun, 24.8 light-years away and ' +
+      'about 0.9 light-years from Fomalhaut. A young star with spots, whose light varies a little as it turns.',
+    story:
+      'The Orchard has grown fruit under it for a century. Eight months ago its light began to fall: not a ' +
+      'fade, but steps, every few days, down and holding and down again.',
+  },
+  {
+    id: 'orchard',
+    title: 'Fomalhaut B Orchard',
+    facts: null,
+    story:
+      'A Cooperative farm station at Fomalhaut B, its orchards grown under mirrored sunlight, its air ' +
+      'plant fed by the same light. Thirty-four of its people came to Pyre Remnant on a Banked ship "for ' +
+      'a few days", and stayed on no list.',
+  },
+  {
+    id: 'selene',
+    title: 'Selene Achterberg',
+    facts: null,
+    story:
+      'Pyre Observatory’s director when the star died, a century and a half ago. She carried her own ' +
+      'notebooks out: Pyre’s light, every night for six years, falling in steps; and her last entry, an ' +
+      'hour before the end, when the light rose, in steps, "as if something in the way were leaving in a hurry".',
+  },
+  {
+    id: 'yz_ceti',
+    title: 'YZ Ceti',
+    facts:
+      'A red dwarf (M4) in Cetus, 12 light-years from the Sun and about 1.6 from Tau Ceti, with three known ' +
+      "planets of about Earth's mass, each going round it in two to five days.",
+    story:
+      "In Pyre Remnant's archive, its newest curve has begun to step. A light-year and a half from the " +
+      "Cooperative's capital.",
+  },
 ];
 
 export const CODEX_KEY = 'lightkeeper.codex';

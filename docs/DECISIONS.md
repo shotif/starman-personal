@@ -68,15 +68,15 @@ Status: **Open** · **Decided** · **Assumed** (built as recommended; the owner 
 | D-54 | The new powers at levels 3 and 6 | Decided 2026-10-25 | **As recommended**: the table in [ACT1.md](design/ACT1.md), increment 3 |
 | D-55 | Talents | Decided 2026-10-25 | **As recommended**: the backstory's talents work in play, and a class training with three ranks |
 | D-56 | How the four weapons differ | Decided 2026-10-25 | **As recommended**: no ammunition; rate, reach, spread and weight; two carried; five mods |
-| D-57 | Pyre Remnant as designed | **Open** | Recommended: as in [PYRE.md](design/PYRE.md) |
-| D-58 | Where the unlisted come from | **Open** | Recommended: Fomalhaut B Orchard |
-| D-59 | When Mira joins, and who goes with the hero | **Open** | Recommended: before the audit; Ren or Jo comes, the other keeps *Lantern* ready |
-| D-60 | Who is in the dome | **Open** | Recommended: Mira's brother Joost, broadcasting Fomalhaut B's curve |
-| D-61 | The next star | **Open** | Recommended: YZ Ceti, beside Tau Ceti |
-| D-62 | Money, and what it buys | **Open** | Recommended: credits from the story; mods and *Lantern*'s parts |
-| D-63 | Voices for the new people | **Open** | Recommended: add library voices where the stock set falls short |
-| D-64 | Whether Varro is heard at Pyre | **Open** | Recommended: one recorded line, twenty years old |
-| D-65 | How Pyre's people look in this increment | **Open** | Recommended: tinted uniforms, older faces, Mira's own look |
+| D-57 | Pyre Remnant as designed | Decided 2026-10-25 | **As recommended**: as in [PYRE.md](design/PYRE.md) |
+| D-58 | Where the unlisted come from | Decided 2026-10-25 | **As recommended**: Fomalhaut B Orchard |
+| D-59 | When Mira joins, and who goes with the hero | Decided 2026-10-25 | **As recommended**: before the audit; Ren or Jo comes, the other keeps *Lantern* ready |
+| D-60 | Who is in the dome | Decided 2026-10-25 | **As recommended**: Mira's brother Joost, broadcasting Fomalhaut B's curve |
+| D-61 | The next star | Decided 2026-10-25 | **As recommended**: YZ Ceti, beside Tau Ceti |
+| D-62 | Money, and what it buys | Decided 2026-10-25 | **As recommended**: credits from the story; mods and *Lantern*'s parts |
+| D-63 | Voices for the new people | Decided 2026-10-25 | **As recommended**: library voices where the stock set falls short |
+| D-64 | Whether Varro is heard at Pyre | Decided 2026-10-25 | **As recommended**: one recorded line, twenty years old |
+| D-65 | How Pyre's people look in this increment | Decided 2026-10-25 | **As recommended**: tinted uniforms, older faces, Mira's own look |
 
 ## Decided from the owner's brief, 24 October 2026
 
@@ -757,15 +757,17 @@ a cost, as D-05 asks.
 
 **Recommendation: A.** A phone player never fumbles a reload mid-fight; weight keeps the choice a real one.
 
-## Round 9: Pyre Remnant — open
+## Round 9: Pyre Remnant — decided 25 October 2026
 
 The proposal is [design/PYRE.md](design/PYRE.md): ACT1.md §6's outline (D-51) made into a mission
 of about an hour and a half to two hours. A station of people with reasons; three ways into the
 archive, each won by trusting someone; the unlisted refugees and the hearing; the Banked's first
 fights; the archive or the dome; the name in the oldest audit; Mira joining; the first money and the
-first trader. Nothing in it is built until these are answered.
+first trader.
 
-### D-57 · Pyre Remnant as designed — **Open**
+**Decided:** all nine as recommended, 25 October 2026 ("As recommended").
+
+### D-57 · Pyre Remnant as designed — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -776,7 +778,7 @@ first trader. Nothing in it is built until these are answered.
 **Recommendation: A.** It is the first place that shows the game's conversation side at full size,
 and each part of it has a reason and a consequence (D-04, D-41).
 
-### D-58 · Where the unlisted come from — **Open**
+### D-58 · Where the unlisted come from — **Decided**
 
 ACT1.md has refugees "from a colony whose star has dimmed". Which colony is new canon.
 
@@ -788,7 +790,7 @@ ACT1.md has refugees "from a colony whose star has dimmed". Which colony is new 
 
 **Recommendation: A.** The sharpest story, no new body, and Reborn's own place.
 
-### D-59 · When Mira joins, and who goes with the hero — **Open**
+### D-59 · When Mira joins, and who goes with the hero — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -799,7 +801,7 @@ ACT1.md has refugees "from a colony whose star has dimmed". Which colony is new 
 **Recommendation: A.** The new Warden is played in her own mission, and the choice of two out of
 three (D-14) arrives where the story gives it a reason.
 
-### D-60 · Who is in the dome — **Open**
+### D-60 · Who is in the dome — **Decided**
 
 The cost (ACT1.md §6, beat 5): save the archive or the dome's crew; the other is lost.
 
@@ -812,7 +814,7 @@ The cost (ACT1.md §6, beat 5): save the archive or the dome's crew; the other i
 **Recommendation: A.** Neither answer is the wrong one, so the choice is a real one; most players
 would otherwise save the crew without thinking twice.
 
-### D-61 · The next star — **Open**
+### D-61 · The next star — **Decided**
 
 If the archive is saved, and the hearing did not take the time it needed, Mira finds a star "not
 yet on anyone's list" that has begun to step (ACT1.md §6, beat 6). Otherwise Joost (if he lives)
@@ -826,7 +828,7 @@ finds it in Act 2, later.
 
 **Recommendation: A.**
 
-### D-62 · Money, and what it buys — **Open**
+### D-62 · Money, and what it buys — **Decided**
 
 D-50 promised mods "bought at stations"; Pyre Remnant brings the first trader.
 
@@ -839,7 +841,7 @@ D-50 promised mods "bought at stations"; Pyre Remnant brings the first trader.
 **Recommendation: A.** Money needs something large to save for, and a ship that is prepared is part
 of the finale (D-38).
 
-### D-63 · Voices for the new people — **Open**
+### D-63 · Voices for the new people — **Decided**
 
 The account offers 21 stock voices, and nine of them are cast (Pell's is an older stock voice no
 longer listed). Of the twelve left, three are women's, and none is British. Pyre needs about fourteen new voices (Mira, Linde, Ruth, Quaye, Matti, Nell,
@@ -855,7 +857,11 @@ slot; the plan allows 30,000 and 321 are used. In Control the owner chose stock 
 
 **Recommendation: A.**
 
-### D-64 · Whether Varro is heard at Pyre — **Open**
+The owner, 25 October 2026, with the answer: "not all the voices have to be British." Stock
+voices of any accent are cast wherever they suit a part; library voices only where the stock set has
+nothing fitting (older voices, more women, Varro).
+
+### D-64 · Whether Varro is heard at Pyre — **Decided**
 
 | Option | What it means |
 | --- | --- |
@@ -865,7 +871,7 @@ slot; the plan allows 30,000 and 321 are used. In Control the owner chose stock 
 **Recommendation: A.** A villain with a face (D-07) is better met early, and the ordinariness is the
 point.
 
-### D-65 · How Pyre's people look in this increment — **Open**
+### D-65 · How Pyre's people look in this increment — **Decided**
 
 Everyone today wears the shared uniform, and nobody looks older than about thirty-five. Pyre has
 about twenty people, some of them old. The Banked's own look stays the owner's for increment 6.
@@ -941,3 +947,13 @@ from a private repository needs a paid GitHub plan) or a private store the build
 | 2026-10-25 | The Banked's numbers and rules as in COMBAT.md (*The Banked*): troopers 8–18 m in cover with bursts of three, engineers 12–24 m with shields every 12 s and motes every 20 s, the warden's 300 barrier over 120° in front; a squad at most five | D-51's three kinds made to fight; numbers tuned in play |
 | 2026-10-25 | Until their own armour (increment 6) the Banked wear the shared uniform in the gold of banked light, and carry the hero's weapon models | readable as one side at a glance, with no new art |
 | 2026-10-25 | The Banked can be tried on Calder's range with `?banked` until Pyre Remnant brings them into the story | each increment playable (D-01), without a fight the story has no reason for (D-04) |
+| 2026-10-25 | Pyre's script is its own file, `story/pyre.ink`, included by `story/slice.ink`: one story and one save; its chapters are the stitches of `pyre`. The build, the tests and the voices all compile it through `scripts/ink.ts` | the prologue's file was already a thousand lines; the story stays one, so every choice made at Ross 128 is known at Pyre |
+| 2026-10-25 | Working names at Pyre beyond PYRE.md's: the Banked's ship *Keeping*, the Lane Office's Deputy Director M. Sallow (Ren's reprimand), Arno the researcher who heckles Quaye; the trader is Tilly Brennan, not Marsh (Ilya's surname) | names the script needed; the owner may change any |
+| 2026-10-25 | A mod may be had more than once, one of a kind to a weapon; a save's copies are kept, at most four | D-62's "a copy of a mod for each weapon" |
+| 2026-10-25 | New story commands and tags: `pay` (credits, once by reason), `leave` (a companion back to the ship), `screen trade`; on lines, `#spend:` (credits a line costs) and `#why:` (what a line's experience is for) | money and the squad, written where the story happens |
+| 2026-10-25 | People more than 34 m from the camera are neither drawn nor moved; the crowd of walkers holds 40 | Pyre has twenty-one people besides the squad; a phone draws the dozen near the hero |
+| 2026-10-25 | Mira, as a companion, uses a Repair Drone on whoever is most hurt and a Barrier on whoever has lost their shield, half again slower than the hero's; Pull is left to Wardens the player plays | PYRE.md §8; companions have two powers each, as Ren and Jo do |
+| 2026-10-25 | A fallen Banked may be called straight back for the next wave | Pyre's waves come faster than the fallen are cleared away |
+| 2026-10-25 | Pyre Remnant reached gives 60 experience and getting into the archive 120 (PYRE.md had 50 and 80) | so level 3, and its power, come before the stacks on every path |
+| 2026-10-25 | Pyre's halls have pale walls and lamps strong enough for their height (8 m in the commons) | the commons read as a dark cave on the first look |
+| 2026-10-25 | A conversation that starts the moment another ends (Jo's question straight after Mira's) stays on screen | it was closed with the one before it |

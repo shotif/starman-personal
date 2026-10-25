@@ -60,6 +60,8 @@ export interface Place {
   depart(flash: () => void): { from: Vector3; to: Vector3 } | null;
   /** In a lane, or not (a resumed game). */
   lane(on: boolean): void;
+  /** Docked at Pyre Remnant (aboard *Lantern*): the world outside is Pyre's, not Ross 128's. */
+  atPyre?(on: boolean): void;
   castShadow(mesh: AbstractMesh): void;
   /** The area a point is in, or null. */
   areaAt(p: Vector3): string | null;

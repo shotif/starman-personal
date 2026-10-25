@@ -2173,6 +2173,38 @@ fieldset.growth__slots {
   font-size: 13px;
 }
 
+/* Tilly's stall (D-62): hers and the hero's, one column on a phone, two side by side on a desktop. */
+.trade__columns {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .trade__columns {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .trade__columns .growth__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.trade__ask {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 12px;
+  background: #0b1420;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+}
+
+.trade__question {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
 .touch__fire-weapon {
   display: block;
   font-size: 10px;

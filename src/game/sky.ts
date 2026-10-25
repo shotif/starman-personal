@@ -1,5 +1,6 @@
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
@@ -24,6 +25,11 @@ export interface Sky {
   space(above: boolean): void;
   /** In a lane: the star is gone, and the stars round the ship are blue-shifted and few. */
   lane(on: boolean): void;
+  /**
+   * At Pyre Remnant (PYRE.md): no sun, the faint red haze of Pyre's thrown-off layers over half the
+   * sky, and Fomalhaut with its fading companion low in the west.
+   */
+  pyre(on: boolean): void;
   /** Turns the swarm's ring, slowly, so it reads as machines rather than stars. */
   update(dt: number): void;
 }
@@ -166,21 +172,43 @@ export function buildSky(scene: Scene): Sky {
     ring.setEnabled(false);
   }
 
+  let remnant: Mesh[] | null = null;
+  /** What the sky is showing: each mode is kept, and the meshes follow all of them together. */
+  const mode = { swarm: false, space: false, lane: false, pyre: false };
+  const apply = () => {
+    const sunUp = !mode.lane && !mode.pyre;
+    for (const m of [disc, halo]) m.setEnabled(sunUp);
+    ring?.setEnabled(mode.swarm && sunUp);
+    const inSpace = mode.space || mode.pyre;
+    dome.setEnabled(!inSpace);
+    lowStars?.setEnabled(inSpace);
+    if (mode.pyre && !remnant) remnant = buildRemnant(scene);
+    for (const m of remnant ?? []) m.setEnabled(mode.pyre && !mode.lane);
+    starMaterial.emissiveColor = mode.lane ? new Color3(0.55, 0.75, 1.15) : starColour;
+    scene.clearColor = mode.lane
+      ? new Color4(0.006, 0.02, 0.05, 1)
+      : mode.pyre
+        ? new Color4(0.012, 0.006, 0.012, 1)
+        : new Color4(0.01, 0.01, 0.02, 1);
+  };
   let turn = 0;
   return {
     sun,
     swarm(visible) {
-      ring?.setEnabled(visible);
+      mode.swarm = visible;
+      apply();
     },
     space(above) {
-      dome.setEnabled(!above);
-      lowStars?.setEnabled(above);
+      mode.space = above;
+      apply();
     },
     lane(on) {
-      for (const m of [disc, halo]) m.setEnabled(!on);
-      if (on) ring?.setEnabled(false);
-      starMaterial.emissiveColor = on ? new Color3(0.55, 0.75, 1.15) : starColour;
-      scene.clearColor = on ? new Color4(0.006, 0.02, 0.05, 1) : new Color4(0.01, 0.01, 0.02, 1);
+      mode.lane = on;
+      apply();
+    },
+    pyre(on) {
+      mode.pyre = on;
+      apply();
     },
     update(dt) {
       if (!ring?.isEnabled()) return;
@@ -188,4 +216,110 @@ export function buildSky(scene: Scene): Sky {
       ring.rotationQuaternion = Quaternion.RotationAxis(sun, turn);
     },
   };
+}
+
+/** Where Fomalhaut stands in the station's sky: low in the west, seen through the commons' great window. */
+export const FOMALHAUT = new Vector3(-0.93, 0.2, -0.3).normalize();
+/** Fomalhaut B is 0.92 light-years from Fomalhaut; from Pyre, 12 light-years off, about 3.9° from it. */
+const COMPANION_APART = (3.9 * Math.PI) / 180;
+
+/**
+ * Pyre's remnant as the station sees it. Its outer layers, thrown off about a century and a half ago at
+ * a few thousand kilometres a second, are a shell about two light-years out, glowing faintly where they
+ * run into the gas the star shed before it died: threads of red, and a little teal, over half the sky,
+ * drawn on a canvas once. Fomalhaut (magnitude about −0.4 from here, only Canopus brighter) and its
+ * companion (about 5, a K4 dwarf, faint and orange); Canopus itself, high to the north. The black hole
+ * cannot be seen: a few tens of kilometres across, it shows only in the mirror, by the light it bends.
+ */
+function buildRemnant(scene: Scene): Mesh[] {
+  const size = 1024;
+  const texture = new DynamicTexture('remnant', { width: size, height: size / 2 }, scene, true);
+  const ctx = texture.getContext() as CanvasRenderingContext2D;
+  ctx.fillStyle = 'rgba(0,0,0,0)';
+  ctx.clearRect(0, 0, size, size / 2);
+  let seed = 11;
+  const random = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  // Threads: long faint curves, thickest round the western half of the sky (u near 0.5).
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 260; i++) {
+    const u = 0.5 + (random() - 0.5) * (random() < 0.75 ? 0.55 : 1);
+    const v = 0.2 + random() * 0.6;
+    const x = (((u % 1) + 1) % 1) * size;
+    const y = v * (size / 2);
+    const teal = random() < 0.12;
+    const alpha = 0.03 + random() * 0.07;
+    ctx.strokeStyle = teal ? `rgba(70,170,170,${alpha})` : `rgba(210,60,50,${alpha})`;
+    ctx.lineWidth = 1 + random() * 3.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    const reach = 40 + random() * 160;
+    ctx.bezierCurveTo(
+      x + (random() - 0.5) * reach,
+      y + (random() - 0.5) * reach * 0.6,
+      x + (random() - 0.5) * reach,
+      y + (random() - 0.5) * reach * 0.6,
+      x + (random() - 0.5) * reach * 1.4,
+      y + (random() - 0.5) * reach * 0.5,
+    );
+    ctx.stroke();
+  }
+  // A broad dim glow under the threads.
+  const glow = ctx.createRadialGradient(size * 0.5, size * 0.25, 10, size * 0.5, size * 0.25, size * 0.36);
+  glow.addColorStop(0, 'rgba(120,30,30,0.18)');
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, size, size / 2);
+  texture.update();
+  texture.hasAlpha = true;
+
+  const shell = CreateSphere(
+    'remnant',
+    { diameter: SKY_RADIUS * 1.9, segments: 24, sideOrientation: Mesh.BACKSIDE },
+    scene,
+  );
+  const material = new StandardMaterial('remnant', scene);
+  material.disableLighting = true;
+  material.emissiveTexture = texture;
+  material.opacityTexture = texture;
+  material.diffuseColor = Color3.Black();
+  material.backFaceCulling = false;
+  material.disableDepthWrite = true;
+  // The texture's middle (u = 0.5) faces the west, behind Fomalhaut.
+  shell.rotation.y = Math.PI / 2;
+  shell.material = material;
+  shell.infiniteDistance = true;
+  shell.isPickable = false;
+  shell.applyFog = false;
+
+  const distance = SKY_RADIUS * 0.94;
+  const point = (name: string, dir: Vector3, size: number, colour: Color3, glowRadius: number, glowAlpha: number) => {
+    const core = CreateDisc(name, { radius: size, tessellation: 16 }, scene);
+    core.material = unlit(scene, name, colour);
+    const halo = CreateDisc(`${name}-halo`, { radius: glowRadius, tessellation: 24 }, scene);
+    halo.material = unlit(scene, `${name}-halo`, colour, glowAlpha);
+    for (const m of [halo, core]) {
+      m.position = dir.scale(distance);
+      m.billboardMode = Mesh.BILLBOARDMODE_ALL;
+      m.infiniteDistance = true;
+      m.isPickable = false;
+      m.applyFog = false;
+    }
+    core.position = dir.scale(distance * 0.995);
+    return [core, halo];
+  };
+  const side = Vector3.Cross(FOMALHAUT, Vector3.Up()).normalize();
+  const companion = FOMALHAUT.scale(Math.cos(COMPANION_APART))
+    .add(side.scale(Math.sin(COMPANION_APART) * 0.6))
+    .add(Vector3.Up().scale(-Math.sin(COMPANION_APART) * 0.8))
+    .normalize();
+  const canopus = new Vector3(0.2, 0.75, 0.62).normalize();
+  return [
+    shell,
+    ...point('fomalhaut', FOMALHAUT, 2.2, new Color3(0.86, 0.92, 1.25), 9, 0.2),
+    ...point('fomalhaut-b', companion, 1.1, new Color3(1, 0.62, 0.32), 2.6, 0.12),
+    ...point('canopus', canopus, 2.4, new Color3(1, 0.98, 0.9), 10, 0.18),
+  ];
 }

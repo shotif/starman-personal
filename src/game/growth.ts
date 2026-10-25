@@ -274,6 +274,9 @@ export function modifiers(hero: { heroClass: string; origin: string; moment: str
 export const COMPANION_POWERS: Record<string, [PowerId, PowerId]> = {
   ren: ['mark', 'veil'],
   jo: ['overload', 'seeker'],
+  // Mira, a Warden (PYRE.md §8): a Repair Drone for whoever is most hurt, a Barrier for whoever has
+  // lost their shield.
+  mira: ['repair', 'barrier'],
 };
 
 export interface CompanionGrowth {
@@ -330,4 +333,15 @@ export const XP_BEFORE: Record<string, number> = {
   bridge: 310,
   aboard: 370,
   lane: 470,
+  // Pyre Remnant (PYRE.md §7).
+  pyre_dock: 470,
+  pyre_commons: 530,
+  pyre_clinic: 530,
+  pyre_way: 630,
+  pyre_stacks: 750,
+  pyre_archive: 940,
+  pyre_dome: 900,
+  pyre_after: 1000,
+  pyre_dock_end: 1080,
+  pyre_aboard: 1360,
 };

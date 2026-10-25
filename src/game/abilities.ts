@@ -86,6 +86,11 @@ export interface Abilities {
    * as she has it, from where she stands. Her cooldowns are her own (src/game/game.ts).
    */
   companionUse(spec: PowerSpec, machine: number, from: Vector3): boolean;
+  /**
+   * A companion's Barrier or Repair Drone on the hero (Mira's, PYRE.md §8): the effect as the hero's
+   * own power gives it, without touching the hero's cooldowns.
+   */
+  support(spec: PowerSpec): void;
   update(dt: number): void;
   readonly cooldowns: Cooldowns;
   /** The hero's own effects now running. */
@@ -570,9 +575,21 @@ export function buildAbilities(ctx: AbilityContext): Abilities {
     }
   };
 
+  const support = (spec: PowerSpec) => {
+    if (spec.id === 'barrier') {
+      effects.barrier = spec.lasts ?? 8;
+      barrierShield = 100;
+      shell.setEnabled(true);
+    } else if (spec.id === 'repair') {
+      repairLeft = spec.lasts ?? 4;
+      drone.setEnabled(true);
+    }
+  };
+
   return {
     use,
     companionUse,
+    support,
     spendLongShot() {
       effects.longshot = 0;
     },

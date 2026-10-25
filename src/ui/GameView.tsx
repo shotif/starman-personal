@@ -6,6 +6,7 @@ import { DIFFICULTIES, DIFFICULTY, type Difficulty } from '../game/defences.ts';
 import type { Renderer } from '../game/engine.ts';
 import type { Ending, Game, GameStats, OrderKind, Prompt, SaveData, Vitals } from '../game/game.ts';
 import type { Looks, Manifest } from '../game/looks.ts';
+import { type PlaceId, placeOf } from '../game/places.ts';
 import { nextTier, type QualityTier } from '../game/quality.ts';
 import { Armoury } from './Armoury.tsx';
 import { Codex, keepCodex, readCodex } from './Codex.tsx';
@@ -14,6 +15,7 @@ import { GrowthScreen } from './Growth.tsx';
 import { StarMap } from './StarMap.tsx';
 import { DIFFICULTY_KEY, isTouch, LOADING_PICTURE, PICTURES, QUALITY_KEY, SAVE_KEY, save } from './settings.ts';
 import { TouchControls } from './TouchControls.tsx';
+import { Trade } from './Trade.tsx';
 
 type Status = { kind: 'loading' } | { kind: 'ready' } | { kind: 'error'; message: string };
 
@@ -97,7 +99,9 @@ export function GameView({
   const commandingNow = useRef(false);
   const [line, setLine] = useState<{ name: string; text: string; id: number } | null>(null);
   const [prompt, setPrompt] = useState<Prompt | null>(null);
-  const [conversation, setConversation] = useState<{ conversation: Conversation; partner: string } | null>(null);
+  const [conversation, setConversation] = useState<{ conversation: Conversation; partner: string; id: number } | null>(
+    null,
+  );
   const talkingNow = useRef(false);
   const [objective, setObjective] = useState<string | null>(null);
   const [caption, setCaption] = useState<{ text: string; id: number } | null>(null);
@@ -122,7 +126,9 @@ export function GameView({
   const mapNow = useRef(false);
   /** The armoury, open in the store room; the game waits while it is. */
   const [armoury, setArmoury] = useState(false);
-  const screenOpen = map || armoury;
+  /** Tilly's stall at Pyre Remnant (D-62); the game waits while it is open. */
+  const [trading, setTrading] = useState(false);
+  const screenOpen = map || armoury || trading;
   const [flash, setFlash] = useState<number | null>(null);
   /** A shot to watch (the ship leaving): the controls step aside. */
   const [shot, setShot] = useState(false);
@@ -166,7 +172,7 @@ export function GameView({
           onConversation: (c, partner) => {
             talkingNow.current = true;
             setLine(null);
-            setConversation({ conversation: c, partner });
+            setConversation({ conversation: c, partner, id: performance.now() });
           },
           onObjective: (text) => {
             if (text) audio.play('objective', { volume: 0.6 });
@@ -210,6 +216,9 @@ export function GameView({
             if (id === 'armoury') {
               started?.setPaused(true);
               setArmoury(true);
+            } else if (id === 'trade') {
+              started?.setPaused(true);
+              setTrading(true);
             } else setMap(true);
           },
           onFlash: () => setFlash(performance.now()),
@@ -302,10 +311,12 @@ export function GameView({
     commandingNow.current = false;
     setCommanding(false);
   };
+  // Closed first, then ended: the story may start the next conversation the moment this one ends
+  // (Jo's choice of who comes, straight after Mira's), and that one must stay on screen.
   const endTalk = () => {
-    game?.endConversation();
     talkingNow.current = false;
     setConversation(null);
+    game?.endConversation();
   };
   const pause = (on: boolean) => {
     if (!on) {
@@ -434,10 +445,10 @@ export function GameView({
         <div
           class="loading"
           style={{
-            backgroundImage: `url(${PICTURES}${saved?.place === 'lantern' ? 'loading-lantern' : (LOADING_PICTURE[chapterAtStart] ?? 'loading-lounge')}.webp)`,
+            backgroundImage: `url(${PICTURES}${saved?.place === 'lantern' ? 'loading-lantern' : saved?.place === 'pyre' ? 'loading-pyre' : (LOADING_PICTURE[chapterAtStart] ?? 'loading-lounge')}.webp)`,
           }}
         >
-          <p class="loading__text">Loading Calder Station…</p>
+          <p class="loading__text">Loading {PLACE_NAMES[saved?.place ?? placeOf(chapterAtStart)]}…</p>
         </div>
       )}
       {status.kind === 'error' && (
@@ -508,6 +519,7 @@ export function GameView({
       )}
       {conversation && (
         <Dialogue
+          key={conversation.id}
           conversation={conversation.conversation}
           heroName={looks.name || 'You'}
           touch={touch}
@@ -619,6 +631,16 @@ export function GameView({
           }}
         />
       )}
+      {trading && game && (
+        <Trade
+          game={game}
+          onClose={() => {
+            mapNow.current = false;
+            setTrading(false);
+            game.setPaused(false);
+          }}
+        />
+      )}
       {map && game && (
         <StarMap
           game={game}
@@ -653,16 +675,54 @@ export function GameView({
         <div class="ending" role="dialog" aria-label="To be continued">
           <p class="ending__kicker">Act 1 · The dimming</p>
           <h1 class="ending__title">To be continued</h1>
-          <p class="ending__next">
-            Lantern is in the lanes, bound for Pyre Remnant. What waits there is being built, and comes in a later
-            update.
-          </p>
+          {ending.chapter.startsWith('pyre') ? (
+            <>
+              <PyreSummary ending={ending} />
+              <p class="ending__next">
+                Pyre Remnant is behind you, and Dr Achterberg is aboard. Act 1 goes on at Maw Roost and the Duskfolk
+                border, which come in a later update.
+              </p>
+            </>
+          ) : (
+            <p class="ending__next">
+              Lantern is in the lanes, bound for Pyre Remnant. What waits there is being built, and comes in a later
+              update.
+            </p>
+          )}
           <button type="button" onClick={onQuit}>
             Back to the title
           </button>
         </div>
       )}
     </main>
+  );
+}
+
+/** The places, by name, for the loading screen. */
+const PLACE_NAMES: Record<PlaceId, string> = {
+  calder: 'Calder Station',
+  lantern: 'Lantern',
+  pyre: 'Pyre Remnant',
+};
+
+/** What Pyre Remnant's choices came to, in a list (PYRE.md §4). */
+function PyreSummary({ ending }: { ending: Ending }) {
+  return (
+    <ul class="ending__list">
+      <li>
+        {ending.pyreSaved === 'archive'
+          ? 'You held the archive. A century of curves is safe; Joost Achterberg and the dome’s crew are not.'
+          : 'You went for the dome. Joost lived, and told every station that could hear. The archive is gone.'}
+      </li>
+      <li>
+        {ending.unlisted === 'aboard'
+          ? 'The Orchard’s thirty-four are in Lantern’s hold, and the committee will not forget it.'
+          : ending.unlisted === 'listed'
+            ? 'The Orchard’s people are on the station’s list now, bound for Tau Ceti.'
+            : 'The Orchard’s people went with the Banked, to work, they were told.'}
+      </li>
+      <li>One name was in the oldest audit: Lightkeeper A. Varro.</li>
+    </ul>
   );
 }
 

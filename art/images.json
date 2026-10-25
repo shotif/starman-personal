@@ -263,6 +263,16 @@
         "swarm"
       ],
       "prompt": "The bridge of a small long-haul survey ship in orbit: a compact, practical, lived-in bridge with four worn console stations whose screens glow cool blue, and a captain's chair facing a wide window. Through the window, the curve of a rust-brown rocky planet far below and, above it, a dim red-orange star with a faint ring of tiny lights around it. Two crew members seen from behind work at the consoles. Cool console light mixed with the star's low red glow; the rest of the room in soft shadow."
+    },
+    {
+      "id": "loading-pyre",
+      "kind": "loading",
+      "width": 1280,
+      "height": 720,
+      "treatment": "cover",
+      "aspect": "16:9",
+      "style": "painting",
+      "prompt": "Inside the commons of a research station in deep space, a Cooperative observatory: a tall, clean, practical hall with pale panelled walls, blue-painted doors, benches, long planters of green plants, a noticeboard crowded with paper notes, a canteen with tables to one side. One whole wall is a great window. Outside, there is no sun and no planet: only black space with a thin, faint red haze of glowing gas threads across half the sky, the remains of a dead star, and one very bright white star low in the window with a faint orange star a little beside it. A man in plain civilian clothes stands at a lectern by the window, speaking calmly to a small, tense crowd of researchers in blue work clothes. Two figures with gold armbands stand by a closed door in the far wall. Cool white light inside, the faint red of the haze outside. Quiet, uneasy, lived-in."
     }
   ],
   "records": {
@@ -1078,6 +1088,26 @@
         "candidate": 1,
         "candidateSize": "2752x1536",
         "candidateSha256": "fbb41497b19f1d128e15c7097c385575779ed4a663a7f5c50901ac4a1d501707"
+      }
+    },
+    "loading-pyre": {
+      "kind": "loading",
+      "file": "public/assets/textures/loading-pyre.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 79198,
+      "sha256": "b056a96a00dec02e8c9c8437de3733f58d4aaf4ab8108ac3657fb1ed43aad410",
+      "built": "2026-10-25",
+      "licence": "Made for Starman Lightkeeper with Google Gemini on the owner’s key; Google claims no ownership of generated images; shared with the project",
+      "source": {
+        "made": "generated",
+        "service": "Google Gemini",
+        "model": "gemini-nano-banana-2.1",
+        "prompt": "Inside the commons of a research station in deep space, a Cooperative observatory: a tall, clean, practical hall with pale panelled walls, blue-painted doors, benches, long planters of green plants, a noticeboard crowded with paper notes, a canteen with tables to one side. One whole wall is a great window. Outside, there is no sun and no planet: only black space with a thin, faint red haze of glowing gas threads across half the sky, the remains of a dead star, and one very bright white star low in the window with a faint orange star a little beside it. A man in plain civilian clothes stands at a lectern by the window, speaking calmly to a small, tense crowd of researchers in blue work clothes. Two figures with gold armbands stand by a closed door in the far wall. Cool white light inside, the faint red of the haze outside. Quiet, uneasy, lived-in. Style: a painterly-realistic digital matte painting for a grounded near-future science-fiction game set in the 2180s. Cinematic light and composition; believable, worn, lived-in industrial design; visible but controlled brushwork; soft atmospheric haze. Palette of muted greys and steel blues with small orange hazard accents. Everything is fictional. No text, no letters, no numbers, no logos, no insignia, no brand names, no watermark, no signature, no frame or border.",
+        "date": "2026-10-25T11:58:14.732Z",
+        "candidate": 1,
+        "candidateSize": "2752x1536",
+        "candidateSha256": "e81148889caf9365a321f9db22e568f7b827b053312364b82c666bc5a7066162"
       }
     }
   }

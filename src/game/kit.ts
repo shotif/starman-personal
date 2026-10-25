@@ -538,8 +538,13 @@ export function buildKit(scene: Scene, q: QualitySettings) {
     aggregate.body.setMotionType(PhysicsMotionType.ANIMATED);
     aggregate.body.disablePreStep = false;
     // A lamp over the door: green when it will open, red when locked.
-    const lamp = CreateBox(`door-${id}-lamp`, { width: 0.3, height: 0.1, depth: 0.25 }, scene);
-    lamp.position.set(at[0], height + 0.15, at[2]);
+    // Thin and high, so a camera passing under it through the doorway does not meet it.
+    const lamp = CreateBox(
+      `door-${id}-lamp`,
+      alongX ? { width: 0.3, height: 0.08, depth: 0.22 } : { width: 0.22, height: 0.08, depth: 0.3 },
+      scene,
+    );
+    lamp.position.set(at[0], height + 0.3, at[2]);
     let isOpen = startOpen;
     let locked = false;
     let t = startOpen ? 1 : 0;
